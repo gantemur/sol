@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+    <head><meta charset=utf-8>
+		<title>Арматур</title>
+    </head>
+<body>
+
+		<p>
+			Үйлдвэрээс ирж байгаа стандарт урт: <input id="txtTotal" type="number"/></br></br>
+			Арматурын диаметр: <input id="txtDiam" type="number"/></br></br>
+			Хэдэн янзын урттай таслах вэ? <input id="txtType" type="number" onchange="BuildFormFields(parseInt(this.value, 10));" onkeyup="BuildFormFields(parseInt(this.value, 10));"/></br></br>
+			Уртын нэгжийг бүх өгөгдлүүдэд адилхан сонгохоо мартав.
+			<div id="FormFields" style="margin: 20px 0px;"></div>
+			<button onclick="go()">Тооцоо</button>
+		</p>
+		
+		<p id="calc">
+		</p>
+
+    		<script type="text/javascript" src="armatur.js"></script>
+
+		<script type="text/javascript">
+
+			function BuildFormFields($amount)
+			{
+				var
+					$container = document.getElementById('FormFields'),
+					$item, $field, $i;
+
+				$container.innerHTML = '';
+				for ($i = 0; $i < $amount; $i++) {
+					$item = document.createElement('div');
+					$item.style.margin = '3px';
+
+					$field = document.createElement('span');
+					$field.innerHTML = ($i+1)+'. Урт';
+					$field.style.marginRight = '10px';
+					$item.appendChild($field);
+
+					$field = document.createElement('input');
+					$field.id = 'txtLength[' + $i + ']';
+					$field.type = 'number';
+					$item.appendChild($field);
+
+					$field = document.createElement('span');
+					$field.innerHTML = 'Тоо ширхэг';
+					$field.style.margin = '0px 10px';
+					$item.appendChild($field);
+
+					$field = document.createElement('input');
+					$field.id = 'txtQuantity[' + $i + ']';
+					$field.type = 'number';
+					$item.appendChild($field);
+
+					$container.appendChild($item);
+				}
+			}
+			
+			function go() {
+		        	var m = parseFloat(document.getElementById("txtTotal").value);
+	    	    		var n = parseInt(document.getElementById("txtType").value);
+		        	var d = parseFloat(document.getElementById("txtDiam").value);
+	    	    		var lq=[];
+	    	    		for (i=0;i<n;++i)
+	    	    			lq.push({l : parseFloat(document.getElementById("txtLength["+i+"]").value),
+	    	    			q : parseFloat(document.getElementById("txtQuantity["+i+"]").value)});
+				document.getElementById("calc").innerHTML = compute(m,n,lq,d);
+				
+      		}
+
+
+		</script>
+
+</body>
+</html>

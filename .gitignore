@@ -1,0 +1,15 @@
+_import/
+.DS_Store
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+*.tmp
+*.temp
+.cache/
+.parcel-cache/
+dist/
+build/
+coverage/

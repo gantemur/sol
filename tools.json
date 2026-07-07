@@ -1,0 +1,47 @@
+[
+  {
+    "id": "planets-en",
+    "title": "Planetary Models",
+    "language": "en",
+    "category": "astronomy",
+    "entry": "tools/planets-en/",
+    "description": "English planetary and Ptolemaic model animations.",
+    "migrationStatus": "initial static migration"
+  },
+  {
+    "id": "planets-mn",
+    "title": "Гаригуудын загвар",
+    "language": "mn",
+    "category": "astronomy",
+    "entry": "tools/planets-mn/",
+    "description": "Mongolian planetary and Ptolemaic model animations.",
+    "migrationStatus": "initial static migration"
+  },
+  {
+    "id": "doppler",
+    "title": "Доплер эффект",
+    "language": "mn",
+    "category": "physics",
+    "entry": "tools/doppler/",
+    "description": "Canvas demonstrations of sound and light Doppler effects.",
+    "migrationStatus": "initial static migration with small audio resume compatibility fix"
+  },
+  {
+    "id": "kinetic",
+    "title": "Атом молекул",
+    "language": "mn",
+    "category": "physics",
+    "entry": "tools/kinetic/",
+    "description": "Educational kinetic animation/toy model for particles, wind, and waves.",
+    "migrationStatus": "initial static migration"
+  },
+  {
+    "id": "armatur",
+    "title": "Арматур",
+    "language": "mn",
+    "category": "engineering",
+    "entry": "tools/armatur/",
+    "description": "Simple reinforcing-bar cutting calculator using the imported greedy algorithm.",
+    "migrationStatus": "initial static migration; algorithm intentionally preserved"
+  }
+]

@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width==device-width, initial-scale=1">
+  <title>Almagest Mars</title>
+  <style>
+    body {
+/*			overflow: hidden; */
+      padding: 0;
+      margin: 0;
+      background: black;
+      color: white;
+      font-family: sans-serif;
+    }
+
+    label {
+      color: white;
+    }
+
+    input {
+      all: revert;
+      margin: 2px;
+      width: 100px;
+      height: 20px;
+      background-color: black;
+      color: white;
+      border: solid 1px gray;
+      outline: none;
+    }
+
+    .canvascontainer {
+      position: relative;
+    }
+
+    .canvas {
+      background: black;
+      position: absolute;
+    }
+
+    .left {
+      all: revert;
+      float: left;
+      margin-top: 2px;
+      margin-left: 5px;
+      padding-top: 2px;
+      padding-right: 10px;
+    }
+
+    .right {
+      all: revert;
+      float: right;
+      padding-top: 2px;
+    }
+
+    .textcontainer {
+      display: flex;
+      justify-content: space-between;
+      align-items: left;
+      padding-left: 0px;
+      padding-right: 0px;
+      height: 30px;
+      width: 300px;
+      /*        border: 3px solid green; */
+    }
+
+    .buttoncontainer {
+      display: flex;
+      justify-content: left;
+      align-items: left;
+      padding-left: 20px;
+      padding-right: 20px;
+      height: 60px;
+      /*        border: 3px solid green; */
+    }
+
+    .button {
+      all: revert;
+      background-color: black;
+      border: 1px solid;
+      border-radius: 6px;
+      color: white;
+      padding: 10px 10px 10ps 10px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      /*        width: 80px;
+        height: 40px; */
+    }
+
+    .rutton {
+      background-color: black;
+      border: solid 1px rgba(4,250,5,0.7);
+      border-radius: 2px;
+      color: #04AA6D;
+      text-align: center;
+      padding: 1px 1px 1px 1px;
+      font-size: 16px;
+      width: 25px;
+      height: 25px;
+      margin: 2px;
+    }
+
+    .slidecontainer {
+      width: 300px;
+      height: 30px;
+      margin-top: 2px;
+    }
+
+    .slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 1px;
+      background: #d3d3d3;
+      outline: none;
+      opacity: 0.7;
+      -webkit-transition: .2s;
+      transition: opacity .2s;
+    }
+
+    .slider:hover {
+      opacity: 1;
+    }
+
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: white;
+      cursor: pointer;
+    }
+
+    .slider::-moz-range-thumb {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: white;
+      cursor: pointer;
+    }
+
+    #overlay {
+      position: fixed;
+      display: none;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255, 255, 255, 0.85);
+      color: black;
+      z-index: 2;
+      cursor: pointer;
+    }
+
+    #info {
+      position: absolute;
+      top: 10%;
+      left: 10%;
+      font-size: 20px;
+      color: black;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="TEXT1" class="textcontainer">
+    <div>
+      <label for="DAY" class="left">day</label>
+      <input type="number" id="DAY" name="DAY"/>
+    </div>
+    <div>
+      <label class="left" id="LONG">longitude: </label>
+      <button onclick="oninfo()" class="rutton">i</button>
+    </div>
+  </div>
+
+  <div id="CCONT" width="300" height="300" class="canvascontainer">
+    <canvas id="canvas" width="300" height="300" class="canvas" onclick="startstop()">
+      Error: Browser does not support canvas element.
+    </canvas>
+  </div>
+
+  <div id="SLIDER1" class="slidecontainer">
+    <input type="range" min="-10" max="10" value="0" class="slider" id="SPEED">
+  </div>
+  <div id="SLIDER2" class="slidecontainer">
+    <input type="range" min="0" max="500" value="250" class="slider" id="TRAIL">
+  </div>
+
+  <div id="overlay" onclick="offinfo()">
+    <div id="info">
+      <p>The blue dot at the center is the Earth, and next to it are the center of the deferent and the equant point.</p>
+      <p>The equant point is connected to the center of the epicycle by a faint red line.</p>
+      <p>The red dot on the epicycle is Mars.</p>
+      <p>The outermost circle represents the celestial sphere, which carries the mean Sun and the projection of Mars.</p>
+      <p>Tap on the canvas (or press Space) to start/stop the animation.</p>
+      <p>Use the sliders (or ASZX  buttons) to adjust the speed and the trail length.</p>
+    </div>
+  </div>
+
+  <script>
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    var slider = document.getElementById("SPEED");
+    var trailer = document.getElementById("TRAIL");
+    var dayer = document.getElementById("DAY");
+    var longer = document.getElementById("LONG");
+    var cHeight = document.documentElement.clientHeight;
+    var cWidth = document.documentElement.clientWidth;
+    var sHeight, sWidth;
+    var speed = 50;
+    var w = 2;
+    var ww = 11;
+    var x0 = 150;
+    var y0 = 150;
+    var r = 100;
+    var x = r;
+    var y = 0;
+    var rr = 30;
+    var xx = rr;
+    var yy = 0;
+    var t = 0;
+    var dt0 = 2;
+    var dt = dt0;
+    var ring = 0;
+    var timer;
+    var trail0 = 250;
+    var trailmax = 1000;
+    var traillen = 250
+    var trailon = 1;
+    var trailx = [];
+    var traily = [];
+    
+    var rpd = Math.PI / 180;
+    var dpr = 180 / Math.PI;
+    var rescale = 1.7;
+    var wt = 0.524051; // mean motion in longitude for Mars
+    var wa = 0.461576; // mean motion in anomaly for Mars
+    var ws = 360 /
+    365.25; // mean motion in longitude for the Sun (and note that ws = wt + wa, as required for an outer planet).
+    var R = 60; // we'll typically use Almagest units, but rescale them to make the image fill the stage
+    var RS = 45;
+    var e = 6;
+    var re = 39.5;
+    var Rcosmos = 110;
+    var Px, Py;
+
+    document.addEventListener("keydown", keyb)
+
+    function oninfo() {
+      document.getElementById("overlay").style.display = "block";
+    }
+
+    function offinfo() {
+      document.getElementById("overlay").style.display = "none";
+    }
+
+    slider.oninput = function () {
+      dd = parseInt(this.value);
+      if (dd == 0) stop();
+      else start(dd);
+    }
+
+    trailer.oninput = function () {
+      tt = parseInt(this.value);
+      if (tt == 0) stoptrail();
+      else starttrail(tt);
+    }
+
+    dayer.onchange = function () {
+      trailon = 0;
+      traillen = 0;
+      trailer.value = 0;
+      trailx.length = 0;
+      traily.length = 0;
+      t = parseInt(this.value);
+      draw();
+    }
+
+    function init() {
+      sWidth = cWidth;
+      sHeight = cHeight;
+      sHeight -= 120;
+      if (sWidth > 650) sWidth = 650;
+      if (sHeight > 650) sHeight = 650;
+      sWidth = Math.min(sWidth, sHeight);
+      sHeight = sWidth;
+      ctx.canvas.width = sWidth;
+      ctx.canvas.height = sHeight;
+      x0 = sWidth / 2;
+      y0 = sHeight / 2;
+      var tmp = x0*0.99;
+      if (tmp < 2) tmp = 2;
+      if (tmp > 5) tmp = 5;
+      rescale = (x0 - tmp) / Rcosmos;
+      document.getElementById('SLIDER1').setAttribute("style", "width:" + sWidth + "px");
+      document.getElementById('SLIDER1').style.width = '' + sWidth + 'px';
+      document.getElementById('SLIDER2').setAttribute("style", "width:" + sWidth + "px");
+      document.getElementById('SLIDER2').style.width = '' + sWidth + 'px';
+      document.getElementById('TEXT1').setAttribute("style", "width:" + sWidth + "px");
+      document.getElementById('TEXT1').style.width = '' + sWidth + 'px';
+      document.getElementById('CCONT').setAttribute("style", "width:" + sWidth + "px");
+      document.getElementById('CCONT').style.width = '' + sWidth + 'px';
+      document.getElementById('CCONT').setAttribute("style", "height:" + sHeight + "px");
+      document.getElementById('CCONT').style.height = '' + sHeight + 'px';
+      dayer.value = 0;
+      ring = 0;
+      dt = 0;
+      slider.value = dt;
+      traillen = trailer.value;
+      draw();
+    }
+
+    function keyb(e) {
+      if (e.keyCode == 32) startstop();
+      if (e.keyCode == 84) trail();
+      if (e.keyCode == 65) {
+        slider.value--;
+        slider.oninput();
+      }
+      if (e.keyCode == 83) {
+        slider.value++;
+        slider.oninput();
+      }
+      if (e.keyCode == 88) {
+        trailer.value = parseInt(trailer.value) + 10;
+        trailer.oninput();
+      }
+      if (e.keyCode == 90) {
+        trailer.value = parseInt(trailer.value) - 10;;
+        trailer.oninput();
+      }
+    }
+
+    function trail() {
+      if (trailon == 0) starttrail(trail0);
+      else stoptrail();
+    }
+
+    function starttrail(tt) {
+      trailon = 1;
+      traillen = tt;
+      trailer.value = tt;
+      draw();
+    }
+
+    function stoptrail() {
+      trailon = 0;
+      traillen = 0;
+      trailer.value = 0;
+      draw();
+    }
+
+    function startstop() {
+      //     	canvas.style.left = "10px";
+      //     	canvas.style.position = "absolute";
+      if (ring == 0) start(dt0);
+      else stop();
+    }
+
+    function start(dd) {
+      dt = dd;
+      slider.value = dt;
+      if (ring == 0) timer = window.setInterval(drawplus, speed);
+      ring = 1;
+    }
+
+    function stop() {
+      ring = 0;
+      dt = 0;
+      slider.value = 0;
+      window.clearInterval(timer);
+    }
+
+    function draw() {
+      var gam = Math.asin(e / R * Math.sin(wt * t * rpd)) *
+      dpr; //some geometry need to draw the line from the equant to the deferent
+      var rho = Math.sqrt(R * R + e * e - 2 * e * R * Math.cos((wt * t - gam) * rpd));
+      var Ox = x0; // put the Earth at the center of the stage
+      var Oy = y0;
+      var Dx = Ox; // offset the deferent by the eccentricity e
+      var Dy = Oy - e * rescale;
+      var Ex = Dx; // offset the equant by another step in e
+      var Ey = Dy - e * rescale;
+      var Cx = Ex - rho * rescale * Math.sin(wt * t * rpd); //locate the (moving) center of the epicycle on the deferent
+      var Cy = Ey - rho * rescale * Math.cos(wt * t * rpd);
+      Px = Cx - re * rescale * Math.sin((wt + wa) * t * rpd); // locate the position of Mars on the epicycle
+      Py = Cy - re * rescale * Math.cos((wt + wa) * t * rpd);
+      var MSx = Ox - Rcosmos * rescale * Math.sin(ws * t * rpd); //locate a position of the mean sun
+      var MSy = Oy - Rcosmos * rescale * Math.cos(ws * t * rpd);
+      var l = Math.atan2(Ox - Px, Oy - Py);
+      //      	var Pdist = Math.sqrt(P)
+      var PPx = Ox - Rcosmos * rescale * Math.sin(l);
+      var PPy = Oy - Rcosmos * rescale * Math.cos(l);
+
+      dayer.value = t;
+      longer.innerHTML = "longitude: " + ((l * dpr + 360) % 360).toFixed(2) + 'º';      
+
+      ctx.clearRect(0, 0, sWidth, sHeight); // clear canvas
+
+      //draw the deferent circle and the epicycle
+      ctx.strokeStyle = 'rgba(0, 153, 255, .7)';
+      ctx.beginPath();
+      ctx.arc(Dx, Dy, R * rescale, 0, Math.PI * 2, false);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(Cx, Cy, re * rescale, 0, Math.PI * 2, false);
+      ctx.stroke();
+
+      ctx.strokeStyle = 'rgba(200, 200, 200, .7)';
+      ctx.beginPath();
+      ctx.arc(Ox, Oy, Rcosmos * rescale, 0, Math.PI * 2, false);
+      ctx.stroke();
+
+      //line from the earth to the mean Sun
+      //    ctx.strokeStyle = 'rgba(255, 255, 0, .6)';
+      //    ctx.beginPath();
+      //  	ctx.moveTo(Ox, Oy); 
+      //		ctx.lineTo(MSx, MSy);
+      //    ctx.stroke();
+
+      //line from the equant, to the center of the epicycle, and finally to the planet
+      ctx.strokeStyle = 'rgba(255, 0, 0, .8)';
+      ctx.beginPath();
+      ctx.moveTo(Ex, Ey);
+      ctx.lineTo(Cx, Cy);
+      ctx.lineTo(Px, Py);
+      ctx.stroke();
+
+      //Earth
+      ctx.fillStyle = 'rgba(100, 100, 255, 1)';
+      ctx.beginPath();
+      ctx.arc(Ox, Oy, 3, 0, Math.PI * 2, false);
+      ctx.fill();
+
+      //Equant
+      ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+      ctx.beginPath();
+      ctx.arc(Ex, Ey, 2, 0, Math.PI * 2, false);
+      ctx.fill();
+
+      //Deferent center
+      ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+      ctx.beginPath();
+      ctx.arc(Dx, Dy, 2, 0, Math.PI * 2, false);
+      ctx.fill();
+
+      //Trail
+      opp = 1;
+      if (traillen > 0) dopp = 0.7 / traillen;
+      else dopp = 1;
+      n0 = trailx.length - traillen;
+      if (n0 < 0) n0 = 0;
+      if (trailon == 1)
+        for (i = trailx.length - 1; i > n0; i--) {
+          ctx.fillStyle = 'rgba(255,0,0,' + opp + ')';
+          ctx.beginPath();
+          ctx.arc(trailx[i], traily[i], 1.5, 0, Math.PI * 2, false);
+          ctx.fill();
+          opp -= dopp;
+        }
+
+      //Epicycle center
+      ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+      ctx.beginPath();
+      ctx.arc(Cx, Cy, 2, 0, Math.PI * 2, false);
+      ctx.fill();
+
+      //Mars
+      ctx.fillStyle = 'rgba(255, 0, 0, 1)';
+      ctx.beginPath();
+      ctx.arc(Px, Py, 2, 0, Math.PI * 2, false);
+      ctx.fill();
+
+      //Mars projection on the celestial sphere
+      ctx.fillStyle = 'rgba(255, 0, 0, 1)';
+      ctx.beginPath();
+      ctx.arc(PPx, PPy, 2, 0, Math.PI * 2, false);
+      ctx.fill();
+
+      //Mean sun projection on the celestial sphere
+      ctx.fillStyle = 'rgba(255, 255, 0, 1)';
+      ctx.beginPath();
+      ctx.arc(MSx, MSy, 2, 0, Math.PI * 2, false);
+      ctx.fill();
+
+    }
+
+    function drawplus() {
+      draw();
+      t += dt;
+      trailx.push(Px);
+      traily.push(Py);
+      if (trailx.length > trailmax) {
+        trailx.splice(0, trailx.length - traillen);
+        traily.splice(0, traily.length - traillen);
+      }
+    }
+
+    init();
+  </script>
+</body>
+
+</html>

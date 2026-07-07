@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width==device-width, initial-scale=1">
+  <title>Атом молекул</title>
+  <script type="text/javascript" src="kinetic.js"></script>
+  <link rel="stylesheet" href="kinetic.css">
+</head>
+
+<body>
+
+  <div id="CCONT" width="300" height="300" class="canvascontainer">
+    <canvas id="canvas" width="300" height="200" class="canvas" onclick="startstop()">
+      Error: Browser does not support canvas element.
+    </canvas>
+  </div>
+
+  <div id="TEXT1" class="textcontainer">
+    <div>
+      <button id ="TEMPH" class="button button1" onclick="temph()">халуун</button>
+      <button id ="TEMPL" class="button button1" onclick="templ()">хүйтэн</button>
+      <button id ="TEMPN" class="button button1" onclick="tempn()">жирийн</button>
+    </div>
+  </div>
+
+  <div id="TEXT2" class="textcontainer">
+    <div>
+      <button id ="SCALEL" class="button button1" onclick="scalel()">агшсан</button>
+      <button id ="SCALEH" class="button button1" onclick="scaleh()">тэлсэн</button>
+      <button id ="SCALEN" class="button button1" onclick="scalen()">жирийн</button>
+    </div>
+  </div> 
+
+  <div id="TEXT3" class="textcontainer">
+    <div>
+      <button id ="WIND" class="button button1" onclick="windn()">салхи</button>
+      <button id ="WAVE" class="button button1" onclick="waven()">долгион</button>
+    </div>
+    <button id ="STOP" class="button" onclick="restart()">&#8634;</button>
+  </div> 
+
+  <script>
+    const ppi = Math.PI * 2;
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    var vpadding = 100;
+    var wav_style = 'rgba(200, 200, 0,'; //Waves
+    var emi_style = 'rgba(240, 240, 0, .7)'; //Emitter
+    var emi_rad = 3;
+    var rec_style = 'rgba(0, 222, 222, 1)'; //Reciever
+    var recc_style = 'rgba(0, 255, 255, 1)'; //Reciever
+    var rec_rad = 3;
+    var sHeight, sWidth;
+    var v = 50;
+    var c = 300;
+    var beta = v/c;
+    var gamma = 1/Math.sqrt(1-beta*beta);
+    var x0 = 150;
+    var y0 = 150;
+    var width = 2000;
+    var h = 200;
+    var rescale = 1;
+    var ring = 0;
+    var begin = 1;
+    var timer;
+    var speed = 30;
+    var t = 0;
+    var dt = speed*0.001;
+    var steps = 0;
+    var skip = 20;
+    var nm = 580;
+    var windd = 0;
+    var torus = 0;
+    var wind = 0;
+    var wave = 0;
+    var energy = 0;
+    var expanse = 0;
+    var n1 = 20;
+    var n2 = 30;
+    var pml = n2-6;
+    var pmlf = 1;
+    var hh = 50;
+    var hh2 = .5*hh;
+    var xbox = n2*hh;
+    var ybox = n1*hh;
+    var kk = 10;
+    var rmax = 7;
+    var rrmax = 25;
+    var vmaxn = 40;
+    var vmaxl = 5;
+    var vmaxh = 100;
+    var vmax = vmaxn;
+    var vink = 0.5;
+    var fric = 0.1;
+    var windx = 130;
+    var windy = 0;
+    var klong = 10;
+    var kcen = 10;
+    var xm = [];
+    var ym = [];
+    var vxm = [];
+    var vym = [];
+    var xd = [];
+    var yd = [];
+    var vxd = [];
+    var vyd = [];
+
+
+
+    init();
+  </script>
+</body>
+
+</html>

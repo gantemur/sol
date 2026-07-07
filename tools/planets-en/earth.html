@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=320, initial-scale=1">
+    <title>Earth - Moon</title>
+    <style>
+      body {
+        padding:10;
+        margin:10;
+        background:black;
+        color: white;
+      }
+      .button {
+        background-color: black;
+        border: 1px solid;
+        border-radius: 6px;
+        color: white;
+        padding: 15px 15px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        width: 50px;
+      }
+      .canvas {
+        background: black;
+        border: 1px solid black;
+        left: 0px;
+/*        position: absolute; */
+      }
+      .buttons {
+        display: flex;
+        justify-content: left;
+        align-items: left;
+        padding: 0px 20px;
+        height: 60px;
+/*        border: 3px solid green; */
+      }
+      </style>
+    </head>
+  <body>
+    
+    <h1 style="padding:0px 20px">Sun - Earth - Moon</h1>
+
+    <div id ="BUTTONS" class="buttons">
+    <button id ="STOP" class="button" onclick="startstop()">&#x25B6;</button>
+    </div>
+    
+    <canvas id="canvas" width="300" height="300" class="canvas">
+    Error: Browser does not support canvas element.
+    </canvas>
+
+  <script>
+      
+	var canvas = document.getElementById('canvas');
+	var ctx = canvas.getContext('2d');
+  var cHeight = document.documentElement.clientHeight;
+  var cWidth = document.documentElement.clientWidth;
+  var sHeight, sWidth;
+  var speed = 50;
+  var w = 2;
+  var ww = 11;
+  var x0 = 150;
+  var y0 = 150;
+  var r = 100;
+  var x = r;
+  var y = 0;
+  var rr = 30;
+  var xx = rr;
+  var yy = 0;
+  var t = 0;
+  var dt = 0.01;
+  var ring = 0;
+  var timer;
+
+  function init() {
+    sWidth = cWidth;
+    if (sWidth > 600) sWidth = 600;
+    sHeight = sWidth;
+    ctx.canvas.width = sWidth;
+    ctx.canvas.height = sHeight;
+    x0 = sWidth / 2;
+    y0 = sHeight / 2;
+    document.getElementById('BUTTONS').setAttribute("style","width:"+sWidth+"px");
+    document.getElementById('BUTTONS').style.width = ''+sWidth+'px';
+    ring = 0;
+    draw();
+  }
+
+  function startstop() {
+    //     	canvas.style.left = "10px";
+    //     	canvas.style.position = "absolute";
+      if (ring == 0) {
+        timer = window.setInterval(draw,speed);
+        ring = 1;
+        document.getElementById('STOP').innerHTML = "<b>&#8545;</b>"; /* &#10074;&#10074; &#2405; */
+      } else {
+        window.clearInterval(timer);
+        ring = 0;
+        document.getElementById('STOP').innerHTML = "&#x25B6;";
+      }
+  }
+
+ 	function draw() {
+//  		var ctx = document.getElementById('canvas').getContext('2d');
+  		
+  		x = r*Math.cos(w*t);
+      y = r*Math.sin(w*t);
+
+      xx = rr*Math.cos(ww*t);
+      yy = rr*Math.sin(ww*t);
+
+      t += dt;
+  		
+      ctx.clearRect(0, 0, sWidth, sHeight); // clear canvas
+
+      ctx.strokeStyle = 'rgba(0, 153, 255, .5)';
+      ctx.beginPath();
+  		ctx.arc(x0, y0, r, 0, Math.PI * 2, false);
+  		ctx.stroke();
+
+  		ctx.fillStyle = 'rgba(255, 255, 0, 1)';
+  		ctx.beginPath();
+  		ctx.arc(x0, y0, 30, 0, Math.PI * 2, false);
+  		ctx.fill();
+
+      ctx.fillStyle = 'rgba(0, 0, 255, 1)';
+  		ctx.beginPath();
+  		ctx.arc(x0+x, y0-y, 10, 0, Math.PI * 2, false);
+  		ctx.fill();
+
+  		ctx.fillStyle = 'rgba(200, 200, 200, 1)';
+  		ctx.beginPath();
+  		ctx.arc(x0+x+xx, y0-y-yy, 3, 0, Math.PI * 2, false);
+  		ctx.fill();
+	}
+
+  init();
+      
+    </script>
+  </body>
+</html>

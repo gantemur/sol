@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>sol</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f8fafc;
+      --text: #172033;
+      --muted: #5d6678;
+      --line: #d8dee9;
+      --card: #ffffff;
+      --accent: #0f6e8c;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111620;
+        --text: #f4f7fb;
+        --muted: #b5bfcc;
+        --line: #303948;
+        --card: #18202c;
+        --accent: #6fd0ef;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 16px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    main {
+      width: min(920px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 48px;
+    }
+
+    header {
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 8vw, 4rem);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .tools {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+      margin: 24px 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .tool {
+      display: flex;
+      flex-direction: column;
+      min-height: 180px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+    }
+
+    .tool h2 {
+      margin: 0 0 8px;
+      font-size: 1.25rem;
+      line-height: 1.2;
+    }
+
+    .meta {
+      margin-top: auto;
+      padding-top: 16px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    .tool a {
+      text-decoration-thickness: 0.08em;
+      text-underline-offset: 0.18em;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>sol</h1>
+      <p>Small scientific and computational web tools, migrated as lightweight static pages.</p>
+    </header>
+
+    <ul class="tools">
+      <li class="tool">
+        <h2><a href="tools/planets-en/">Planetary Models</a></h2>
+        <p>English planetary and Ptolemaic model animations.</p>
+        <div class="meta">Astronomy · English</div>
+      </li>
+      <li class="tool">
+        <h2><a href="tools/planets-mn/">Гаригуудын загвар</a></h2>
+        <p>Mongolian planetary and Ptolemaic model animations.</p>
+        <div class="meta">Astronomy · Mongolian</div>
+      </li>
+      <li class="tool">
+        <h2><a href="tools/doppler/">Доплер эффект</a></h2>
+        <p>Canvas demonstrations of sound and light Doppler effects.</p>
+        <div class="meta">Physics · Mongolian</div>
+      </li>
+      <li class="tool">
+        <h2><a href="tools/kinetic/">Атом молекул</a></h2>
+        <p>Educational kinetic animation/toy model for particles, wind, and waves.</p>
+        <div class="meta">Physics · Mongolian</div>
+      </li>
+      <li class="tool">
+        <h2><a href="tools/armatur/">Арматур</a></h2>
+        <p>Simple reinforcing-bar cutting calculator using the imported greedy algorithm.</p>
+        <div class="meta">Engineering · Mongolian</div>
+      </li>
+    </ul>
+
+    <p>Tool metadata is also available in <a href="tools.json">tools.json</a>.</p>
+  </main>
+</body>
+</html>

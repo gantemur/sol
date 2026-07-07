@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width==device-width, initial-scale=1">
+  <title>Доплер эффект</title>
+  <script type="text/javascript" src="light.js"></script>
+  <link rel="stylesheet" href="doppler.css">
+</head>
+
+<body>
+
+  <div id="TEXT1" class="textcontainer">
+    <div>
+      <label class="left">долгионы урт</label>
+      <input type="number" id="NM" name="NM" onchange="nm_change()" />
+      <label>нм</label>
+    </div>
+  </div>
+
+  <div id="CCONT" width="300" height="300" class="canvascontainer">
+    <canvas id="canvas" width="300" height="200" class="canvas" onclick="startstop()">
+      Error: Browser does not support canvas element.
+    </canvas>
+  </div>
+
+  <div id="TEXT2" class="textcontainer">
+    <div>
+      <label class="left">хурд</label>
+      <input type="number" id="SPEED" name="SPEED" onchange="speed_change()" />
+      <label>Мм/с</label>
+    </div>
+    <button id ="STOP" class="button" onclick="restart()">&#8634;</button>
+  </div> 
+
+  <script>
+    const ppi = Math.PI * 2;
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    var speeder = document.getElementById("SPEED");
+    var nmer = document.getElementById("NM");
+    var vpadding = 80;
+    var wav_style = 'rgba(200, 200, 0,'; //Waves
+    var emi_style = 'rgba(240, 240, 0, .7)'; //Emitter
+    var emi_rad = 3;
+    var rec_style = 'rgba(0, 222, 222, 1)'; //Reciever
+    var recc_style = 'rgba(0, 255, 255, 1)'; //Reciever
+    var rec_rad = 3;
+    var sHeight, sWidth;
+    var v = 50;
+    var c = 300;
+    var beta = v/c;
+    var gamma = 1/Math.sqrt(1-beta*beta);
+    var x0 = 150;
+    var y0 = 150;
+    var width = 2000;
+    var h = 200;
+    var Ex = -width/2;
+    var Ey = 0 ;
+    var Rx = -width/4;
+    var Ry = h;
+    var rescale = 1.7;
+    var ring = 0;
+    var begin = 1;
+    var timer;
+    var speed = 30;
+    var t = 0;
+    var dt = speed*0.001;
+    var dtheta = ppi/500;
+    var dthetad = dtheta+dtheta/10;
+    var steps = 0;
+    var skip = 20;
+    var nm = 580;
+    var wavmaxlen = 40;
+    var wavlen = 15;
+    var wavt = [];
+    var wavx = [];
+    var wavy = [];
+    var wavcnt = 0;
+    var amp = 0;
+
+    init();
+  </script>
+</body>
+
+</html>

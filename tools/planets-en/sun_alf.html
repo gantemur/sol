@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width==device-width, initial-scale=1">
+  <title>Almagest Sun</title>
+  <script type="text/javascript" src="palmagest.js"></script>
+  <script type="text/javascript" src="planets.js"></script>
+  <script type="text/javascript" src="sun.js"></script>
+  <link rel="stylesheet" href="planets.css">
+</head>
+
+<body>
+
+  <div id="TEXT1" class="textcontainer">
+    <div>
+      <label class="left">Gregorian date</label>
+      <input type="number" id="YEAR" name="YEAR" onchange="year_change()" />
+      <input type="number" id="MONTH" name="MONTH" min="0" max="13" onchange="month_change()" />
+      <input type="number" id="DAY" name="DAY" min="0" max="32" onchange="day_change()" />
+    </div>
+    <div>
+      <button onclick="oninfo()" class="rutton">i</button>
+    </div>
+  </div>
+
+  <div id="TEXT2" class="textcontainer">
+    <div>
+      <label for="JDAY" class="left">Julian day</label>
+      <input type="number" id="JDAY" name="JDAY" onchange="dayer_change()" />
+    </div>
+    <div>
+      <label class="left" id="LONG">longitude: </label>
+    </div>
+  </div>
+
+
+  <div id="CCONT" width="300" height="300" class="canvascontainer">
+    <canvas id="canvas" width="300" height="300" class="canvas" onclick="startstop()">
+      Error: Browser does not support canvas element.
+    </canvas>
+  </div>
+
+  <div id="SLIDER1" class="slidecontainer">
+    <input type="range" min="-10" max="10" value="0" class="slider" id="SPEED" oninput="slider_input()">
+  </div>
+  <div id="SLIDER2" class="slidecontainer">
+    <input type="range" min="0" max="500" value="250" class="slider" id="TRAIL" oninput="trailer_input()">
+  </div>
+
+  <div id="overlay" onclick="offinfo()">
+    <div id="info">
+      <p>The blue dot at the center is the Earth, and next to it are the center of the Sun's orbit.
+      </p>
+      <p>The outermost circle represents the celestial sphere, which carries the mean Sun (red) and the projection of the true Sun (yellow).
+      </p>
+      <p>Tap on the canvas (or press Space) to start/stop the animation.</p>
+      <p>Use the sliders (or ASZX buttons) to adjust the speed and the trail length.</p>
+    </div>
+  </div>
+
+  <script>
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    var slider = document.getElementById("SPEED");
+    var trailer = document.getElementById("TRAIL");
+    var dayer = document.getElementById("JDAY");
+    var date_year = document.getElementById("YEAR");
+    var date_month = document.getElementById("MONTH");
+    var date_day = document.getElementById("DAY");
+    var longer = document.getElementById("LONG");
+    var longitude_text = "longitude"
+    var vpadding = 150;
+    var def_style = 'rgba(255, 0, 0, .7)'; //Deferent curcle
+    var cos_style = 'rgba(200, 200, 200, .7)'; //Celestial sphere
+    var rad_style = 'rgba(255, 255, 0, .6)'; //radius
+    var earth_style = 'rgba(100, 100, 255, 1)'; //Earth 
+    var earth_rad = 3;
+    var cen_style = 'rgba(255, 255, 255, 1)'; //Deferent center
+    var cen_rad = 2;
+    var pla_style = 'rgba(255, 255, 0, 1)'; //Planet
+    var pla_rad = 3;
+    var plp_style = 'rgba(255, 255, 0, 1)'; //PLanet projection
+    var plp_rad = 2;
+    var trl_style = 'rgba(255, 255, 0,'; //Trail
+    var trl_rad = 1.5;
+    var sun_style = 'rgba(255, 55, 0, 1)'; //Mean Sun projection
+    var sun_rad = 2;
+    var sHeight, sWidth;
+    var speed = 50;
+    var x0 = 150;
+    var y0 = 150;
+    var t = 2451545.0;
+    var dtmax = 10;
+    var sscale = 2;
+    var ddt = 1.0/sscale;
+    var dt0s = 2; //2*ddt
+    var dt = dt0s*ddt;
+    var ring = 0;
+    var timer;
+    var trail0 = 250;
+    var trailmax = 1000;
+    var trailermax = 500;
+    var dtrail = 10;
+    var traillen = 250
+    var trailon = 1;
+    var trailx = [];
+    var traily = [];
+
+    const rpd = Math.PI / 180;
+    const dpr = 180 / Math.PI;
+    var rescale = 1.7;
+    var Px, Py;
+
+    const cent = 36525; //  cent=36500.;
+    var oblq = sex2dec(obliquity);
+    var nsulong = sex2dec(nsunlong);
+    var mlongsu0 = sex2dec(mlongsun0);
+    var apogeesu0 = sex2dec(apogeesun);
+    var napogeesu = 1;
+    var eccsu = sex2dec(eccsun);
+    var Rcosmos = 1 + eccsu*2;
+
+    init();
+
+  </script>
+</body>
+
+</html>

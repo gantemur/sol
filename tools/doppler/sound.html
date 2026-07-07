@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width==device-width, initial-scale=1">
+  <title>Доплер эффект</title>
+  <script type="text/javascript" src="sound.js"></script>
+  <link rel="stylesheet" href="doppler.css">
+</head>
+
+<body>
+
+  <div id="TEXT1" class="textcontainer">
+    <div>
+      <label for="CPEED" class="left">дууны хурд</label>
+      <input type="number" id="CPEED" name="CPEED" onchange="cpeed_change()" />
+    </div>
+    <div>
+      <label class="left">ажиглагч</label>
+      <input type="number" id="DIST" name="DIST" onchange="dist_change()" />
+    </div>
+  </div>
+
+  <div id="TEXT2" class="textcontainer">
+    <div>
+      <label class="left">үүсгэгчийн хурд</label>
+      <input type="number" id="SPEED" name="SPEED" onchange="speed_change()" />
+    </div>
+    <div>
+      <label for="FREQ" class="left">давтамж</label>
+      <input type="number" id="FREQ" name="FREQ" onchange="freq_change()" />
+    </div> 
+  </div>
+
+  <div id="CCONT" width="300" height="300" class="canvascontainer">
+    <canvas id="canvas" width="300" height="200" class="canvas" onclick="startstop()">
+      Error: Browser does not support canvas element.
+    </canvas>
+  </div>
+  <div id="CCONTT" width="300" height="300" class="canvascontainer">
+      <canvas id="canvass" width="300" height="100" class="canvas" onclick="startstop()">
+      Error: Browser does not support canvas element.
+    </canvas>
+  </div>
+
+  <div id="TEXT3" class="textcontainer">
+    <div>
+      <label class="left" id="FREQQ">ажиглагдах давтамж: </label>
+    </div>
+    <div>
+    <button id ="STOP" class="button" onclick="restart()">&#8634;</button>
+    <button id ="MUTE" class="button" onclick="mute()">&#x1f507;</button>
+  </div>
+</div> 
+
+  <script>
+    var context = new AudioContext();
+    var oscillator = context.createOscillator();
+    var oscillatorx = context.createOscillator();
+    var gainL = context.createGain();
+    var gainR = context.createGain();
+    var merger = new ChannelMergerNode(context, { numberOfInputs: 2 });
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    var canvass = document.getElementById('canvass');
+    var ctxx = canvass.getContext('2d');
+    var speeder = document.getElementById("SPEED");
+    var cpeeder = document.getElementById("CPEED");
+    var dister = document.getElementById("DIST");
+    var freqer = document.getElementById("FREQ");
+    var freqqer = document.getElementById("FREQQ");
+    var vpadding = 111;
+    var wav_style = 'rgba(200, 200, 0,'; //Waves
+    var emi_style = 'rgba(240, 240, 0, .7)'; //Emitter
+    var emi_rad = 3;
+    var rec_style = 'rgba(0, 222, 222, 1)'; //Reciever
+    var recc_style = 'rgba(0, 255, 255, 1)'; //Reciever
+    var rec_rad = 3;
+    var gra_style = 'rgba(255, 255, 0, 1)'; //Graphics
+    var hr = 0.2;
+    var sHeight, sWidth, tHeight;
+    var v = 100;
+    var c = 343;
+    var x0 = 150;
+    var y0 = 150;
+    var width = 2000;
+    var h = 100;
+    var Ex = -width/2;
+    var Ey = 0 ;
+    var Rx = -width/6;
+    var Ry = h;
+    var rescale = 1.7;
+    var ring = 0;
+    var begin = 1;
+    var sound = 1;
+    var timer;
+    var speed = 30;
+    var t = 0;
+    var dt = speed*0.001;
+    var steps = 0;
+    var skip = 20;
+    var freq = 350;
+    var freqq,freqqq;
+    var wavmaxlen = 40;
+    var wavlen = 15;
+    var wavt = [];
+    var wavx = [];
+    var wavy = [];
+    var baseline;
+    var ampmax = 3;
+    var wavcnt = 0;
+    var gscale = 20;
+    var gx = [];
+    var gy = [];
+    var gleft = 1;
+    var gright = 1;
+
+    var vv = v*v;
+    var cc = c*c;
+    var ww = cc - vv;
+
+    init();
+  </script>
+</body>
+
+</html>
