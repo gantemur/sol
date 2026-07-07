@@ -255,7 +255,7 @@ function drawplus() {
                 xm[i][j] += windx*dt;
                 ym[i][j] += windy*dt;
             } else  if (wave) {
-//                if (j==0) x1=-hh2+sinusoid(t); else x1=xm[i][j-1];
+                if (j==0) x1=-hh2+sinusoid(t); else x1=xm[i][j-1];
                 if (j==n2-1) x2=xbox+hh2; else x2=xm[i][j+1];
 //                if (i==0) if (j==0) x1=-hh2+30*Math.sin(t*8);
                 dmean =  x1+x2-2*xm[i][j];
