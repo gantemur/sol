@@ -99,6 +99,17 @@
       text-decoration-thickness: 0.08em;
       text-underline-offset: 0.18em;
     }
+
+    .notes {
+      margin-top: 28px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+    }
+
+    .notes h2 {
+      margin: 0 0 8px;
+      font-size: 1.1rem;
+    }
   </style>
 </head>
 <body>
@@ -137,6 +148,11 @@
     </ul>
 
     <p>Tool metadata is also available in <a href="tools.json">tools.json</a>.</p>
+
+    <section class="notes" aria-labelledby="credits-title">
+      <h2 id="credits-title">Credits and license</h2>
+      <p>The planetary model pages preserve their original Almagest credit links. License is TBD; no repository-wide license has been chosen yet. More notes are in <a href="docs/CREDITS.md">docs/CREDITS.md</a>.</p>
+    </section>
   </main>
 </body>
 </html>
