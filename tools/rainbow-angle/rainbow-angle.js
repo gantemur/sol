@@ -18,7 +18,7 @@ const state = {
 const els = {};
 
 document.addEventListener("DOMContentLoaded", () => {
-  for (const id of ["n", "k", "incident", "show-extrema", "show-table", "chart", "chart-note", "current-table", "summary-table", "n-value", "k-value", "incident-value"]) {
+  for (const id of ["n", "k", "incident", "show-extrema", "show-table", "chart", "chart-note", "ray-diagram", "ray-note", "current-table", "summary-table", "n-value", "k-value", "incident-value"]) {
     els[id] = document.getElementById(id);
   }
 
@@ -138,6 +138,7 @@ function render() {
   });
 
   renderChart();
+  renderRayDiagram();
   renderTables();
 }
 
@@ -203,6 +204,54 @@ function renderChart() {
     : "No visible extremum for these parameters.";
 }
 
+function renderRayDiagram() {
+  const svg = els["ray-diagram"];
+  const width = 760;
+  const center = { x: 360, y: 220 };
+  const radius = 110;
+  const rayColor = currentRayColor();
+  const currentTrace = traceRay(state.incidentDeg, state.n, state.k);
+  const bright = strongestExtremum(state.n, state.k);
+  const brightTrace = bright ? traceRay(bright.incidentDeg, state.n, state.k) : null;
+
+  svg.replaceChildren();
+
+  const bundle = bundleAngles(state.incidentDeg);
+  const top = pointOnDrop(Math.max(...bundle), center, radius);
+  const bottom = pointOnDrop(Math.min(...bundle), center, radius);
+  polygon(svg, [
+    [width - 34, top.y],
+    [width - 34, bottom.y],
+    [top.x, top.y],
+    [bottom.x, bottom.y],
+  ], "beam-band", { fill: rayColor });
+
+  circle(svg, center.x, center.y, radius, "drop-fill");
+  path(svg, `M ${center.x - 44} ${center.y - 64} Q ${center.x - 72} ${center.y - 38} ${center.x - 76} ${center.y + 6}`, "drop-shine");
+  text(svg, center.x, center.y + radius + 28, "water drop", "ray-label", "middle");
+
+  for (const angle of bundle) {
+    const entry = pointOnDrop(angle, center, radius);
+    coloredLine(svg, width - 34, entry.y, entry.x, entry.y, "ray-faint", rayColor);
+  }
+
+  if (brightTrace) {
+    drawTrace(svg, brightTrace, center, radius, rayColor, "ray-bright");
+    labelTrace(svg, brightTrace, center, radius, `bright ray ${formatAngle(bright.angle)}`, "ray-label", rayColor, 16);
+  }
+
+  if (currentTrace) {
+    drawTrace(svg, currentTrace, center, radius, rayColor, "ray-current");
+    drawNormal(svg, currentTrace.entry, center, radius);
+    labelTrace(svg, currentTrace, center, radius, `selected ray ${formatAngle(state.incidentDeg)}`, "ray-label", rayColor, -16);
+  }
+
+  text(svg, width - 128, top.y - 14, "parallel sunlight", "ray-label", "middle");
+  els["ray-note"].textContent = bright
+    ? `Bright ray uses incident angle ${bright.incidentDeg.toFixed(1)}° for order ${state.k}.`
+    : "No bright ray is defined for these parameters.";
+}
+
 function renderTables() {
   const current = currentValues();
   if (!state.showTable) {
@@ -253,6 +302,135 @@ function formatAngle(value) {
   return Number.isFinite(value) ? `${value.toFixed(2)}°` : `<span class="warning">not defined</span>`;
 }
 
+function currentRayColor() {
+  if (state.preset === "red") return "#d13a32";
+  if (state.preset === "violet") return "#6d55d8";
+  return "#0b6d86";
+}
+
+function bundleAngles(centerAngle) {
+  const offsets = [-7, -4, -1.5, 1.5, 4, 7];
+  return offsets
+    .map((offset) => Math.max(2, Math.min(86, centerAngle + offset)))
+    .sort((a, b) => b - a);
+}
+
+function traceRay(incidentDeg, n, k) {
+  if (!Number.isFinite(incidentDeg) || !Number.isFinite(n) || !Number.isFinite(k)) return null;
+
+  const alpha = Math.max(0.5, Math.min(89.5, incidentDeg)) * RAD;
+  let point = { x: Math.cos(alpha), y: Math.sin(alpha) };
+  let direction = refractVector({ x: -1, y: 0 }, point, 1, n);
+  if (!direction) return null;
+
+  const internal = [point];
+  for (let i = 0; i < k; i++) {
+    const reflectedAt = nextCirclePoint(point, direction);
+    if (!reflectedAt) return null;
+    internal.push(reflectedAt);
+    direction = reflectVector(direction, reflectedAt);
+    point = reflectedAt;
+  }
+
+  const exit = nextCirclePoint(point, direction);
+  if (!exit) return null;
+  internal.push(exit);
+
+  const outgoing = refractVector(direction, exit, n, 1);
+  if (!outgoing) return null;
+
+  return {
+    entry: internal[0],
+    exit,
+    internal,
+    outgoing,
+  };
+}
+
+function refractVector(incoming, normal, fromIndex, toIndex) {
+  const incident = normalize(incoming);
+  const outwardNormal = normalize(normal);
+  const surfaceNormal = fromIndex < toIndex ? scale(outwardNormal, -1) : outwardNormal;
+  const cos1 = dot(incident, surfaceNormal);
+  if (cos1 <= 0) return null;
+
+  const tangent = subtract(incident, scale(surfaceNormal, cos1));
+  const eta = fromIndex / toIndex;
+  const sin2Squared = eta * eta * dot(tangent, tangent);
+  if (sin2Squared > 1) return null;
+
+  return normalize(add(scale(tangent, eta), scale(surfaceNormal, Math.sqrt(1 - sin2Squared))));
+}
+
+function reflectVector(direction, normal) {
+  const d = normalize(direction);
+  const n = normalize(normal);
+  return normalize(subtract(d, scale(n, 2 * dot(d, n))));
+}
+
+function nextCirclePoint(point, direction) {
+  const t = -2 * dot(point, direction);
+  if (!Number.isFinite(t) || t <= 1e-6) return null;
+  return add(point, scale(direction, t));
+}
+
+function pointOnDrop(incidentDeg, center, radius) {
+  const alpha = Math.max(0, Math.min(89.9, incidentDeg)) * RAD;
+  return toSvgPoint({ x: Math.cos(alpha), y: Math.sin(alpha) }, center, radius);
+}
+
+function toSvgPoint(point, center, radius) {
+  return {
+    x: center.x + point.x * radius,
+    y: center.y - point.y * radius,
+  };
+}
+
+function drawTrace(svg, trace, center, radius, color, className) {
+  const entry = toSvgPoint(trace.entry, center, radius);
+  coloredLine(svg, 726, entry.y, entry.x, entry.y, className, color);
+
+  const internalPoints = trace.internal.map((point) => toSvgPoint(point, center, radius));
+  polyline(svg, internalPoints, `${className} ray-inside`, color);
+
+  const exit = toSvgPoint(trace.exit, center, radius);
+  const outEnd = toSvgPoint(add(trace.exit, scale(trace.outgoing, 1.45)), center, radius);
+  coloredLine(svg, exit.x, exit.y, outEnd.x, outEnd.y, className, color);
+  circle(svg, entry.x, entry.y, 4.5, "marker-dot");
+}
+
+function drawNormal(svg, entryUnit, center, radius) {
+  const entry = toSvgPoint(entryUnit, center, radius);
+  coloredLine(svg, center.x, center.y, entry.x, entry.y, "normal-line", "currentColor");
+}
+
+function labelTrace(svg, trace, center, radius, label, className, color, offsetY) {
+  const outEnd = toSvgPoint(add(trace.exit, scale(trace.outgoing, 0.62)), center, radius);
+  const labelEl = text(svg, outEnd.x + 10, outEnd.y + offsetY, label, className, "start");
+  labelEl.setAttribute("fill", color);
+}
+
+function dot(a, b) {
+  return a.x * b.x + a.y * b.y;
+}
+
+function add(a, b) {
+  return { x: a.x + b.x, y: a.y + b.y };
+}
+
+function subtract(a, b) {
+  return { x: a.x - b.x, y: a.y - b.y };
+}
+
+function scale(a, factor) {
+  return { x: a.x * factor, y: a.y * factor };
+}
+
+function normalize(a) {
+  const length = Math.hypot(a.x, a.y);
+  return length > 0 ? { x: a.x / length, y: a.y / length } : { x: 0, y: 0 };
+}
+
 function line(svg, x1, y1, x2, y2, className) {
   const el = document.createElementNS("http://www.w3.org/2000/svg", "line");
   el.setAttribute("x1", x1);
@@ -260,6 +438,18 @@ function line(svg, x1, y1, x2, y2, className) {
   el.setAttribute("x2", x2);
   el.setAttribute("y2", y2);
   el.setAttribute("class", className);
+  svg.appendChild(el);
+}
+
+function coloredLine(svg, x1, y1, x2, y2, className, color) {
+  if (![x1, y1, x2, y2].every(Number.isFinite)) return;
+  const el = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  el.setAttribute("x1", x1);
+  el.setAttribute("y1", y1);
+  el.setAttribute("x2", x2);
+  el.setAttribute("y2", y2);
+  el.setAttribute("class", className);
+  el.setAttribute("stroke", color);
   svg.appendChild(el);
 }
 
@@ -281,5 +471,31 @@ function text(svg, x, y, value, className, anchor = "start", rotate = 0) {
   el.setAttribute("text-anchor", anchor);
   if (rotate) el.setAttribute("transform", `rotate(${rotate} ${x} ${y})`);
   el.textContent = value;
+  svg.appendChild(el);
+  return el;
+}
+
+function path(svg, d, className) {
+  const el = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  el.setAttribute("d", d);
+  el.setAttribute("class", className);
+  svg.appendChild(el);
+}
+
+function polyline(svg, points, className, color) {
+  if (!points.length || points.some((point) => !Number.isFinite(point.x) || !Number.isFinite(point.y))) return;
+  const el = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+  el.setAttribute("points", points.map((point) => `${point.x.toFixed(2)},${point.y.toFixed(2)}`).join(" "));
+  el.setAttribute("class", className);
+  el.setAttribute("stroke", color);
+  svg.appendChild(el);
+}
+
+function polygon(svg, points, className, attrs = {}) {
+  if (!points.length || points.some(([x, y]) => !Number.isFinite(x) || !Number.isFinite(y))) return;
+  const el = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+  el.setAttribute("points", points.map(([x, y]) => `${x.toFixed(2)},${y.toFixed(2)}`).join(" "));
+  el.setAttribute("class", className);
+  for (const [key, value] of Object.entries(attrs)) el.setAttribute(key, value);
   svg.appendChild(el);
 }
