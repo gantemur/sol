@@ -27,8 +27,16 @@ The tool uses a simplified geometric-optics model for a spherical water droplet:
 - rainbow order `k`, where `1` is primary and `2` is secondary;
 - signed viewing/deviation angle reduced to the range from -90 degrees to 90 degrees.
 
+The drop ray sketch uses dense, uniform impact-height sampling on one upper half of the droplet, avoiding central overlap and near-tangent edge rays. Each sampled ray is traced as open SVG line/polyline segments: incoming ray, internal refracted/reflected path, and outgoing ray. Thin low-opacity strokes let the outgoing family show rainbow-angle concentration by alpha accumulation, without selecting or labeling a single ray.
+
+## Language support
+
+This tool has local English/Mongolian language support through a small `STRINGS` dictionary in `rainbow-angle.js`. It chooses language from `?lang=en` or `?lang=mn`, then a saved local preference, then browser language, and finally English.
+
+Future standalone tools can reuse this lightweight local dictionary pattern before the project needs any global i18n framework.
+
 ## Limitations
 
 - Refractive-index presets are approximate and based on the source material.
 - There is no full wavelength-dependent dispersion model yet.
-- The drawing is a curve visualizer, not a full ray-tracing or atmospheric optics simulation.
+- The drawing is still a simplified geometric-optics sketch, not a full atmospheric optics simulation.

@@ -2,8 +2,101 @@ const DEG = 180 / Math.PI;
 const RAD = Math.PI / 180;
 
 const PRESETS = {
-  red: { label: "Water red", n: 1.33 / 1.00027717 },
-  violet: { label: "Water violet", n: 1.34 / 1.00027717 },
+  red: { n: 1.33 / 1.00027717 },
+  violet: { n: 1.34 / 1.00027717 },
+};
+
+const RAY_SAMPLE_COUNT = 84;
+const RAY_STYLE = {
+  incomingOpacity: 0.09,
+  incomingWidth: 0.42,
+  internalOpacity: 0.025,
+  internalWidth: 0.34,
+  outgoingOpacity: 0.14,
+  outgoingWidth: 0.45,
+};
+
+const STRINGS = {
+  en: {
+    pageTitle: "Rainbow Angles",
+    pageSubtitle: "Explore the geometric-optics angles behind primary and secondary rainbows.",
+    presetLabel: "Preset",
+    presetRed: "Water red",
+    presetViolet: "Water violet",
+    presetCustom: "Custom",
+    controlN: "Refractive index",
+    controlK: "Rainbow order",
+    controlIncident: "Incident angle",
+    showExtrema: "Show extrema",
+    showTable: "Show degrees table",
+    rayTitle: "Drop ray sketch",
+    raySvgTitle: "Parallel rays entering a spherical water drop",
+    raySvgDesc: "A schematic circle showing many parallel rays refracting and reflecting through a water drop.",
+    rayCaption: "Many parallel rays are sampled across the drop. Where the outgoing family bunches together, the rainbow direction is forming.",
+    chartTitle: "Deviation angle curve",
+    chartSvgTitle: "Deviation angle versus incident angle",
+    chartSvgDesc: "A curve showing signed rainbow deviation angle as a function of incident angle.",
+    chartNote: "Bright direction near {angle} at {incident}.",
+    chartNoExtremum: "No visible extremum for these parameters.",
+    axisIncident: "incident angle",
+    axisSigned: "signed viewing angle",
+    currentTitle: "Current angle",
+    signNote: "A negative signed angle follows the source notebook convention: it is counted from the Sun. Positive angles are measured from the antisolar point.",
+    summaryTitle: "Primary and secondary summary",
+    explainTitle: "What is plotted?",
+    explainOne: "The incident angle is measured from the surface normal of a spherical water droplet. The refracted angle comes from Snell's law. Order 1 is the primary rainbow, order 2 is the secondary rainbow, and higher orders add more internal reflections.",
+    explainTwo: "The curve shows the signed viewing angle after reducing the geometric deviation into the visible range from -90 degrees to 90 degrees. Extrema mark where nearby rays bunch together, producing a bright rainbow direction.",
+    currentSigned: "Current signed angle: {angle}.",
+    rowIncident: "Incident angle α",
+    rowRefracted: "Refracted angle β",
+    rowSigned: "Signed viewing angle",
+    rowRaw: "Raw deviation",
+    colOrder: "Order",
+    colPreset: "Preset",
+    colIncident: "Incident",
+    colViewing: "Viewing angle",
+    notDefined: "not defined",
+  },
+  mn: {
+    pageTitle: "Солонгын өнцөг",
+    pageSubtitle: "Анхдагч ба хоёрдогч солонгын геометр-оптикийн өнцгийг туршиж үзнэ.",
+    presetLabel: "Сонголт",
+    presetRed: "Усны улаан",
+    presetViolet: "Усны ягаан",
+    presetCustom: "Өөрийн n",
+    controlN: "Хугарлын илтгэгч",
+    controlK: "Солонгын эрэмбэ",
+    controlIncident: "Тусах өнцөг",
+    showExtrema: "Экстремум харуулах",
+    showTable: "Өнцгийн хүснэгт харуулах",
+    rayTitle: "Дусал дахь цацрагууд",
+    raySvgTitle: "Бөмбөрцөг усан дусалд орж буй параллель цацрагууд",
+    raySvgDesc: "Олон параллель цацраг усан дусалд хугарч, ойж, дахин хугаран гарах бүдүүвч.",
+    rayCaption: "Параллель цацрагуудыг дуслын огтлол дагуу жигд авсан. Гарах цацрагууд бөөгнөрөх чиглэлд солонго үүснэ.",
+    chartTitle: "Хазайлтын өнцгийн муруй",
+    chartSvgTitle: "Тусах өнцгөөс хамаарах хазайлтын өнцөг",
+    chartSvgDesc: "Тусах өнцгийн функц болох тэмдэгтэй солонгын өнцгийн муруй.",
+    chartNote: "Гэрэлт чиглэл {angle}, тусах өнцөг {incident} орчим.",
+    chartNoExtremum: "Эдгээр параметрт харагдах экстремум алга.",
+    axisIncident: "тусах өнцөг",
+    axisSigned: "тэмдэгтэй харах өнцөг",
+    currentTitle: "Одоогийн өнцөг",
+    signNote: "Сөрөг тэмдэг нь эх notebook-ийн дагуу Нарны зүгээс тоолж байгааг илтгэнэ. Эерэг өнцөг нь Нарны эсрэг цэгээс хэмжигдэнэ.",
+    summaryTitle: "Анхдагч ба хоёрдогч тойм",
+    explainTitle: "Юуг зурж байна вэ?",
+    explainOne: "Тусах өнцгийг бөмбөрцөг усан дуслын гадаргын нормалиас хэмжинэ. Доторх хугарлын өнцөг нь Снеллийн хуулиар олдоно. Эрэмбэ 1 нь анхдагч солонго, эрэмбэ 2 нь хоёрдогч солонго; өндөр эрэмбэд дотоод ойролт нэмэгдэнэ.",
+    explainTwo: "Муруй нь геометр хазайлтыг -90 градусаас 90 градусын харагдах завсарт бууруулсан тэмдэгтэй харах өнцгийг харуулна. Экстремум орчимд ойролцоо цацрагууд бөөгнөрч, гэрэлт солонгын чиглэл үүснэ.",
+    currentSigned: "Одоогийн тэмдэгтэй өнцөг: {angle}.",
+    rowIncident: "Тусах өнцөг α",
+    rowRefracted: "Хугарсан өнцөг β",
+    rowSigned: "Тэмдэгтэй харах өнцөг",
+    rowRaw: "Түүхий хазайлт",
+    colOrder: "Эрэмбэ",
+    colPreset: "Сонголт",
+    colIncident: "Тусах",
+    colViewing: "Харах өнцөг",
+    notDefined: "тодорхойгүй",
+  },
 };
 
 const state = {
@@ -13,17 +106,22 @@ const state = {
   incidentDeg: 59.6,
   showExtrema: true,
   showTable: true,
+  lang: initialLanguage(),
 };
 
 const els = {};
 
 document.addEventListener("DOMContentLoaded", () => {
-  for (const id of ["n", "k", "incident", "show-extrema", "show-table", "chart", "chart-note", "ray-diagram", "ray-note", "current-table", "summary-table", "n-value", "k-value", "incident-value"]) {
+  for (const id of ["n", "k", "incident", "show-extrema", "show-table", "chart", "chart-note", "ray-diagram", "current-table", "summary-table", "n-value", "k-value", "incident-value"]) {
     els[id] = document.getElementById(id);
   }
 
   document.querySelectorAll(".preset").forEach((button) => {
     button.addEventListener("click", () => setPreset(button.dataset.preset));
+  });
+
+  document.querySelectorAll(".language-option").forEach((button) => {
+    button.addEventListener("click", () => setLanguage(button.dataset.lang));
   });
 
   els.n.addEventListener("input", () => {
@@ -59,6 +157,69 @@ function setPreset(name) {
   state.preset = name;
   if (PRESETS[name]) state.n = PRESETS[name].n;
   render();
+}
+
+function setLanguage(lang) {
+  if (!STRINGS[lang]) return;
+  state.lang = lang;
+  try {
+    localStorage.setItem("rainbow-angle-lang", lang);
+  } catch (_error) {
+    // The tool still works when storage is unavailable.
+  }
+  try {
+    const url = new URL(window.location.href);
+    url.searchParams.set("lang", lang);
+    window.history.replaceState(null, "", url);
+  } catch (_error) {
+    // Query updates are a convenience, not a dependency.
+  }
+  render();
+}
+
+function initialLanguage() {
+  let requested = null;
+  try {
+    requested = new URLSearchParams(window.location.search).get("lang");
+  } catch (_error) {
+    requested = null;
+  }
+  if (STRINGS[requested]) return requested;
+
+  try {
+    const saved = localStorage.getItem("rainbow-angle-lang");
+    if (STRINGS[saved]) return saved;
+  } catch (_error) {
+    // Ignore storage failures and continue to browser-language fallback.
+  }
+
+  try {
+    const browserLang = (navigator.language || "").slice(0, 2).toLowerCase();
+    if (STRINGS[browserLang]) return browserLang;
+  } catch (_error) {
+    // Default below.
+  }
+
+  return "en";
+}
+
+function t(key, values = {}) {
+  const text = STRINGS[state.lang]?.[key] ?? STRINGS.en[key] ?? key;
+  return text.replace(/\{(\w+)\}/g, (_match, name) => values[name] ?? "");
+}
+
+function applyLanguage() {
+  document.documentElement.lang = state.lang;
+  document.title = t("pageTitle");
+
+  document.querySelectorAll("[data-i18n]").forEach((element) => {
+    element.textContent = t(element.dataset.i18n);
+  });
+
+  document.querySelectorAll(".language-option").forEach((button) => {
+    button.classList.toggle("active", button.dataset.lang === state.lang);
+    button.setAttribute("aria-pressed", button.dataset.lang === state.lang ? "true" : "false");
+  });
 }
 
 function refractedAngle(alpha, n) {
@@ -124,6 +285,8 @@ function currentValues() {
 }
 
 function render() {
+  applyLanguage();
+
   els.n.value = state.n.toFixed(3);
   els.k.value = state.k;
   els.incident.value = state.incidentDeg;
@@ -168,8 +331,8 @@ function renderChart() {
 
   line(svg, margin.left, yScale(0), width - margin.right, yScale(0), "axis");
   line(svg, margin.left, margin.top, margin.left, height - margin.bottom, "axis");
-  text(svg, width / 2, height - 14, "incident angle", "axis-label", "middle");
-  text(svg, 16, height / 2, "signed viewing angle", "axis-label", "middle", -90);
+  text(svg, width / 2, height - 14, t("axisIncident"), "axis-label", "middle");
+  text(svg, 16, height / 2, t("axisSigned"), "axis-label", "middle", -90);
 
   const path = points
     .filter((p) => Number.isFinite(p.angle))
@@ -200,8 +363,11 @@ function renderChart() {
 
   const strongest = strongestExtremum(state.n, state.k);
   els["chart-note"].textContent = strongest
-    ? `Bright direction near ${strongest.angle.toFixed(1)}° at ${strongest.incidentDeg.toFixed(1)}°.`
-    : "No visible extremum for these parameters.";
+    ? t("chartNote", {
+      angle: `${strongest.angle.toFixed(1)}°`,
+      incident: `${strongest.incidentDeg.toFixed(1)}°`,
+    })
+    : t("chartNoExtremum");
 }
 
 function renderRayDiagram() {
@@ -210,60 +376,33 @@ function renderRayDiagram() {
   const center = { x: 360, y: 220 };
   const radius = 110;
   const rayColor = currentRayColor();
-  const currentTrace = traceRay(state.incidentDeg, state.n, state.k);
-  const bright = strongestExtremum(state.n, state.k);
-  const brightTrace = bright ? traceRay(bright.incidentDeg, state.n, state.k) : null;
+  const impacts = sampleImpactHeights(RAY_SAMPLE_COUNT);
 
   svg.replaceChildren();
 
-  const bundle = bundleAngles(state.incidentDeg);
-  const top = pointOnDrop(Math.max(...bundle), center, radius);
-  const bottom = pointOnDrop(Math.min(...bundle), center, radius);
-  polygon(svg, [
-    [width - 34, top.y],
-    [width - 34, bottom.y],
-    [top.x, top.y],
-    [bottom.x, bottom.y],
-  ], "beam-band", { fill: rayColor });
+  circle(svg, center.x, center.y, radius, "drop-disc");
 
-  circle(svg, center.x, center.y, radius, "drop-fill");
-  path(svg, `M ${center.x - 44} ${center.y - 64} Q ${center.x - 72} ${center.y - 38} ${center.x - 76} ${center.y + 6}`, "drop-shine");
-  text(svg, center.x, center.y + radius + 28, "water drop", "ray-label", "middle");
-
-  for (const angle of bundle) {
-    const entry = pointOnDrop(angle, center, radius);
-    coloredLine(svg, width - 34, entry.y, entry.x, entry.y, "ray-faint", rayColor);
+  for (const impact of impacts) {
+    const trace = traceRayByImpact(impact, state.n, state.k);
+    if (!trace) continue;
+    drawRayFamilyTrace(svg, trace, center, radius, width - 34, rayColor);
   }
 
-  if (brightTrace) {
-    drawTrace(svg, brightTrace, center, radius, rayColor, "ray-bright");
-    labelTrace(svg, brightTrace, center, radius, `bright ray ${formatAngle(bright.angle)}`, "ray-label", rayColor, 16);
-  }
-
-  if (currentTrace) {
-    drawTrace(svg, currentTrace, center, radius, rayColor, "ray-current");
-    drawNormal(svg, currentTrace.entry, center, radius);
-    labelTrace(svg, currentTrace, center, radius, `selected ray ${formatAngle(state.incidentDeg)}`, "ray-label", rayColor, -16);
-  }
-
-  text(svg, width - 128, top.y - 14, "parallel sunlight", "ray-label", "middle");
-  els["ray-note"].textContent = bright
-    ? `Bright ray uses incident angle ${bright.incidentDeg.toFixed(1)}° for order ${state.k}.`
-    : "No bright ray is defined for these parameters.";
+  circle(svg, center.x, center.y, radius, "drop-outline");
 }
 
 function renderTables() {
   const current = currentValues();
   if (!state.showTable) {
-    els["current-table"].innerHTML = `<p class="small">Current signed angle: ${formatAngle(current.angle)}.</p>`;
+    els["current-table"].innerHTML = `<p class="small">${t("currentSigned", { angle: formatAngle(current.angle) })}</p>`;
   } else {
     els["current-table"].innerHTML = `
       <table>
         <tbody>
-          <tr><th>Incident angle α</th><td>${formatAngle(state.incidentDeg)}</td></tr>
-          <tr><th>Refracted angle β</th><td>${formatAngle(current.beta == null ? null : current.beta * DEG)}</td></tr>
-          <tr><th>Signed viewing angle</th><td>${formatAngle(current.angle)}</td></tr>
-          <tr><th>Raw deviation</th><td>${formatAngle(current.raw == null ? null : current.raw * DEG)}</td></tr>
+          <tr><th>${t("rowIncident")}</th><td>${formatAngle(state.incidentDeg)}</td></tr>
+          <tr><th>${t("rowRefracted")}</th><td>${formatAngle(current.beta == null ? null : current.beta * DEG)}</td></tr>
+          <tr><th>${t("rowSigned")}</th><td>${formatAngle(current.angle)}</td></tr>
+          <tr><th>${t("rowRaw")}</th><td>${formatAngle(current.raw == null ? null : current.raw * DEG)}</td></tr>
         </tbody>
       </table>`;
   }
@@ -274,7 +413,7 @@ function renderTables() {
       const ext = strongestExtremum(PRESETS[key].n, order);
       rows.push({
         order,
-        preset: PRESETS[key].label,
+        preset: t(key === "red" ? "presetRed" : "presetViolet"),
         incident: ext?.incidentDeg,
         angle: ext?.angle,
       });
@@ -284,7 +423,7 @@ function renderTables() {
   els["summary-table"].innerHTML = `
     <table>
       <thead>
-        <tr><th>Order</th><th>Preset</th><th>Incident</th><th>Viewing angle</th></tr>
+        <tr><th>${t("colOrder")}</th><th>${t("colPreset")}</th><th>${t("colIncident")}</th><th>${t("colViewing")}</th></tr>
       </thead>
       <tbody>
         ${rows.map((row) => `
@@ -299,7 +438,7 @@ function renderTables() {
 }
 
 function formatAngle(value) {
-  return Number.isFinite(value) ? `${value.toFixed(2)}°` : `<span class="warning">not defined</span>`;
+  return Number.isFinite(value) ? `${value.toFixed(2)}°` : `<span class="warning">${t("notDefined")}</span>`;
 }
 
 function currentRayColor() {
@@ -308,18 +447,22 @@ function currentRayColor() {
   return "#0b6d86";
 }
 
-function bundleAngles(centerAngle) {
-  const offsets = [-7, -4, -1.5, 1.5, 4, 7];
-  return offsets
-    .map((offset) => Math.max(2, Math.min(86, centerAngle + offset)))
-    .sort((a, b) => b - a);
+function sampleImpactHeights(count) {
+  // Positive impact height is the upper half of the drop in mathematical
+  // coordinates; toSvgPoint flips y, so these rays appear above the center.
+  const minImpact = 0.08;
+  const maxImpact = 0.90;
+  const impacts = [];
+  for (let i = 0; i < count; i++) {
+    impacts.push(minImpact + (maxImpact - minImpact) * i / (count - 1));
+  }
+  return impacts;
 }
 
-function traceRay(incidentDeg, n, k) {
-  if (!Number.isFinite(incidentDeg) || !Number.isFinite(n) || !Number.isFinite(k)) return null;
+function traceRayByImpact(impact, n, k) {
+  if (!Number.isFinite(impact) || Math.abs(impact) >= 1) return null;
 
-  const alpha = Math.max(0.5, Math.min(89.5, incidentDeg)) * RAD;
-  let point = { x: Math.cos(alpha), y: Math.sin(alpha) };
+  let point = { x: Math.sqrt(1 - impact * impact), y: impact };
   let direction = refractVector({ x: -1, y: 0 }, point, 1, n);
   if (!direction) return null;
 
@@ -374,11 +517,6 @@ function nextCirclePoint(point, direction) {
   return add(point, scale(direction, t));
 }
 
-function pointOnDrop(incidentDeg, center, radius) {
-  const alpha = Math.max(0, Math.min(89.9, incidentDeg)) * RAD;
-  return toSvgPoint({ x: Math.cos(alpha), y: Math.sin(alpha) }, center, radius);
-}
-
 function toSvgPoint(point, center, radius) {
   return {
     x: center.x + point.x * radius,
@@ -386,28 +524,17 @@ function toSvgPoint(point, center, radius) {
   };
 }
 
-function drawTrace(svg, trace, center, radius, color, className) {
+function drawRayFamilyTrace(svg, trace, center, radius, startX, color) {
   const entry = toSvgPoint(trace.entry, center, radius);
-  coloredLine(svg, 726, entry.y, entry.x, entry.y, className, color);
+
+  styledLine(svg, startX, entry.y, entry.x, entry.y, "ray-segment ray-incoming", color, RAY_STYLE.incomingOpacity, RAY_STYLE.incomingWidth);
 
   const internalPoints = trace.internal.map((point) => toSvgPoint(point, center, radius));
-  polyline(svg, internalPoints, `${className} ray-inside`, color);
+  polyline(svg, internalPoints, "ray-segment ray-internal", color, RAY_STYLE.internalOpacity, RAY_STYLE.internalWidth);
 
   const exit = toSvgPoint(trace.exit, center, radius);
-  const outEnd = toSvgPoint(add(trace.exit, scale(trace.outgoing, 1.45)), center, radius);
-  coloredLine(svg, exit.x, exit.y, outEnd.x, outEnd.y, className, color);
-  circle(svg, entry.x, entry.y, 4.5, "marker-dot");
-}
-
-function drawNormal(svg, entryUnit, center, radius) {
-  const entry = toSvgPoint(entryUnit, center, radius);
-  coloredLine(svg, center.x, center.y, entry.x, entry.y, "normal-line", "currentColor");
-}
-
-function labelTrace(svg, trace, center, radius, label, className, color, offsetY) {
-  const outEnd = toSvgPoint(add(trace.exit, scale(trace.outgoing, 0.62)), center, radius);
-  const labelEl = text(svg, outEnd.x + 10, outEnd.y + offsetY, label, className, "start");
-  labelEl.setAttribute("fill", color);
+  const outEnd = toSvgPoint(add(trace.exit, scale(trace.outgoing, 1.95)), center, radius);
+  styledLine(svg, exit.x, exit.y, outEnd.x, outEnd.y, "ray-segment ray-outgoing", color, RAY_STYLE.outgoingOpacity, RAY_STYLE.outgoingWidth);
 }
 
 function dot(a, b) {
@@ -438,11 +565,12 @@ function line(svg, x1, y1, x2, y2, className) {
   el.setAttribute("x2", x2);
   el.setAttribute("y2", y2);
   el.setAttribute("class", className);
+  el.setAttribute("fill", "none");
   svg.appendChild(el);
 }
 
-function coloredLine(svg, x1, y1, x2, y2, className, color) {
-  if (![x1, y1, x2, y2].every(Number.isFinite)) return;
+function styledLine(svg, x1, y1, x2, y2, className, color, opacity, strokeWidth) {
+  if (![x1, y1, x2, y2, opacity, strokeWidth].every(Number.isFinite)) return;
   const el = document.createElementNS("http://www.w3.org/2000/svg", "line");
   el.setAttribute("x1", x1);
   el.setAttribute("y1", y1);
@@ -450,6 +578,9 @@ function coloredLine(svg, x1, y1, x2, y2, className, color) {
   el.setAttribute("y2", y2);
   el.setAttribute("class", className);
   el.setAttribute("stroke", color);
+  el.setAttribute("stroke-opacity", opacity.toFixed(3));
+  el.setAttribute("stroke-width", strokeWidth.toFixed(2));
+  el.setAttribute("fill", "none");
   svg.appendChild(el);
 }
 
@@ -475,27 +606,14 @@ function text(svg, x, y, value, className, anchor = "start", rotate = 0) {
   return el;
 }
 
-function path(svg, d, className) {
-  const el = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  el.setAttribute("d", d);
-  el.setAttribute("class", className);
-  svg.appendChild(el);
-}
-
-function polyline(svg, points, className, color) {
+function polyline(svg, points, className, color, opacity, strokeWidth) {
   if (!points.length || points.some((point) => !Number.isFinite(point.x) || !Number.isFinite(point.y))) return;
   const el = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
   el.setAttribute("points", points.map((point) => `${point.x.toFixed(2)},${point.y.toFixed(2)}`).join(" "));
   el.setAttribute("class", className);
   el.setAttribute("stroke", color);
-  svg.appendChild(el);
-}
-
-function polygon(svg, points, className, attrs = {}) {
-  if (!points.length || points.some(([x, y]) => !Number.isFinite(x) || !Number.isFinite(y))) return;
-  const el = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-  el.setAttribute("points", points.map(([x, y]) => `${x.toFixed(2)},${y.toFixed(2)}`).join(" "));
-  el.setAttribute("class", className);
-  for (const [key, value] of Object.entries(attrs)) el.setAttribute(key, value);
+  el.setAttribute("fill", "none");
+  if (Number.isFinite(opacity)) el.setAttribute("stroke-opacity", opacity.toFixed(3));
+  if (Number.isFinite(strokeWidth)) el.setAttribute("stroke-width", strokeWidth.toFixed(2));
   svg.appendChild(el);
 }

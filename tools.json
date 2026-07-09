@@ -29,7 +29,7 @@
   {
     "id": "rainbow-angle",
     "title": "Rainbow Angles",
-    "language": "en",
+    "language": ["en", "mn"],
     "category": "physics",
     "entry": "tools/rainbow-angle/",
     "description": "Interactive geometric-optics curves for primary and secondary rainbow angles.",
