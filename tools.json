@@ -36,6 +36,15 @@
     "migrationStatus": "native notebook-derived alpha"
   },
   {
+    "id": "warm",
+    "title": "Stellar Warmth",
+    "language": ["en", "mn"],
+    "category": "physics",
+    "entry": "tools/warm/",
+    "description": "A simplified stellar irradiance, planet temperature, and liquid-water zone explorer.",
+    "migrationStatus": "native notebook-derived MVP"
+  },
+  {
     "id": "kinetic",
     "title": "Атом молекул",
     "language": "mn",

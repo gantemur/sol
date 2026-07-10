@@ -1,0 +1,345 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f7fafb;
+  --text: #16202a;
+  --muted: #5d6875;
+  --line: #d3dbe3;
+  --panel: #ffffff;
+  --accent: #0b6d86;
+  --accent-2: #c4562a;
+  --warm: #d96f32;
+  --cool: #2276b5;
+  --green: #2d8a55;
+  --grid: #e6ebf0;
+  --shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #101820;
+    --text: #f2f6fa;
+    --muted: #b7c1cc;
+    --line: #303a45;
+    --panel: #18222d;
+    --accent: #6bd3ef;
+    --accent-2: #ffad7a;
+    --warm: #ff9b59;
+    --cool: #72bef2;
+    --green: #78d79c;
+    --grid: #26313c;
+    --shadow: none;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+main {
+  width: min(1080px, calc(100% - 28px));
+  margin: 0 auto;
+  padding: 24px 0 44px;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 8px;
+  font-size: clamp(2rem, 7vw, 3.5rem);
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+h2 {
+  margin-bottom: 10px;
+  font-size: 1.15rem;
+}
+
+p {
+  color: var(--muted);
+}
+
+a {
+  color: var(--accent);
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 14px;
+}
+
+.page-header {
+  margin-bottom: 20px;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+.language-toggle,
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+button {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  padding: 8px 11px;
+  font: inherit;
+  cursor: pointer;
+}
+
+button.active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.panel,
+.summary-card {
+  margin: 14px 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.control-row {
+  display: grid;
+  grid-template-columns: 132px 1fr;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.control-grid,
+.plot-control-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.plot-control-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+label span {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+input,
+select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  padding: 8px 10px;
+  font: inherit;
+}
+
+input[type="range"] {
+  padding: 0;
+  border: 0;
+  margin-top: 8px;
+  background: transparent;
+}
+
+.checkbox-label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  align-self: end;
+  color: var(--muted);
+}
+
+.checkbox-label input {
+  width: auto;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.summary-card {
+  margin: 0;
+}
+
+.summary-card h2 {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 650;
+  text-transform: uppercase;
+}
+
+.summary-value {
+  margin-bottom: 6px;
+  color: var(--text);
+  font-size: clamp(1.35rem, 4vw, 1.8rem);
+  line-height: 1.1;
+  font-weight: 720;
+}
+
+.summary-note {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+}
+
+.inside {
+  color: var(--green);
+}
+
+.outside {
+  color: var(--accent-2);
+}
+
+.chart-panel {
+  padding: 12px;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: baseline;
+  padding: 4px 4px 0;
+}
+
+.chart-header h2,
+.chart-header p {
+  margin-bottom: 0;
+}
+
+.chart-header p {
+  text-align: right;
+}
+
+svg {
+  display: block;
+  width: 100%;
+  min-height: 300px;
+}
+
+.axis,
+.grid-line {
+  stroke: var(--grid);
+  stroke-width: 1;
+}
+
+.axis {
+  stroke: var(--muted);
+}
+
+.tick-label,
+.axis-label,
+.legend-label,
+.point-label {
+  fill: var(--muted);
+  font-size: 12px;
+}
+
+.curve-equilibrium,
+.curve-surface,
+.curve-irradiance {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.curve-equilibrium {
+  stroke: var(--cool);
+  stroke-width: 3;
+}
+
+.curve-surface {
+  stroke: var(--warm);
+  stroke-width: 3;
+}
+
+.curve-irradiance {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+
+.goldilocks-band {
+  fill: color-mix(in srgb, var(--green) 20%, transparent);
+}
+
+.marker-line {
+  stroke: var(--accent-2);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+}
+
+.marker-dot {
+  fill: var(--accent-2);
+  stroke: var(--panel);
+  stroke-width: 2;
+}
+
+.planet-marker {
+  fill: var(--muted);
+  stroke: var(--panel);
+  stroke-width: 1.5;
+}
+
+.planet-label {
+  fill: var(--muted);
+  font-size: 11px;
+}
+
+.legend-swatch {
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.explanation p {
+  max-width: 76ch;
+}
+
+@media (max-width: 860px) {
+  .header-row,
+  .chart-header {
+    display: block;
+  }
+
+  .language-toggle {
+    margin-top: 14px;
+  }
+
+  .control-row,
+  .control-grid,
+  .plot-control-grid,
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-header p {
+    margin-top: 4px;
+    text-align: left;
+  }
+}

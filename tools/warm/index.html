@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stellar Warmth</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="warm.js" defer></script>
+</head>
+<body>
+  <main>
+    <header class="page-header">
+      <a class="back-link" href="../../">sol</a>
+      <div class="header-row">
+        <div>
+          <h1 data-i18n="pageTitle">Stellar Warmth</h1>
+          <p data-i18n="pageSubtitle">Flux, temperature, and habitable zones</p>
+        </div>
+        <div class="language-toggle" role="group" aria-label="Language">
+          <button type="button" class="language-option" data-lang="en">English</button>
+          <button type="button" class="language-option" data-lang="mn">Монгол</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="panel controls" aria-labelledby="star-controls">
+      <h2 id="star-controls" data-i18n="starControls">Star</h2>
+      <div class="control-row">
+        <label for="preset" data-i18n="presetLabel">Preset</label>
+        <div class="button-group" id="preset" role="group" aria-label="Star presets">
+          <button type="button" class="preset active" data-preset="sun" data-i18n="presetSun">Sun</button>
+          <button type="button" class="preset" data-preset="redDwarf" data-i18n="presetRedDwarf">Dim red dwarf</button>
+          <button type="button" class="preset" data-preset="orangeDwarf" data-i18n="presetOrangeDwarf">Orange dwarf</button>
+          <button type="button" class="preset" data-preset="brightStar" data-i18n="presetBrightStar">Bright star</button>
+          <button type="button" class="preset" data-preset="custom" data-i18n="presetCustom">Custom</button>
+        </div>
+      </div>
+      <div class="control-grid">
+        <label>
+          <span><span data-i18n="luminosityLabel">Luminosity L/L☉</span> <output id="luminosity-value"></output></span>
+          <input id="luminosity" type="range" min="0.001" max="10" step="0.001" value="1">
+        </label>
+        <label>
+          <span data-i18n="luminosityInputLabel">Exact luminosity</span>
+          <input id="luminosity-input" type="number" min="0.0001" max="100" step="0.001" value="1">
+        </label>
+      </div>
+    </section>
+
+    <section class="panel controls" aria-labelledby="planet-controls">
+      <h2 id="planet-controls" data-i18n="planetControls">Planet and orbit</h2>
+      <div class="control-grid">
+        <label>
+          <span><span data-i18n="distanceLabel">Orbital distance r</span> <output id="distance-value"></output></span>
+          <input id="distance" type="range" min="0.05" max="10" step="0.01" value="1">
+        </label>
+        <label>
+          <span data-i18n="distanceInputLabel">Exact distance in AU</span>
+          <input id="distance-input" type="number" min="0.01" max="200" step="0.01" value="1">
+        </label>
+        <label>
+          <span><span data-i18n="albedoLabel">Bond albedo A</span> <output id="albedo-value"></output></span>
+          <input id="albedo" type="range" min="0" max="0.9" step="0.01" value="0.30">
+        </label>
+        <label>
+          <span><span data-i18n="emissivityLabel">Infrared emissivity ε</span> <output id="emissivity-value"></output></span>
+          <input id="emissivity" type="range" min="0.1" max="1" step="0.01" value="1">
+        </label>
+        <label>
+          <span><span data-i18n="greenhouseLabel">Greenhouse warming ΔT</span> <output id="greenhouse-value"></output></span>
+          <input id="greenhouse" type="range" min="0" max="80" step="1" value="30">
+        </label>
+        <label>
+          <span data-i18n="redistributionLabel">Redistribution</span>
+          <select id="redistribution">
+            <option value="sphere" data-i18n="modeSphere">Whole sphere</option>
+            <option value="dayside" data-i18n="modeDayside">Dayside</option>
+            <option value="subsolar" data-i18n="modeSubsolar">Subsolar point</option>
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <section class="summary-grid" aria-label="Selected orbit summary">
+      <article class="summary-card">
+        <h2 data-i18n="summaryIrradiance">Irradiance</h2>
+        <p id="irradiance-card" class="summary-value"></p>
+        <p id="earth-sun-card" class="summary-note"></p>
+      </article>
+      <article class="summary-card">
+        <h2 data-i18n="summaryEquilibrium">Equilibrium temperature</h2>
+        <p id="equilibrium-card" class="summary-value"></p>
+        <p class="summary-note" data-i18n="equilibriumNote">Before greenhouse offset.</p>
+      </article>
+      <article class="summary-card">
+        <h2 data-i18n="summarySurface">Surface estimate</h2>
+        <p id="surface-card" class="summary-value"></p>
+        <p class="summary-note" data-i18n="surfaceNote">Equilibrium plus ΔT.</p>
+      </article>
+      <article class="summary-card">
+        <h2 data-i18n="summaryZone">Simplified zone</h2>
+        <p id="zone-card" class="summary-value"></p>
+        <p id="zone-note" class="summary-note"></p>
+      </article>
+    </section>
+
+    <section class="panel plot-panel" aria-labelledby="plot-controls">
+      <h2 id="plot-controls" data-i18n="plotControls">Plot controls</h2>
+      <div class="plot-control-grid">
+        <label>
+          <span data-i18n="rangeMinLabel">Minimum distance</span>
+          <input id="range-min" type="number" min="0.01" max="200" step="0.01" value="0.05">
+        </label>
+        <label>
+          <span data-i18n="rangeMaxLabel">Maximum distance</span>
+          <input id="range-max" type="number" min="0.02" max="200" step="0.01" value="5.5">
+        </label>
+        <label>
+          <span data-i18n="zoneLowerLabel">Goldilocks lower T</span>
+          <input id="zone-lower" type="number" min="150" max="500" step="1" value="273">
+        </label>
+        <label>
+          <span data-i18n="zoneUpperLabel">Goldilocks upper T</span>
+          <input id="zone-upper" type="number" min="151" max="600" step="1" value="323">
+        </label>
+        <label class="checkbox-label"><input id="log-axis" type="checkbox" checked> <span data-i18n="logAxisLabel">Log distance axis</span></label>
+      </div>
+    </section>
+
+    <section class="panel chart-panel" aria-labelledby="temperature-title">
+      <div class="chart-header">
+        <h2 id="temperature-title" data-i18n="temperaturePlotTitle">Temperature versus distance</h2>
+        <p data-i18n="temperaturePlotNote">The shaded band is a simplified liquid-water temperature band.</p>
+      </div>
+      <svg id="temperature-chart" viewBox="0 0 760 440" role="img" aria-labelledby="temperature-svg-title temperature-svg-desc">
+        <title id="temperature-svg-title" data-i18n="temperatureSvgTitle">Temperature curves versus orbital distance</title>
+        <desc id="temperature-svg-desc" data-i18n="temperatureSvgDesc">Equilibrium and greenhouse-adjusted temperature curves with a selected orbit marker.</desc>
+      </svg>
+    </section>
+
+    <section class="panel chart-panel" aria-labelledby="irradiance-title">
+      <div class="chart-header">
+        <h2 id="irradiance-title" data-i18n="irradiancePlotTitle">Irradiance versus distance</h2>
+        <p data-i18n="irradiancePlotNote">Flux falls as inverse square distance, a useful bridge to solar-panel planning.</p>
+      </div>
+      <svg id="irradiance-chart" viewBox="0 0 760 380" role="img" aria-labelledby="irradiance-svg-title irradiance-svg-desc">
+        <title id="irradiance-svg-title" data-i18n="irradianceSvgTitle">Stellar irradiance versus orbital distance</title>
+        <desc id="irradiance-svg-desc" data-i18n="irradianceSvgDesc">Stellar irradiance curve and selected orbit marker.</desc>
+      </svg>
+    </section>
+
+    <section class="panel explanation">
+      <h2 data-i18n="explainTitle">Model</h2>
+      <p data-i18n="explainOne">
+        Stellar irradiance is I(r) = S0 L / r², where S0 is solar irradiance at 1 AU.
+      </p>
+      <p data-i18n="explainTwo">
+        The temperature model is deliberately simple: T_eq = [I(1-A)/(q ε σ)]^(1/4), then
+        T_surface = T_eq + ΔT. It is a teaching model, not a climate forecast.
+      </p>
+    </section>
+  </main>
+</body>
+</html>
