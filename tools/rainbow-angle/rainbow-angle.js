@@ -6,14 +6,14 @@ const PRESETS = {
   violet: { n: 1.34 / 1.00027717 },
 };
 
-const RAY_SAMPLE_COUNT = 84;
+const RAY_SAMPLE_COUNT = 96;
 const RAY_STYLE = {
-  incomingOpacity: 0.09,
-  incomingWidth: 0.42,
-  internalOpacity: 0.025,
-  internalWidth: 0.34,
-  outgoingOpacity: 0.14,
-  outgoingWidth: 0.45,
+  incomingOpacity: 0.20,
+  incomingWidth: 0.44,
+  internalOpacity: 0.055,
+  internalWidth: 0.36,
+  outgoingOpacity: 0.30,
+  outgoingWidth: 0.52,
 };
 
 const STRINGS = {
@@ -450,8 +450,8 @@ function currentRayColor() {
 function sampleImpactHeights(count) {
   // Positive impact height is the upper half of the drop in mathematical
   // coordinates; toSvgPoint flips y, so these rays appear above the center.
-  const minImpact = 0.08;
-  const maxImpact = 0.90;
+  const minImpact = 0.02;
+  const maxImpact = 0.97;
   const impacts = [];
   for (let i = 0; i < count; i++) {
     impacts.push(minImpact + (maxImpact - minImpact) * i / (count - 1));

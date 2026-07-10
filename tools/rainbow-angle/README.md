@@ -27,7 +27,7 @@ The tool uses a simplified geometric-optics model for a spherical water droplet:
 - rainbow order `k`, where `1` is primary and `2` is secondary;
 - signed viewing/deviation angle reduced to the range from -90 degrees to 90 degrees.
 
-The drop ray sketch uses dense, uniform impact-height sampling on one upper half of the droplet, avoiding central overlap and near-tangent edge rays. Each sampled ray is traced as open SVG line/polyline segments: incoming ray, internal refracted/reflected path, and outgoing ray. Thin low-opacity strokes let the outgoing family show rainbow-angle concentration by alpha accumulation, without selecting or labeling a single ray.
+The drop ray sketch uses dense, uniform impact-height sampling across almost one full upper half of the droplet, avoiding only the exact centerline and the tangent edge. Each sampled ray is traced as open SVG line/polyline segments: incoming ray, internal refracted/reflected path, and outgoing ray. Thin translucent strokes let the outgoing family show rainbow-angle concentration by alpha accumulation, without selecting or labeling a single ray.
 
 ## Language support
 
