@@ -63,10 +63,18 @@
           <input id="albedo" type="range" min="0" max="0.9" step="0.01" value="0.30">
         </label>
         <label>
-          <span><span data-i18n="emissivityLabel">Infrared emissivity ε</span> <output id="emissivity-value"></output></span>
-          <input id="emissivity" type="range" min="0.1" max="1" step="0.01" value="1">
+          <span data-i18n="greenhouseModelLabel">Greenhouse model</span>
+          <select id="greenhouse-model">
+            <option value="airless" data-i18n="modeAirless">Airless / radiative equilibrium</option>
+            <option value="gray" data-i18n="modeGray">Gray greenhouse / IR escape</option>
+            <option value="offset" data-i18n="modeOffset">Temperature offset ΔT</option>
+          </select>
         </label>
-        <label>
+        <label id="emissivity-control">
+          <span><span data-i18n="emissivityLabel">Effective IR escape ε_IR</span> <output id="emissivity-value"></output></span>
+          <input id="emissivity" type="range" min="0.01" max="1" step="0.01" value="0.61">
+        </label>
+        <label id="greenhouse-control">
           <span><span data-i18n="greenhouseLabel">Greenhouse warming ΔT</span> <output id="greenhouse-value"></output></span>
           <input id="greenhouse" type="range" min="0" max="80" step="1" value="30">
         </label>
@@ -90,12 +98,12 @@
       <article class="summary-card">
         <h2 data-i18n="summaryEquilibrium">Equilibrium temperature</h2>
         <p id="equilibrium-card" class="summary-value"></p>
-        <p class="summary-note" data-i18n="equilibriumNote">Before greenhouse offset.</p>
+        <p class="summary-note" data-i18n="equilibriumNote">Airless baseline with ε_IR = 1.</p>
       </article>
       <article class="summary-card">
         <h2 data-i18n="summarySurface">Surface estimate</h2>
         <p id="surface-card" class="summary-value"></p>
-        <p class="summary-note" data-i18n="surfaceNote">Equilibrium plus ΔT.</p>
+        <p id="surface-note" class="summary-note"></p>
       </article>
       <article class="summary-card">
         <h2 data-i18n="summaryZone">Simplified zone</h2>
@@ -155,8 +163,9 @@
         Stellar irradiance is I(r) = S0 L / r², where S0 is solar irradiance at 1 AU.
       </p>
       <p data-i18n="explainTwo">
-        The temperature model is deliberately simple: T_eq = [I(1-A)/(q ε σ)]^(1/4), then
-        T_surface = T_eq + ΔT. It is a teaching model, not a climate forecast.
+        Albedo changes absorbed sunlight. Greenhouse modes change the surface estimate through either
+        effective IR escape ε_IR or a simple ΔT offset. Venus is a warning: high albedo reflects sunlight,
+        but strong greenhouse trapping can still produce extreme surface temperature.
       </p>
     </section>
   </main>

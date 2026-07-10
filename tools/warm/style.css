@@ -167,6 +167,10 @@ input[type="range"] {
   background: transparent;
 }
 
+.is-hidden {
+  display: none;
+}
+
 .checkbox-label {
   display: flex;
   gap: 8px;

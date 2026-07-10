@@ -15,6 +15,12 @@ const REDISTRIBUTION = {
   subsolar: { q: 1 },
 };
 
+const GREENHOUSE_MODE_KEYS = {
+  airless: "modeAirless",
+  gray: "modeGray",
+  offset: "modeOffset",
+};
+
 const PLANETS = [
   { key: "mercury", distance: 0.387 },
   { key: "venus", distance: 0.723 },
@@ -40,7 +46,11 @@ const STRINGS = {
     distanceLabel: "Orbital distance r",
     distanceInputLabel: "Exact distance in AU",
     albedoLabel: "Bond albedo A",
-    emissivityLabel: "Infrared emissivity ε",
+    greenhouseModelLabel: "Greenhouse model",
+    modeAirless: "Airless / radiative equilibrium",
+    modeGray: "Gray greenhouse / IR escape",
+    modeOffset: "Temperature offset ΔT",
+    emissivityLabel: "Effective IR escape ε_IR",
     greenhouseLabel: "Greenhouse warming ΔT",
     redistributionLabel: "Redistribution",
     modeSphere: "Whole sphere",
@@ -48,9 +58,11 @@ const STRINGS = {
     modeSubsolar: "Subsolar point",
     summaryIrradiance: "Irradiance",
     summaryEquilibrium: "Equilibrium temperature",
-    equilibriumNote: "Before greenhouse offset.",
+    equilibriumNote: "Airless baseline with ε_IR = 1.",
     summarySurface: "Surface estimate",
-    surfaceNote: "Equilibrium plus ΔT.",
+    surfaceNoteAirless: "Same as radiative equilibrium.",
+    surfaceNoteGray: "Gray greenhouse using ε_IR = {epsilon}.",
+    surfaceNoteOffset: "Simple offset estimate using ΔT = {delta}.",
     summaryZone: "Simplified zone",
     zoneInside: "Inside band",
     zoneBelow: "Cooler than band",
@@ -80,7 +92,7 @@ const STRINGS = {
     markerOrbit: "selected orbit",
     explainTitle: "Model",
     explainOne: "Stellar irradiance is I(r) = S0 L / r², where S0 is solar irradiance at 1 AU.",
-    explainTwo: "The temperature model is deliberately simple: T_eq = [I(1-A)/(q ε σ)]^(1/4), then T_surface = T_eq + ΔT. It is a teaching model, not a climate forecast.",
+    explainTwo: "Albedo changes absorbed sunlight. Greenhouse modes change the surface estimate through either effective IR escape ε_IR or a simple ΔT offset. Venus is a warning: high albedo reflects sunlight, but strong greenhouse trapping can still produce extreme surface temperature.",
     mercury: "Mercury",
     venus: "Venus",
     earth: "Earth",
@@ -104,7 +116,11 @@ const STRINGS = {
     distanceLabel: "Тойрог замын зай r",
     distanceInputLabel: "AU дахь нарийн зай",
     albedoLabel: "Бондын альбедо A",
-    emissivityLabel: "Хэт улаан ялгаруулалт ε",
+    greenhouseModelLabel: "Хүлэмжийн загвар",
+    modeAirless: "Агааргүй / цацрагийн тэнцвэр",
+    modeGray: "Саарал хүлэмж / IR алдагдал",
+    modeOffset: "Температурын нэмэгдэл ΔT",
+    emissivityLabel: "Үр дүнгийн IR алдагдал ε_IR",
     greenhouseLabel: "Хүлэмжийн дулаарал ΔT",
     redistributionLabel: "Дулаан хуваарилалт",
     modeSphere: "Бүх бөмбөрцөг",
@@ -112,9 +128,11 @@ const STRINGS = {
     modeSubsolar: "Нар эгц тусах цэг",
     summaryIrradiance: "Цацрал",
     summaryEquilibrium: "Тэнцвэрийн температур",
-    equilibriumNote: "Хүлэмжийн нэмэгдэлгүй.",
+    equilibriumNote: "ε_IR = 1 байх агааргүй суурь.",
     summarySurface: "Гадаргын ойролцоо үнэлгээ",
-    surfaceNote: "Тэнцвэр дээр ΔT нэмсэн.",
+    surfaceNoteAirless: "Цацрагийн тэнцвэртэй ижил.",
+    surfaceNoteGray: "ε_IR = {epsilon} бүхий саарал хүлэмж.",
+    surfaceNoteOffset: "ΔT = {delta} ашигласан энгийн нэмэгдэл.",
     summaryZone: "Хялбарчилсан бүс",
     zoneInside: "Бүс дотор",
     zoneBelow: "Бүсээс хүйтэн",
@@ -144,7 +162,7 @@ const STRINGS = {
     markerOrbit: "сонгосон тойрог зам",
     explainTitle: "Загвар",
     explainOne: "Одны цацрал I(r) = S0 L / r². Энд S0 нь 1 AU дахь Нарны цацрал.",
-    explainTwo: "Температурын загвар санаатайгаар хялбар: T_eq = [I(1-A)/(q ε σ)]^(1/4), дараа нь T_surface = T_eq + ΔT. Энэ бол сургалтын загвар, уур амьсгалын таамаг биш.",
+    explainTwo: "A альбедо нь шингээх нарны гэрлийг өөрчилнө. Хүлэмжийн горимууд гадаргын үнэлгээг үр дүнгийн IR алдагдал ε_IR эсвэл энгийн ΔT нэмэгдлээр өөрчилнө. Сугар бол анхааруулга: өндөр альбедо гэрлийг их ойлгодог ч хүчтэй хүлэмжийн барилт гадаргыг маш халуун болгож чадна.",
     mercury: "Буд",
     venus: "Сугар",
     earth: "Дэлхий",
@@ -159,7 +177,8 @@ const state = {
   luminosity: 1,
   distance: 1,
   albedo: 0.3,
-  emissivity: 1,
+  greenhouseModel: "offset",
+  emissivity: 0.61,
   greenhouse: 30,
   redistribution: "sphere",
   rangeMin: 0.05,
@@ -175,11 +194,11 @@ const els = {};
 document.addEventListener("DOMContentLoaded", () => {
   for (const id of [
     "luminosity", "luminosity-input", "distance", "distance-input", "albedo",
-    "emissivity", "greenhouse", "redistribution", "range-min", "range-max",
+    "greenhouse-model", "emissivity", "greenhouse", "redistribution", "range-min", "range-max",
     "zone-lower", "zone-upper", "log-axis", "temperature-chart",
     "irradiance-chart", "luminosity-value", "distance-value", "albedo-value",
     "emissivity-value", "greenhouse-value", "irradiance-card",
-    "earth-sun-card", "equilibrium-card", "surface-card", "zone-card", "zone-note",
+    "earth-sun-card", "equilibrium-card", "surface-card", "surface-note", "zone-card", "zone-note",
   ]) {
     els[id] = document.getElementById(id);
   }
@@ -205,8 +224,13 @@ document.addEventListener("DOMContentLoaded", () => {
     render();
   });
 
+  els["greenhouse-model"].addEventListener("change", () => {
+    if (GREENHOUSE_MODE_KEYS[els["greenhouse-model"].value]) state.greenhouseModel = els["greenhouse-model"].value;
+    render();
+  });
+
   els.emissivity.addEventListener("input", () => {
-    state.emissivity = clamp(Number(els.emissivity.value), 0.1, 1);
+    state.emissivity = clamp(Number(els.emissivity.value), 0.01, 1);
     render();
   });
 
@@ -337,6 +361,7 @@ function syncControls() {
   setNumericValue("distance", state.distance, 2);
   setNumericValue("distance-input", state.distance, 3);
   els.albedo.value = state.albedo.toFixed(2);
+  els["greenhouse-model"].value = state.greenhouseModel;
   els.emissivity.value = state.emissivity.toFixed(2);
   els.greenhouse.value = state.greenhouse.toFixed(0);
   els.redistribution.value = state.redistribution;
@@ -351,6 +376,8 @@ function syncControls() {
   els["albedo-value"].textContent = state.albedo.toFixed(2);
   els["emissivity-value"].textContent = state.emissivity.toFixed(2);
   els["greenhouse-value"].textContent = `${state.greenhouse.toFixed(0)} K`;
+  document.getElementById("emissivity-control")?.classList.toggle("is-hidden", state.greenhouseModel !== "gray");
+  document.getElementById("greenhouse-control")?.classList.toggle("is-hidden", state.greenhouseModel !== "offset");
 
   document.querySelectorAll(".preset").forEach((button) => {
     button.classList.toggle("active", button.dataset.preset === state.preset);
@@ -364,6 +391,7 @@ function renderSummary() {
   els["earth-sun-card"].textContent = t("earthSunUnits", { value: formatNumber(values.earthFlux, 3) });
   els["equilibrium-card"].textContent = formatTemperaturePair(values.equilibrium);
   els["surface-card"].textContent = formatTemperaturePair(values.surface);
+  els["surface-note"].textContent = surfaceNote();
   els["zone-card"].textContent = t(zoneState.key);
   els["zone-card"].className = `summary-value ${zoneState.inside ? "inside" : "outside"}`;
   els["zone-note"].textContent = t("zoneNote", {
@@ -377,12 +405,35 @@ function modelAt(distance) {
   const irradiance = SOLAR_CONSTANT * state.luminosity / (r * r);
   const q = REDISTRIBUTION[state.redistribution]?.q ?? 4;
   const absorbed = irradiance * (1 - state.albedo);
-  const denominator = q * state.emissivity * SIGMA;
-  const equilibrium = absorbed > 0 && denominator > 0
+  const equilibrium = radiativeTemperature(absorbed, q, 1);
+  let surface = equilibrium;
+  if (state.greenhouseModel === "gray") {
+    surface = radiativeTemperature(absorbed, q, state.emissivity);
+  } else if (state.greenhouseModel === "offset" && Number.isFinite(equilibrium)) {
+    surface = equilibrium + state.greenhouse;
+  }
+  return { irradiance, earthFlux: irradiance / SOLAR_CONSTANT, equilibrium, surface };
+}
+
+function radiativeTemperature(absorbed, q, escapeFraction) {
+  const denominator = q * escapeFraction * SIGMA;
+  return absorbed > 0 && denominator > 0
     ? Math.pow(absorbed / denominator, 0.25)
     : NaN;
-  const surface = Number.isFinite(equilibrium) ? equilibrium + state.greenhouse : NaN;
-  return { irradiance, earthFlux: irradiance / SOLAR_CONSTANT, equilibrium, surface };
+}
+
+function surfaceNote() {
+  if (state.greenhouseModel === "gray") {
+    return t("surfaceNoteGray", { epsilon: state.emissivity.toFixed(2) });
+  }
+  if (state.greenhouseModel === "offset") {
+    return t("surfaceNoteOffset", { delta: `${state.greenhouse.toFixed(0)} K` });
+  }
+  return t("surfaceNoteAirless");
+}
+
+function shouldShowSurfaceCurve() {
+  return state.greenhouseModel !== "airless";
 }
 
 function zoneStatus(surface) {
@@ -397,23 +448,20 @@ function renderTemperatureChart() {
   const width = 760;
   const height = 440;
   const margin = { left: 58, right: 24, top: 30, bottom: 58 };
-  const chart = chartScales(width, height, margin, 120, 520, "temperature");
   const points = sampleDistances().map((distance) => ({ distance, ...modelAt(distance) }));
-  const yValues = points.flatMap((point) => [point.equilibrium, point.surface]).filter(Number.isFinite);
-  const yDomain = paddedDomain(yValues.concat([state.zoneLower, state.zoneUpper, 255, 288]), 18, 120, 620);
-  chart.setYDomain(yDomain[0], yDomain[1]);
+  const yDomain = temperatureDomain(points);
+  const chart = chartScales(width, height, margin, yDomain[0], yDomain[1], "temperature");
 
   svg.replaceChildren();
   drawGrid(svg, chart, "temperature");
   drawGoldilocksBand(svg, chart);
   drawPath(svg, points, chart, "equilibrium", "curve-equilibrium");
-  if (Math.abs(state.greenhouse) > 0.001) drawPath(svg, points, chart, "surface", "curve-surface");
+  if (shouldShowSurfaceCurve()) drawPath(svg, points, chart, "surface", "curve-surface");
   if (state.preset === "sun") drawPlanetMarkers(svg, chart);
   drawSelectedMarker(svg, chart, modelAt(state.distance).surface, `${formatNumber(state.distance, 2)} AU`);
-  drawLegend(svg, [
-    { label: t("legendEquilibrium"), className: "curve-equilibrium" },
-    { label: t("legendSurface"), className: "curve-surface" },
-  ], width - margin.right - 168, margin.top + 10);
+  const legendItems = [{ label: t("legendEquilibrium"), className: "curve-equilibrium" }];
+  if (shouldShowSurfaceCurve()) legendItems.push({ label: t("legendSurface"), className: "curve-surface" });
+  drawLegend(svg, legendItems, width - margin.right - 168, margin.top + 10);
 }
 
 function renderIrradianceChart() {
@@ -431,6 +479,33 @@ function renderIrradianceChart() {
   drawPath(svg, points, chart, "irradiance", "curve-irradiance");
   drawSelectedMarker(svg, chart, modelAt(state.distance).irradiance, `${formatNumber(modelAt(state.distance).earthFlux, 2)} ×`);
   drawLegend(svg, [{ label: t("legendIrradiance"), className: "curve-irradiance" }], width - margin.right - 142, margin.top + 10);
+}
+
+function temperatureDomain(points) {
+  const values = [];
+  for (const point of points) {
+    if (Number.isFinite(point.equilibrium)) values.push(point.equilibrium);
+    if (shouldShowSurfaceCurve() && Number.isFinite(point.surface)) values.push(point.surface);
+  }
+  values.push(state.zoneLower, state.zoneUpper);
+
+  const finite = values.filter(Number.isFinite);
+  if (!finite.length) return [0, 400];
+
+  let min = Math.min(...finite);
+  let max = Math.max(...finite);
+  const minimumSpan = 80;
+  if (max - min < minimumSpan) {
+    const center = (min + max) / 2;
+    min = center - minimumSpan / 2;
+    max = center + minimumSpan / 2;
+  }
+
+  const padding = Math.max(12, (max - min) * 0.10);
+  min = Math.max(0, min - padding);
+  max += padding;
+  if (max <= min) max = min + minimumSpan;
+  return [min, max];
 }
 
 function chartScales(width, height, margin, yMin, yMax, kind) {
@@ -512,6 +587,7 @@ function drawPath(svg, points, chart, key, className) {
 
 function drawSelectedMarker(svg, chart, yValue, label) {
   if (!Number.isFinite(yValue)) return;
+  if (state.distance < chart.xMin || state.distance > chart.xMax) return;
   const x = chart.xScale(state.distance);
   const y = chart.yScale(yValue);
   line(svg, x, chart.margin.top, x, chart.height - chart.margin.bottom, "marker-line");
@@ -624,7 +700,7 @@ function ticks(min, max, count) {
   const step = niceStep((max - min) / Math.max(1, count - 1));
   const start = Math.ceil(min / step) * step;
   const values = [];
-  for (let value = start; value <= max + step * 0.5; value += step) {
+  for (let value = start; value <= max + step * 1e-6; value += step) {
     values.push(Number(value.toFixed(10)));
   }
   return values.slice(0, 8);
