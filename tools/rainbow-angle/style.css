@@ -117,7 +117,7 @@ button.active {
 
 .control-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
 
@@ -139,6 +139,41 @@ input[type="range"] {
   flex-wrap: wrap;
   gap: 18px;
   margin-top: 14px;
+}
+
+.display-controls {
+  margin: 4px 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px 12px;
+}
+
+.display-controls summary {
+  color: var(--muted);
+  cursor: pointer;
+  font-weight: 650;
+}
+
+.display-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.plot-controls {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) auto;
+  gap: 14px;
+  align-items: end;
+  padding: 4px 4px 12px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 8px;
+}
+
+.plot-controls .toggles {
+  margin-top: 0;
+  justify-content: flex-end;
 }
 
 .chart-panel {
@@ -265,8 +300,14 @@ td:first-child {
 @media (max-width: 760px) {
   .control-row,
   .control-grid,
+  .display-grid,
+  .plot-controls,
   .details {
     grid-template-columns: 1fr;
+  }
+
+  .plot-controls .toggles {
+    justify-content: flex-start;
   }
 
   .chart-header {

@@ -6,7 +6,20 @@ const PRESETS = {
   violet: { n: 1.34 / 1.00027717 },
 };
 
-const RAY_SAMPLE_COUNT = 96;
+const RAY_COUNT = {
+  min: 24,
+  max: 420,
+  step: 6,
+  defaultValue: 96,
+};
+
+const RAY_BRIGHTNESS = {
+  min: 0.5,
+  max: 2,
+  defaultValue: 1,
+  maxOpacity: 0.75,
+};
+
 const RAY_STYLE = {
   incomingOpacity: 0.20,
   incomingWidth: 0.44,
@@ -26,34 +39,39 @@ const STRINGS = {
     presetCustom: "Custom",
     controlN: "Refractive index",
     controlK: "Rainbow order",
-    controlIncident: "Incident angle",
+    controlImpact: "Impact parameter b/R",
     showExtrema: "Show extrema",
-    showTable: "Show degrees table",
+    showTable: "Show angle table",
+    rayDisplayTitle: "Ray display",
+    rayCountLabel: "Ray count",
+    rayBrightnessLabel: "Ray brightness",
     rayTitle: "Drop ray sketch",
     raySvgTitle: "Parallel rays entering a spherical water drop",
     raySvgDesc: "A schematic circle showing many parallel rays refracting and reflecting through a water drop.",
     rayCaption: "Many parallel rays are sampled across the drop. Where the outgoing family bunches together, the rainbow direction is forming.",
     chartTitle: "Deviation angle curve",
-    chartSvgTitle: "Deviation angle versus incident angle",
-    chartSvgDesc: "A curve showing signed rainbow deviation angle as a function of incident angle.",
-    chartNote: "Bright direction near {angle} at {incident}.",
+    chartSvgTitle: "Deviation angle versus impact parameter",
+    chartSvgDesc: "A curve showing signed rainbow deviation angle as a function of normalized impact parameter.",
+    chartNote: "Bright direction near {angle} at b/R = {impact}, α = {alpha}.",
     chartNoExtremum: "No visible extremum for these parameters.",
-    axisIncident: "incident angle",
+    axisImpact: "impact parameter b/R",
     axisSigned: "signed viewing angle",
     currentTitle: "Current angle",
     signNote: "A negative signed angle follows the source notebook convention: it is counted from the Sun. Positive angles are measured from the antisolar point.",
     summaryTitle: "Primary and secondary summary",
     explainTitle: "What is plotted?",
-    explainOne: "The incident angle is measured from the surface normal of a spherical water droplet. The refracted angle comes from Snell's law. Order 1 is the primary rainbow, order 2 is the secondary rainbow, and higher orders add more internal reflections.",
-    explainTwo: "The curve shows the signed viewing angle after reducing the geometric deviation into the visible range from -90 degrees to 90 degrees. Extrema mark where nearby rays bunch together, producing a bright rainbow direction.",
+    explainOne: "The impact parameter b/R is the normalized height where a parallel ray enters the droplet. The incident angle α follows from b/R = sin(α). Order 1 is the primary rainbow, order 2 is the secondary rainbow, and higher orders add more internal reflections.",
+    explainTwo: "Uniformly spaced rays in the sketch correspond to uniformly spaced b/R values on the curve. Extrema mark where nearby rays bunch together, producing a bright rainbow direction.",
     currentSigned: "Current signed angle: {angle}.",
+    rowImpact: "Impact parameter b/R",
     rowIncident: "Incident angle α",
     rowRefracted: "Refracted angle β",
     rowSigned: "Signed viewing angle",
     rowRaw: "Raw deviation",
     colOrder: "Order",
     colPreset: "Preset",
-    colIncident: "Incident",
+    colImpact: "b/R",
+    colAlpha: "α",
     colViewing: "Viewing angle",
     notDefined: "not defined",
   },
@@ -66,34 +84,39 @@ const STRINGS = {
     presetCustom: "Өөрийн n",
     controlN: "Хугарлын илтгэгч",
     controlK: "Солонгын эрэмбэ",
-    controlIncident: "Тусах өнцөг",
+    controlImpact: "Тусалтын параметр b/R",
     showExtrema: "Экстремум харуулах",
     showTable: "Өнцгийн хүснэгт харуулах",
+    rayDisplayTitle: "Цацрагийн харагдац",
+    rayCountLabel: "Цацрагийн тоо",
+    rayBrightnessLabel: "Цацрагийн тодрол",
     rayTitle: "Дусал дахь цацрагууд",
     raySvgTitle: "Бөмбөрцөг усан дусалд орж буй параллель цацрагууд",
     raySvgDesc: "Олон параллель цацраг усан дусалд хугарч, ойж, дахин хугаран гарах бүдүүвч.",
     rayCaption: "Параллель цацрагуудыг дуслын огтлол дагуу жигд авсан. Гарах цацрагууд бөөгнөрөх чиглэлд солонго үүснэ.",
     chartTitle: "Хазайлтын өнцгийн муруй",
-    chartSvgTitle: "Тусах өнцгөөс хамаарах хазайлтын өнцөг",
-    chartSvgDesc: "Тусах өнцгийн функц болох тэмдэгтэй солонгын өнцгийн муруй.",
-    chartNote: "Гэрэлт чиглэл {angle}, тусах өнцөг {incident} орчим.",
+    chartSvgTitle: "Тусалтын параметрээс хамаарах хазайлтын өнцөг",
+    chartSvgDesc: "Нормчилсон тусалтын параметрийн функц болох тэмдэгтэй солонгын өнцгийн муруй.",
+    chartNote: "Гэрэлт чиглэл {angle}, b/R = {impact}, α = {alpha} орчим.",
     chartNoExtremum: "Эдгээр параметрт харагдах экстремум алга.",
-    axisIncident: "тусах өнцөг",
+    axisImpact: "тусалтын параметр b/R",
     axisSigned: "тэмдэгтэй харах өнцөг",
     currentTitle: "Одоогийн өнцөг",
     signNote: "Сөрөг тэмдэг нь эх notebook-ийн дагуу Нарны зүгээс тоолж байгааг илтгэнэ. Эерэг өнцөг нь Нарны эсрэг цэгээс хэмжигдэнэ.",
     summaryTitle: "Анхдагч ба хоёрдогч тойм",
     explainTitle: "Юуг зурж байна вэ?",
-    explainOne: "Тусах өнцгийг бөмбөрцөг усан дуслын гадаргын нормалиас хэмжинэ. Доторх хугарлын өнцөг нь Снеллийн хуулиар олдоно. Эрэмбэ 1 нь анхдагч солонго, эрэмбэ 2 нь хоёрдогч солонго; өндөр эрэмбэд дотоод ойролт нэмэгдэнэ.",
-    explainTwo: "Муруй нь геометр хазайлтыг -90 градусаас 90 градусын харагдах завсарт бууруулсан тэмдэгтэй харах өнцгийг харуулна. Экстремум орчимд ойролцоо цацрагууд бөөгнөрч, гэрэлт солонгын чиглэл үүснэ.",
+    explainOne: "Тусалтын параметр b/R нь параллель цацраг дусалд орох өндрийг радиусаар нормчилсон утга. Тусах өнцөг α нь b/R = sin(α)-аас олдоно. Эрэмбэ 1 нь анхдагч солонго, эрэмбэ 2 нь хоёрдогч солонго; өндөр эрэмбэд дотоод ойролт нэмэгдэнэ.",
+    explainTwo: "Зураг дахь жигд зайтай цацрагууд нь муруйн жигд b/R утгуудтай тохирно. Экстремум орчимд ойролцоо цацрагууд бөөгнөрч, гэрэлт солонгын чиглэл үүснэ.",
     currentSigned: "Одоогийн тэмдэгтэй өнцөг: {angle}.",
+    rowImpact: "Тусалтын параметр b/R",
     rowIncident: "Тусах өнцөг α",
     rowRefracted: "Хугарсан өнцөг β",
     rowSigned: "Тэмдэгтэй харах өнцөг",
     rowRaw: "Түүхий хазайлт",
     colOrder: "Эрэмбэ",
     colPreset: "Сонголт",
-    colIncident: "Тусах",
+    colImpact: "b/R",
+    colAlpha: "α",
     colViewing: "Харах өнцөг",
     notDefined: "тодорхойгүй",
   },
@@ -103,16 +126,18 @@ const state = {
   preset: "red",
   n: PRESETS.red.n,
   k: 1,
-  incidentDeg: 59.6,
+  impact: Math.sin(59.6 * RAD),
   showExtrema: true,
   showTable: true,
+  rayCount: initialRayCount(),
+  rayBrightness: initialRayBrightness(),
   lang: initialLanguage(),
 };
 
 const els = {};
 
 document.addEventListener("DOMContentLoaded", () => {
-  for (const id of ["n", "k", "incident", "show-extrema", "show-table", "chart", "chart-note", "ray-diagram", "current-table", "summary-table", "n-value", "k-value", "incident-value"]) {
+  for (const id of ["n", "k", "impact", "show-extrema", "show-table", "ray-count", "ray-brightness", "chart", "chart-note", "ray-diagram", "current-table", "summary-table", "n-value", "k-value", "impact-value", "ray-count-value", "ray-brightness-value"]) {
     els[id] = document.getElementById(id);
   }
 
@@ -135,8 +160,8 @@ document.addEventListener("DOMContentLoaded", () => {
     render();
   });
 
-  els.incident.addEventListener("input", () => {
-    state.incidentDeg = Number(els.incident.value);
+  els.impact.addEventListener("input", () => {
+    state.impact = clamp(Number(els.impact.value), 0, 1);
     render();
   });
 
@@ -147,6 +172,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   els["show-table"].addEventListener("change", () => {
     state.showTable = els["show-table"].checked;
+    render();
+  });
+
+  els["ray-count"].addEventListener("input", () => {
+    state.rayCount = clamp(Number(els["ray-count"].value), RAY_COUNT.min, RAY_COUNT.max);
+    saveRayDisplaySettings();
+    render();
+  });
+
+  els["ray-brightness"].addEventListener("input", () => {
+    state.rayBrightness = clamp(Number(els["ray-brightness"].value), RAY_BRIGHTNESS.min, RAY_BRIGHTNESS.max);
+    saveRayDisplaySettings();
     render();
   });
 
@@ -203,6 +240,35 @@ function initialLanguage() {
   return "en";
 }
 
+function initialRayCount() {
+  try {
+    const saved = Number(localStorage.getItem("rainbow-angle-ray-count"));
+    if (Number.isFinite(saved)) return roundedRayCount(saved);
+  } catch (_error) {
+    // Defaults keep the sketch independent of browser storage.
+  }
+  return RAY_COUNT.defaultValue;
+}
+
+function initialRayBrightness() {
+  try {
+    const saved = Number(localStorage.getItem("rainbow-angle-ray-brightness"));
+    if (Number.isFinite(saved)) return clamp(saved, RAY_BRIGHTNESS.min, RAY_BRIGHTNESS.max);
+  } catch (_error) {
+    // Defaults keep the sketch independent of browser storage.
+  }
+  return RAY_BRIGHTNESS.defaultValue;
+}
+
+function saveRayDisplaySettings() {
+  try {
+    localStorage.setItem("rainbow-angle-ray-count", String(state.rayCount));
+    localStorage.setItem("rainbow-angle-ray-brightness", state.rayBrightness.toFixed(2));
+  } catch (_error) {
+    // Display controls still work for the current page when storage is unavailable.
+  }
+}
+
 function t(key, values = {}) {
   const text = STRINGS[state.lang]?.[key] ?? STRINGS.en[key] ?? key;
   return text.replace(/\{(\w+)\}/g, (_match, name) => values[name] ?? "");
@@ -252,9 +318,10 @@ function signedViewingAngle(alpha, n, k) {
 function sampleCurve(n, k, steps = 540) {
   const points = [];
   for (let i = 0; i <= steps; i++) {
-    const incidentDeg = 89.9 * i / steps;
-    const angle = signedViewingAngle(incidentDeg * RAD, n, k);
-    if (Number.isFinite(angle)) points.push({ incidentDeg, angle });
+    const impact = i / steps;
+    const alpha = Math.asin(impact);
+    const angle = signedViewingAngle(alpha, n, k);
+    if (Number.isFinite(angle)) points.push({ impact, alphaDeg: alpha * DEG, angle });
   }
   return points;
 }
@@ -267,9 +334,10 @@ function findExtrema(n, k) {
   // sin(alpha)^2 = ((k+1)^2 - n^2) / (k(k+2)).
   // This marks the stationary deviation where neighboring rays bunch up.
   const alpha = Math.asin(Math.sqrt(b2));
+  const impact = Math.sin(alpha);
   const angle = signedViewingAngle(alpha, n, k);
   if (!Number.isFinite(angle)) return [];
-  return [{ incidentDeg: alpha * DEG, angle, kind: angle < 0 ? "min" : "max" }];
+  return [{ impact, alphaDeg: alpha * DEG, angle, kind: angle < 0 ? "min" : "max" }];
 }
 
 function strongestExtremum(n, k) {
@@ -277,11 +345,12 @@ function strongestExtremum(n, k) {
 }
 
 function currentValues() {
-  const alpha = state.incidentDeg * RAD;
+  const impact = clamp(state.impact, 0, 1);
+  const alpha = Math.asin(impact);
   const beta = refractedAngle(alpha, state.n);
   const angle = signedViewingAngle(alpha, state.n, state.k);
   const raw = rawDeviation(alpha, state.n, state.k);
-  return { alpha, beta, angle, raw };
+  return { impact, alpha, beta, angle, raw };
 }
 
 function render() {
@@ -289,12 +358,16 @@ function render() {
 
   els.n.value = state.n.toFixed(3);
   els.k.value = state.k;
-  els.incident.value = state.incidentDeg;
+  els.impact.value = state.impact.toFixed(3);
+  els["ray-count"].value = state.rayCount;
+  els["ray-brightness"].value = state.rayBrightness.toFixed(2);
   els["show-extrema"].checked = state.showExtrema;
   els["show-table"].checked = state.showTable;
   els["n-value"].textContent = state.n.toFixed(4);
   els["k-value"].textContent = String(state.k);
-  els["incident-value"].textContent = `${state.incidentDeg.toFixed(1)}°`;
+  els["impact-value"].textContent = formatImpactReadout(state.impact);
+  els["ray-count-value"].textContent = String(state.rayCount);
+  els["ray-brightness-value"].textContent = `${state.rayBrightness.toFixed(2)}×`;
 
   document.querySelectorAll(".preset").forEach((button) => {
     button.classList.toggle("active", button.dataset.preset === state.preset);
@@ -312,7 +385,7 @@ function renderChart() {
   const margin = { left: 54, right: 22, top: 26, bottom: 54 };
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
-  const xScale = (x) => margin.left + (x / 90) * plotWidth;
+  const xScale = (x) => margin.left + x * plotWidth;
   const yScale = (y) => margin.top + ((90 - y) / 180) * plotHeight;
   const points = sampleCurve(state.n, state.k);
   const current = currentValues();
@@ -324,19 +397,19 @@ function renderChart() {
     line(svg, margin.left, yScale(y), width - margin.right, yScale(y), "grid-line");
     text(svg, margin.left - 10, yScale(y) + 4, `${y}°`, "tick-label", "end");
   }
-  for (const x of [0, 30, 60, 90]) {
+  for (const x of [0, 0.25, 0.5, 0.75, 1]) {
     line(svg, xScale(x), margin.top, xScale(x), height - margin.bottom, "grid-line");
-    text(svg, xScale(x), height - margin.bottom + 22, `${x}°`, "tick-label", "middle");
+    text(svg, xScale(x), height - margin.bottom + 22, formatImpactTick(x), "tick-label", "middle");
   }
 
   line(svg, margin.left, yScale(0), width - margin.right, yScale(0), "axis");
   line(svg, margin.left, margin.top, margin.left, height - margin.bottom, "axis");
-  text(svg, width / 2, height - 14, t("axisIncident"), "axis-label", "middle");
+  text(svg, width / 2, height - 14, t("axisImpact"), "axis-label", "middle");
   text(svg, 16, height / 2, t("axisSigned"), "axis-label", "middle", -90);
 
   const path = points
     .filter((p) => Number.isFinite(p.angle))
-    .map((p, i) => `${i === 0 ? "M" : "L"} ${xScale(p.incidentDeg).toFixed(2)} ${yScale(p.angle).toFixed(2)}`)
+    .map((p, i) => `${i === 0 ? "M" : "L"} ${xScale(p.impact).toFixed(2)} ${yScale(p.angle).toFixed(2)}`)
     .join(" ");
 
   if (path) {
@@ -347,7 +420,7 @@ function renderChart() {
   }
 
   if (Number.isFinite(current.angle)) {
-    const cx = xScale(state.incidentDeg);
+    const cx = xScale(current.impact);
     const cy = yScale(current.angle);
     line(svg, cx, margin.top, cx, height - margin.bottom, "marker-line");
     circle(svg, cx, cy, 6, "marker-dot");
@@ -355,17 +428,18 @@ function renderChart() {
   }
 
   for (const item of extrema) {
-    const cx = xScale(item.incidentDeg);
+    const cx = xScale(item.impact);
     const cy = yScale(item.angle);
     circle(svg, cx, cy, 5, "extremum-dot");
-    text(svg, cx + 8, cy + 16, `${item.angle.toFixed(1)}°`, "point-label", "start");
+    text(svg, cx + 8, cy + 16, `${formatImpact(item.impact)}, ${item.angle.toFixed(1)}°`, "point-label", "start");
   }
 
   const strongest = strongestExtremum(state.n, state.k);
   els["chart-note"].textContent = strongest
     ? t("chartNote", {
       angle: `${strongest.angle.toFixed(1)}°`,
-      incident: `${strongest.incidentDeg.toFixed(1)}°`,
+      impact: formatImpact(strongest.impact),
+      alpha: `${strongest.alphaDeg.toFixed(1)}°`,
     })
     : t("chartNoExtremum");
 }
@@ -376,7 +450,7 @@ function renderRayDiagram() {
   const center = { x: 360, y: 220 };
   const radius = 110;
   const rayColor = currentRayColor();
-  const impacts = sampleImpactHeights(RAY_SAMPLE_COUNT);
+  const impacts = sampleImpactHeights(state.rayCount);
 
   svg.replaceChildren();
 
@@ -399,7 +473,8 @@ function renderTables() {
     els["current-table"].innerHTML = `
       <table>
         <tbody>
-          <tr><th>${t("rowIncident")}</th><td>${formatAngle(state.incidentDeg)}</td></tr>
+          <tr><th>${t("rowImpact")}</th><td>${formatImpact(current.impact)}</td></tr>
+          <tr><th>${t("rowIncident")}</th><td>${formatAngle(current.alpha * DEG)}</td></tr>
           <tr><th>${t("rowRefracted")}</th><td>${formatAngle(current.beta == null ? null : current.beta * DEG)}</td></tr>
           <tr><th>${t("rowSigned")}</th><td>${formatAngle(current.angle)}</td></tr>
           <tr><th>${t("rowRaw")}</th><td>${formatAngle(current.raw == null ? null : current.raw * DEG)}</td></tr>
@@ -414,7 +489,8 @@ function renderTables() {
       rows.push({
         order,
         preset: t(key === "red" ? "presetRed" : "presetViolet"),
-        incident: ext?.incidentDeg,
+        impact: ext?.impact,
+        alpha: ext?.alphaDeg,
         angle: ext?.angle,
       });
     }
@@ -423,14 +499,15 @@ function renderTables() {
   els["summary-table"].innerHTML = `
     <table>
       <thead>
-        <tr><th>${t("colOrder")}</th><th>${t("colPreset")}</th><th>${t("colIncident")}</th><th>${t("colViewing")}</th></tr>
+        <tr><th>${t("colOrder")}</th><th>${t("colPreset")}</th><th>${t("colImpact")}</th><th>${t("colAlpha")}</th><th>${t("colViewing")}</th></tr>
       </thead>
       <tbody>
         ${rows.map((row) => `
           <tr>
             <td>${row.order}</td>
             <td>${row.preset}</td>
-            <td>${formatAngle(row.incident)}</td>
+            <td>${formatImpact(row.impact)}</td>
+            <td>${formatAngle(row.alpha)}</td>
             <td>${formatAngle(row.angle)}</td>
           </tr>`).join("")}
       </tbody>
@@ -439,6 +516,20 @@ function renderTables() {
 
 function formatAngle(value) {
   return Number.isFinite(value) ? `${value.toFixed(2)}°` : `<span class="warning">${t("notDefined")}</span>`;
+}
+
+function formatImpact(value) {
+  return Number.isFinite(value) ? value.toFixed(3) : `<span class="warning">${t("notDefined")}</span>`;
+}
+
+function formatImpactReadout(value) {
+  const impact = clamp(value, 0, 1);
+  return `b/R = ${formatImpact(impact)}, α = ${(Math.asin(impact) * DEG).toFixed(1)}°`;
+}
+
+function formatImpactTick(value) {
+  if (value === 0 || value === 1) return String(value);
+  return value.toFixed(2);
 }
 
 function currentRayColor() {
@@ -457,6 +548,10 @@ function sampleImpactHeights(count) {
     impacts.push(minImpact + (maxImpact - minImpact) * i / (count - 1));
   }
   return impacts;
+}
+
+function rayOpacity(baseOpacity) {
+  return clamp(baseOpacity * state.rayBrightness, 0, RAY_BRIGHTNESS.maxOpacity);
 }
 
 function traceRayByImpact(impact, n, k) {
@@ -527,14 +622,24 @@ function toSvgPoint(point, center, radius) {
 function drawRayFamilyTrace(svg, trace, center, radius, startX, color) {
   const entry = toSvgPoint(trace.entry, center, radius);
 
-  styledLine(svg, startX, entry.y, entry.x, entry.y, "ray-segment ray-incoming", color, RAY_STYLE.incomingOpacity, RAY_STYLE.incomingWidth);
+  styledLine(svg, startX, entry.y, entry.x, entry.y, "ray-segment ray-incoming", color, rayOpacity(RAY_STYLE.incomingOpacity), RAY_STYLE.incomingWidth);
 
   const internalPoints = trace.internal.map((point) => toSvgPoint(point, center, radius));
-  polyline(svg, internalPoints, "ray-segment ray-internal", color, RAY_STYLE.internalOpacity, RAY_STYLE.internalWidth);
+  polyline(svg, internalPoints, "ray-segment ray-internal", color, rayOpacity(RAY_STYLE.internalOpacity), RAY_STYLE.internalWidth);
 
   const exit = toSvgPoint(trace.exit, center, radius);
   const outEnd = toSvgPoint(add(trace.exit, scale(trace.outgoing, 1.95)), center, radius);
-  styledLine(svg, exit.x, exit.y, outEnd.x, outEnd.y, "ray-segment ray-outgoing", color, RAY_STYLE.outgoingOpacity, RAY_STYLE.outgoingWidth);
+  styledLine(svg, exit.x, exit.y, outEnd.x, outEnd.y, "ray-segment ray-outgoing", color, rayOpacity(RAY_STYLE.outgoingOpacity), RAY_STYLE.outgoingWidth);
+}
+
+function roundedRayCount(value) {
+  const rounded = Math.round(value / RAY_COUNT.step) * RAY_COUNT.step;
+  return clamp(rounded, RAY_COUNT.min, RAY_COUNT.max);
+}
+
+function clamp(value, min, max) {
+  if (!Number.isFinite(value)) return min;
+  return Math.min(max, Math.max(min, value));
 }
 
 function dot(a, b) {
