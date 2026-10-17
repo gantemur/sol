@@ -19,9 +19,29 @@ function rel(file) {
   return path.relative(root, file).replaceAll(path.sep, "/");
 }
 
-function checkJson() {
+function checkRegistry() {
   const file = path.join(root, "tools.json");
-  JSON.parse(fs.readFileSync(file, "utf8"));
+  const tools = JSON.parse(fs.readFileSync(file, "utf8"));
+  if (!Array.isArray(tools)) throw new Error("tools.json: registry must be an array.");
+
+  const ids = new Set();
+  for (const [index, tool] of tools.entries()) {
+    const label = `tools.json: entry ${index + 1}`;
+    if (!tool || typeof tool.id !== "string" || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(tool.id)) {
+      throw new Error(`${label}: invalid tool ID; use lowercase letters, digits and single hyphens.`);
+    }
+    if (ids.has(tool.id)) throw new Error(`${label}: duplicate tool ID "${tool.id}".`);
+    ids.add(tool.id);
+
+    const expectedEntry = `tools/${tool.id}/`;
+    if (tool.entry !== expectedEntry) {
+      throw new Error(`${label} (${tool.id}): invalid entry path; expected "${expectedEntry}".`);
+    }
+    const page = path.join(root, expectedEntry, "index.html");
+    if (!fs.existsSync(page) || !fs.statSync(page).isFile()) {
+      throw new Error(`${label} (${tool.id}): missing entry page "${expectedEntry}index.html".`);
+    }
+  }
 }
 
 function htmlRefs(html) {
@@ -53,14 +73,14 @@ function checkRefs() {
 }
 
 try {
-  checkJson();
+  checkRegistry();
   const missing = checkRefs();
   if (missing.length) {
     console.error("Missing local references:");
     for (const item of missing) console.error(`- ${item}`);
     process.exit(1);
   }
-  console.log("Static checks passed: tools.json parses and local href/src targets exist.");
+  console.log("Static checks passed: tools.json registry is valid and local href/src targets exist.");
 } catch (error) {
   console.error(error.message);
   process.exit(1);
