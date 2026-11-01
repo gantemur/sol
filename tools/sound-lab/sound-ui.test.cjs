@@ -17,9 +17,13 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   for (const wave of model.WAVEFORMS) assert.match(html, new RegExp('data-wave="' + wave + '"'));
   assert.match(html, /id="stopAll"/);
   assert.match(html, /id="frequencyInput"[^>]*type="number"/);
+  assert.match(html, /<html lang="mn">/);
+  assert.match(html, /id="fixedTimeCheck" checked/);
+  assert.match(browserCode, /Нотод тааруулах/);
+  assert.doesNotMatch(browserCode, /ноот/i);
 });
 
-function fakePage() {
+function fakePage(search = "") {
   const contexts = [];
   const classList = () => {
     const values = new Set();
@@ -77,7 +81,7 @@ function fakePage() {
   };
   const window = {
     SoundLabModel: model,
-    location: { href: "https://example.org/sol/tools/sound-lab/?lang=en", search: "?lang=en" },
+    location: { href: "https://example.org/sol/tools/sound-lab/" + search, search },
     history: { replaceState() {} },
     devicePixelRatio: 1,
     events: {},
@@ -143,6 +147,8 @@ function fakePage() {
 
 test("initialization is silent; Play, live Hz, note snap, shape and Stop work", async () => {
   const app = fakePage();
+  assert.equal(app.document.documentElement.lang, "mn", "Mongolian is the default");
+  assert.equal(app.elements.get("langMn").getAttribute("aria-pressed"), "true");
   assert.equal(app.contexts.length, 0, "No AudioContext before Play");
   assert.equal(app.elements.get("playButton").getAttribute("aria-pressed"), "false");
   await app.fire("playButton", "click");
@@ -171,8 +177,27 @@ test("initialization is silent; Play, live Hz, note snap, shape and Stop work", 
   assert.equal(context.oscillators[1].stopped, true);
 });
 
+test("fixed time view shows changing cycle counts; four-period zoom is optional", () => {
+  const app = fakePage();
+  assert.equal(app.elements.get("fixedTimeCheck").checked, true);
+  assert.equal(app.elements.get("windowLabel").textContent, "0–20 ms · 8.8 үе");
+  app.elements.get("frequencyInput").value = "880";
+  app.fire("frequencyInput", "change");
+  assert.equal(app.elements.get("windowLabel").textContent, "0–20 ms · 17.6 үе");
+  assert.match(app.elements.get("waveSubtitle").textContent, /20 мс/);
+  app.elements.get("fixedTimeCheck").checked = false;
+  app.fire("fixedTimeCheck", "change");
+  assert.equal(app.elements.get("windowLabel").textContent, "0–4.55 ms · 4 үе");
+  assert.match(app.elements.get("waveSubtitle").textContent, /Дөрвөн үе/);
+  app.fire("resetButton", "click");
+  assert.equal(app.elements.get("fixedTimeCheck").checked, true);
+  assert.equal(app.elements.get("windowLabel").textContent, "0–20 ms · 8.8 үе");
+});
+
 test("language, volume, reset and hiding the page cannot trigger autoplay", async () => {
   const app = fakePage();
+  app.fire("langEn", "click");
+  assert.equal(app.document.documentElement.lang, "en");
   app.fire("langMn", "click");
   assert.equal(app.document.documentElement.lang, "mn");
   assert.equal(app.contexts.length, 0);
@@ -186,4 +211,10 @@ test("language, volume, reset and hiding the page cannot trigger autoplay", asyn
   app.fire("resetButton", "click");
   assert.equal(app.elements.get("frequencyInput").value, "440");
   assert.equal(app.elements.get("volumeReadout").textContent, "40%");
+});
+
+test("an explicit English URL overrides the Mongolian default", () => {
+  const app = fakePage("?lang=en");
+  assert.equal(app.document.documentElement.lang, "en");
+  assert.equal(app.elements.get("windowLabel").textContent, "0–20 ms · 8.8 cycles");
 });
