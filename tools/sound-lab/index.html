@@ -8,6 +8,7 @@
   <title>Sound Lab · Sol</title>
   <link rel="stylesheet" href="sound-lab.css">
   <script src="sound-model.js" defer></script>
+  <script src="sound-transient.js" defer></script>
   <script src="sound-lab.js" defer></script>
 </head>
 <body>
@@ -33,14 +34,19 @@
   <main class="container">
     <div class="page-head">
       <div>
-        <div class="eyebrow" data-i18n="eyebrow">EXPLORE SOUNDS · PURE TONES</div>
-        <h1 data-i18n="title">What does a wave sound like?</h1>
-        <p data-i18n="intro">Play a simple sound, change its pitch or shape, and watch what happens to its wave and harmonics.</p>
+        <div class="eyebrow" id="pageEyebrow" data-i18n="eyebrow">ДУУ АВИА СУДЛАХ · ЦЭВЭР АВИА</div>
+        <h1 id="pageTitle" data-i18n="title">Долгион ямар сонсогддог вэ?</h1>
+        <p id="pageIntro" data-i18n="intro">Авиа тоглуулж, давтамж ба хэлбэрийг нь өөрчлөөд долгион, гармоникууд нь хэрхэн хувирахыг ажиглаарай.</p>
       </div>
-      <span class="pill" data-i18n="phase">01 · Ideal signals</span>
+      <span class="pill" id="pagePhase" data-i18n="phase">01 · Энгийн дохионууд</span>
     </div>
 
-    <div class="workspace">
+    <nav class="mode-switch" aria-label="Дууны бүлэг" id="modeSwitch">
+      <button type="button" id="modePure" class="mode-button active" aria-pressed="true" data-i18n="modePure">Цэвэр авиа</button>
+      <button type="button" id="modeStrike" class="mode-button" aria-pressed="false" data-i18n="modeStrike">Цохих ба татах</button>
+    </nav>
+
+    <div class="workspace" id="pureWorkspace">
       <section class="panel controls" aria-labelledby="controls-title">
         <div class="section-top">
           <h2 id="controls-title" data-i18n="chooseShape">Choose a wave shape</h2>
@@ -161,7 +167,91 @@
       </div>
     </div>
 
-    <section class="challenge" aria-labelledby="challenge-heading">
+    <div class="workspace" id="strikeWorkspace" hidden>
+      <section class="panel controls" aria-labelledby="strike-controls-title">
+        <div class="section-top">
+          <h2 id="strike-controls-title" data-i18n="strikeChoose">Дууны загвар сонгох</h2>
+          <p class="description" id="strikeDescription">Чавхдасыг татаж тавихад хэлбэлзэл нь аажмаар намдана.</p>
+        </div>
+        <div class="strike-choices" id="strikeChoices" role="group" aria-label="Дууны загвар">
+          <button type="button" class="strike-choice selected" data-strike="pluck" aria-pressed="true">
+            <span aria-hidden="true" class="strike-glyph">🎸</span><span data-i18n="pluck">Татсан чавхдас</span>
+          </button>
+          <button type="button" class="strike-choice" data-strike="kick" aria-pressed="false">
+            <span aria-hidden="true" class="strike-glyph">🥁</span><span data-i18n="kick">Басс бөмбөр</span>
+          </button>
+        </div>
+        <button id="strikeButton" type="button" class="play-button strike-button">
+          <span class="play-icon" aria-hidden="true">✦</span>
+          <span id="strikeButtonLabel">Татах</span>
+          <span class="play-caption" data-i18n="strikeCaption">Дарж сонсоод, дахин дарж давтаарай</span>
+        </button>
+        <p id="strikeStatus" class="audio-status" role="status" aria-live="polite">Бэлэн. Дарахад л дуу гарна.</p>
+
+        <div class="field-group" id="strikePitchGroup">
+          <div class="field-title">
+            <label for="strikeFrequencySlider" data-i18n="strikePitch">Чавхдасны давтамж</label>
+            <output id="strikeNote" class="note-badge">A3 · Ля3</output>
+          </div>
+          <div class="frequency-controls">
+            <input type="range" id="strikeFrequencySlider" min="0" max="1000" step="1" value="333" aria-label="Чавхдасны давтамжийн гулсуур">
+            <div class="number-wrap">
+              <input type="number" id="strikeFrequencyInput" min="110" max="880" step="any" inputmode="decimal" value="220" aria-label="Чавхдасны давтамжийг герцээр оруулах">
+              <span>Hz</span>
+            </div>
+          </div>
+          <div class="scale-row"><span>110 Hz</span><span>880 Hz</span></div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-title">
+            <label for="strikeStrength" data-i18n="strikeStrength">Цохилтын хүч</label>
+            <output id="strikeStrengthValue">55%</output>
+          </div>
+          <input type="range" id="strikeStrength" min="0" max="100" step="1" value="55">
+        </div>
+        <div class="field-group volume-field">
+          <div class="field-title">
+            <label for="strikeDecay" data-i18n="strikeDecay">Намдах хугацаа</label>
+            <output id="strikeDecayValue">0.65 s</output>
+          </div>
+          <input type="range" id="strikeDecay" min="0.12" max="1.2" step="0.01" value="0.65">
+          <p class="field-help" data-i18n="strikeSafety">Дуу өөрөө намдана. Эхэндээ аяархан сонсоорой.</p>
+        </div>
+      </section>
+
+      <div class="visuals">
+        <section class="panel chart-panel" aria-labelledby="strike-envelope-title">
+          <div class="chart-heading">
+            <div>
+              <h2 id="strike-envelope-title" data-i18n="strikeEnvelopeTitle">Дууны хүч хэрхэн намдах вэ?</h2>
+              <p data-i18n="strikeEnvelopeSubtitle">Бүх цохилтыг нэг ижил 3 секундийн хуваарьт харуулав</p>
+            </div>
+            <span class="chart-badge" id="strikeDurationBadge">τ = 0.65 s</span>
+          </div>
+          <canvas id="strikeEnvelopeCanvas" role="img" aria-label="Намдах далайцын математик загвар" width="740" height="265"></canvas>
+          <div class="chart-foot">
+            <span id="strikeWindowLabel">0–3 s</span>
+            <span data-i18n="timeAxis">хугацаа →</span>
+          </div>
+        </section>
+        <section class="panel chart-panel" aria-labelledby="strike-zoom-title">
+          <div class="chart-heading">
+            <div>
+              <h2 id="strike-zoom-title" data-i18n="strikeZoomTitle">Эхний 20 мс-ийн долгион</h2>
+              <p data-i18n="strikeZoomSubtitle">Хэлбэлзлийг томруулж харах</p>
+            </div>
+            <span class="chart-badge" id="strikePitchBadge">220 Hz</span>
+          </div>
+          <canvas id="strikeZoomCanvas" role="img" aria-label="Эхний 20 мс-ийн долгионы загвар" width="740" height="215"></canvas>
+          <div class="chart-foot">
+            <span>0–20 ms</span><span data-i18n="timeAxis">хугацаа →</span>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <section class="challenge" id="pureChallenge" aria-labelledby="challenge-heading">
       <div class="challenge-icon" aria-hidden="true">✧</div>
       <div class="challenge-copy">
         <h2 id="challenge-heading" data-i18n="tryThis">TRY THIS</h2>
@@ -170,11 +260,26 @@
       <button type="button" id="resetButton" class="reset-button" data-i18n="reset">↺ Reset</button>
     </section>
 
-    <details class="explanation">
+    <section class="challenge" id="strikeChallenge" aria-labelledby="strike-challenge-heading" hidden>
+      <div class="challenge-icon" aria-hidden="true">✧</div>
+      <div class="challenge-copy">
+        <h2 id="strike-challenge-heading" data-i18n="tryThis">ТУРШИЖ ҮЗ</h2>
+        <p data-i18n="strikeChallenge">Намдах хугацааг өөрчил. Дуу болон график хэрхэн өөрчлөгдөж байна вэ?</p>
+      </div>
+      <button type="button" id="strikeReset" class="reset-button" data-i18n="reset">↺ Эхнээс нь</button>
+    </section>
+
+    <details class="explanation" id="pureExplanation">
       <summary data-i18n="learnMore">Why do the wave shapes sound different?</summary>
       <p data-i18n="lessonOne">Every repeating wave has a fundamental frequency. The higher harmonic peaks occur at whole-number multiples of it: 2f, 3f, 4f, and so on.</p>
       <p data-i18n="lessonTwo">Changing the wave shape changes the strengths of those harmonics. The pitch can stay the same even when the sound's character changes.</p>
       <p data-i18n="lessonThree">These plots show ideal mathematical signals, not a recording from your speakers. Actual loudness and high-frequency response depend on your device.</p>
+    </details>
+    <details class="explanation" id="strikeExplanation" hidden>
+      <summary data-i18n="strikeLearnMore">Яагаад эдгээр дуу намддаг вэ?</summary>
+      <p data-i18n="strikeLessonOne">Чавхдас олон давтамжаар хэлбэлзэж, өндөр гармоникууд нь хурдан намдана.</p>
+      <p data-i18n="strikeLessonTwo">Басс бөмбөрийн цохилтын давтамж богино хугацаанд буурч, далайц нь аажмаар намдана.</p>
+      <p data-i18n="strikeLessonThree">Эдгээр нь бичлэг биш, энгийн математик загвар. График нь микрофоны хэмжилт биш.</p>
     </details>
   </main>
 
