@@ -3,6 +3,7 @@
   "use strict";
   const model = window.SoundLabModel;
   const transientModel = window.SoundLabTransientModel;
+  const spectrumModel = window.SoundLabSpectrum;
   const $ = id => document.getElementById(id);
 
   const messages = {
@@ -58,6 +59,24 @@
       strikePitch: "String frequency", strikePitchSliderAria: "String pitch slider",
       strikePitchInputAria: "String frequency in hertz",
       strikeStrength: "Strength", strikeDecay: "Decay time",
+      strikeDrumSize: "Drum size", strikeLarge: "Large", strikeMedium: "Medium", strikeSmall: "Small",
+      strikeDrumHint: "Stylized bass-drum presets: larger sounds lower; these are not physical membrane simulations.",
+      strikeWaveTitle: "Waveform · zoom and explore",
+      strikeWaveSubtitle: "See the full decay; zoom in to reveal individual vibrations.",
+      strikeZoomOutAria: "Zoom out", strikeZoomInAria: "Zoom in",
+      strikePanLeftAria: "Move earlier", strikePanRightAria: "Move later",
+      strikeFit: "Fit", strikeCustom: "Custom", strikeViewPresetLabel: "Visible time span",
+      strikePlotToolsAria: "Waveform zoom and navigation",
+      strikeTime: "Explore the sound at time", strikeTimeAria: "Time selected for the frequency spectrum",
+      strikeTimeHint: "After Pluck or Strike, the spectrum follows the sound. Drag this slider to inspect any moment.",
+      strikeLocalSpectrumTitle: "Frequency spectrum",
+      strikeLocalSpectrumSubtitle: "Fourier analysis of a 128 ms window around the selected time",
+      strikeSpectrumHere: "At selected time", strikeSpectrumWhole: "Whole sound",
+      strikeSpectrumModesAria: "Spectrum time range",
+      strikeSpectrumHint: "Higher string harmonics disappear earlier; a drum's pitch falls.",
+      strikeSpectrumWholeHint: "Average frequency content across the whole modeled hit.",
+      strikeWaveAria: "Modeled waveform with a movable time cursor",
+      strikeSpectrumAria: "Short-time Fourier magnitude spectrum of the modeled sound",
       strikeSafety: "Each sound fades by itself. Begin quietly, especially with headphones.",
       strikeEnvelopeTitle: "How does the sound fade?",
       strikeEnvelopeSubtitle: "Same three-second time scale for every strike",
@@ -153,6 +172,24 @@
       strikePitch: "Чавхдасны давтамж", strikePitchSliderAria: "Чавхдасны давтамжийн гулсуур",
       strikePitchInputAria: "Чавхдасны давтамжийг герцээр оруулах",
       strikeStrength: "Цохилтын хүч", strikeDecay: "Намдах хугацаа",
+      strikeDrumSize: "Бөмбөрийн хэмжээ", strikeLarge: "Том", strikeMedium: "Дунд", strikeSmall: "Жижиг",
+      strikeDrumHint: "Том бөмбөр нам, жижиг нь өндөр дуугарна. Энэ нь бодит мембраны бүрэн загвар биш.",
+      strikeWaveTitle: "Дууны долгион · томруулж үзэх",
+      strikeWaveSubtitle: "Бүхэлд нь намдлыг, томруулбал нэг нэг хэлбэлзлийг харна.",
+      strikeZoomOutAria: "Томруулалтыг багасгах", strikeZoomInAria: "Томруулах",
+      strikePanLeftAria: "Өмнөх хэсэг", strikePanRightAria: "Дараах хэсэг",
+      strikeFit: "Бүгд", strikeCustom: "Өөр", strikeViewPresetLabel: "Хугацааны хуваарь",
+      strikePlotToolsAria: "Долгионы графикийн удирдлага",
+      strikeTime: "Дууны хугацааг шинжлэх", strikeTimeAria: "Спектрт шинжлэх хугацаа",
+      strikeTimeHint: "Цохиход спектр дууг дагана. Дараа нь гулсуураар хугацааг сонгоорой.",
+      strikeLocalSpectrumTitle: "Давтамжийн спектр",
+      strikeLocalSpectrumSubtitle: "Сонгосон хугацааны орчмын 128 мс долгионы Фурье шинжилгээ",
+      strikeSpectrumHere: "Энэ мөчид", strikeSpectrumWhole: "Бүх дуу",
+      strikeSpectrumModesAria: "Спектрийн хугацааны сонголт",
+      strikeSpectrumHint: "Чавхдасны дээд гармоник хурдан намдаж, бөмбөрийн давтамж буурна.",
+      strikeSpectrumWholeHint: "Загварчилсан цохилтын турших хугацааны дундаж спектр.",
+      strikeWaveAria: "Хугацаа сонгох тэмдэглэгээтэй загвар долгион",
+      strikeSpectrumAria: "Загварчилсан дууны хугацааны хэсгийн Фурье спектр",
       strikeSafety: "Дуу өөрөө намдана. Ялангуяа чихэвчтэй бол эхэндээ аяархан сонсоорой.",
       strikeEnvelopeTitle: "Дууны хүч хэрхэн намдах вэ?",
       strikeEnvelopeSubtitle: "Бүх цохилтыг нэг ижил 3 секундийн хуваарьт харуулав",
@@ -211,10 +248,17 @@
     error: false,
     strikeKind: "pluck",
     strikePitch: 220,
+    strikeSnap: false,
+    strikeDrumSize: "medium",
     strikeStrength: 55,
     strikeDecay: 0.65,
     strikeStatus: "strikeReady",
-    strikeError: false
+    strikeError: false,
+    strikeViewStart: 0,
+    strikeViewSpan: 3,
+    strikeCursor: 0,
+    strikeSpectrumView: "local",
+    strikeFollowing: false
   };
   const text = key => messages[state.language][key];
   const frequencyText = hz => Number(hz.toFixed(2)).toLocaleString("en-US", { maximumFractionDigits: 2 });
@@ -349,7 +393,7 @@
       const context = await this.contextOwner.readyContext();
       if (ticket !== this.generation || state.mode !== "strike") return false;
       const samples = transientModel.makeSamples(
-        state.strikeKind, state.strikePitch, state.strikeDecay, context.sampleRate);
+        state.strikeKind, state.strikePitch, state.strikeDecay, context.sampleRate, state.strikeDrumSize);
       const buffer = context.createBuffer(1, samples.length, context.sampleRate);
       buffer.getChannelData(0).set(samples);
       const source = context.createBufferSource();
@@ -374,12 +418,108 @@
         this.voices.delete(voice);
       };
       source.start(now);
-      return true;
+      return { context, startedAt: now, duration: samples.length / context.sampleRate };
     }
   }
 
   const audio = new ToneEngine();
   const transientAudio = new TransientEngine(audio);
+  let followFrame = null;
+  let followInfo = null;
+  let overallSpectrumCache = null;
+  let lastAnimatedSpectrumTime = -1;
+  let lastAnimatedWaveTime = -1;
+
+  function strikeRecipe() {
+    return { kind: state.strikeKind, pitchHz: state.strikePitch,
+      decaySec: state.strikeDecay, kickSize: state.strikeDrumSize };
+  }
+
+  function stopStrikeFollow() {
+    if (followFrame !== null) window.cancelAnimationFrame(followFrame);
+    followFrame = null;
+    followInfo = null;
+    state.strikeFollowing = false;
+  }
+
+  function stopStrikeForEdit() {
+    transientAudio.stop(false);
+    stopStrikeFollow();
+    overallSpectrumCache = null;
+    setStrikeStatus("strikeReady");
+  }
+
+  function keepStrikeCursorVisible() {
+    if (state.strikeViewSpan >= 3) return;
+    const right = state.strikeViewStart + state.strikeViewSpan;
+    if (state.strikeCursor < state.strikeViewStart || state.strikeCursor > right) {
+      state.strikeViewStart = Math.max(0, Math.min(3 - state.strikeViewSpan,
+        state.strikeCursor - state.strikeViewSpan * 0.5));
+    }
+  }
+
+  function strikeTimeText(time) {
+    return time < 0.1 ? frequencyText(time * 1000) + " ms" : frequencyText(time) + " s";
+  }
+
+  function renderStrikeTime() {
+    $("strikeTimeSlider").value = String(Math.round(state.strikeCursor * 1000));
+    $("strikeTimeValue").textContent = "t = " + state.strikeCursor.toFixed(2) + " s";
+    $("strikeSpectrumBadge").textContent = state.strikeSpectrumView === "local" ?
+      "t = " + state.strikeCursor.toFixed(2) + " s" : text("strikeSpectrumWhole");
+    $("strikeSpectrumHint").textContent = text(state.strikeSpectrumView === "local" ?
+      "strikeSpectrumHint" : "strikeSpectrumWholeHint");
+  }
+
+  function setStrikeView(span, center = state.strikeCursor) {
+    state.strikeViewSpan = Math.max(0.01, Math.min(3, span));
+    state.strikeViewStart = Math.max(0, Math.min(3 - state.strikeViewSpan,
+      center - state.strikeViewSpan / 2));
+    drawStrikeWave();
+  }
+
+  function panStrikeView(direction) {
+    state.strikeViewStart = Math.max(0, Math.min(3 - state.strikeViewSpan,
+      state.strikeViewStart + direction * state.strikeViewSpan / 2));
+    drawStrikeWave();
+  }
+
+  function startStrikeFollow(info) {
+    stopStrikeFollow();
+    followInfo = info;
+    state.strikeFollowing = true;
+    state.strikeCursor = 0;
+    lastAnimatedSpectrumTime = -1;
+    lastAnimatedWaveTime = -1;
+    renderStrikeTime();
+    drawStrikeWave();
+    drawStrikeSpectrum();
+    const advance = () => {
+      if (!state.strikeFollowing || !followInfo || state.mode !== "strike") return;
+      const elapsed = Math.max(0, info.context.currentTime - info.startedAt);
+      state.strikeCursor = Math.min(3, info.duration, elapsed);
+      if (state.strikeViewSpan < 3 && state.strikeCursor >
+          state.strikeViewStart + state.strikeViewSpan * 0.82) {
+        state.strikeViewStart = Math.max(0, Math.min(3 - state.strikeViewSpan,
+          state.strikeCursor - state.strikeViewSpan * 0.65));
+      }
+      renderStrikeTime();
+      if (elapsed - lastAnimatedWaveTime >= 0.04) {
+        drawStrikeWave();
+        lastAnimatedWaveTime = elapsed;
+      }
+      if (elapsed - lastAnimatedSpectrumTime >= 0.045) {
+        drawStrikeSpectrum();
+        lastAnimatedSpectrumTime = elapsed;
+      }
+      if (elapsed >= info.duration) {
+        stopStrikeFollow();
+        drawStrikeWave();
+        drawStrikeSpectrum();
+      } else followFrame = window.requestAnimationFrame(advance);
+    };
+    followFrame = window.requestAnimationFrame(advance);
+  }
 
   function setStatus(status, error = false) {
     state.status = status;
@@ -441,14 +581,20 @@
     $("strikeChoices").setAttribute("aria-label", text("strikeGroupAria"));
     $("strikeFrequencySlider").setAttribute("aria-label", text("strikePitchSliderAria"));
     $("strikeFrequencyInput").setAttribute("aria-label", text("strikePitchInputAria"));
-    $("strikeEnvelopeCanvas").setAttribute("aria-label", text("strikeEnvelopeAria"));
-    $("strikeZoomCanvas").setAttribute("aria-label", text("strikeZoomAria"));
+    $("strikeWaveCanvas").setAttribute("aria-label", text("strikeWaveAria"));
+    $("strikeSpectrumCanvas").setAttribute("aria-label", text("strikeSpectrumAria"));
+    $("strikeTimeSlider").setAttribute("aria-label", text("strikeTimeAria"));
+    $("strikeViewPreset").setAttribute("aria-label", text("strikeViewPresetLabel"));
+    $("strikePlotTools").setAttribute("aria-label", text("strikePlotToolsAria"));
+    $("strikeDrumSizes").setAttribute("aria-label", text("strikeDrumSize"));
+    $("strikeSpectrumChoices").setAttribute("aria-label", text("strikeSpectrumModesAria"));
     document.querySelector(".note-presets").setAttribute("aria-label", text("presetsAria"));
     document.querySelector(".lang-group").setAttribute("aria-label", text("langGroupAria"));
     setStatus(state.status, state.error);
     setStrikeStatus(state.strikeStatus, state.strikeError);
     renderMode();
     renderStrikeControls();
+    renderStrikeTime();
   }
 
   function renderControls() {
@@ -482,8 +628,15 @@
     $("strikeFrequencySlider").value = String(Math.round(transientModel.hzToSlider(state.strikePitch)));
     $("strikeFrequencyInput").value = String(Number(state.strikePitch.toFixed(2)));
     const note = model.nearestNote(state.strikePitch);
-    $("strikeNote").textContent = note.english + " · " + note.mongolian;
+    const differenceCents = 1200 * Math.log2(state.strikePitch / note.frequency);
+    const approx = !state.strikeSnap && Math.abs(differenceCents) >= 0.5 ? "≈ " : "";
+    $("strikeNote").textContent = approx + note.english + " · " + note.mongolian;
+    $("strikeSnap").checked = state.strikeSnap;
     $("strikePitchGroup").hidden = state.strikeKind !== "pluck";
+    $("strikeDrumSizeGroup").hidden = state.strikeKind !== "kick";
+    $("strikeDrumFrequencies").textContent =
+      Math.round(transientModel.kickFrequency(0, state.strikeDrumSize)) + " → " +
+      Math.round(transientModel.kickFrequency(3, state.strikeDrumSize)) + " Hz";
     $("strikeStrength").value = String(state.strikeStrength);
     $("strikeStrengthValue").textContent = state.strikeStrength + "%";
     $("strikeDecay").value = String(state.strikeDecay);
@@ -492,6 +645,11 @@
     $("strikeButtonLabel").textContent = text(state.strikeKind === "pluck" ? "strikePluckButton" : "strikeKickButton");
     document.querySelectorAll("[data-strike]").forEach(button => {
       const selected = button.dataset.strike === state.strikeKind;
+      button.classList.toggle("selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+    document.querySelectorAll("[data-drum-size]").forEach(button => {
+      const selected = button.dataset.drumSize === state.strikeDrumSize;
       button.classList.toggle("selected", selected);
       button.setAttribute("aria-pressed", String(selected));
     });
@@ -520,6 +678,7 @@
 
   function stopAllAudio(immediate = false, message = "stopped") {
     transientAudio.stop(immediate);
+    stopStrikeFollow();
     stopSound(immediate, message);
     setStrikeStatus(message === "hidden" ? "strikeHidden" : "strikeStopped");
   }
@@ -563,9 +722,13 @@
 
   function selectStrikeKind(kind) {
     if (!transientModel.KINDS.includes(kind) || kind === state.strikeKind) return;
-    transientAudio.stop(false);
+    stopStrikeForEdit();
     state.strikeKind = kind;
     state.strikeDecay = kind === "pluck" ? 0.65 : 0.30;
+    state.strikeCursor = 0;
+    state.strikeViewStart = 0;
+    state.strikeViewSpan = 3;
+    state.strikeSpectrumView = "local";
     setStrikeStatus("strikeReady");
     renderStrikeControls();
     drawPlots();
@@ -578,7 +741,8 @@
       renderStrikeControls();
       return;
     }
-    state.strikePitch = hz;
+    stopStrikeForEdit();
+    state.strikePitch = state.strikeSnap ? model.snapFrequency(hz) : hz;
     if (state.strikeStatus === "strikeInvalid") setStrikeStatus("strikeReady");
     renderStrikeControls();
     drawPlots();
@@ -587,19 +751,30 @@
   async function triggerStrike() {
     setStrikeStatus("strikeStarting");
     try {
-      if (await transientAudio.trigger()) setStrikeStatus("strikeDone");
+      const info = await transientAudio.trigger();
+      if (info) {
+        setStrikeStatus("strikeDone");
+        startStrikeFollow(info);
+      }
     } catch (error) {
       transientAudio.stop(true);
+      stopStrikeFollow();
       setStrikeStatus(error.message === "unsupported" ? "strikeUnsupported" : "strikeBlocked", true);
     }
   }
 
   function resetStrike() {
-    transientAudio.stop();
+    stopStrikeForEdit();
     state.strikeKind = "pluck";
     state.strikePitch = 220;
+    state.strikeSnap = false;
+    state.strikeDrumSize = "medium";
     state.strikeStrength = 55;
     state.strikeDecay = 0.65;
+    state.strikeCursor = 0;
+    state.strikeViewStart = 0;
+    state.strikeViewSpan = 3;
+    state.strikeSpectrumView = "local";
     setStrikeStatus("strikeReady");
     renderStrikeControls();
     drawPlots();
@@ -748,28 +923,77 @@
     }
   }
 
-  function drawStrikeEnvelope() {
-    const { ctx, width, height } = plotContext($("strikeEnvelopeCanvas"));
-    const left = 36, right = width - 15, top = 26, bottom = height - 30;
-    drawFrame(ctx, width, height, left, right, top, bottom);
-    // Fixed time scale makes a shorter or longer decay visibly different.
-    const seconds = 3;
-    $("strikeDurationBadge").textContent = "τ = " + frequencyText(state.strikeDecay) + " s";
-    $("strikeWindowLabel").textContent = "0–" + frequencyText(seconds) + " s";
-    const middle = (top + bottom) / 2;
+  function drawStrikeWave() {
+    const { ctx, width, height } = plotContext($("strikeWaveCanvas"));
+    const left = 44, right = width - 15, top = 26, bottom = height - 30;
+    const span = state.strikeViewSpan, start = state.strikeViewStart;
+    const plotWidth = right - left, middle = (top + bottom) / 2;
     const amplitude = (bottom - top) * 0.45 * Math.sqrt(state.strikeStrength / 100);
-    ctx.strokeStyle = "#209b92";
-    ctx.lineWidth = 2.5;
-    for (const direction of [-1, 1]) {
+    drawFrame(ctx, width, height, left, right, top, bottom);
+    $("strikeDurationBadge").textContent = "τ = " + frequencyText(state.strikeDecay) + " s";
+    $("strikeWindowLabel").textContent = strikeTimeText(start) + " – " + strikeTimeText(start + span);
+    $("strikeViewPreset").value = [3, 1, 0.2, 0.02].some(value => Math.abs(span - value) < 1e-7) ? String(span) : "custom";
+    $("strikeViewZoomIn").disabled = span <= 0.0101;
+    $("strikeViewZoomOut").disabled = span >= 2.999;
+    $("strikeViewLeft").disabled = start <= 0.000001;
+    $("strikeViewRight").disabled = start + span >= 2.999999;
+
+    // The shaded Fourier window is fixed at 128 ms, independently of waveform zoom.
+    const windowHalf = spectrumModel.WINDOW_SECONDS / 2;
+    const from = Math.max(start, state.strikeCursor - windowHalf);
+    const to = Math.min(start + span, state.strikeCursor + windowHalf);
+    if (to > from) {
+      ctx.fillStyle = "rgba(59, 129, 206, .09)";
+      ctx.fillRect(left + (from - start) / span * plotWidth, top,
+        (to - from) / span * plotWidth, bottom - top);
+    }
+
+    const sampleAt = time => transientModel.plottedSampleAt(state.strikeKind,
+      time, state.strikePitch, state.strikeDecay, state.strikeDrumSize);
+    ctx.strokeStyle = "#1a9b91";
+    ctx.lineJoin = "round";
+    if (span <= 0.12) {
+      // At fine scales, every oscillation is drawn directly, with oversampling.
+      const topFrequency = state.strikeKind === "pluck" ? state.strikePitch * 8 :
+        transientModel.kickFrequency(0, state.strikeDrumSize);
+      const points = Math.min(16000, Math.max(700, Math.round(plotWidth * 2),
+        Math.ceil(span * topFrequency * 10)));
+      ctx.lineWidth = 2;
       ctx.beginPath();
-      for (let i = 0; i <= 600; i++) {
-        const fraction = i / 600;
-        const level = transientModel.plottedEnvelope(state.strikeKind, fraction * seconds, state.strikeDecay);
-        const x = left + (right - left) * fraction;
-        const y = middle + direction * amplitude * level;
+      for (let i = 0; i <= points; i++) {
+        const fraction = i / points;
+        const x = left + fraction * plotWidth;
+        const y = middle - amplitude * sampleAt(start + fraction * span);
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       }
+      ctx.stroke();
+    } else {
+      // Vertical min/max traces preserve oscillation envelopes at coarse scale.
+      // Sparse point-to-point sampling would falsely show slow aliasing here.
+      ctx.lineWidth = 1.45;
+      const columns = Math.max(1, Math.floor(plotWidth));
+      for (let i = 0; i < columns; i++) {
+        let min = 1, max = -1;
+        for (let j = 0; j <= 16; j++) {
+          const sample = sampleAt(start + span * (i + j / 16) / columns);
+          min = Math.min(min, sample);
+          max = Math.max(max, sample);
+        }
+        const x = left + i;
+        ctx.beginPath();
+        ctx.moveTo(x, middle - amplitude * min);
+        ctx.lineTo(x, middle - amplitude * max);
+        ctx.stroke();
+      }
+    }
+    if (state.strikeCursor >= start && state.strikeCursor <= start + span) {
+      const x = left + (state.strikeCursor - start) / span * plotWidth;
+      ctx.strokeStyle = "#d18c35";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x, top);
+      ctx.lineTo(x, bottom);
       ctx.stroke();
     }
     ctx.fillStyle = "#7489a1";
@@ -777,46 +1001,70 @@
     ctx.fillText(text("amplitude"), 9, 13);
     ctx.textAlign = "center";
     for (let i = 0; i <= 4; i++) {
-      const x = left + (right - left) * i / 4;
-      ctx.fillText(frequencyText(seconds * i / 4) + " s", x, height - 12);
+      const x = left + plotWidth * i / 4;
+      ctx.fillText(strikeTimeText(start + span * i / 4), x, height - 12);
     }
   }
 
-  function drawStrikeZoom() {
-    const { ctx, width, height } = plotContext($("strikeZoomCanvas"));
-    const left = 36, right = width - 15, top = 23, bottom = height - 29;
-    drawFrame(ctx, width, height, left, right, top, bottom);
-    $("strikePitchBadge").textContent = state.strikeKind === "pluck" ?
-      frequencyText(state.strikePitch) + " Hz" : "176 → 48 Hz";
-    const middle = (top + bottom) / 2;
-    const amplitude = (bottom - top) * 0.45 * Math.sqrt(state.strikeStrength / 100);
-    ctx.strokeStyle = "#3185c6";
-    ctx.lineWidth = 2.4;
-    ctx.lineJoin = "round";
+  function drawStrikeSpectrum() {
+    const { ctx, width, height } = plotContext($("strikeSpectrumCanvas"));
+    const left = 44, right = width - 16, top = 16, bottom = height - 30;
+    const w = right - left, h = bottom - top;
+    let spectrum;
+    if (state.strikeSpectrumView === "overall") {
+      if (!overallSpectrumCache) overallSpectrumCache = spectrumModel.spectrumOverall(transientModel, strikeRecipe());
+      spectrum = overallSpectrumCache;
+    } else spectrum = spectrumModel.spectrumAt(transientModel, strikeRecipe(), state.strikeCursor);
+    renderStrikeTime();
+    document.querySelectorAll("[data-spectrum-view]").forEach(button => {
+      const selected = state.strikeSpectrumView === button.dataset.spectrumView;
+      button.classList.toggle("selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+    const maxHz = state.strikeKind === "pluck" ?
+      Math.min(8000, Math.max(1200, state.strikePitch * 8.3)) : 600;
+    ctx.strokeStyle = "#e8eff7";
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) {
+      const y = top + i * h / 4;
+      ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(right, y); ctx.stroke();
+      const x = left + i * w / 4;
+      ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke();
+    }
+    const gain = state.strikeStrength / 100;
+    ctx.strokeStyle = "#2d88c8";
+    ctx.lineWidth = 2;
     ctx.beginPath();
-    const points = Math.max(650, Math.round((right - left) * 2));
-    for (let i = 0; i <= points; i++) {
-      const fraction = i / points;
-      const level = transientModel.sampleAt(state.strikeKind,
-        fraction * 0.020, state.strikePitch, state.strikeDecay);
-      const x = left + (right - left) * fraction;
-      const y = middle - amplitude * level;
+    const count = Math.min(spectrum.magnitudes.length - 1, Math.floor(maxHz / spectrum.binHz));
+    for (let i = 0; i <= count; i++) {
+      const frequency = i * spectrum.binHz;
+      // Fixed decibel scale: a fading note must not be normalized back to full height.
+      const magnitude = spectrum.magnitudes[i] * gain;
+      const decibels = 20 * Math.log10(Math.max(1e-6, magnitude) / 0.5);
+      const level = Math.max(0, Math.min(1, (decibels + 60) / 60));
+      const x = left + frequency / maxHz * w, y = bottom - level * h;
       if (i === 0) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
     }
     ctx.stroke();
     ctx.fillStyle = "#7489a1";
+    ctx.font = "11px system-ui, sans-serif";
+    ctx.textAlign = "right";
+    ctx.fillText("0 dB", left - 5, top + 3);
+    ctx.fillText("−60", left - 5, bottom);
     ctx.textAlign = "center";
     for (let i = 0; i <= 4; i++) {
-      const x = left + (right - left) * i / 4;
-      ctx.fillText(i * 5 + " ms", x, height - 12);
+      const hz = maxHz * i / 4;
+      ctx.fillText(hz >= 1000 ? frequencyText(hz / 1000) + " kHz" : Math.round(hz) + " Hz",
+        left + i * w / 4, height - 12);
     }
   }
 
   function drawPlots() {
     if (state.mode === "strike") {
-      drawStrikeEnvelope();
-      drawStrikeZoom();
+      renderStrikeTime();
+      drawStrikeWave();
+      drawStrikeSpectrum();
     } else {
       drawWave();
       drawSpectrum();
@@ -829,6 +1077,21 @@
   document.querySelectorAll("[data-strike]").forEach(button => {
     button.addEventListener("click", () => selectStrikeKind(button.dataset.strike));
   });
+  document.querySelectorAll("[data-drum-size]").forEach(button => {
+    button.addEventListener("click", () => {
+      if (state.strikeDrumSize === button.dataset.drumSize) return;
+      stopStrikeForEdit();
+      state.strikeDrumSize = button.dataset.drumSize;
+      renderStrikeControls();
+      drawPlots();
+    });
+  });
+  document.querySelectorAll("[data-spectrum-view]").forEach(button => {
+    button.addEventListener("click", () => {
+      state.strikeSpectrumView = button.dataset.spectrumView;
+      drawStrikeSpectrum();
+    });
+  });
   $("modePure").addEventListener("click", () => selectMode("pure"));
   $("modeStrike").addEventListener("click", () => selectMode("strike"));
   $("strikeButton").addEventListener("click", triggerStrike);
@@ -836,14 +1099,43 @@
     setStrikePitch(transientModel.sliderToHz(Number(event.target.value)));
   });
   $("strikeFrequencyInput").addEventListener("change", event => setStrikePitch(event.target.value));
+  $("strikeSnap").addEventListener("change", event => {
+    state.strikeSnap = event.target.checked;
+    if (state.strikeSnap) setStrikePitch(state.strikePitch);
+    else renderStrikeControls();
+  });
   $("strikeStrength").addEventListener("input", event => {
+    stopStrikeForEdit();
     state.strikeStrength = Number(event.target.value);
     renderStrikeControls();
     drawPlots();
   });
   $("strikeDecay").addEventListener("input", event => {
+    stopStrikeForEdit();
     state.strikeDecay = Number(event.target.value);
     renderStrikeControls();
+    drawPlots();
+  });
+  $("strikeViewZoomIn").addEventListener("click", () => setStrikeView(state.strikeViewSpan / 2));
+  $("strikeViewZoomOut").addEventListener("click", () => setStrikeView(state.strikeViewSpan * 2));
+  $("strikeViewLeft").addEventListener("click", () => panStrikeView(-1));
+  $("strikeViewRight").addEventListener("click", () => panStrikeView(1));
+  $("strikeViewFit").addEventListener("click", () => setStrikeView(3, 1.5));
+  $("strikeViewPreset").addEventListener("change", event => {
+    const selected = Number(event.target.value);
+    if (selected > 0) setStrikeView(selected, selected === 3 ? 1.5 : state.strikeCursor);
+  });
+  $("strikeTimeSlider").addEventListener("input", event => {
+    stopStrikeFollow(); // Direct inspection takes precedence over automatic playback following.
+    state.strikeCursor = Math.max(0, Math.min(3, Number(event.target.value) / 1000));
+    keepStrikeCursorVisible();
+    drawPlots();
+  });
+  $("strikeWaveCanvas").addEventListener("click", event => {
+    const width = $("strikeWaveCanvas").getBoundingClientRect().width;
+    const fraction = Math.max(0, Math.min(1, (event.offsetX - 44) / Math.max(1, width - 59)));
+    stopStrikeFollow();
+    state.strikeCursor = state.strikeViewStart + fraction * state.strikeViewSpan;
     drawPlots();
   });
   $("strikeReset").addEventListener("click", resetStrike);
@@ -880,8 +1172,8 @@
     const observer = new ResizeObserver(() => drawPlots());
     observer.observe($("waveCanvas"));
     observer.observe($("spectrumCanvas"));
-    observer.observe($("strikeEnvelopeCanvas"));
-    observer.observe($("strikeZoomCanvas"));
+    observer.observe($("strikeWaveCanvas"));
+    observer.observe($("strikeSpectrumCanvas"));
   } else window.addEventListener("resize", drawPlots);
 
   renderTexts();

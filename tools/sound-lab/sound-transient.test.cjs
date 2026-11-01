@@ -31,5 +31,19 @@ test("invalid or unbounded transient recipes are rejected", () => {
   assert.throws(() => sound.makeSamples("pluck", 2000, 0.5, 44100), RangeError);
   assert.throws(() => sound.makeSamples("pluck", 220, 10, 44100), RangeError);
   assert.throws(() => sound.makeSamples("kick", 220, 0.3, 0), RangeError);
+  assert.throws(() => sound.makeSamples("kick", 220, 0.3, 44100, "giant"), RangeError);
   assert.ok(sound.duration(sound.MAX_DECAY) <= 3);
+});
+
+test("kick-size presets change pitch and preserve modeled waveform/sample agreement", () => {
+  assert.deepEqual(Object.keys(sound.KICK_SIZES), ["large", "medium", "small"]);
+  assert.ok(sound.kickFrequency(0.02, "large") < sound.kickFrequency(0.02, "medium"));
+  assert.ok(sound.kickFrequency(0.02, "medium") < sound.kickFrequency(0.02, "small"));
+  const sampleRate = 16000, t = 0.016;
+  for (const size of Object.keys(sound.KICK_SIZES)) {
+    const samples = sound.makeSamples("kick", 220, 0.3, sampleRate, size);
+    assert.ok(Math.abs(samples[Math.round(t * sampleRate)] -
+      sound.plottedSampleAt("kick", t, 220, 0.3, size)) < 1e-6);
+  }
+  assert.equal(sound.plottedSampleAt("pluck", 3, 220, 0.65), 0);
 });

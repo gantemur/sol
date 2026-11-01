@@ -6,6 +6,7 @@ const vm = require("node:vm");
 const path = require("node:path");
 const model = require("./sound-model.js");
 const transientModel = require("./sound-transient.js");
+const spectrumModel = require("./sound-spectrum.js");
 
 const html = fs.readFileSync(path.join(__dirname, "index.html"), "utf8");
 const browserCode = fs.readFileSync(path.join(__dirname, "sound-lab.js"), "utf8");
@@ -21,6 +22,7 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /<html lang="mn">/);
   assert.match(html, /id="fixedTimeCheck" checked/);
   assert.match(html, /src="sound-transient\.js"/);
+  assert.match(html, /src="sound-spectrum\.js"/);
   assert.match(html, /id="strikeWorkspace"[^>]*hidden/);
   assert.match(browserCode, /Нотод тааруулах/);
   assert.doesNotMatch(browserCode, /ноот/i);
@@ -28,6 +30,9 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
 
 function fakePage(search = "") {
   const contexts = [];
+  const analyzedAt = [];
+  const animationFrames = new Map();
+  let nextFrameId = 0;
   const classList = () => {
     const values = new Set();
     return {
@@ -64,6 +69,8 @@ function fakePage(search = "") {
   const elements = new Map(ids.map(id => [id, element()]));
   const waveButtons = model.WAVEFORMS.map(wave => element({ wave }));
   const strikeButtons = transientModel.KINDS.map(strike => element({ strike }));
+  const drumButtons = Object.keys(transientModel.KICK_SIZES).map(drumSize => element({ drumSize }));
+  const spectrumButtons = ["local", "overall"].map(spectrumView => element({ spectrumView }));
   const noteButtons = [60, 69, 72].map(note => element({ note: String(note) }));
   const noteGroup = element(), langGroup = element();
   const document = {
@@ -74,6 +81,8 @@ function fakePage(search = "") {
     querySelectorAll(selector) {
       if (selector === "[data-wave]") return waveButtons;
       if (selector === "[data-strike]") return strikeButtons;
+      if (selector === "[data-drum-size]") return drumButtons;
+      if (selector === "[data-spectrum-view]") return spectrumButtons;
       if (selector === "[data-note]") return noteButtons;
       return [];
     },
@@ -87,9 +96,22 @@ function fakePage(search = "") {
   const window = {
     SoundLabModel: model,
     SoundLabTransientModel: transientModel,
+    SoundLabSpectrum: {
+      ...spectrumModel,
+      spectrumAt(model, recipe, time) {
+        analyzedAt.push(time);
+        return spectrumModel.spectrumAt(model, recipe, time);
+      }
+    },
     location: { href: "https://example.org/sol/tools/sound-lab/" + search, search },
     history: { replaceState() {} },
     devicePixelRatio: 1,
+    requestAnimationFrame(callback) {
+      const id = ++nextFrameId;
+      animationFrames.set(id, callback);
+      return id;
+    },
+    cancelAnimationFrame(id) { animationFrames.delete(id); },
     events: {},
     addEventListener(type, callback) { this.events[type] = callback; }
   };
@@ -165,7 +187,14 @@ function fakePage(search = "") {
   const sandbox = { document, window, URL, URLSearchParams, ResizeObserver: undefined };
   vm.runInNewContext(browserCode, sandbox, { filename: "sound-lab.js" });
   return {
-    contexts, elements, document, window, waveButtons, strikeButtons, noteButtons,
+    contexts, elements, document, window, waveButtons, strikeButtons, drumButtons, spectrumButtons,
+    analyzedAt,
+    tick(seconds) {
+      if (contexts[0]) contexts[0].currentTime += seconds;
+      const callbacks = [...animationFrames.values()];
+      animationFrames.clear();
+      callbacks.forEach(callback => callback());
+    },
     fire(id, type, event) {
       const target = elements.get(id);
       return target.events[type]({ target, ...(event || {}) });
@@ -283,10 +312,10 @@ test("transient controls change modeled decay and category changes cancel pendin
   app.elements.get("strikeDecay").value = "1.1";
   app.fire("strikeDecay", "input");
   assert.equal(app.elements.get("strikeDurationBadge").textContent, "τ = 1.1 s");
-  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0–3 s");
+  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 ms – 3 s");
   app.elements.get("strikeFrequencyInput").value = "440";
   app.fire("strikeFrequencyInput", "change");
-  assert.equal(app.elements.get("strikePitchBadge").textContent, "440 Hz");
+  assert.equal(app.elements.get("strikeNote").textContent, "A4 · Ля4");
   const pending = app.fire("strikeButton", "click");
   app.fire("modePure", "click");
   await pending;
@@ -295,4 +324,78 @@ test("transient controls change modeled decay and category changes cancel pendin
   app.fire("strikeReset", "click");
   assert.equal(app.elements.get("strikeFrequencyInput").value, "220");
   assert.equal(app.elements.get("strikeDecayValue").textContent, "0.65 s");
+});
+
+test("string snap and small/medium/large drum recipes are separate controls", async () => {
+  const app = fakePage();
+  app.fire("modeStrike", "click");
+  app.elements.get("strikeFrequencyInput").value = "437";
+  app.fire("strikeFrequencyInput", "change");
+  assert.equal(app.elements.get("strikeFrequencyInput").value, "437");
+  app.elements.get("strikeSnap").checked = true;
+  app.fire("strikeSnap", "change");
+  assert.equal(app.elements.get("strikeFrequencyInput").value, "440");
+  assert.equal(app.elements.get("strikeNote").textContent, "A4 · Ля4");
+  app.strikeButtons[1].events.click();
+  assert.equal(app.elements.get("strikePitchGroup").hidden, true);
+  assert.equal(app.elements.get("strikeDrumSizeGroup").hidden, false);
+  app.drumButtons[0].events.click();
+  assert.equal(app.drumButtons[0].getAttribute("aria-pressed"), "true");
+  assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "127 → 35 Hz");
+  await app.fire("strikeButton", "click");
+  assert.equal(app.contexts[0].sources.length, 1);
+  app.drumButtons[2].events.click();
+  assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "246 → 67 Hz");
+  assert.equal(app.contexts[0].sources[0].stopped, true);
+  await app.fire("strikeButton", "click");
+  const first = app.contexts[0].buffers[0].getChannelData(0);
+  const second = app.contexts[0].buffers[1].getChannelData(0);
+  assert.notEqual(first[400], second[400], "Drum size changes actual audio samples");
+});
+
+test("one transient waveform supports zoom, pan, presets and time scrubbing", () => {
+  const app = fakePage();
+  app.fire("modeStrike", "click");
+  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 ms – 3 s");
+  app.elements.get("strikeViewPreset").value = "0.02";
+  app.fire("strikeViewPreset", "change");
+  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 ms – 20 ms");
+  app.fire("strikeViewZoomOut", "click");
+  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 ms – 40 ms");
+  app.fire("strikeViewRight", "click");
+  assert.equal(app.elements.get("strikeWindowLabel").textContent, "20 ms – 60 ms");
+  app.fire("strikeViewFit", "click");
+  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 ms – 3 s");
+  app.elements.get("strikeTimeSlider").value = "1500";
+  app.fire("strikeTimeSlider", "input");
+  assert.equal(app.elements.get("strikeTimeValue").textContent, "t = 1.50 s");
+  assert.equal(app.analyzedAt.at(-1), 1.5);
+  app.spectrumButtons[1].events.click();
+  assert.equal(app.spectrumButtons[1].getAttribute("aria-pressed"), "true");
+  assert.match(app.elements.get("strikeSpectrumHint").textContent, /дундаж/);
+});
+
+test("Hit follows Web Audio playback time, then allows manual passive inspection", async () => {
+  const app = fakePage();
+  app.fire("modeStrike", "click");
+  assert.equal(app.contexts.length, 0);
+  await app.fire("strikeButton", "click");
+  assert.equal(app.elements.get("strikeTimeValue").textContent, "t = 0.00 s");
+  app.tick(0.08);
+  assert.equal(app.elements.get("strikeTimeValue").textContent, "t = 0.08 s");
+  assert.ok(app.analyzedAt.at(-1) >= 0.08 - 1e-9);
+  app.tick(0.15);
+  assert.equal(app.elements.get("strikeTimeValue").textContent, "t = 0.23 s");
+  app.elements.get("strikeTimeSlider").value = "450";
+  app.fire("strikeTimeSlider", "input");
+  assert.equal(app.analyzedAt.at(-1), 0.45);
+  app.tick(0.3);
+  assert.equal(app.elements.get("strikeTimeValue").textContent, "t = 0.45 s", "Manual scrub overrides visual follow");
+  await app.fire("strikeButton", "click");
+  assert.equal(app.elements.get("strikeTimeValue").textContent, "t = 0.00 s", "New hit restarts follow");
+  app.tick(0.10);
+  app.fire("stopAll", "click");
+  const stoppedAt = app.elements.get("strikeTimeValue").textContent;
+  app.tick(0.1);
+  assert.equal(app.elements.get("strikeTimeValue").textContent, stoppedAt);
 });

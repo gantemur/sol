@@ -1,4 +1,4 @@
-# Sound Lab (P1 ideal signals + P2A modeled strikes)
+# Sound Lab (P1 ideal signals + P2A modeled strikes and local spectra)
 
 Standalone browser-based Sol tool. Open [index.html](index.html) from the site or serve the repository as a static website. No build, dependencies, recording, external API, microphone permission, uploads or server are required.
 
@@ -15,9 +15,17 @@ Standalone browser-based Sol tool. Open [index.html](index.html) from the site o
 
 - A second **Strike & Pluck / Цохих ба татах** mode with two **generated models**, not recorded instruments: a plucked string with decaying harmonics and a bass drum whose pitch falls as its amplitude decays.
 - Tap-to-trigger interaction, adjustable impact strength and decay time, plus a logarithmic pitch control for the string. The drum has no misleading single-note selector.
-- A decay-envelope plot on a **fixed three-second axis**, making short and long decays visibly different, plus a magnified first-20-ms waveform plot. Both use the same equations as the audio samples in [sound-transient.js](sound-transient.js), including the gentle tail fade. These are modeled signals, not microphone measurements.
 - One shared browser AudioContext across Pure Tones and Strike & Pluck. Each strike is a short one-shot buffer. Up to four triggered voices may overlap, with a strict gain cap; the global Stop, category changes and page hiding silence them. No autoplay, microphone, recording or outside network calls.
 - Independent [transient model tests](sound-transient.test.cjs) and extended [UI/audio simulation tests](sound-ui.test.cjs).
+
+## P2A plot and controls refinement
+
+- The transient mode now has **one navigable waveform plot**, replacing separate envelope and 20-ms charts. It opens with a fixed 0–3 s view; use +/- zoom, left/right pan, Fit, or 1 s / 200 ms / 20 ms presets. At full duration the min/max traces show the decay envelope without aliasing; zoom in to see the individual oscillations. The vertical cursor and blue-shaded analysis window remain visible when their time range intersects the plot.
+- The **local Fourier spectrum** below uses a Hann-windowed 2048-point FFT (16 kHz model sampling; **128 ms analysis window**) of the same mathematical waveform as the speaker signal. Its analysis window is independent of waveform zoom. The fixed -60 to 0 dB relative scale lets fading harmonics visibly decrease rather than rescaling each frame to full height. Toggle to the time-averaged **Whole sound** spectrum for comparison.
+- **Synchronization:** when the user taps Pluck/Strike, the time cursor and local spectrum follow the latest hit according to the Web Audio context clock. Another tap starts following the newest hit, even when earlier bounded voices still decay. On completion or Stop, the display remains available. Dragging the time slider or clicking the waveform switches to passive manual inspection without replaying or altering the actual audio. It never autoplays.
+- The string pitch control now has an independent **Snap to notes** switch using the same 12-TET note resolution as Pure Tones. With Snap off, the exact entered frequency remains unchanged.
+- The bass drum has **Large / Medium / Small** presets that scale its frequency trajectory (a deliberately stylized kick model, not a physical circular-membrane simulation). It deliberately does not display a spurious stable musical note. Changing a recipe control stops the previous triggered buffer so the plotted model cannot silently disagree with an earlier hit.
+- [sound-spectrum.js](sound-spectrum.js) is a dependency-free analysis module. It and the updated [sound-transient.js](sound-transient.js) are testable without a browser. All graphics are modeled output or FFT of that model, not microphone measurements or the sound actually emitted by speakers.
 
 ## Future extension boundaries
 
@@ -35,6 +43,7 @@ From repository root, with Node.js:
 
     node tools/sound-lab/sound-model.test.cjs
     node tools/sound-lab/sound-transient.test.cjs
+    node tools/sound-lab/sound-spectrum.test.cjs
     node tools/sound-lab/sound-ui.test.cjs
     node scripts/check-static.js
     node scripts/test-static-check.js
@@ -46,13 +55,15 @@ Manual browser checklist (not covered by Node model tests):
 3. Check raw 437 Hz stays 437 with Snap off; turn Snap on and verify it rounds to A4 = 440 Hz.
 4. Compare sine (one modeled peak), triangle and square (odd peaks), and sawtooth (all peaks). Raise pitch and watch cycles pack into the fixed 20 ms window, then uncheck the fixed-window setting to see four large periods.
 5. Confirm the bare URL opens in Mongolian and `?lang=en` opens in English; tab through controls with the keyboard, including Play and Stop; resize the page and ensure the charts remain readable.
-6. Enter Strike & Pluck. Confirm switching modes is silent until a tap; try the string at 220 and 440 Hz, and the bass drum. Compare their attacks and decays on both plots.
-7. Change the strike strength and decay time, tap several times quickly, switch back to Pure Tones and press global Stop. Check that no hidden voice or loop continues playing. Test on phone speakers and headphones at low volume.
+6. Enter Strike & Pluck. Confirm switching modes is silent until a tap; try the string at 220 and 440 Hz with Snap off/on and all three drum-size presets. Verify the sound changes and the drum pitch controls are replaced by size choices.
+7. Compare 0–3 s, 1 s, 200 ms and 20 ms waveform views. Zoom and pan across the decay, then Fit; use both the time slider and clicking the plot to inspect different moments. Confirm the local spectrum evolves and the Whole sound toggle stays constant.
+8. Tap several times: the time cursor should follow the **latest** hit, reaching its end without unintended replay. On Stop, the cursor stops and manual scrubbing still works. Change strike strength/decay, switch back to Pure Tones, and check that no hidden voice or loop continues. Test on phone speakers and headphones at low volume.
 
 ## Scientific/technical limits
 
 - Ideal Fourier magnitudes are relative to the fundamental; actual speaker/headphone responses, Nyquist filtering and hearing vary. The waveform plot is a mathematical model and the spectrum omits harmonic phase.
 - There is no maximum listening-time or dB calibration; users should start at low volume, particularly with headphones.
 - Higher frequencies may be outside the effective bandwidth of a device; avoid presenting them as proof of a child's individual hearing range.
-- This release has no audio export, recording, live FFT, tuning comparison, chords or melody playback.
+- The local FFT analyzes a mathematically generated signal, not live microphone or sound-card audio. A short-time spectrum necessarily trades time resolution for frequency resolution; this release fixes its window at 128 ms, especially relevant for very low drum frequencies.
+- This release has no audio export, recording, microphone analysis, tuning comparison, chords or melody playback.
 - The pluck is a damped harmonic sum, not a full physical string model. The drum is a decaying sinusoid with an idealized downward pitch sweep; neither is intended to sound like a professionally sampled instrument. A richer Karplus–Strong string model and noise-based snare may follow later.
