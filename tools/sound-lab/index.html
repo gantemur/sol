@@ -4,11 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#192d49">
-  <meta name="description" content="Hear and see ideal sound waves: sine, triangle, square and sawtooth. An interactive bilingual Sol physics tool.">
+  <meta name="description" content="Explore ideal sound waves, plucked strings and bass drums with interactive waveforms, time-dependent spectra and bilingual controls.">
   <title>Sound Lab · Sol</title>
   <link rel="stylesheet" href="sound-lab.css">
   <script src="sound-model.js" defer></script>
   <script src="sound-transient.js" defer></script>
+  <script src="sound-spectrum.js" defer></script>
   <script src="sound-lab.js" defer></script>
 </head>
 <body>
@@ -200,7 +201,21 @@
               <span>Hz</span>
             </div>
           </div>
-          <div class="scale-row"><span>110 Hz</span><span>880 Hz</span></div>
+          <div class="scale-row">
+            <span>110 Hz</span>
+            <label class="check-label"><input id="strikeSnap" type="checkbox"> <span data-i18n="snap">Нотод тааруулах</span></label>
+            <span>880 Hz</span>
+          </div>
+        </div>
+
+        <div class="field-group" id="strikeDrumSizeGroup" hidden>
+          <div class="field-title"><span data-i18n="strikeDrumSize">Бөмбөрийн хэмжээ</span><output id="strikeDrumFrequencies">176 → 48 Hz</output></div>
+          <div class="drum-sizes" role="group" id="strikeDrumSizes" aria-label="Бөмбөрийн хэмжээ">
+            <button type="button" data-drum-size="large" aria-pressed="false" data-i18n="strikeLarge">Том</button>
+            <button type="button" class="selected" data-drum-size="medium" aria-pressed="true" data-i18n="strikeMedium">Дунд</button>
+            <button type="button" data-drum-size="small" aria-pressed="false" data-i18n="strikeSmall">Жижиг</button>
+          </div>
+          <p class="field-help" data-i18n="strikeDrumHint">Энэ нь бөмбөрийн дууны өндөр намыг өөрчилдөг хялбаршуулсан загвар.</p>
         </div>
 
         <div class="field-group">
@@ -221,31 +236,59 @@
       </section>
 
       <div class="visuals">
-        <section class="panel chart-panel" aria-labelledby="strike-envelope-title">
+        <section class="panel chart-panel" aria-labelledby="strike-wave-title">
           <div class="chart-heading">
             <div>
-              <h2 id="strike-envelope-title" data-i18n="strikeEnvelopeTitle">Дууны хүч хэрхэн намдах вэ?</h2>
-              <p data-i18n="strikeEnvelopeSubtitle">Бүх цохилтыг нэг ижил 3 секундийн хуваарьт харуулав</p>
+              <h2 id="strike-wave-title" data-i18n="strikeWaveTitle">Дууны долгион</h2>
+              <p data-i18n="strikeWaveSubtitle">Бүхэлд нь хараад томруулбал нэг нэг хэлбэлзэл тодорно.</p>
             </div>
             <span class="chart-badge" id="strikeDurationBadge">τ = 0.65 s</span>
           </div>
-          <canvas id="strikeEnvelopeCanvas" role="img" aria-label="Намдах далайцын математик загвар" width="740" height="265"></canvas>
+          <div class="plot-tools" role="group" aria-label="Долгионы графикийн удирдлага" id="strikePlotTools">
+            <button id="strikeViewZoomOut" type="button" data-i18n-aria="strikeZoomOutAria" aria-label="Томруулалтыг багасгах">−</button>
+            <button id="strikeViewZoomIn" type="button" data-i18n-aria="strikeZoomInAria" aria-label="Томруулах">+</button>
+            <button id="strikeViewLeft" type="button" data-i18n-aria="strikePanLeftAria" aria-label="Зүүн тийш">←</button>
+            <button id="strikeViewRight" type="button" data-i18n-aria="strikePanRightAria" aria-label="Баруун тийш">→</button>
+            <button id="strikeViewFit" type="button" data-i18n="strikeFit">Бүгд</button>
+            <label for="strikeViewPreset" class="sr-only" data-i18n="strikeViewPresetLabel">Хугацааны хуваарь</label>
+            <select id="strikeViewPreset" aria-label="Хугацааны хуваарь">
+              <option value="3" data-i18n="strikeFit">Бүгд</option>
+              <option value="1">1 s</option>
+              <option value="0.2">200 ms</option>
+              <option value="0.02">20 ms</option>
+              <option value="custom" hidden data-i18n="strikeCustom">Өөр</option>
+            </select>
+          </div>
+          <canvas id="strikeWaveCanvas" role="img" aria-label="Томруулж үзэх дууны долгионы математик загвар" width="740" height="265"></canvas>
+          <div class="cursor-control">
+            <div class="field-title">
+              <label for="strikeTimeSlider" data-i18n="strikeTime">Дууны хугацааг шинжлэх</label>
+              <output id="strikeTimeValue">t = 0.00 s</output>
+            </div>
+            <input id="strikeTimeSlider" type="range" min="0" max="3000" step="5" value="0" aria-label="Сонгосон хугацаа">
+            <p class="field-help" data-i18n="strikeTimeHint">Цохиход спектр дууг дагана. Дараа нь гулсуураар хугацааг сонгоорой.</p>
+          </div>
           <div class="chart-foot">
             <span id="strikeWindowLabel">0–3 s</span>
             <span data-i18n="timeAxis">хугацаа →</span>
           </div>
         </section>
-        <section class="panel chart-panel" aria-labelledby="strike-zoom-title">
+        <section class="panel chart-panel" aria-labelledby="strike-spectrum-title">
           <div class="chart-heading">
             <div>
-              <h2 id="strike-zoom-title" data-i18n="strikeZoomTitle">Эхний 20 мс-ийн долгион</h2>
-              <p data-i18n="strikeZoomSubtitle">Хэлбэлзлийг томруулж харах</p>
+              <h2 id="strike-spectrum-title" data-i18n="strikeLocalSpectrumTitle">Давтамжийн спектр</h2>
+              <p data-i18n="strikeLocalSpectrumSubtitle">Сонгосон хугацааны орчмын 128 мс долгионы Фурье шинжилгээ</p>
             </div>
-            <span class="chart-badge" id="strikePitchBadge">220 Hz</span>
+            <span class="chart-badge" id="strikeSpectrumBadge">t = 0.00 s</span>
           </div>
-          <canvas id="strikeZoomCanvas" role="img" aria-label="Эхний 20 мс-ийн долгионы загвар" width="740" height="215"></canvas>
+          <div class="spectrum-modes" role="group" id="strikeSpectrumChoices" aria-label="Спектрийн төрөл">
+            <button type="button" class="selected" data-spectrum-view="local" aria-pressed="true" data-i18n="strikeSpectrumHere">Энэ мөчид</button>
+            <button type="button" data-spectrum-view="overall" aria-pressed="false" data-i18n="strikeSpectrumWhole">Бүх дуу</button>
+          </div>
+          <canvas id="strikeSpectrumCanvas" role="img" aria-label="Хугацаанаас хамаарсан Фурье спектр" width="740" height="215"></canvas>
           <div class="chart-foot">
-            <span>0–20 ms</span><span data-i18n="timeAxis">хугацаа →</span>
+            <span id="strikeSpectrumHint" data-i18n="strikeSpectrumHint">Өндөр гармоникууд хэр хурдан намдаж байгааг ажигла.</span>
+            <span data-i18n="frequencyAxis">давтамж →</span>
           </div>
         </section>
       </div>
