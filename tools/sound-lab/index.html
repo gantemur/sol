@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#192d49">
+  <meta name="description" content="Hear and see ideal sound waves: sine, triangle, square and sawtooth. An interactive bilingual Sol physics tool.">
+  <title>Sound Lab · Sol</title>
+  <link rel="stylesheet" href="sound-lab.css">
+  <script src="sound-model.js" defer></script>
+  <script src="sound-lab.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <a class="back-link" href="../../" data-i18n-aria="backLabel" aria-label="Back to Sol tools">← <span>sol</span></a>
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 42 42"><path d="M3 21C9 21 9 7 15 7s6 28 12 28 6-19 12-19" fill="none" stroke="white" stroke-width="3.4" stroke-linecap="round"/></svg>
+        </div>
+        <div><strong>Sound Lab</strong><small>Дууны лаборатори</small></div>
+      </div>
+      <div class="top-actions">
+        <div class="lang-group" role="group" aria-label="Interface language">
+          <button class="lang-option active" id="langEn" type="button" aria-pressed="true">EN</button>
+          <button class="lang-option" id="langMn" type="button" aria-pressed="false">MN</button>
+        </div>
+        <button id="stopAll" class="stop-all" type="button" data-i18n="stop">■ Stop</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="page-head">
+      <div>
+        <div class="eyebrow" data-i18n="eyebrow">EXPLORE SOUNDS · PURE TONES</div>
+        <h1 data-i18n="title">What does a wave sound like?</h1>
+        <p data-i18n="intro">Play a simple sound, change its pitch or shape, and watch what happens to its wave and harmonics.</p>
+      </div>
+      <span class="pill" data-i18n="phase">01 · Ideal signals</span>
+    </div>
+
+    <div class="workspace">
+      <section class="panel controls" aria-labelledby="controls-title">
+        <div class="section-top">
+          <h2 id="controls-title" data-i18n="chooseShape">Choose a wave shape</h2>
+          <p id="soundDescription" class="description">One smooth vibration with just one frequency.</p>
+        </div>
+
+        <div class="wave-choices" role="group" aria-label="Waveform shape" id="waveChoices">
+          <button class="wave-choice selected" type="button" data-wave="sine" aria-pressed="true">
+            <svg viewBox="0 0 64 28" aria-hidden="true"><path d="M2 14C9-2 17-2 24 14S39 30 46 14 55-2 62 14"/></svg>
+            <span data-i18n="sine">Sine</span>
+          </button>
+          <button class="wave-choice" type="button" data-wave="triangle" aria-pressed="false">
+            <svg viewBox="0 0 64 28" aria-hidden="true"><path d="M2 14L17 2 32 26 47 2 62 14"/></svg>
+            <span data-i18n="triangle">Triangle</span>
+          </button>
+          <button class="wave-choice" type="button" data-wave="square" aria-pressed="false">
+            <svg viewBox="0 0 64 28" aria-hidden="true"><path d="M2 26V2H32V26H62V2"/></svg>
+            <span data-i18n="square">Square</span>
+          </button>
+          <button class="wave-choice" type="button" data-wave="sawtooth" aria-pressed="false">
+            <svg viewBox="0 0 64 28" aria-hidden="true"><path d="M2 26L32 2V26L62 2"/></svg>
+            <span data-i18n="sawtooth">Sawtooth</span>
+          </button>
+        </div>
+
+        <button class="play-button" type="button" id="playButton" aria-pressed="false">
+          <span class="play-icon" id="playIcon" aria-hidden="true">▶</span>
+          <span id="playLabel" data-i18n="play">Play tone</span>
+          <span class="play-caption" id="playCaption" data-i18n="playCaption">Tap or click to hear</span>
+        </button>
+        <p class="audio-status" id="audioStatus" role="status" aria-live="polite">Ready. Sound begins only when you press Play.</p>
+
+        <div class="field-group">
+          <div class="field-title">
+            <label for="frequencySlider" data-i18n="frequency">Frequency</label>
+            <output id="noteLabel" class="note-badge" for="frequencySlider frequencyInput">A4 · Ля4</output>
+          </div>
+          <div class="frequency-controls">
+            <input id="frequencySlider" type="range" min="0" max="1000" step="1" value="530" aria-label="Logarithmic frequency slider">
+            <div class="number-wrap">
+              <input id="frequencyInput" type="number" min="20" max="12000" step="any" inputmode="decimal" value="440" aria-label="Exact frequency in hertz">
+              <span>Hz</span>
+            </div>
+          </div>
+          <div class="scale-row">
+            <span>80 Hz</span>
+            <label class="check-label"><input id="snapCheck" type="checkbox"> <span data-i18n="snap">Snap to notes</span></label>
+            <span>2,000 Hz</span>
+          </div>
+          <p class="field-help" id="sliderHelp" data-i18n="sliderHint">The slider is logarithmic. Type a frequency for values outside its range.</p>
+        </div>
+
+        <div class="note-presets" role="group" aria-label="Musical note presets">
+          <span data-i18n="tryNote">Try a note:</span>
+          <button type="button" data-note="60">C4 · До</button>
+          <button type="button" data-note="69">A4 · Ля</button>
+          <button type="button" data-note="72">C5 · До</button>
+        </div>
+
+        <div class="field-group volume-field">
+          <div class="field-title">
+            <label for="volumeSlider" data-i18n="volume">Volume</label>
+            <output id="volumeReadout" for="volumeSlider">40%</output>
+          </div>
+          <input id="volumeSlider" type="range" min="0" max="100" step="1" value="40">
+          <p class="field-help" data-i18n="safeVolume">Starts quietly. Increase volume carefully, especially with headphones.</p>
+        </div>
+
+        <details id="settings" class="settings">
+          <summary data-i18n="settings">⚙ Settings</summary>
+          <div class="settings-inner">
+            <div class="setting-row">
+              <div>
+                <strong data-i18n="tuning">Tuning for snapped notes</strong>
+                <p data-i18n="tuningHint">The note names use 12-tone equal temperament for now.</p>
+              </div>
+              <span class="setting-value" data-i18n="equal">12-tone equal</span>
+            </div>
+            <label class="check-label setting-check">
+              <input type="checkbox" id="fixedTimeCheck">
+              <span data-i18n="fixedTime">Use a fixed 20 ms time window</span>
+            </label>
+            <p class="field-help" data-i18n="fixedHint">With a fixed window, raising frequency fits more cycles into the same time.</p>
+          </div>
+        </details>
+      </section>
+
+      <div class="visuals">
+        <section class="panel chart-panel" aria-labelledby="wave-title">
+          <div class="chart-heading">
+            <div>
+              <h2 id="wave-title" data-i18n="waveTitle">Waveform over time</h2>
+              <p data-i18n="waveSubtitle">A mathematical picture of the selected sound</p>
+            </div>
+            <span class="chart-badge" id="periodBadge">T = 2.27 ms</span>
+          </div>
+          <canvas id="waveCanvas" role="img" aria-label="Modeled waveform over time" width="740" height="265"></canvas>
+          <div class="chart-foot">
+            <span id="windowLabel">0–9.1 ms</span>
+            <span data-i18n="timeAxis">time →</span>
+          </div>
+        </section>
+
+        <section class="panel chart-panel" aria-labelledby="spectrum-title">
+          <div class="chart-heading">
+            <div>
+              <h2 id="spectrum-title" data-i18n="spectrumTitle">Harmonics</h2>
+              <p data-i18n="spectrumSubtitle">Ideal frequency components, relative to the first</p>
+            </div>
+            <span class="chart-badge" id="fundamentalBadge">f₀ = 440 Hz</span>
+          </div>
+          <canvas id="spectrumCanvas" role="img" aria-label="Modeled harmonic magnitude spectrum" width="740" height="215"></canvas>
+          <div class="chart-foot">
+            <span id="harmonicInsight">A sine wave has only its fundamental frequency.</span>
+            <span data-i18n="frequencyAxis">frequency →</span>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <section class="challenge" aria-labelledby="challenge-heading">
+      <div class="challenge-icon" aria-hidden="true">✧</div>
+      <div class="challenge-copy">
+        <h2 id="challenge-heading" data-i18n="tryThis">TRY THIS</h2>
+        <p id="challengeText">Double the frequency. How do pitch and the period change?</p>
+      </div>
+      <button type="button" id="resetButton" class="reset-button" data-i18n="reset">↺ Reset</button>
+    </section>
+
+    <details class="explanation">
+      <summary data-i18n="learnMore">Why do the wave shapes sound different?</summary>
+      <p data-i18n="lessonOne">Every repeating wave has a fundamental frequency. The higher harmonic peaks occur at whole-number multiples of it: 2f, 3f, 4f, and so on.</p>
+      <p data-i18n="lessonTwo">Changing the wave shape changes the strengths of those harmonics. The pitch can stay the same even when the sound's character changes.</p>
+      <p data-i18n="lessonThree">These plots show ideal mathematical signals, not a recording from your speakers. Actual loudness and high-frequency response depend on your device.</p>
+    </details>
+  </main>
+
+  <footer class="footer">
+    <span data-i18n="footer">Sol Sound Lab · Sound is generated on your device; nothing is recorded or uploaded.</span>
+    <span data-i18n="future">More sounds and music-making are planned.</span>
+  </footer>
+</body>
+</html>

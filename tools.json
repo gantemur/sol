@@ -45,6 +45,15 @@
     "migrationStatus": "native notebook-derived MVP"
   },
   {
+    "id": "sound-lab",
+    "title": "Sound Lab · Дууны лаборатори",
+    "language": ["en", "mn"],
+    "category": "physics",
+    "entry": "tools/sound-lab/",
+    "description": "Hear ideal sine, triangle, square and sawtooth signals while exploring their waveforms and harmonics.",
+    "migrationStatus": "native phase-one ideal-signal tool"
+  },
+  {
     "id": "kinetic",
     "title": "Атом молекул",
     "language": "mn",
