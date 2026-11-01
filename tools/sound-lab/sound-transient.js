@@ -19,6 +19,7 @@
   const KICK_LOW_HZ = 48;
   const KICK_SWEEP_HZ = 128;
   const KICK_SWEEP_TIME = 0.04;
+  const KICK_SIZES = Object.freeze({ large: 0.72, medium: 1, small: 1.4 });
 
   const pluckWeights = Array.from({ length: 8 }, (_, i) => {
     const n = i + 1;
@@ -28,13 +29,16 @@
   });
   const pluckNormalization = pluckWeights.reduce((sum, weight) => sum + Math.abs(weight), 0);
 
-  function validate(kind, pitchHz, decaySec) {
+  function validate(kind, pitchHz, decaySec, kickSize = "medium") {
     if (!KINDS.includes(kind)) throw new RangeError("Unknown transient sound");
     if (!Number.isFinite(decaySec) || decaySec < MIN_DECAY || decaySec > MAX_DECAY) {
       throw new RangeError("Decay outside the supported range");
     }
     if (kind === "pluck" && (!Number.isFinite(pitchHz) || pitchHz < MIN_PITCH_HZ || pitchHz > MAX_PITCH_HZ)) {
       throw new RangeError("Plucked-string frequency outside the supported range");
+    }
+    if (kind === "kick" && !Object.hasOwn(KICK_SIZES, kickSize)) {
+      throw new RangeError("Unknown drum-size preset");
     }
   }
 
@@ -44,16 +48,17 @@
     return (1 - Math.exp(-time / attack)) * Math.exp(-time / decaySec);
   }
 
-  function kickFrequency(time) {
-    return KICK_LOW_HZ + KICK_SWEEP_HZ * Math.exp(-Math.max(0, time) / KICK_SWEEP_TIME);
+  function kickFrequency(time, size = "medium") {
+    if (!Object.hasOwn(KICK_SIZES, size)) throw new RangeError("Unknown drum-size preset");
+    return KICK_SIZES[size] * (KICK_LOW_HZ + KICK_SWEEP_HZ * Math.exp(-Math.max(0, time) / KICK_SWEEP_TIME));
   }
 
-  function sampleAt(kind, time, pitchHz, decaySec) {
+  function sampleAt(kind, time, pitchHz, decaySec, kickSize = "medium") {
     if (time <= 0) return 0;
     const level = envelope(kind, time, decaySec);
     if (kind === "kick") {
       // Integrate the falling frequency exactly, so the phase is continuous.
-      const phase = TAU * (KICK_LOW_HZ * time +
+      const phase = TAU * KICK_SIZES[kickSize] * (KICK_LOW_HZ * time +
         KICK_SWEEP_HZ * KICK_SWEEP_TIME * (1 - Math.exp(-time / KICK_SWEEP_TIME)));
       return level * Math.sin(phase);
     }
@@ -76,8 +81,15 @@
     return envelope(kind, time, decaySec) * Math.min(1, (length - time) / 0.018);
   }
 
-  function makeSamples(kind, pitchHz, decaySec, sampleRate) {
-    validate(kind, pitchHz, decaySec);
+  function plottedSampleAt(kind, time, pitchHz, decaySec, kickSize = "medium") {
+    const length = duration(decaySec);
+    if (time <= 0 || time >= length) return 0;
+    const fade = Math.min(1, (length - time) / 0.018);
+    return sampleAt(kind, time, pitchHz, decaySec, kickSize) * fade;
+  }
+
+  function makeSamples(kind, pitchHz, decaySec, sampleRate, kickSize = "medium") {
+    validate(kind, pitchHz, decaySec, kickSize);
     if (!Number.isFinite(sampleRate) || sampleRate < 8000 || sampleRate > 192000) {
       throw new RangeError("Unsupported sampling rate");
     }
@@ -86,8 +98,7 @@
     const samples = new Float32Array(count);
     for (let i = 0; i < count; i++) {
       const time = i / sampleRate;
-      const tailFade = Math.min(1, (seconds - time) / 0.018);
-      samples[i] = sampleAt(kind, time, pitchHz, decaySec) * tailFade;
+      samples[i] = plottedSampleAt(kind, time, pitchHz, decaySec, kickSize);
     }
     return samples;
   }
@@ -101,8 +112,8 @@
   }
 
   return Object.freeze({
-    KINDS, MIN_PITCH_HZ, MAX_PITCH_HZ, MIN_DECAY, MAX_DECAY,
-    validate, envelope, plottedEnvelope, kickFrequency, sampleAt,
+    KINDS, KICK_SIZES, MIN_PITCH_HZ, MAX_PITCH_HZ, MIN_DECAY, MAX_DECAY,
+    validate, envelope, plottedEnvelope, kickFrequency, sampleAt, plottedSampleAt,
     duration, makeSamples, sliderToHz, hzToSlider
   });
 });
