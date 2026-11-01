@@ -7,8 +7,8 @@ Standalone browser-based Sol tool. Open [index.html](index.html) from the site o
 - Sine, triangle, square and sawtooth using Web Audio's built-in oscillators.
 - Explicit click/tap to start audio; large Play/Stop toggle and always-visible master Stop. Gain defaults to a conservative 0.06 maximum signal amplitude (40% of a 0.15 cap), with short ramps when sound starts, stops or changes shape. No simultaneous instrument tracks.
 - Live smooth pitch changes, logarithmic 80–2,000 Hz slider, larger exact numeric field for 20–12,000 Hz, and optional 12-tone-equal note snapping (A4 = 440 Hz). When snap is off, exact Hz is preserved. Quick C4, A4 and C5 presets show English and Mongolian fixed-do names.
-- Volume, reset, English/Mongolian switch with optional ?lang=mn, and collapsed Settings containing the current tuning label and a fixed 20 ms plot-window toggle.
-- Two labeled **ideal mathematical** plots: a time-domain waveform and a relative-amplitude harmonic spectrum. The plotted amplitudes, harmonic numbers and waveform shapes come from [sound-model.js](sound-model.js). These are **not** a microphone FFT or a live measurement of the speaker output.
+- Volume, reset, Mongolian by default (use `?lang=en` for English), and collapsed Settings containing the current tuning label and a time-window toggle.
+- Two labeled **ideal mathematical** plots: a time-domain waveform and a relative-amplitude harmonic spectrum. The time plot defaults to the **same 20 ms window**, so higher frequencies visibly fit more oscillations; its caption gives the number of cycles. Uncheck the fixed-window setting to zoom to four periods for inspecting the wave shape. The plotted amplitudes, harmonic numbers and waveform shapes come from [sound-model.js](sound-model.js). These are **not** a microphone FFT or a live measurement of the speaker output.
 - Small experiments and explanations about period, pitch, and harmonic content.
 
 ## Future extension boundaries
@@ -35,8 +35,8 @@ Manual browser checklist (not covered by Node model tests):
 1. Open the page in Chrome/Firefox/Safari on desktop and phone; no sound before Play.
 2. Start Play, change wave, pitch and volume while sounding, then Stop. Test rapid changes and visibility loss. Check headphone volume carefully.
 3. Check raw 437 Hz stays 437 with Snap off; turn Snap on and verify it rounds to A4 = 440 Hz.
-4. Compare sine (one modeled peak), triangle and square (odd peaks), and sawtooth (all peaks); try fixed 20 ms window and watch the number of cycles change.
-5. Toggle EN/MN; tab through controls with the keyboard, including Play and Stop; resize the page and ensure the charts remain readable.
+4. Compare sine (one modeled peak), triangle and square (odd peaks), and sawtooth (all peaks). Raise pitch and watch cycles pack into the fixed 20 ms window, then uncheck the fixed-window setting to see four large periods.
+5. Confirm the bare URL opens in Mongolian and `?lang=en` opens in English; tab through controls with the keyboard, including Play and Stop; resize the page and ensure the charts remain readable.
 
 ## Scientific/technical limits
 

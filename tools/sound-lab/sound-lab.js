@@ -20,9 +20,11 @@
       safeVolume: "Starts quietly. Increase volume carefully, especially with headphones.",
       settings: "⚙ Settings", tuning: "Tuning for snapped notes",
       tuningHint: "The note names use 12-tone equal temperament for now.",
-      equal: "12-tone equal", fixedTime: "Use a fixed 20 ms time window",
-      fixedHint: "With a fixed window, raising frequency fits more cycles into the same time.",
-      waveTitle: "Waveform over time", waveSubtitle: "A mathematical picture of the selected sound",
+      equal: "12-tone equal", fixedTime: "Keep the time window fixed at 20 ms",
+      fixedHint: "Uncheck to zoom into four periods and examine the wave shape. The time scale then changes with frequency.",
+      waveTitle: "Waveform over time", waveSubtitle: "Same 20 ms at every frequency: higher pitch means more cycles.",
+      waveSubtitleZoom: "Zoomed to four periods: the time scale now changes with frequency.",
+      cyclesUnit: "cycles",
       spectrumTitle: "Harmonics", spectrumSubtitle: "Ideal frequency components, relative to the first",
       timeAxis: "time →", frequencyAxis: "frequency →",
       tryThis: "TRY THIS", reset: "↺ Reset",
@@ -72,16 +74,18 @@
       sine: "Синус", triangle: "Гурвалжин", square: "Тэгш өнцөгт", sawtooth: "Хөрөө",
       play: "Авиа тоглуулах", playCaption: "Сонсохын тулд товшино уу",
       stopTone: "Авиа зогсоох", stopCaption: "Авиа дуугарч байна · зогсоохын тулд товшино уу",
-      frequency: "Давтамж", snap: "Ноотод тааруулах",
+      frequency: "Давтамж", snap: "Нотод тааруулах",
       sliderHint: "Гулсуур нь логарифм хуваарьтай. Хязгаараас гадуур утгыг гараар оруулж болно.",
       sliderOutside: "Гараар оруулсан давтамж гулсуурын хязгаараас гадуур боловч яг тэр утгыг хэрэглэнэ.",
-      tryNote: "Ноот турших:", volume: "Дууны хэмжээ",
+      tryNote: "Нот турших:", volume: "Дууны хэмжээ",
       safeVolume: "Эхэндээ аяархан дуугарна. Ялангуяа чихэвч хэрэглэвэл болгоомжтой нэмээрэй.",
-      settings: "⚙ Тохиргоо", tuning: "Ноотод тааруулах хөглөлт",
+      settings: "⚙ Тохиргоо", tuning: "Нотод тааруулах хөглөлт",
       tuningHint: "Одоохондоо 12 тэнцүү хагас авианы хөглөлт ашиглана.",
-      equal: "12 тэнцүү хуваарь", fixedTime: "Хугацааны цонхыг 20 мс-д тогтоох",
-      fixedHint: "Цонх тогтмол байвал давтамж ихсэх тусам нэг хугацаанд олон хэлбэлзэл багтана.",
-      waveTitle: "Хугацааны дагуух долгион", waveSubtitle: "Сонгосон авианы математик загвар",
+      equal: "12 тэнцүү хуваарь", fixedTime: "Хугацааны цонхыг 20 мс-д тогтмол байлгах",
+      fixedHint: "Долгионы хэлбэрийг сайн харахын тулд тэмдэглэгээг арилгаж дөрвөн үеийг томруулна. Ингэвэл хугацааны хуваарь өөрчлөгдөнө.",
+      waveTitle: "Хугацааны дагуух долгион", waveSubtitle: "Хугацаа 20 мс хэвээр: давтамж ихсэхэд олон үе багтана.",
+      waveSubtitleZoom: "Дөрвөн үеийг томруулж харуулав. Давтамжтай хамт хугацааны хуваарь өөрчлөгдөнө.",
+      cyclesUnit: "үе",
       spectrumTitle: "Гармоникууд", spectrumSubtitle: "Үндсэн давтамжтай харьцуулсан идеал бүрэлдэхүүн",
       timeAxis: "хугацаа →", frequencyAxis: "давтамж →",
       tryThis: "ТУРШИЖ ҮЗ", reset: "↺ Эхнээс нь",
@@ -93,7 +97,7 @@
       future: "Цаашид өөр авиа, хөгжим зохиох боломж нэмэгдэнэ.",
       waveAria: "Хугацааны дагуух долгионы загвар", spectrumAria: "Гармоникийн далайцын загвар",
       sliderAria: "Логарифм давтамжийн гулсуур", frequencyAria: "Давтамжийг герцээр оруулах",
-      presetsAria: "Хөгжмийн ноотын жишээ", waveGroupAria: "Долгионы хэлбэр",
+      presetsAria: "Хөгжмийн нотын жишээ", waveGroupAria: "Долгионы хэлбэр",
       langGroupAria: "Хэл сонгох", amplitude: "далайц",
       ready: "Бэлэн. «Тоглуулах» товчийг дарахад л авиа гарна.",
       starting: "Авиа эхлүүлж байна…",
@@ -126,12 +130,12 @@
 
   const params = new URLSearchParams(window.location.search);
   const state = {
-    language: params.get("lang") === "mn" ? "mn" : "en",
+    language: params.get("lang") === "en" ? "en" : "mn",
     waveform: "sine",
     frequency: 440,
     volume: 40,
     snap: false,
-    fixedTime: false,
+    fixedTime: true,
     playing: false,
     status: "ready",
     error: false
@@ -363,7 +367,7 @@
     state.frequency = 440;
     state.volume = 40;
     state.snap = false;
-    state.fixedTime = false;
+    state.fixedTime = true;
     $("settings").open = false;
     renderTexts();
     renderControls();
@@ -420,7 +424,9 @@
     const duration = state.fixedTime ? 0.020 : 4 / state.frequency;
     const periodMs = 1000 / state.frequency;
     $("periodBadge").textContent = "T = " + frequencyText(periodMs) + " ms";
-    $("windowLabel").textContent = "0–" + frequencyText(duration * 1000) + " ms";
+    $("windowLabel").textContent = "0–" + frequencyText(duration * 1000) + " ms · " +
+      frequencyText(duration * state.frequency) + " " + text("cyclesUnit");
+    $("waveSubtitle").textContent = text(state.fixedTime ? "waveSubtitle" : "waveSubtitleZoom");
     $("fundamentalBadge").textContent = "f₀ = " + frequencyText(state.frequency) + " Hz";
     ctx.fillStyle = "#7489a1";
     ctx.textAlign = "left";
@@ -430,7 +436,9 @@
     ctx.lineWidth = 2.5;
     ctx.lineJoin = "round";
     ctx.beginPath();
-    const points = Math.max(480, Math.round((right - left) * 1.5));
+    // Avoid undersampling dense high-frequency traces on a fixed time axis.
+    const points = Math.max(480, Math.round((right - left) * 1.5),
+      Math.ceil(duration * state.frequency * 12));
     for (let i = 0; i <= points; i++) {
       const fraction = i / points;
       const phase = fraction * duration * state.frequency;

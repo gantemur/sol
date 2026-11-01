@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="mn">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,8 +22,8 @@
       </div>
       <div class="top-actions">
         <div class="lang-group" role="group" aria-label="Interface language">
-          <button class="lang-option active" id="langEn" type="button" aria-pressed="true">EN</button>
-          <button class="lang-option" id="langMn" type="button" aria-pressed="false">MN</button>
+          <button class="lang-option" id="langEn" type="button" aria-pressed="false">EN</button>
+          <button class="lang-option active" id="langMn" type="button" aria-pressed="true">MN</button>
         </div>
         <button id="stopAll" class="stop-all" type="button" data-i18n="stop">■ Stop</button>
       </div>
@@ -120,10 +120,10 @@
               <span class="setting-value" data-i18n="equal">12-tone equal</span>
             </div>
             <label class="check-label setting-check">
-              <input type="checkbox" id="fixedTimeCheck">
-              <span data-i18n="fixedTime">Use a fixed 20 ms time window</span>
+              <input type="checkbox" id="fixedTimeCheck" checked>
+              <span data-i18n="fixedTime">Keep the time window fixed at 20 ms</span>
             </label>
-            <p class="field-help" data-i18n="fixedHint">With a fixed window, raising frequency fits more cycles into the same time.</p>
+            <p class="field-help" data-i18n="fixedHint">Uncheck to zoom into four periods and examine the wave shape.</p>
           </div>
         </details>
       </section>
@@ -133,7 +133,7 @@
           <div class="chart-heading">
             <div>
               <h2 id="wave-title" data-i18n="waveTitle">Waveform over time</h2>
-              <p data-i18n="waveSubtitle">A mathematical picture of the selected sound</p>
+              <p id="waveSubtitle" data-i18n="waveSubtitle">Same 20 ms at every frequency: higher pitch means more cycles.</p>
             </div>
             <span class="chart-badge" id="periodBadge">T = 2.27 ms</span>
           </div>
