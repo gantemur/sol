@@ -11,6 +11,7 @@
   --soft: #eaf3ff;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body { margin: 0; min-width: 280px; line-height: 1.45; }
 button, input { font: inherit; }
 button { cursor: pointer; }
@@ -22,7 +23,7 @@ input[type="range"] { accent-color: var(--blue); cursor: pointer; width: 100%; m
 input[type="checkbox"] { accent-color: var(--blue); width: 17px; height: 17px; }
 h1, h2, p { margin-top: 0; }
 
-.topbar { background: var(--dark); color: #fff; box-shadow: 0 3px 16px #132b461a; }
+.topbar { position: sticky; top: 0; z-index: 20; background: var(--dark); color: #fff; box-shadow: 0 3px 16px #132b461a; }
 .topbar-inner { max-width: 1320px; padding: 15px 26px; margin: auto; display: flex; gap: 16px; align-items: center; justify-content: space-between; }
 .brand, .top-actions { display: flex; gap: 12px; align-items: center; }
 .brand { min-width: 0; }
@@ -47,6 +48,11 @@ h1, h2, p { margin-top: 0; }
 .page-head p { color: var(--muted); font-size: 14px; max-width: 690px; margin-bottom: 0; }
 .pill { display: inline-block; flex: none; border-radius: 90px; background: #e1f4ef; color: #206f6b; padding: 9px 14px; font-size: 12px; font-weight: 800; }
 
+.mode-switch { display: flex; flex-wrap: wrap; gap: 9px; margin: -4px 0 20px; }
+.mode-button { min-height: 44px; padding: 10px 17px; border: 1px solid #c7d8ed; border-radius: 11px; background: #fff; color: #466788; font-size: 13px; font-weight: 800; }
+.mode-button:hover { border-color: #78a9df; }
+.mode-button.active { background: #2769ba; color: white; border-color: #2769ba; box-shadow: 0 3px 10px #2769ba25; }
+
 .workspace { display: grid; grid-template-columns: minmax(330px, 378px) minmax(0, 1fr); gap: 18px; align-items: start; }
 .panel { border-radius: 18px; border: 1px solid var(--edge); background: #fff; box-shadow: 0 7px 25px #274d7910; min-width: 0; }
 .controls { padding: 22px; display: flex; flex-direction: column; gap: 17px; }
@@ -58,6 +64,14 @@ h1, h2, p { margin-top: 0; }
 .wave-choice:hover { border-color: #8eb3e4; }
 .wave-choice.selected { background: #eaf3ff; border: 2px solid #427bd8; color: #2b62b8; padding: 7px 1px 6px; }
 .wave-choice svg { width: 52px; max-width: 90%; height: 23px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.strike-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.strike-choice { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 69px; padding: 11px 7px; border: 1px solid #dae5f1; border-radius: 11px; background: #f8fbff; color: #456787; font-size: 12px; font-weight: 800; }
+.strike-choice:hover { border-color: #8eb3e4; }
+.strike-choice.selected { border: 2px solid #248a91; padding: 10px 6px; background: #e4f6f2; color: #176b72; }
+.strike-glyph { font-size: 25px; flex: none; }
+.strike-button { background: linear-gradient(130deg, #18969b, #19727e); }
+.strike-button:hover { background: linear-gradient(130deg, #17878e, #126671); }
+.strike-button:active { transform: scale(.99); }
 
 .play-button { position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; min-height: 130px; border: 0; border-radius: 15px; background: linear-gradient(130deg, #3779d8, #285baf); color: #fff; font-size: 20px; font-weight: 850; overflow: hidden; }
 .play-button:hover { background: linear-gradient(130deg, #2e6cca, #1f519e); }
@@ -106,6 +120,7 @@ h1, h2, p { margin-top: 0; }
 .chart-badge { color: #396397; border-radius: 100px; font-size: 11px; font-weight: 800; padding: 7px 10px; background: #e8f1fc; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .chart-panel canvas { display: block; width: 100%; height: 255px; margin: 12px 0 4px; background: #fbfdff; border-radius: 8px; }
 .chart-panel #spectrumCanvas { height: 184px; }
+.chart-panel #strikeZoomCanvas { height: 184px; }
 .chart-foot { display: flex; gap: 18px; align-items: center; justify-content: space-between; flex-wrap: wrap; font-size: 11px; color: #7287a0; }
 .chart-foot #harmonicInsight { color: #47748d; max-width: 450px; line-height: 1.5; }
 
@@ -133,6 +148,7 @@ h1, h2, p { margin-top: 0; }
   .visuals { grid-template-columns: 1fr 1fr; }
   .chart-panel canvas { height: 188px; }
   .chart-panel #spectrumCanvas { height: 188px; }
+  .chart-panel #strikeZoomCanvas { height: 188px; }
   .chart-heading { display: block; }
   .chart-badge { display: inline-block; margin-top: 8px; }
 }
@@ -151,6 +167,7 @@ h1, h2, p { margin-top: 0; }
   .visuals { grid-template-columns: 1fr; gap: 12px; }
   .chart-panel canvas { height: 198px; }
   .chart-panel #spectrumCanvas { height: 164px; }
+  .chart-panel #strikeZoomCanvas { height: 164px; }
   .chart-heading { display: flex; }
   .chart-badge { margin-top: 0; }
   .challenge { padding: 14px; flex-wrap: wrap; gap: 10px; }
@@ -164,6 +181,9 @@ h1, h2, p { margin-top: 0; }
   .brand small { font-size: 9px; }
   .top-actions { gap: 6px; }
   .wave-choices { grid-template-columns: repeat(2, 1fr); }
+  .strike-choice { flex-direction: column; gap: 2px; font-size: 11px; }
+  .mode-switch { gap: 6px; }
+  .mode-button { flex: 1; padding: 9px; font-size: 11px; }
   .frequency-controls { gap: 6px; }
   .number-wrap input { width: 124px; min-width: 124px; }
   .scale-row { font-size: 9px; }

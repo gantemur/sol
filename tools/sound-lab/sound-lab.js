@@ -1,7 +1,8 @@
-/* Sound Lab P1: browser UI and a single, safely bounded Web Audio tone. */
+/* Sound Lab: pure tones and short, modeled strike/pluck sounds. */
 (() => {
   "use strict";
   const model = window.SoundLabModel;
+  const transientModel = window.SoundLabTransientModel;
   const $ = id => document.getElementById(id);
 
   const messages = {
@@ -46,6 +47,40 @@
       unsupported: "This browser does not support Web Audio playback.",
       blocked: "The sound could not start. Check browser audio permission and try Play again.",
       invalid: "Enter a frequency between 20 and 12,000 Hz.",
+      modePure: "Pure tones", modeStrike: "Strike & Pluck", modeSwitchAria: "Sound categories",
+      strikeEyebrow: "EXPLORE SOUNDS · STRIKES & PLUCKS",
+      strikeTitle: "What happens after a sound begins?",
+      strikeIntro: "Pluck a string or strike a drum. Watch the vibration begin and fade away.",
+      strikePhase: "02 · Modeled sounds", strikeChoose: "Choose a modeled sound",
+      pluck: "Plucked string", kick: "Bass drum", strikeGroupAria: "Transient sound model",
+      strikeCaption: "Tap to sound; tap again to repeat",
+      strikePluckButton: "Pluck", strikeKickButton: "Strike",
+      strikePitch: "String frequency", strikePitchSliderAria: "String pitch slider",
+      strikePitchInputAria: "String frequency in hertz",
+      strikeStrength: "Strength", strikeDecay: "Decay time",
+      strikeSafety: "Each sound fades by itself. Begin quietly, especially with headphones.",
+      strikeEnvelopeTitle: "How does the sound fade?",
+      strikeEnvelopeSubtitle: "Same three-second time scale for every strike",
+      strikeZoomTitle: "Waveform: first 20 ms",
+      strikeZoomSubtitle: "A magnified view of the fast vibration",
+      strikeEnvelopeAria: "Modeled decay envelope over time",
+      strikeZoomAria: "Modeled waveform of the first 20 milliseconds",
+      strikeChallenge: "Change the decay time. What happens to the sound and its envelope?",
+      strikeLearnMore: "Why do these sounds fade away?",
+      strikeLessonOne: "A plucked string vibrates at several frequencies. Its higher harmonics fade faster than its fundamental.",
+      strikeLessonTwo: "The bass drum begins at a higher frequency, rapidly drops in pitch, and gradually fades.",
+      strikeLessonThree: "These are simple mathematical models, not recorded instruments or microphone measurements.",
+      strikeReady: "Ready. Sound starts only when you tap the pad.",
+      strikeStarting: "Preparing the sound…", strikeDone: "Sound triggered. Tap again to repeat.",
+      strikeStopped: "Stopped. Tap the pad to try again.",
+      strikeHidden: "Sound stopped when you left the page.",
+      strikeUnsupported: "This browser does not support synthesized sound playback.",
+      strikeBlocked: "Sound could not start. Check browser audio permission and try again.",
+      strikeInvalid: "Enter a string frequency between 110 and 880 Hz.",
+      strikeDesc: {
+        pluck: "A string begins vibrating after a pluck, then gradually becomes quieter.",
+        kick: "A drum hit drops in pitch while its vibration fades."
+      },
       desc: {
         sine: "One smooth vibration, with a single frequency.",
         triangle: "A gentle-edged wave with weak, odd-numbered harmonics.",
@@ -107,6 +142,40 @@
       unsupported: "Энэ хөтөч Web Audio-гаар авиа тоглуулах боломжгүй байна.",
       blocked: "Авиа эхэлсэнгүй. Хөтчийн дууны зөвшөөрлийг шалгаад дахин оролдоно уу.",
       invalid: "20–12,000 Гц-ийн хооронд давтамж оруулна уу.",
+      modePure: "Цэвэр авиа", modeStrike: "Цохих ба татах", modeSwitchAria: "Дууны бүлэг",
+      strikeEyebrow: "ДУУ АВИА СУДЛАХ · ЦОХИХ БА ТАТАХ",
+      strikeTitle: "Дуу гарсны дараа юу болдог вэ?",
+      strikeIntro: "Чавхдас татаж, бөмбөр цохиод хэлбэлзэл хэрхэн эхэлж, намддагийг ажиглаарай.",
+      strikePhase: "02 · Загварчилсан дуу", strikeChoose: "Дууны загвар сонгох",
+      pluck: "Татсан чавхдас", kick: "Басс бөмбөр", strikeGroupAria: "Цохилтын дууны загвар",
+      strikeCaption: "Дарж сонсоод, дахин дарж давтаарай",
+      strikePluckButton: "Татах", strikeKickButton: "Цохих",
+      strikePitch: "Чавхдасны давтамж", strikePitchSliderAria: "Чавхдасны давтамжийн гулсуур",
+      strikePitchInputAria: "Чавхдасны давтамжийг герцээр оруулах",
+      strikeStrength: "Цохилтын хүч", strikeDecay: "Намдах хугацаа",
+      strikeSafety: "Дуу өөрөө намдана. Ялангуяа чихэвчтэй бол эхэндээ аяархан сонсоорой.",
+      strikeEnvelopeTitle: "Дууны хүч хэрхэн намдах вэ?",
+      strikeEnvelopeSubtitle: "Бүх цохилтыг нэг ижил 3 секундийн хуваарьт харуулав",
+      strikeZoomTitle: "Эхний 20 мс-ийн долгион",
+      strikeZoomSubtitle: "Түргэн хэлбэлзлийг томруулж харах",
+      strikeEnvelopeAria: "Намдах далайцын математик загвар",
+      strikeZoomAria: "Эхний 20 мс-ийн долгионы загвар",
+      strikeChallenge: "Намдах хугацааг өөрчил. Дуу болон график хэрхэн өөрчлөгдөж байна вэ?",
+      strikeLearnMore: "Яагаад эдгээр дуу намддаг вэ?",
+      strikeLessonOne: "Чавхдас олон давтамжаар хэлбэлзэнэ. Өндөр гармоникууд нь үндсэн давтамжаас хурдан намдана.",
+      strikeLessonTwo: "Басс бөмбөрийн цохилтын давтамж эхлээд хурдан буурч, далайц нь аажмаар намдана.",
+      strikeLessonThree: "Эдгээр нь бичлэг биш, энгийн математик загвар. График нь микрофоны хэмжилт биш.",
+      strikeReady: "Бэлэн. Дарахад л дуу гарна.",
+      strikeStarting: "Дууг бэлтгэж байна…", strikeDone: "Дуугарлаа. Дахин дарж болно.",
+      strikeStopped: "Зогслоо. Дахин дарж сонсоорой.",
+      strikeHidden: "Хуудсаас гарахад дуу зогслоо.",
+      strikeUnsupported: "Энэ хөтөч дуу үүсгэж тоглуулах боломжгүй байна.",
+      strikeBlocked: "Авиа эхэлсэнгүй. Хөтчийн дууны зөвшөөрлийг шалгаад дахин оролдоно уу.",
+      strikeInvalid: "Чавхдасны давтамжийг 110–880 Гц-ийн хооронд оруулна уу.",
+      strikeDesc: {
+        pluck: "Татаж тавьсан чавхдас хэлбэлзээд аажмаар намдана.",
+        kick: "Бөмбөрийн цохилтын давтамж буурч, хэлбэлзэл нь намдана."
+      },
       desc: {
         sine: "Нэг үндсэн давтамжтай жигд хэлбэлзэл.",
         triangle: "Дээд сондгой гармоникууд нь сул долгион.",
@@ -131,6 +200,7 @@
   const params = new URLSearchParams(window.location.search);
   const state = {
     language: params.get("lang") === "en" ? "en" : "mn",
+    mode: "pure",
     waveform: "sine",
     frequency: 440,
     volume: 40,
@@ -138,7 +208,13 @@
     fixedTime: true,
     playing: false,
     status: "ready",
-    error: false
+    error: false,
+    strikeKind: "pluck",
+    strikePitch: 220,
+    strikeStrength: 55,
+    strikeDecay: 0.65,
+    strikeStatus: "strikeReady",
+    strikeError: false
   };
   const text = key => messages[state.language][key];
   const frequencyText = hz => Number(hz.toFixed(2)).toLocaleString("en-US", { maximumFractionDigits: 2 });
@@ -196,14 +272,19 @@
       catch (_) { /* A voice may already have stopped. */ }
     }
 
-    async start() {
-      const ticket = ++this.generation;
+    async readyContext() {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
       if (!AudioContextClass) throw new Error("unsupported");
       if (!this.context) this.context = new AudioContextClass();
       await this.context.resume();
-      if (ticket !== this.generation) return false;
       if (this.context.state !== "running") throw new Error("blocked");
+      return this.context;
+    }
+
+    async start() {
+      const ticket = ++this.generation;
+      await this.readyContext();
+      if (ticket !== this.generation) return false;
       this.createVoice();
       return true;
     }
@@ -239,13 +320,100 @@
     }
   }
 
+  class TransientEngine {
+    constructor(contextOwner) {
+      this.contextOwner = contextOwner;
+      this.voices = new Set();
+      this.generation = 0;
+    }
+
+    stopVoice(voice, immediate) {
+      if (voice.stopping) return;
+      voice.stopping = true;
+      const now = this.contextOwner.context.currentTime;
+      const gain = voice.gain.gain;
+      gain.cancelScheduledValues(now);
+      if (immediate) gain.setValueAtTime(0, now);
+      else gain.setTargetAtTime(0, now, 0.012);
+      try { voice.source.stop(now + (immediate ? 0.002 : 0.07)); }
+      catch (_) { /* This one-shot voice may already have ended. */ }
+    }
+
+    stop(immediate = false) {
+      this.generation++;
+      for (const voice of this.voices) this.stopVoice(voice, immediate);
+    }
+
+    async trigger() {
+      const ticket = this.generation;
+      const context = await this.contextOwner.readyContext();
+      if (ticket !== this.generation || state.mode !== "strike") return false;
+      const samples = transientModel.makeSamples(
+        state.strikeKind, state.strikePitch, state.strikeDecay, context.sampleRate);
+      const buffer = context.createBuffer(1, samples.length, context.sampleRate);
+      buffer.getChannelData(0).set(samples);
+      const source = context.createBufferSource();
+      const gain = context.createGain();
+      const now = context.currentTime;
+      source.buffer = buffer;
+      gain.gain.setValueAtTime(0.12 * state.strikeStrength / 100, now);
+      source.connect(gain);
+      gain.connect(context.destination);
+
+      // A drum roll can be tapped repeatedly, but cannot spawn unbounded voices.
+      while (this.voices.size >= 4) {
+        const oldest = this.voices.values().next().value;
+        this.stopVoice(oldest, true);
+        this.voices.delete(oldest);
+      }
+      const voice = { source, gain, stopping: false };
+      this.voices.add(voice);
+      source.onended = () => {
+        source.disconnect();
+        gain.disconnect();
+        this.voices.delete(voice);
+      };
+      source.start(now);
+      return true;
+    }
+  }
+
   const audio = new ToneEngine();
+  const transientAudio = new TransientEngine(audio);
 
   function setStatus(status, error = false) {
     state.status = status;
     state.error = error;
     $("audioStatus").textContent = text(status);
     $("audioStatus").classList.toggle("error", error);
+  }
+
+  function setStrikeStatus(status, error = false) {
+    state.strikeStatus = status;
+    state.strikeError = error;
+    $("strikeStatus").textContent = text(status);
+    $("strikeStatus").classList.toggle("error", error);
+  }
+
+  function renderMode() {
+    const isStrike = state.mode === "strike";
+    $("pureWorkspace").hidden = isStrike;
+    $("pureChallenge").hidden = isStrike;
+    $("pureExplanation").hidden = isStrike;
+    $("strikeWorkspace").hidden = !isStrike;
+    $("strikeChallenge").hidden = !isStrike;
+    $("strikeExplanation").hidden = !isStrike;
+    for (const [id, mode] of [["modePure", "pure"], ["modeStrike", "strike"]]) {
+      const selected = state.mode === mode;
+      $(id).classList.toggle("active", selected);
+      $(id).setAttribute("aria-pressed", String(selected));
+    }
+    for (const [id, key, alternate] of [
+      ["pageEyebrow", "eyebrow", "strikeEyebrow"],
+      ["pageTitle", "title", "strikeTitle"],
+      ["pageIntro", "intro", "strikeIntro"],
+      ["pagePhase", "phase", "strikePhase"]
+    ]) $(id).textContent = text(isStrike ? alternate : key);
   }
 
   function renderTexts() {
@@ -269,9 +437,18 @@
     $("frequencySlider").setAttribute("aria-label", text("sliderAria"));
     $("frequencyInput").setAttribute("aria-label", text("frequencyAria"));
     $("waveChoices").setAttribute("aria-label", text("waveGroupAria"));
+    $("modeSwitch").setAttribute("aria-label", text("modeSwitchAria"));
+    $("strikeChoices").setAttribute("aria-label", text("strikeGroupAria"));
+    $("strikeFrequencySlider").setAttribute("aria-label", text("strikePitchSliderAria"));
+    $("strikeFrequencyInput").setAttribute("aria-label", text("strikePitchInputAria"));
+    $("strikeEnvelopeCanvas").setAttribute("aria-label", text("strikeEnvelopeAria"));
+    $("strikeZoomCanvas").setAttribute("aria-label", text("strikeZoomAria"));
     document.querySelector(".note-presets").setAttribute("aria-label", text("presetsAria"));
     document.querySelector(".lang-group").setAttribute("aria-label", text("langGroupAria"));
     setStatus(state.status, state.error);
+    setStrikeStatus(state.strikeStatus, state.strikeError);
+    renderMode();
+    renderStrikeControls();
   }
 
   function renderControls() {
@@ -301,6 +478,25 @@
     $("playCaption").textContent = state.playing ? text("stopCaption") : text("playCaption");
   }
 
+  function renderStrikeControls() {
+    $("strikeFrequencySlider").value = String(Math.round(transientModel.hzToSlider(state.strikePitch)));
+    $("strikeFrequencyInput").value = String(Number(state.strikePitch.toFixed(2)));
+    const note = model.nearestNote(state.strikePitch);
+    $("strikeNote").textContent = note.english + " · " + note.mongolian;
+    $("strikePitchGroup").hidden = state.strikeKind !== "pluck";
+    $("strikeStrength").value = String(state.strikeStrength);
+    $("strikeStrengthValue").textContent = state.strikeStrength + "%";
+    $("strikeDecay").value = String(state.strikeDecay);
+    $("strikeDecayValue").textContent = frequencyText(state.strikeDecay) + " s";
+    $("strikeDescription").textContent = text("strikeDesc")[state.strikeKind];
+    $("strikeButtonLabel").textContent = text(state.strikeKind === "pluck" ? "strikePluckButton" : "strikeKickButton");
+    document.querySelectorAll("[data-strike]").forEach(button => {
+      const selected = button.dataset.strike === state.strikeKind;
+      button.classList.toggle("selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+  }
+
   function setFrequency(input) {
     const value = Number(input);
     if (!Number.isFinite(value) || value < model.INPUT_MIN_HZ || value > model.INPUT_MAX_HZ) {
@@ -320,6 +516,12 @@
     state.playing = false;
     setStatus(message);
     renderControls();
+  }
+
+  function stopAllAudio(immediate = false, message = "stopped") {
+    transientAudio.stop(immediate);
+    stopSound(immediate, message);
+    setStrikeStatus(message === "hidden" ? "strikeHidden" : "strikeStopped");
   }
 
   async function toggleSound() {
@@ -348,6 +550,58 @@
     audio.changeWaveform();
     renderTexts();
     renderControls();
+    drawPlots();
+  }
+
+  function selectMode(mode) {
+    if (mode === state.mode || !["pure", "strike"].includes(mode)) return;
+    stopAllAudio(false);
+    state.mode = mode;
+    renderTexts();
+    drawPlots();
+  }
+
+  function selectStrikeKind(kind) {
+    if (!transientModel.KINDS.includes(kind) || kind === state.strikeKind) return;
+    transientAudio.stop(false);
+    state.strikeKind = kind;
+    state.strikeDecay = kind === "pluck" ? 0.65 : 0.30;
+    setStrikeStatus("strikeReady");
+    renderStrikeControls();
+    drawPlots();
+  }
+
+  function setStrikePitch(value) {
+    const hz = Number(value);
+    if (!Number.isFinite(hz) || hz < transientModel.MIN_PITCH_HZ || hz > transientModel.MAX_PITCH_HZ) {
+      setStrikeStatus("strikeInvalid", true);
+      renderStrikeControls();
+      return;
+    }
+    state.strikePitch = hz;
+    if (state.strikeStatus === "strikeInvalid") setStrikeStatus("strikeReady");
+    renderStrikeControls();
+    drawPlots();
+  }
+
+  async function triggerStrike() {
+    setStrikeStatus("strikeStarting");
+    try {
+      if (await transientAudio.trigger()) setStrikeStatus("strikeDone");
+    } catch (error) {
+      transientAudio.stop(true);
+      setStrikeStatus(error.message === "unsupported" ? "strikeUnsupported" : "strikeBlocked", true);
+    }
+  }
+
+  function resetStrike() {
+    transientAudio.stop();
+    state.strikeKind = "pluck";
+    state.strikePitch = 220;
+    state.strikeStrength = 55;
+    state.strikeDecay = 0.65;
+    setStrikeStatus("strikeReady");
+    renderStrikeControls();
     drawPlots();
   }
 
@@ -494,19 +748,110 @@
     }
   }
 
+  function drawStrikeEnvelope() {
+    const { ctx, width, height } = plotContext($("strikeEnvelopeCanvas"));
+    const left = 36, right = width - 15, top = 26, bottom = height - 30;
+    drawFrame(ctx, width, height, left, right, top, bottom);
+    // Fixed time scale makes a shorter or longer decay visibly different.
+    const seconds = 3;
+    $("strikeDurationBadge").textContent = "τ = " + frequencyText(state.strikeDecay) + " s";
+    $("strikeWindowLabel").textContent = "0–" + frequencyText(seconds) + " s";
+    const middle = (top + bottom) / 2;
+    const amplitude = (bottom - top) * 0.45 * Math.sqrt(state.strikeStrength / 100);
+    ctx.strokeStyle = "#209b92";
+    ctx.lineWidth = 2.5;
+    for (const direction of [-1, 1]) {
+      ctx.beginPath();
+      for (let i = 0; i <= 600; i++) {
+        const fraction = i / 600;
+        const level = transientModel.plottedEnvelope(state.strikeKind, fraction * seconds, state.strikeDecay);
+        const x = left + (right - left) * fraction;
+        const y = middle + direction * amplitude * level;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+    ctx.fillStyle = "#7489a1";
+    ctx.textAlign = "left";
+    ctx.fillText(text("amplitude"), 9, 13);
+    ctx.textAlign = "center";
+    for (let i = 0; i <= 4; i++) {
+      const x = left + (right - left) * i / 4;
+      ctx.fillText(frequencyText(seconds * i / 4) + " s", x, height - 12);
+    }
+  }
+
+  function drawStrikeZoom() {
+    const { ctx, width, height } = plotContext($("strikeZoomCanvas"));
+    const left = 36, right = width - 15, top = 23, bottom = height - 29;
+    drawFrame(ctx, width, height, left, right, top, bottom);
+    $("strikePitchBadge").textContent = state.strikeKind === "pluck" ?
+      frequencyText(state.strikePitch) + " Hz" : "176 → 48 Hz";
+    const middle = (top + bottom) / 2;
+    const amplitude = (bottom - top) * 0.45 * Math.sqrt(state.strikeStrength / 100);
+    ctx.strokeStyle = "#3185c6";
+    ctx.lineWidth = 2.4;
+    ctx.lineJoin = "round";
+    ctx.beginPath();
+    const points = Math.max(650, Math.round((right - left) * 2));
+    for (let i = 0; i <= points; i++) {
+      const fraction = i / points;
+      const level = transientModel.sampleAt(state.strikeKind,
+        fraction * 0.020, state.strikePitch, state.strikeDecay);
+      const x = left + (right - left) * fraction;
+      const y = middle - amplitude * level;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.fillStyle = "#7489a1";
+    ctx.textAlign = "center";
+    for (let i = 0; i <= 4; i++) {
+      const x = left + (right - left) * i / 4;
+      ctx.fillText(i * 5 + " ms", x, height - 12);
+    }
+  }
+
   function drawPlots() {
-    drawWave();
-    drawSpectrum();
+    if (state.mode === "strike") {
+      drawStrikeEnvelope();
+      drawStrikeZoom();
+    } else {
+      drawWave();
+      drawSpectrum();
+    }
   }
 
   document.querySelectorAll("[data-wave]").forEach(button => {
     button.addEventListener("click", () => selectWaveform(button.dataset.wave));
   });
+  document.querySelectorAll("[data-strike]").forEach(button => {
+    button.addEventListener("click", () => selectStrikeKind(button.dataset.strike));
+  });
+  $("modePure").addEventListener("click", () => selectMode("pure"));
+  $("modeStrike").addEventListener("click", () => selectMode("strike"));
+  $("strikeButton").addEventListener("click", triggerStrike);
+  $("strikeFrequencySlider").addEventListener("input", event => {
+    setStrikePitch(transientModel.sliderToHz(Number(event.target.value)));
+  });
+  $("strikeFrequencyInput").addEventListener("change", event => setStrikePitch(event.target.value));
+  $("strikeStrength").addEventListener("input", event => {
+    state.strikeStrength = Number(event.target.value);
+    renderStrikeControls();
+    drawPlots();
+  });
+  $("strikeDecay").addEventListener("input", event => {
+    state.strikeDecay = Number(event.target.value);
+    renderStrikeControls();
+    drawPlots();
+  });
+  $("strikeReset").addEventListener("click", resetStrike);
   document.querySelectorAll("[data-note]").forEach(button => {
     button.addEventListener("click", () => setFrequency(model.hzFromMidi(Number(button.dataset.note))));
   });
   $("playButton").addEventListener("click", toggleSound);
-  $("stopAll").addEventListener("click", () => stopSound());
+  $("stopAll").addEventListener("click", () => stopAllAudio());
   $("frequencySlider").addEventListener("input", event => setFrequency(model.sliderToFrequency(Number(event.target.value))));
   $("frequencyInput").addEventListener("change", event => setFrequency(event.target.value));
   $("snapCheck").addEventListener("change", event => {
@@ -528,13 +873,15 @@
   $("langEn").addEventListener("click", () => setLanguage("en"));
   $("langMn").addEventListener("click", () => setLanguage("mn"));
   document.addEventListener("visibilitychange", () => {
-    if (document.hidden) stopSound(true, "hidden");
+    if (document.hidden) stopAllAudio(true, "hidden");
   });
-  window.addEventListener("pagehide", () => stopSound(true, "hidden"));
+  window.addEventListener("pagehide", () => stopAllAudio(true, "hidden"));
   if (typeof ResizeObserver !== "undefined") {
     const observer = new ResizeObserver(() => drawPlots());
     observer.observe($("waveCanvas"));
     observer.observe($("spectrumCanvas"));
+    observer.observe($("strikeEnvelopeCanvas"));
+    observer.observe($("strikeZoomCanvas"));
   } else window.addEventListener("resize", drawPlots);
 
   renderTexts();
