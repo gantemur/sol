@@ -29,6 +29,10 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /id="motionWorkspace"[^>]*hidden/);
   assert.match(html, /data-i18n="unitHz">Гц<\/span>/);
   assert.match(html, /data-i18n="strikePresetOneSecond">1 сек<\/option>/);
+  for (const pattern of motionModel.PATTERNS) {
+    assert.match(html, new RegExp('data-siren-pattern="' + pattern + '"'));
+  }
+  assert.equal([...html.matchAll(/data-siren-pattern="/g)].length, 4);
   assert.match(browserCode, /Нотод тааруулах/);
   assert.doesNotMatch(browserCode, /ноот/i);
 });
@@ -267,18 +271,18 @@ test("initialization is silent; Play, live Hz, note snap, shape and Stop work", 
 test("fixed time view shows changing cycle counts; four-period zoom is optional", () => {
   const app = fakePage();
   assert.equal(app.elements.get("fixedTimeCheck").checked, true);
-  assert.equal(app.elements.get("windowLabel").textContent, "0–20 мс · 8.8 үе");
+  assert.equal(app.elements.get("windowLabel").textContent, "0–20 мсек · 8.8 үе");
   app.elements.get("frequencyInput").value = "880";
   app.fire("frequencyInput", "change");
-  assert.equal(app.elements.get("windowLabel").textContent, "0–20 мс · 17.6 үе");
-  assert.match(app.elements.get("waveSubtitle").textContent, /20 мс/);
+  assert.equal(app.elements.get("windowLabel").textContent, "0–20 мсек · 17.6 үе");
+  assert.match(app.elements.get("waveSubtitle").textContent, /20 мсек/);
   app.elements.get("fixedTimeCheck").checked = false;
   app.fire("fixedTimeCheck", "change");
-  assert.equal(app.elements.get("windowLabel").textContent, "0–4.55 мс · 4 үе");
+  assert.equal(app.elements.get("windowLabel").textContent, "0–4.55 мсек · 4 үе");
   assert.match(app.elements.get("waveSubtitle").textContent, /Дөрвөн үе/);
   app.fire("resetButton", "click");
   assert.equal(app.elements.get("fixedTimeCheck").checked, true);
-  assert.equal(app.elements.get("windowLabel").textContent, "0–20 мс · 8.8 үе");
+  assert.equal(app.elements.get("windowLabel").textContent, "0–20 мсек · 8.8 үе");
 });
 
 test("language, volume, reset and hiding the page cannot trigger autoplay", async () => {
@@ -313,9 +317,9 @@ test("Mongolian units cover static ranges, readouts and plotted axes; English re
   assert.equal(app.elements.get("frequencyInput").getAttribute("aria-valuetext"), "440 Гц");
   assert.equal(app.elements.get("fundamentalBadge").textContent, "f₀ = 440 Гц");
   assert.match(app.elements.get("noteLabel").title, /440 Гц$/);
-  assert.match(app.elements.get("periodBadge").textContent, /мс$/);
+  assert.match(app.elements.get("periodBadge").textContent, /мсек$/);
   assert.ok(app.elements.get("spectrumCanvas").drawnText.some(label => label.endsWith(" кГц")));
-  assert.ok(app.elements.get("waveCanvas").drawnText.some(label => label.endsWith(" мс")));
+  assert.ok(app.elements.get("waveCanvas").drawnText.some(label => label.endsWith(" мсек")));
   app.fire("modeStrike", "click");
   assert.equal(app.elements.get("strikeDecayValue").textContent, "0.65 сек");
   assert.ok(app.elements.get("strikeSpectrumCanvas").drawnText.some(label => label.endsWith(" Гц")));
@@ -327,9 +331,15 @@ test("Mongolian units cover static ranges, readouts and plotted axes; English re
   assert.equal(app.elements.get("sirenRateValue").textContent, "0.8 удаа/сек");
   app.sirenPatternButtons[1].events.click();
   assert.match(app.elements.get("motionPitchSubtitle").textContent, /логарифм хуваарьт муруй/);
+  app.sirenPatternButtons[2].events.click();
+  assert.match(app.elements.get("motionPitchSubtitle").textContent, /Логарифм графикт шулуун/);
+  app.sirenPatternButtons[3].events.click();
+  assert.match(app.elements.get("motionPitchSubtitle").textContent, /дунд хэсэгт хурдан/);
   app.fire("langEn", "click");
   assert.ok(app.hzLabels.every(label => label.textContent.endsWith(" Hz")));
   assert.equal(app.elements.get("sirenRateValue").textContent, "0.8 /s");
+  assert.match(app.elements.get("motionPitchSubtitle").textContent, /Sinusoidal in Hz/);
+  app.sirenPatternButtons[1].events.click();
   assert.match(app.elements.get("motionPitchSubtitle").textContent, /Linear in Hz/);
   assert.equal(app.elements.get("motionPitchBadge").textContent, "440 Hz");
   assert.equal(app.elements.get("strikeDecayValue").textContent, "0.65 s");
@@ -388,7 +398,7 @@ test("transient controls change modeled decay and category changes cancel pendin
   app.elements.get("strikeDecay").value = "1.1";
   app.fire("strikeDecay", "input");
   assert.equal(app.elements.get("strikeDurationBadge").textContent, "τ = 1.1 сек");
-  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 мс – 3 сек");
+  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 мсек – 3 сек");
   app.elements.get("strikeFrequencyInput").value = "440";
   app.fire("strikeFrequencyInput", "change");
   assert.equal(app.elements.get("strikeNote").textContent, "A4 · Ля4");
@@ -432,16 +442,16 @@ test("string snap and small/medium/large drum recipes are separate controls", as
 test("one transient waveform supports zoom, pan, presets and time scrubbing", () => {
   const app = fakePage();
   app.fire("modeStrike", "click");
-  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 мс – 3 сек");
+  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 мсек – 3 сек");
   app.elements.get("strikeViewPreset").value = "0.02";
   app.fire("strikeViewPreset", "change");
-  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 мс – 20 мс");
+  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 мсек – 20 мсек");
   app.fire("strikeViewZoomOut", "click");
-  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 мс – 40 мс");
+  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 мсек – 40 мсек");
   app.fire("strikeViewRight", "click");
-  assert.equal(app.elements.get("strikeWindowLabel").textContent, "20 мс – 60 мс");
+  assert.equal(app.elements.get("strikeWindowLabel").textContent, "20 мсек – 60 мсек");
   app.fire("strikeViewFit", "click");
-  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 мс – 3 сек");
+  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 мсек – 3 сек");
   app.elements.get("strikeTimeSlider").value = "1500";
   app.fire("strikeTimeSlider", "input");
   assert.equal(app.elements.get("strikeTimeValue").textContent, "t = 1.50 сек");
@@ -542,6 +552,43 @@ test("siren changes two-tone/sweep pitch with its clock; Stop and mode switch ca
   app.fire("modePure", "click");
   assert.equal(context.oscillators[1].stopped, true);
   assert.equal(app.elements.get("motionWorkspace").hidden, true);
+});
+
+test("four siren trajectories change both the ideal readout and the playing oscillator without restarting audio", async () => {
+  const app = fakePage();
+  app.fire("modeMotion", "click");
+  app.motionButtons[1].events.click();
+  const patterns = motionModel.PATTERNS;
+  assert.equal(app.sirenPatternButtons.length, 4);
+  for (let i = 0; i < patterns.length; i++) {
+    app.sirenPatternButtons[i].events.click();
+    assert.equal(app.sirenPatternButtons[i].getAttribute("aria-pressed"), "true");
+    for (let j = 0; j < patterns.length; j++) {
+      if (j !== i) assert.equal(app.sirenPatternButtons[j].getAttribute("aria-pressed"), "false");
+    }
+  }
+  assert.equal(app.contexts.length, 0, "Changing trajectory must not start sound");
+
+  app.sirenPatternButtons[0].events.click();
+  await app.fire("sirenButton", "click");
+  const context = app.contexts[0];
+  assert.equal(context.oscillators.length, 1);
+  app.tick(0.15625); // 0.8 repetitions/s puts us one eighth of a cycle in.
+  const observed = [];
+  for (let i = 0; i < patterns.length; i++) {
+    app.sirenPatternButtons[i].events.click();
+    const expected = motionModel.sirenHzAt(0.15625, {
+      pattern: patterns[i], lowHz: 440, highHz: 880, rate: 0.8
+    });
+    const actual = context.oscillators[0].frequency.value;
+    assert.ok(Math.abs(actual - expected) < 1e-9, `${patterns[i]}: ${actual} != ${expected}`);
+    assert.equal(app.elements.get("motionPitchBadge").textContent, `${Number(expected.toFixed(2)).toLocaleString("en-US")} Гц`);
+    observed.push(actual);
+  }
+  assert.equal(new Set(observed.map(Math.round)).size, 4, "All four paths give distinct mid-sweep pitches");
+  assert.equal(context.oscillators.length, 1, "Live switching reuses the same oscillator");
+  app.fire("stopAll", "click");
+  assert.equal(context.oscillators[0].stopped, true);
 });
 
 test("pending siren start does not produce an orphan voice after leaving Moving Pitch", async () => {

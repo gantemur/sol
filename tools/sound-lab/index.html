@@ -124,7 +124,7 @@
             </div>
             <label class="check-label setting-check">
               <input type="checkbox" id="fixedTimeCheck" checked>
-              <span data-i18n="fixedTime">Хугацааны цонхыг 20 мс-д тогтмол байлгах</span>
+              <span data-i18n="fixedTime">Хугацааны цонхыг 20 мсек-д тогтмол байлгах</span>
             </label>
             <p class="field-help" data-i18n="fixedHint">Uncheck to zoom into four periods and examine the wave shape.</p>
           </div>
@@ -136,13 +136,13 @@
           <div class="chart-heading">
             <div>
               <h2 id="wave-title" data-i18n="waveTitle">Waveform over time</h2>
-              <p id="waveSubtitle" data-i18n="waveSubtitle">Хугацаа 20 мс хэвээр: давтамж ихсэхэд олон үе багтана.</p>
+              <p id="waveSubtitle" data-i18n="waveSubtitle">Хугацаа 20 мсек хэвээр: давтамж ихсэхэд олон үе багтана.</p>
             </div>
-            <span class="chart-badge" id="periodBadge">T = 2.27 мс</span>
+            <span class="chart-badge" id="periodBadge">T = 2.27 мсек</span>
           </div>
           <canvas id="waveCanvas" role="img" aria-label="Modeled waveform over time" width="740" height="265"></canvas>
           <div class="chart-foot">
-            <span id="windowLabel">0–9.1 мс</span>
+            <span id="windowLabel">0–9.1 мсек</span>
             <span data-i18n="timeAxis">time →</span>
           </div>
         </section>
@@ -250,8 +250,8 @@
             <select id="strikeViewPreset" aria-label="Хугацааны хуваарь">
               <option value="3" data-i18n="strikeFit">Бүгд</option>
               <option value="1" data-i18n="strikePresetOneSecond">1 сек</option>
-              <option value="0.2" data-i18n="strikePreset200Ms">200 мс</option>
-              <option value="0.02" data-i18n="strikePreset20Ms">20 мс</option>
+              <option value="0.2" data-i18n="strikePreset200Ms">200 мсек</option>
+              <option value="0.02" data-i18n="strikePreset20Ms">20 мсек</option>
               <option value="custom" hidden data-i18n="strikeCustom">Өөр</option>
             </select>
           </div>
@@ -273,7 +273,7 @@
           <div class="chart-heading">
             <div>
               <h2 id="strike-spectrum-title" data-i18n="strikeLocalSpectrumTitle">Давтамжийн спектр</h2>
-              <p data-i18n="strikeLocalSpectrumSubtitle">Сонгосон хугацааны орчмын 128 мс долгионы Фурье шинжилгээ</p>
+              <p data-i18n="strikeLocalSpectrumSubtitle">Сонгосон хугацааны орчмын 128 мсек долгионы Фурье шинжилгээ</p>
             </div>
             <span class="chart-badge" id="strikeSpectrumBadge">t = 0.00 сек</span>
           </div>
@@ -315,9 +315,12 @@
         </div>
 
         <div id="sirenControls" class="motion-control-block" hidden>
-          <div class="siren-patterns" id="sirenPatterns" role="group" aria-label="Дохионы хээ">
-            <button type="button" class="selected" data-siren-pattern="two-tone" aria-pressed="true" data-i18n="sirenTwoTone">Хоёр авиа</button>
-            <button type="button" data-siren-pattern="sweep" aria-pressed="false" data-i18n="sirenSweep">Өсөх, буурах</button>
+          <p class="field-help siren-trajectory-label" data-i18n="sirenPatternAria">Давтамжийн замнал</p>
+          <div class="siren-patterns" id="sirenPatterns" role="group" aria-label="Давтамжийн замнал">
+            <button type="button" class="selected" data-siren-pattern="two-tone" aria-pressed="true" data-i18n="sirenTwoTone">Дөрвөлжин · хоёр авиа</button>
+            <button type="button" data-siren-pattern="sweep" aria-pressed="false" data-i18n="sirenSweep">Гц-ээр жигд</button>
+            <button type="button" data-siren-pattern="pitch-sweep" aria-pressed="false" data-i18n="sirenPitchSweep">Хагас тоноор жигд</button>
+            <button type="button" data-siren-pattern="sine-sweep" aria-pressed="false" data-i18n="sirenSineSweep">Синусоид</button>
           </div>
           <button id="sirenButton" type="button" class="play-button siren-button" aria-pressed="false">
             <span class="play-icon" id="sirenPlayIcon" aria-hidden="true">▶</span>
@@ -366,7 +369,7 @@
             <span class="chart-badge" id="motionDetailBadge">440 Гц</span>
           </div>
           <div class="motion-mini-plots">
-            <div><h3 data-i18n="motionWaveTitle">20 мс-ийн долгион</h3><canvas id="motionWaveCanvas" width="350" height="180" role="img" aria-label="Тухайн мөчийн 20 миллисекундийн синус долгион"></canvas></div>
+            <div><h3 data-i18n="motionWaveTitle">20 мсек-ийн долгион</h3><canvas id="motionWaveCanvas" width="350" height="180" role="img" aria-label="Тухайн мөчийн 20 миллисекундийн синус долгион"></canvas></div>
             <div><h3 data-i18n="motionComponentTitle">Давтамжийн бүрэлдэхүүн</h3><canvas id="motionSpectrumCanvas" width="350" height="180" role="img" aria-label="Одоогийн нэг давтамжийн бүрэлдэхүүн"></canvas></div>
           </div>
         </section>
@@ -405,7 +408,7 @@
     <details class="explanation" id="strikeExplanation" hidden>
       <summary data-i18n="strikeLearnMore">Яагаад эдгээр дуу намддаг вэ?</summary>
       <p data-i18n="strikeLessonOne">Чавхдас олон давтамжаар хэлбэлзэж, өндөр гармоникууд нь хурдан намдана.</p>
-      <p data-i18n="strikeLessonTwo">Басс бөмбөрийн цохилтын давтамж эхлээд хурдан буурч, далайц нь аажмаар намдана. Эдгээрийн долгионы график ерөнхийдөө төстэй харагдах боловч давтамжийн найрлага нь тэс өөр. 20 мс болгон томруулж эсвэл спектрийг нь харьцуулж ялгааг нь хараарай.</p>
+      <p data-i18n="strikeLessonTwo">Басс бөмбөрийн цохилтын давтамж эхлээд хурдан буурч, далайц нь аажмаар намдана. Эдгээрийн долгионы график ерөнхийдөө төстэй харагдах боловч давтамжийн найрлага нь тэс өөр. 20 мсек болгон томруулж эсвэл спектрийг нь харьцуулж ялгааг нь хараарай.</p>
     </details>
     <details class="explanation" id="motionExplanation" hidden>
       <summary data-i18n="motionLearnMore">Давтамж өөрчлөгдөхөд яагаад авиа өөр сонсогддог вэ?</summary>

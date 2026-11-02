@@ -14,7 +14,8 @@
   const MAX_HZ = 1600;
   const MIN_RATE = 0.2;
   const MAX_RATE = 2;
-  const PATTERNS = Object.freeze(["two-tone", "sweep"]);
+  // Two tones are the rectangular trajectory; the others glide continuously.
+  const PATTERNS = Object.freeze(["two-tone", "sweep", "pitch-sweep", "sine-sweep"]);
 
   function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));
@@ -52,6 +53,15 @@
     const phase = (time * recipe.rate) % 1;
     if (recipe.pattern === "two-tone") return phase < 0.5 ? recipe.lowHz : recipe.highHz;
     const fraction = phase <= 0.5 ? 2 * phase : 2 * (1 - phase);
+    if (recipe.pattern === "pitch-sweep") {
+      // Constant semitones per second: geometric interpolation of frequency.
+      return recipe.lowHz * Math.pow(recipe.highHz / recipe.lowHz, fraction);
+    }
+    if (recipe.pattern === "sine-sweep") {
+      // A sinusoidal Hz trajectory, with zero slope at both extremes.
+      return recipe.lowHz + (recipe.highHz - recipe.lowHz) * (1 - Math.cos(2 * Math.PI * phase)) / 2;
+    }
+    // Constant Hz per second on each half-cycle (triangular frequency trajectory).
     return recipe.lowHz + (recipe.highHz - recipe.lowHz) * fraction;
   }
 
