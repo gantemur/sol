@@ -85,13 +85,13 @@
             <input id="frequencySlider" type="range" min="0" max="1000" step="1" value="530" aria-label="Logarithmic frequency slider">
             <div class="number-wrap">
               <input id="frequencyInput" type="number" min="20" max="12000" step="any" inputmode="decimal" value="440" aria-label="Exact frequency in hertz">
-              <span>Hz</span>
+              <span data-i18n="unitHz">Гц</span>
             </div>
           </div>
           <div class="scale-row">
-            <span>80 Hz</span>
+            <span data-unit-hz="80">80 Гц</span>
             <label class="check-label"><input id="snapCheck" type="checkbox"> <span data-i18n="snap">Snap to notes</span></label>
-            <span>2,000 Hz</span>
+            <span data-unit-hz="2,000">2,000 Гц</span>
           </div>
           <p class="field-help" id="sliderHelp" data-i18n="sliderHint">The slider is logarithmic. Type a frequency for values outside its range.</p>
         </div>
@@ -124,7 +124,7 @@
             </div>
             <label class="check-label setting-check">
               <input type="checkbox" id="fixedTimeCheck" checked>
-              <span data-i18n="fixedTime">Keep the time window fixed at 20 ms</span>
+              <span data-i18n="fixedTime">Хугацааны цонхыг 20 мс-д тогтмол байлгах</span>
             </label>
             <p class="field-help" data-i18n="fixedHint">Uncheck to zoom into four periods and examine the wave shape.</p>
           </div>
@@ -136,13 +136,13 @@
           <div class="chart-heading">
             <div>
               <h2 id="wave-title" data-i18n="waveTitle">Waveform over time</h2>
-              <p id="waveSubtitle" data-i18n="waveSubtitle">Same 20 ms at every frequency: higher pitch means more cycles.</p>
+              <p id="waveSubtitle" data-i18n="waveSubtitle">Хугацаа 20 мс хэвээр: давтамж ихсэхэд олон үе багтана.</p>
             </div>
-            <span class="chart-badge" id="periodBadge">T = 2.27 ms</span>
+            <span class="chart-badge" id="periodBadge">T = 2.27 мс</span>
           </div>
           <canvas id="waveCanvas" role="img" aria-label="Modeled waveform over time" width="740" height="265"></canvas>
           <div class="chart-foot">
-            <span id="windowLabel">0–9.1 ms</span>
+            <span id="windowLabel">0–9.1 мс</span>
             <span data-i18n="timeAxis">time →</span>
           </div>
         </section>
@@ -153,7 +153,7 @@
               <h2 id="spectrum-title" data-i18n="spectrumTitle">Harmonics</h2>
               <p data-i18n="spectrumSubtitle">Ideal frequency components, relative to the first</p>
             </div>
-            <span class="chart-badge" id="fundamentalBadge">f₀ = 440 Hz</span>
+            <span class="chart-badge" id="fundamentalBadge">f₀ = 440 Гц</span>
           </div>
           <canvas id="spectrumCanvas" role="img" aria-label="Modeled harmonic magnitude spectrum" width="740" height="215"></canvas>
           <div class="chart-foot">
@@ -194,18 +194,18 @@
             <input type="range" id="strikeFrequencySlider" min="0" max="1000" step="1" value="333" aria-label="Чавхдасны давтамжийн гулсуур">
             <div class="number-wrap">
               <input type="number" id="strikeFrequencyInput" min="110" max="880" step="any" inputmode="decimal" value="220" aria-label="Чавхдасны давтамжийг герцээр оруулах">
-              <span>Hz</span>
+              <span data-i18n="unitHz">Гц</span>
             </div>
           </div>
           <div class="scale-row">
-            <span>110 Hz</span>
+            <span data-unit-hz="110">110 Гц</span>
             <label class="check-label"><input id="strikeSnap" type="checkbox"> <span data-i18n="snap">Нотод тааруулах</span></label>
-            <span>880 Hz</span>
+            <span data-unit-hz="880">880 Гц</span>
           </div>
         </div>
 
         <div class="field-group" id="strikeDrumSizeGroup" hidden>
-          <div class="field-title"><span data-i18n="strikeDrumSize">Бөмбөрийн хэмжээ</span><output id="strikeDrumFrequencies">176 → 48 Hz</output></div>
+          <div class="field-title"><span data-i18n="strikeDrumSize">Бөмбөрийн хэмжээ</span><output id="strikeDrumFrequencies">176 → 48 Гц</output></div>
           <div class="drum-sizes" role="group" id="strikeDrumSizes" aria-label="Бөмбөрийн хэмжээ">
             <button type="button" data-drum-size="large" aria-pressed="false" data-i18n="strikeLarge">Том</button>
             <button type="button" class="selected" data-drum-size="medium" aria-pressed="true" data-i18n="strikeMedium">Дунд</button>
@@ -224,7 +224,7 @@
         <div class="field-group volume-field">
           <div class="field-title">
             <label for="strikeDecay" data-i18n="strikeDecay">Намдах хугацаа</label>
-            <output id="strikeDecayValue">0.65 s</output>
+            <output id="strikeDecayValue">0.65 сек</output>
           </div>
           <input type="range" id="strikeDecay" min="0.12" max="1.2" step="0.01" value="0.65">
           <p class="field-help" data-i18n="strikeSafety">Дуу өөрөө намдана. Эхэндээ аяархан сонсоорой.</p>
@@ -238,7 +238,7 @@
               <h2 id="strike-wave-title" data-i18n="strikeWaveTitle">Дууны долгион</h2>
               <p data-i18n="strikeWaveSubtitle">Бүхэлд нь хараад томруулбал нэг нэг хэлбэлзэл тодорно.</p>
             </div>
-            <span class="chart-badge" id="strikeDurationBadge">τ = 0.65 s</span>
+            <span class="chart-badge" id="strikeDurationBadge">τ = 0.65 сек</span>
           </div>
           <div class="plot-tools" role="group" aria-label="Долгионы графикийн удирдлага" id="strikePlotTools">
             <button id="strikeViewZoomOut" type="button" data-i18n-aria="strikeZoomOutAria" aria-label="Томруулалтыг багасгах">−</button>
@@ -249,9 +249,9 @@
             <label for="strikeViewPreset" class="sr-only" data-i18n="strikeViewPresetLabel">Хугацааны хуваарь</label>
             <select id="strikeViewPreset" aria-label="Хугацааны хуваарь">
               <option value="3" data-i18n="strikeFit">Бүгд</option>
-              <option value="1">1 s</option>
-              <option value="0.2">200 ms</option>
-              <option value="0.02">20 ms</option>
+              <option value="1" data-i18n="strikePresetOneSecond">1 сек</option>
+              <option value="0.2" data-i18n="strikePreset200Ms">200 мс</option>
+              <option value="0.02" data-i18n="strikePreset20Ms">20 мс</option>
               <option value="custom" hidden data-i18n="strikeCustom">Өөр</option>
             </select>
           </div>
@@ -259,13 +259,13 @@
           <div class="cursor-control">
             <div class="field-title">
               <label for="strikeTimeSlider" data-i18n="strikeTime">Дууны хугацааг шинжлэх</label>
-              <output id="strikeTimeValue">t = 0.00 s</output>
+              <output id="strikeTimeValue">t = 0.00 сек</output>
             </div>
             <input id="strikeTimeSlider" type="range" min="0" max="3000" step="5" value="0" aria-label="Сонгосон хугацаа">
             <p class="field-help" data-i18n="strikeTimeHint">Цохиход спектр дууг дагана. Дараа нь гулсуураар хугацааг сонгоорой.</p>
           </div>
           <div class="chart-foot">
-            <span id="strikeWindowLabel">0–3 s</span>
+            <span id="strikeWindowLabel">0–3 сек</span>
             <span data-i18n="timeAxis">хугацаа →</span>
           </div>
         </section>
@@ -275,7 +275,7 @@
               <h2 id="strike-spectrum-title" data-i18n="strikeLocalSpectrumTitle">Давтамжийн спектр</h2>
               <p data-i18n="strikeLocalSpectrumSubtitle">Сонгосон хугацааны орчмын 128 мс долгионы Фурье шинжилгээ</p>
             </div>
-            <span class="chart-badge" id="strikeSpectrumBadge">t = 0.00 s</span>
+            <span class="chart-badge" id="strikeSpectrumBadge">t = 0.00 сек</span>
           </div>
           <div class="spectrum-modes" role="group" id="strikeSpectrumChoices" aria-label="Спектрийн төрөл">
             <button type="button" class="selected" data-spectrum-view="local" aria-pressed="true" data-i18n="strikeSpectrumHere">Энэ мөчид</button>
@@ -309,8 +309,8 @@
             <span class="pad-start-label" data-i18n="padStart">Дараад хөдөлгөөрэй</span>
             <span class="pad-pitch-label" data-i18n="padHigh">Өндөр авиа →</span>
           </div>
-          <div class="pad-range"><span>120 Hz</span><span>1,600 Hz</span></div>
-          <div class="pad-readout"><output id="motionCurrentHz">440 Hz</output><output id="motionCurrentLevel">50%</output></div>
+          <div class="pad-range"><span data-unit-hz="120">120 Гц</span><span data-unit-hz="1,600">1,600 Гц</span></div>
+          <div class="pad-readout"><output id="motionCurrentHz">440 Гц</output><output id="motionCurrentLevel">50%</output></div>
           <p id="thereminKeyboardHelp" class="field-help" data-i18n="thereminKeyboardHelp">Гарын товчлуураар: сумаар хөдөлгөж, Space/Enter-ээр дууг асааж эсвэл зогсооно. Escape зогсооно.</p>
         </div>
 
@@ -325,15 +325,15 @@
             <span class="play-caption" data-i18n="sirenCaption">Дахин дарж зогсооно</span>
           </button>
           <div class="field-group">
-            <div class="field-title"><label for="sirenLow" data-i18n="sirenLow">Нам давтамж</label><output id="sirenLowValue">440 Hz</output></div>
+            <div class="field-title"><label for="sirenLow" data-i18n="sirenLow">Нам давтамж</label><output id="sirenLowValue">440 Гц</output></div>
             <input id="sirenLow" type="range" min="120" max="1580" step="10" value="440">
           </div>
           <div class="field-group">
-            <div class="field-title"><label for="sirenHigh" data-i18n="sirenHigh">Өндөр давтамж</label><output id="sirenHighValue">880 Hz</output></div>
+            <div class="field-title"><label for="sirenHigh" data-i18n="sirenHigh">Өндөр давтамж</label><output id="sirenHighValue">880 Гц</output></div>
             <input id="sirenHigh" type="range" min="140" max="1600" step="10" value="880">
           </div>
           <div class="field-group">
-            <div class="field-title"><label for="sirenRate" data-i18n="sirenRate">Давтах хурд</label><output id="sirenRateValue">0.8 /s</output></div>
+            <div class="field-title"><label for="sirenRate" data-i18n="sirenRate">Давтах хурд</label><output id="sirenRateValue">0.8 удаа/сек</output></div>
             <input id="sirenRate" type="range" min="0.2" max="2" step="0.1" value="0.8">
           </div>
           <div class="field-group volume-field">
@@ -352,10 +352,10 @@
               <h2 id="motion-pitch-title" data-i18n="motionPitchTitle">Давтамжийн өөрчлөлт</h2>
               <p id="motionPitchSubtitle" data-i18n="motionPitchTheremin">Сүүлийн дөрвөн секундийн давтамжийг ажиглаарай.</p>
             </div>
-            <span class="chart-badge" id="motionPitchBadge">440 Hz</span>
+            <span class="chart-badge" id="motionPitchBadge">440 Гц</span>
           </div>
           <canvas id="motionPitchCanvas" width="740" height="265" role="img" aria-label="Хугацаанд өөрчлөгдөх давтамжийн загвар"></canvas>
-          <div class="chart-foot"><span data-i18n="motionPitchScale">Логарифм давтамж · 120–1600 Hz</span><span data-i18n="timeAxis">хугацаа →</span></div>
+          <div class="chart-foot"><span data-i18n="motionPitchScale">Логарифм давтамж · 120–1600 Гц</span><span data-i18n="timeAxis">хугацаа →</span></div>
         </section>
         <section class="panel chart-panel" aria-labelledby="motion-detail-title">
           <div class="chart-heading">
@@ -363,7 +363,7 @@
               <h2 id="motion-detail-title" data-i18n="motionDetailTitle">Энэ мөчийн дохио</h2>
               <p data-i18n="motionDetailHint">Ижил давтамжийг долгион болон нэг бүрэлдэхүүнээр харуулав.</p>
             </div>
-            <span class="chart-badge" id="motionDetailBadge">440 Hz</span>
+            <span class="chart-badge" id="motionDetailBadge">440 Гц</span>
           </div>
           <div class="motion-mini-plots">
             <div><h3 data-i18n="motionWaveTitle">20 мс-ийн долгион</h3><canvas id="motionWaveCanvas" width="350" height="180" role="img" aria-label="Тухайн мөчийн 20 миллисекундийн синус долгион"></canvas></div>
