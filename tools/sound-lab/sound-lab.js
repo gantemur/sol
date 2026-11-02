@@ -5,6 +5,7 @@
   const transientModel = window.SoundLabTransientModel;
   const spectrumModel = window.SoundLabSpectrum;
   const motionModel = window.SoundLabMotionModel;
+  const recorderModel = window.SoundLabRecorder;
   const $ = id => document.getElementById(id);
 
   const messages = {
@@ -34,7 +35,15 @@
       learnMore: "Why do sound waves sound different?",
       lessonOne: "A periodic wave has a lowest frequency, called its fundamental. This determines the pitch we hear. Higher harmonics occur at whole-number multiples of it: 2f, 3f, 4f, and so on.",
       lessonTwo: "The wave shape determines the mixture of harmonics. A pure sine wave has only its fundamental. Two instruments can play the same pitch yet sound different because their harmonic mixtures are different.",
-      footer: "Sol Sound Lab · Sound is generated on your device; nothing is recorded or uploaded.",
+      footer: "Sol Sound Lab · Sound and recordings stay on your device; nothing is uploaded.",
+      recordTitle: "Record sound", recordHint: "Record up to 15 seconds of sounds made here. No microphone or upload.",
+      recordStart: "● Record", recordStop: "■ Finish recording", recordSave: "Save WAV",
+      recordReady: "Press Record, then play a tone, strike, or move the theremin.",
+      recordPreparing: "Preparing local recording…", recordRecording: "Recording this tool's sound…",
+      recordSaving: "Preparing WAV…", recordSaved: "Ready. Listen or save the WAV file.",
+      recordEmpty: "No samples captured. Try again.",
+      recordUnsupported: "This browser does not support local sound recording.",
+      recordError: "Recording failed. Please try again.", recordPreviewAria: "Recorded sound preview",
       future: "More sounds and music-making are planned.",
       waveAria: "Modeled waveform over time", spectrumAria: "Modeled harmonic magnitude spectrum",
       sliderAria: "Logarithmic frequency slider", frequencyAria: "Exact frequency in hertz",
@@ -105,8 +114,8 @@
       motionGroupAria: "Moving sound choices", thereminHelp: "Press and move: right makes the pitch higher; up makes it louder. Release to stop.",
       padLoud: "Louder ↑", padStart: "Press and move", padHigh: "Higher pitch →",
       padAria: "Theremin touch pad", thereminKeyboardHelp: "Keyboard: use arrow keys to move; Space or Enter toggles the sound. Escape stops.",
-      sirenPatternAria: "Frequency trajectory", sirenTwoTone: "Rectangular · two tones", sirenSweep: "Linear in Hz",
-      sirenPitchSweep: "Linear in semitones", sirenSineSweep: "Sinusoidal",
+      sirenPatternAria: "Frequency trajectory", sirenTwoTone: "Abrupt", sirenSineSweep: "Smooth",
+      sirenPitchSweep: "Linear",
       sirenPlay: "Play siren", sirenStop: "Stop siren", sirenCaption: "Tap again to stop",
       sirenLow: "Low frequency", sirenHigh: "High frequency", sirenRate: "Repetitions per second", sirenRateUnit: "/s",
       motionReady: "Ready. Press the pad or Play to hear.", motionStarting: "Starting sound…",
@@ -118,7 +127,6 @@
       motionSafety: "Start quietly, especially with headphones. Changing category or pressing Stop ends playback.",
       motionPitchTitle: "Pitch over time", motionPitchTheremin: "The last four seconds of your finger movement.",
       motionPitchSiren: "Abruptly alternates two frequencies: a rectangular trajectory.",
-      motionPitchSirenSweep: "Linear in Hz; the logarithmic vertical scale makes the sweep look curved.",
       motionPitchSirenPitch: "Equal semitones per second: a straight path on the logarithmic frequency chart.",
       motionPitchSirenSine: "Sinusoidal in Hz: slow near the extremes and fastest in the middle.",
       motionPitchScale: "Logarithmic frequency · 120–1600 Hz", motionPitchAria: "Ideal pitch path over time",
@@ -127,11 +135,11 @@
       motionWaveAria: "Modeled 20 millisecond sine waveform at current pitch", motionComponentAria: "Current single ideal frequency component",
       motionChallenge: {
         theremin: "Move left and right without changing the loudness. What changes in the waveform?",
-        siren: "Keep the low and high frequencies and speed fixed. How do the four trajectories sound different?"
+        siren: "Keep the low and high frequencies and speed fixed. How do the three trajectories sound different?"
       },
       motionLearnMore: "Why does moving the pitch change the sound?",
       motionLessonOne: "Moving to the right makes the oscillator vibrate faster, so its pitch rises. Up and down changes the amplitude, making the sound louder or softer.",
-      motionLessonTwo: "The frequency trajectory changes what we hear. Rectangular jumps abruptly between two tones. Linear in Hz changes by equal frequency increments; linear in semitones changes by equal pitch intervals and looks straight on the logarithmic graph. Sinusoidal changes slow down at both extremes.",
+      motionLessonTwo: "Three paths connect the same two frequencies. Abrupt switches directly between two tones. Smooth follows a sinusoidal curve, slowing near the extremes. Linear changes by equal musical-pitch intervals and looks straight on the logarithmic graph.",
       desc: {
         sine: "One smooth vibration, with a single frequency.",
         triangle: "Weak upper odd harmonics.",
@@ -177,7 +185,15 @@
       learnMore: "Дууны долгион яагаад өөр өөр сонсогддог вэ?",
       lessonOne: "Үелэх долгионд хамгийн нам давтамж гэж байх ба үүнийг нь үндсэн давтамж гэдэг. Энэ нь дууны өндрийг тодорхойлно. Үүнээс өндөр давтамжууд буюу дээд гармоникууд нь үндсэн давтамжаасаа үргэлж бүхэл тоо дахин их: 2f, 3f, 4f гэх мэт.",
       lessonTwo: "Долгионы хэлбэрээс хамааран гармоникуудын найрлага өөрчлөгдөнө. Жишээ нь, цэвэр синусоид долгионд үндсэн давтамжаас өөр найрлага байхгүй. Өөр өөр хөгжмийн зэмсгүүд ижил өндөртэй авиа гаргасан ч ялгаатай сонсогддог нь гармоникуудынх нь найрлага өөр байгаа хэрэг.",
-      footer: "Sol Дууны лаборатори · Авиа зөвхөн таны төхөөрөмж дээр үүснэ. Бичиж авахгүй, илгээхгүй.",
+      footer: "Sol Дууны лаборатори · Дуу, бичлэг зөвхөн таны төхөөрөмж дээр байна. Хаашаа ч илгээхгүй.",
+      recordTitle: "Дуу бичих", recordHint: "Энд үүсгэсэн дууг 15 сек хүртэл бичнэ. Микрофон ашиглахгүй, хаашаа ч илгээхгүй.",
+      recordStart: "● Бичлэг эхлэх", recordStop: "■ Бичлэг дуусгах", recordSave: "WAV хадгалах",
+      recordReady: "Бичлэг эхлүүлээд авиа тоглуулж эсвэл цохиж үзээрэй.",
+      recordPreparing: "Бичлэг бэлтгэж байна…", recordRecording: "Дуу бичиж байна…",
+      recordSaving: "WAV файл бэлдэж байна…", recordSaved: "Бичлэг бэлэн. Сонсоод WAV болгон хадгалж болно.",
+      recordEmpty: "Бичлэг хоосон байна. Дахин туршаарай.",
+      recordUnsupported: "Энэ хөтөч дуу бичих боломжгүй байна.",
+      recordError: "Бичлэг амжилтгүй. Дахин оролдоно уу.", recordPreviewAria: "Бичлэгийг сонсох",
       future: "Цаашид өөр авиа, хөгжим зохиох боломж нэмэгдэнэ.",
       waveAria: "Хугацааны дагуух долгионы загвар", spectrumAria: "Гармоникийн далайцын загвар",
       sliderAria: "Логарифм давтамжийн гулсуур", frequencyAria: "Давтамжийг герцээр оруулах",
@@ -248,8 +264,8 @@
       motionGroupAria: "Хөдөлгөөнт дууны төрөл", thereminHelp: "Талбар дээр дарж хөдөлгөнө: баруун тийш өндөр, дээш чанга дуугарна. Гараа авахад зогсоно.",
       padLoud: "Чанга ↑", padStart: "Дараад хөдөлгөөрэй", padHigh: "Өндөр авиа →",
       padAria: "Теремин тоглох талбар", thereminKeyboardHelp: "Гарын товчлуураар: сумаар хөдөлгөж, Space/Enter-ээр дууг асааж эсвэл зогсооно. Escape зогсооно.",
-      sirenPatternAria: "Давтамжийн замнал", sirenTwoTone: "Дөрвөлжин · хоёр авиа", sirenSweep: "Гц-ээр жигд",
-      sirenPitchSweep: "Хагас тоноор жигд", sirenSineSweep: "Синусоид",
+      sirenPatternAria: "Давтамжийн замнал", sirenTwoTone: "Огцом", sirenSineSweep: "Аажим",
+      sirenPitchSweep: "Шугаман",
       sirenPlay: "Дохио тоглуулах", sirenStop: "Дохио зогсоох", sirenCaption: "Дахин дарж зогсооно",
       sirenLow: "Нам давтамж", sirenHigh: "Өндөр давтамж", sirenRate: "Давтах хурд", sirenRateUnit: "удаа/сек",
       motionReady: "Бэлэн. Талбар дээр дарж эсвэл дохиог тоглуулаарай.", motionStarting: "Дууг эхлүүлж байна…",
@@ -261,7 +277,6 @@
       motionSafety: "Ялангуяа чихэвчтэй бол эхэндээ аяархан сонсоорой. Өөр бүлэгт орох эсвэл Зогсоох дээр дарахад дуу зогсоно.",
       motionPitchTitle: "Давтамжийн өөрчлөлт", motionPitchTheremin: "Сүүлийн дөрвөн секундийн давтамжийг ажиглаарай.",
       motionPitchSiren: "Хоёр давтамжийн хооронд огцом шилжинэ: дөрвөлжин замнал.",
-      motionPitchSirenSweep: "Давтамж Гц-ээр жигд өөрчлөгдөх боловч логарифм хуваарьт муруй харагдана.",
       motionPitchSirenPitch: "Хагас тоноор жигд өөрчлөгдөнө. Логарифм графикт шулуун харагдана.",
       motionPitchSirenSine: "Синусоид замналын захад удаан, дунд хэсэгт хурдан өөрчлөгдөнө.",
       motionPitchScale: "Логарифм давтамж · 120–1600 Гц", motionPitchAria: "Хугацаанд өөрчлөгдөх давтамжийн загвар",
@@ -270,16 +285,16 @@
       motionWaveAria: "Тухайн мөчийн 20 миллисекундийн синус долгион", motionComponentAria: "Одоогийн нэг давтамжийн бүрэлдэхүүн",
       motionChallenge: {
         theremin: "Дууны хэмжээг өөрчлөхгүйгээр зүүн, баруун тийш хөдөлгө. Долгионы үе хэрхэн өөрчлөгдөв?",
-        siren: "Хоёр захын давтамж, хурдыг өөрчлөхгүйгээр дөрвөн замналыг сонс. Ямар ялгаа байна вэ?"
+        siren: "Хоёр захын давтамж, хурдыг өөрчлөхгүйгээр гурван замналыг сонс. Ямар ялгаа байна вэ?"
       },
       motionLearnMore: "Давтамж өөрчлөгдөхөд яагаад авиа өөр сонсогддог вэ?",
       motionLessonOne: "Баруун тийш хөдөлгөхөд хэлбэлзэл түргэсэж, авиа өндөрсөж сонсогдоно. Дээш, доош хөдөлгөхөд далайц буюу дууны чанга сул өөрчлөгдөнө.",
-      motionLessonTwo: "Давтамжийн замнал нь сонсогдох дуунд нөлөөлнө. Дөрвөлжин замналд хоёр авиа огцом солигдоно. Гц-ээр жигд эсвэл хагас тоноор жигд өсгөж бууруулж болно. Синусоид замнал захын цэгүүддээ удааширна. Логарифм графикт хагас тоноор жигд замнал шулуун харагдана.",
+      motionLessonTwo: "Ижил хоёр давтамжийг гурван замаар холбож болно. Огцом замналд хоёр авиа шууд солигдоно. Аажим замнал нь синусоид хэлбэрээр өсөж буурч, захын цэгүүддээ удааширна. Шугаман замналд авиа хагас тоноор жигд өөрчлөгдөж, логарифм графикт шулуун харагдана.",
       desc: {
         sine: "Нэг үндсэн давтамжтай жигд хэлбэлзэл.",
-        triangle: "Дээд сондгой гармоникууд нь сул",
-        square: "Сондгой гармоникууд нь хүчтэй",
-        sawtooth: "Олон гармониктой, баялаг өнгөтэй"
+        triangle: "Дээд сондгой гармоникууд нь сул.",
+        square: "Сондгой гармоникууд нь хүчтэй.",
+        sawtooth: "Олон гармониктой, баялаг өнгөтэй."
       },
       insight: {
         sine: "Идеал синус долгион зөвхөн үндсэн давтамжтай.",
@@ -349,6 +364,7 @@
   class ToneEngine {
     constructor() {
       this.context = null;
+      this.output = null;
       this.currentVoice = null;
       this.voices = new Set();
       this.generation = 0;
@@ -368,7 +384,7 @@
       gain.gain.setValueAtTime(0, now);
       gain.gain.linearRampToValueAtTime(this.gainForVolume(), now + 0.035);
       oscillator.connect(gain);
-      gain.connect(this.context.destination);
+      gain.connect(this.output);
       const voice = { oscillator: oscillator, gain: gain, stopping: false };
       this.voices.add(voice);
       oscillator.onended = () => {
@@ -402,7 +418,11 @@
     async readyContext() {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
       if (!AudioContextClass) throw new Error("unsupported");
-      if (!this.context) this.context = new AudioContextClass();
+      if (!this.context) {
+        this.context = new AudioContextClass();
+        this.output = this.context.createGain();
+        this.output.connect(this.context.destination);
+      }
       await this.context.resume();
       if (this.context.state !== "running") throw new Error("blocked");
       return this.context;
@@ -485,7 +505,7 @@
       source.buffer = buffer;
       gain.gain.setValueAtTime(0.12 * state.strikeStrength / 100, now);
       source.connect(gain);
-      gain.connect(context.destination);
+      gain.connect(this.contextOwner.output);
 
       // A drum roll can be tapped repeatedly, but cannot spawn unbounded voices.
       while (this.voices.size >= 4) {
@@ -544,7 +564,7 @@
       gain.gain.setValueAtTime(0, now);
       gain.gain.linearRampToValueAtTime(0.12 * state.motionLevel, now + 0.035);
       oscillator.connect(gain);
-      gain.connect(context.destination);
+      gain.connect(this.contextOwner.output);
       const voice = { oscillator, gain, stopping: false };
       this.voices.add(voice);
       oscillator.onended = () => {
@@ -577,6 +597,89 @@
   const audio = new ToneEngine();
   const transientAudio = new TransientEngine(audio);
   const motionAudio = new MotionEngine(audio);
+  const recorder = new recorderModel.Recorder(audio, window.AudioWorkletNode);
+  let recordStatusKey = "recordReady";
+  let recordError = false;
+  let recordUrl = null;
+  let recordedDuration = 0;
+  let recordFrame = null;
+
+  function stopRecordFrame() {
+    if (recordFrame !== null) window.cancelAnimationFrame(recordFrame);
+    recordFrame = null;
+  }
+
+  function renderRecordControls() {
+    const active = recorder.state === "recording";
+    const busy = recorder.state === "starting" || recorder.state === "stopping";
+    $("recordButton").disabled = busy;
+    $("recordButton").classList.toggle("recording", active);
+    $("recordButton").setAttribute("aria-pressed", String(active));
+    $("recordButton").textContent = text(active ? "recordStop" : "recordStart");
+    $("recordTimer").textContent = (active ? recorder.elapsed : recordedDuration).toFixed(1) +
+      " / " + recorderModel.MAX_SECONDS + " " + text("unitSeconds");
+    $("recordStatus").textContent = text(recordStatusKey);
+    $("recordStatus").classList.toggle("error", recordError);
+    $("recordResult").hidden = !recordUrl;
+  }
+
+  function followRecording() {
+    if (recorder.state !== "recording") return;
+    renderRecordControls();
+    recordFrame = window.requestAnimationFrame(followRecording);
+  }
+
+  function stopRecording() {
+    if (!recorder.stop()) return;
+    stopRecordFrame();
+    recordedDuration = recorder.elapsed;
+    recordStatusKey = recorder.state === "stopping" ? "recordSaving" : "recordReady";
+    renderRecordControls();
+  }
+
+  recorder.onDone = (bytes, duration) => {
+    stopRecordFrame();
+    recordedDuration = duration;
+    if (bytes && bytes.length > 44) {
+      if (recordUrl) URL.revokeObjectURL(recordUrl);
+      recordUrl = URL.createObjectURL(new Blob([bytes], { type: "audio/wav" }));
+      $("recordPreview").src = recordUrl;
+      $("recordDownload").href = recordUrl;
+      $("recordDownload").download = "sound-lab-" +
+        new Date().toISOString().slice(0, 19).replace(/:/g, "-") + ".wav";
+      recordStatusKey = "recordSaved";
+    } else recordStatusKey = "recordEmpty";
+    recordError = false;
+    renderRecordControls();
+  };
+  recorder.onError = () => {
+    stopRecordFrame();
+    recordStatusKey = "recordError";
+    recordError = true;
+    renderRecordControls();
+  };
+
+  async function toggleRecording() {
+    if (recorder.state === "recording") { stopRecording(); return; }
+    if (recorder.state !== "idle") return;
+    recordStatusKey = "recordPreparing";
+    recordError = false;
+    recordedDuration = 0;
+    renderRecordControls();
+    try {
+      const started = await recorder.start();
+      if (!started) { recordStatusKey = "recordReady"; renderRecordControls(); return; }
+      $("recordPreview").pause();
+      recordStatusKey = "recordRecording";
+      renderRecordControls();
+      followRecording();
+    } catch (error) {
+      recordStatusKey = error.message === "unsupported" ? "recordUnsupported" : "recordError";
+      recordError = true;
+      renderRecordControls();
+    }
+  }
+
   let motionFrame = null;
   let motionStartedAt = 0;
   let motionLastDraw = -1;
@@ -725,8 +828,8 @@
     $("sirenControls").hidden = isTheremin;
     $("motionDescription").textContent = text("motionDesc")[state.motionKind];
     const sirenHintKeys = {
-      "two-tone": "motionPitchSiren", "sweep": "motionPitchSirenSweep",
-      "pitch-sweep": "motionPitchSirenPitch", "sine-sweep": "motionPitchSirenSine"
+      "two-tone": "motionPitchSiren", "sine-sweep": "motionPitchSirenSine",
+      "pitch-sweep": "motionPitchSirenPitch"
     };
     $("motionPitchSubtitle").textContent = text(isTheremin ? "motionPitchTheremin" :
       sirenHintKeys[state.sirenPattern]);
@@ -929,6 +1032,7 @@
     renderStrikeControls();
     renderMotionControls();
     renderStrikeTime();
+    renderRecordControls();
   }
 
   function renderControls() {
@@ -1669,7 +1773,8 @@
     button.addEventListener("click", () => setFrequency(model.hzFromMidi(Number(button.dataset.note))));
   });
   $("playButton").addEventListener("click", toggleSound);
-  $("stopAll").addEventListener("click", () => stopAllAudio());
+  $("recordButton").addEventListener("click", toggleRecording);
+  $("stopAll").addEventListener("click", () => { stopRecording(); stopAllAudio(); });
   $("frequencySlider").addEventListener("input", event => setFrequency(model.sliderToFrequency(Number(event.target.value))));
   $("frequencyInput").addEventListener("change", event => setFrequency(event.target.value));
   $("snapCheck").addEventListener("change", event => {
@@ -1691,10 +1796,11 @@
   $("langEn").addEventListener("click", () => setLanguage("en"));
   $("langMn").addEventListener("click", () => setLanguage("mn"));
   document.addEventListener("visibilitychange", () => {
-    if (document.hidden) stopAllAudio(true, "hidden");
+    if (document.hidden) { stopRecording(); stopAllAudio(true, "hidden"); }
   });
-  window.addEventListener("pagehide", () => stopAllAudio(true, "hidden"));
+  window.addEventListener("pagehide", () => { stopRecording(); stopAllAudio(true, "hidden"); });
   window.addEventListener("blur", () => {
+    if (recorder.state === "recording") stopRecording();
     if (state.motionPlaying) stopAllAudio(true, "hidden");
   });
   if (typeof ResizeObserver !== "undefined") {
