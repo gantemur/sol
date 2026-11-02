@@ -195,13 +195,15 @@ h1, h2, p { margin-top: 0; }
   .motion-mini-plots { grid-template-columns: 1fr; }
 }
 @media (max-width: 630px) {
-  .topbar-inner { padding: 12px 15px; }
-  .brand { gap: 8px; }
-  .brand h1 { font-size: 17px; }
+  .topbar-inner { padding: 12px 10px; gap: 8px; }
+  .brand { gap: 6px; }
+  .brand h1 { font-size: 16px; white-space: nowrap; }
+  .brand small { font-size: 9px; letter-spacing: .2px; white-space: nowrap; }
   .brand-mark { width: 34px; height: 34px; }
   .brand-mark svg { width: 24px; height: 24px; }
-  .lang-option { padding: 8px 9px; min-width: 35px; }
-  .stop-all { padding: 8px 11px; min-height: 40px; }
+  .top-actions { gap: 6px; }
+  .lang-option { padding: 8px 7px; min-width: 32px; }
+  .stop-all { padding: 8px 9px; min-height: 40px; font-size: 12px; }
   .container { padding: 16px 14px 36px; }
   .mode-bar { margin-bottom: 16px; }
   .mode-switch { width: 100%; }
@@ -221,6 +223,7 @@ h1, h2, p { margin-top: 0; }
 }
 @media (max-width: 380px) {
   .back-link span { display: none; }
+  .brand-mark, .brand small { display: none; }
   .brand h1 { font-size: 15px; }
   .brand small { font-size: 9px; }
   .top-actions { gap: 6px; }
