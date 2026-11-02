@@ -29,6 +29,22 @@
           <button class="lang-option" id="langEn" type="button" aria-pressed="false">EN</button>
           <button class="lang-option active" id="langMn" type="button" aria-pressed="true">MN</button>
         </div>
+        <div class="record-anchor">
+          <button id="recordButton" type="button" class="record-button" aria-pressed="false" aria-label="Бичлэг эхлэх" title="Бичлэг эхлэх">
+            <span id="recordSymbol" class="record-symbol" aria-hidden="true">●</span>
+            <span id="recordButtonLabel" class="record-button-label">REC</span>
+            <output id="recordTimer" class="record-timer" hidden>0.0 сек</output>
+          </button>
+          <p id="recordStatus" class="record-status sr-only" role="status" aria-live="polite">Бичлэг эхлүүлээд авиа тоглуулж эсвэл цохиж үзээрэй.</p>
+          <section id="recordResult" class="record-popover" aria-label="Сүүлийн бичлэг" data-i18n-aria="recordResultAria" hidden>
+            <div class="record-popover-heading">
+              <strong data-i18n="recordSavedShort">WAV бэлэн</strong>
+              <button id="recordDismiss" class="record-dismiss" type="button" aria-label="Хаах" data-i18n-aria="recordDismissAria">×</button>
+            </div>
+            <audio id="recordPreview" controls preload="none" aria-label="Бичлэгийг сонсох" data-i18n-aria="recordPreviewAria"></audio>
+            <a id="recordDownload" class="record-download" href="#" download="sound-lab.wav" data-i18n="recordSave">WAV дахин хадгалах</a>
+          </section>
+        </div>
         <button id="stopAll" class="stop-all" type="button" data-i18n="stop">■ Stop</button>
       </div>
     </div>
@@ -43,24 +59,6 @@
       </nav>
       <span class="pill" id="pagePhase" data-i18n="phase">01 · Энгийн дохионууд</span>
     </div>
-
-    <section class="record-panel" aria-labelledby="record-title">
-      <div class="record-heading">
-        <div>
-          <h2 id="record-title" data-i18n="recordTitle">Дуу бичих</h2>
-          <p data-i18n="recordHint">Энд үүсгэсэн дууг 15 сек хүртэл бичнэ. Микрофон ашиглахгүй, хаашаа ч илгээхгүй.</p>
-        </div>
-        <div class="record-actions">
-          <button id="recordButton" type="button" class="record-button" aria-pressed="false" data-i18n="recordStart">● Бичлэг эхлэх</button>
-          <output id="recordTimer" class="record-timer">0.0 / 15 сек</output>
-        </div>
-      </div>
-      <p id="recordStatus" class="record-status" role="status" aria-live="polite">Бичлэг эхлүүлээд авиа тоглуулж эсвэл цохиж үзээрэй.</p>
-      <div id="recordResult" class="record-result" hidden>
-        <audio id="recordPreview" controls preload="none" aria-label="Бичлэгийг сонсох" data-i18n-aria="recordPreviewAria"></audio>
-        <a id="recordDownload" class="record-download" href="#" download="sound-lab.wav" data-i18n="recordSave">WAV хадгалах</a>
-      </div>
-    </section>
 
     <div class="workspace" id="pureWorkspace">
       <section class="panel controls" aria-labelledby="controls-title">
