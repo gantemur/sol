@@ -6,16 +6,16 @@
   <meta name="theme-color" content="#192d49">
   <meta name="description" content="Explore sound waves, modeled piano and drums, harmonic synthesis, noise, a theremin and sirens with interactive plots and bilingual controls.">
   <title>Sound Lab · Sol</title>
-  <link rel="stylesheet" href="sound-lab.css?v=s014">
+  <link rel="stylesheet" href="sound-lab.css?v=s015">
   <script src="sound-model.js" defer></script>
-  <script src="sound-transient.js" defer></script>
+  <script src="sound-transient.js?v=s015" defer></script>
   <script src="sound-spectrum.js" defer></script>
-  <script src="sound-motion.js" defer></script>
+  <script src="sound-motion.js?v=s015" defer></script>
   <script src="sound-beats.js" defer></script>
   <script src="sound-harmonics.js" defer></script>
   <script src="sound-noise.js" defer></script>
   <script src="sound-recorder.js" defer></script>
-  <script src="sound-lab.js?v=s014" defer></script>
+  <script src="sound-lab.js?v=s015" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -62,12 +62,6 @@
         <button type="button" id="modeMix" class="mode-button" aria-pressed="false" data-i18n="modeMix">Долгион холих</button>
       </nav>
       <span class="pill" id="pagePhase" data-i18n="phase">01 · Энгийн дохионууд</span>
-    </div>
-
-    <div class="experiment-switch" id="mixExperimentSwitch" role="group" aria-label="Долгионы туршилт" hidden>
-      <button type="button" data-mix-kind="beats" class="selected" aria-pressed="true" data-i18n="mixExperimentBeats">Хоёр авиа</button>
-      <button type="button" data-mix-kind="harmonics" aria-pressed="false" data-i18n="mixExperimentHarmonics">Гармоник бүтээх</button>
-      <button type="button" data-mix-kind="noise" aria-pressed="false" data-i18n="mixExperimentNoise">Шуугиан судлах</button>
     </div>
 
     <div class="workspace" id="pureWorkspace">
@@ -333,6 +327,15 @@
 
         <div id="thereminControls" class="motion-control-block">
           <p class="motion-instruction" id="thereminHelp" data-i18n="thereminHelp">Талбар дээр дарж хөдөлгөнө: баруун тийш өндөр, дээш чанга дуугарна. Гараа авахад зогсоно.</p>
+          <div class="theremin-timbres">
+            <span class="field-help timbre-label" data-i18n="thereminTimbreLabel">Дууны өнгө</span>
+            <div class="timbre-choices" id="thereminTimbres" role="group" aria-label="Тереминий дууны өнгө">
+              <button type="button" class="selected" data-theremin-timbre="pure" aria-pressed="true" data-i18n="timbrePure">Цэвэр</button>
+              <button type="button" data-theremin-timbre="rich" aria-pressed="false" data-i18n="timbreRich">Баян</button>
+              <button type="button" data-theremin-timbre="voice" aria-pressed="false" data-i18n="timbreVoice">Хоолой шиг</button>
+              <button type="button" data-theremin-timbre="overtones" aria-pressed="false" data-i18n="timbreOvertones">Дээд авиа</button>
+            </div>
+          </div>
           <div class="theremin-pad" id="thereminPad" role="button" tabindex="0" aria-pressed="false" aria-describedby="thereminHelp thereminKeyboardHelp" aria-label="Теремин тоглох талбар">
             <span class="theremin-cursor" id="thereminCursor" aria-hidden="true"></span>
             <span class="pad-volume-label" data-i18n="padLoud">Чанга ↑</span>
@@ -393,13 +396,13 @@
           <div class="chart-heading">
             <div>
               <h2 id="motion-detail-title" data-i18n="motionDetailTitle">Энэ мөчийн дохио</h2>
-              <p data-i18n="motionDetailHint">Ижил давтамжийг долгион болон нэг бүрэлдэхүүнээр харуулав.</p>
+              <p data-i18n="motionDetailHint">Нэг үндсэн давтамжтай өөр өөр өнгийн долгион ба гармоникууд.</p>
             </div>
             <span class="chart-badge" id="motionDetailBadge">440 Гц</span>
           </div>
           <div class="motion-mini-plots">
             <div><h3 data-i18n="motionWaveTitle">20 мсек-ийн долгион</h3><canvas id="motionWaveCanvas" width="350" height="180" role="img" aria-label="Тухайн мөчийн 20 миллисекундийн синус долгион"></canvas></div>
-            <div><h3 data-i18n="motionComponentTitle">Давтамжийн бүрэлдэхүүн</h3><canvas id="motionSpectrumCanvas" width="350" height="180" role="img" aria-label="Одоогийн нэг давтамжийн бүрэлдэхүүн"></canvas></div>
+            <div><h3 data-i18n="motionComponentTitle">Давтамжийн бүрэлдэхүүн</h3><canvas id="motionSpectrumCanvas" width="350" height="180" role="img" aria-label="Энэ мөчийн гармоникийн бүрэлдэхүүн"></canvas></div>
           </div>
         </section>
       </div>
@@ -411,9 +414,14 @@
           <h2 id="mix-controls-title" data-i18n="mixChoose">Хоёр авиа нийлүүлэх</h2>
           <p class="description" data-i18n="mixDescription">Ойролцоо хоёр давтамж нийлээд дууны чанга сул нь ээлжлэн өөрчлөгдөнө.</p>
         </div>
+        <div class="experiment-switch" role="group" aria-label="Долгионы туршилт" data-i18n-aria="mixExperimentsAria">
+          <button type="button" data-mix-kind="beats" class="selected" aria-pressed="true" data-i18n="mixExperimentBeats">Хоёр давтамж</button>
+          <button type="button" data-mix-kind="harmonics" aria-pressed="false" data-i18n="mixExperimentHarmonics">Өнгө бүтээх</button>
+          <button type="button" data-mix-kind="noise" aria-pressed="false" data-i18n="mixExperimentNoise">Шуугиан</button>
+        </div>
         <button id="mixButton" type="button" class="play-button" aria-pressed="false">
           <span class="play-icon" id="mixPlayIcon" aria-hidden="true">▶</span>
-          <span id="mixPlayLabel" data-i18n="mixPlay">Хоёр авиа тоглуулах</span>
+          <span id="mixPlayLabel" data-i18n="mixPlay">Тоглуулах</span>
           <span class="play-caption" id="mixPlayCaption" data-i18n="playCaption">Сонсохын тулд товшино уу</span>
         </button>
         <p id="mixStatus" class="audio-status" role="status" aria-live="polite">Бэлэн. Хоёр авиа тоглуулах товчийг дарна уу.</p>
@@ -486,9 +494,14 @@
           <h2 id="harmonic-controls-title" data-i18n="harmonicChoose">Гармоникуудыг нэмэх</h2>
           <p class="description" data-i18n="harmonicDescription">Нэг давтамжийн бүхэл тоон үржвэрүүдийг нийлүүлж шинэ авиа бүтээнэ.</p>
         </div>
+        <div class="experiment-switch" role="group" aria-label="Долгионы туршилт" data-i18n-aria="mixExperimentsAria">
+          <button type="button" data-mix-kind="beats" aria-pressed="false" data-i18n="mixExperimentBeats">Хоёр давтамж</button>
+          <button type="button" data-mix-kind="harmonics" class="selected" aria-pressed="true" data-i18n="mixExperimentHarmonics">Өнгө бүтээх</button>
+          <button type="button" data-mix-kind="noise" aria-pressed="false" data-i18n="mixExperimentNoise">Шуугиан</button>
+        </div>
         <button id="harmonicButton" type="button" class="play-button" aria-pressed="false">
           <span class="play-icon" id="harmonicPlayIcon" aria-hidden="true">▶</span>
-          <span id="harmonicPlayLabel" data-i18n="harmonicPlay">Авиа тоглуулах</span>
+          <span id="harmonicPlayLabel" data-i18n="harmonicPlay">Тоглуулах</span>
           <span class="play-caption" id="harmonicPlayCaption" data-i18n="playCaption">Сонсохын тулд товшино уу</span>
         </button>
         <p id="harmonicStatus" class="audio-status" role="status" aria-live="polite">Бэлэн. Авиа тоглуулах товчийг дарна уу.</p>
@@ -553,6 +566,11 @@
           <h2 id="noise-controls-title" data-i18n="noiseChoose">Шуугианы өнгө сонгох</h2>
           <p class="description" data-i18n="noiseDescription">Олон давтамж санамсаргүй нийлсэн авиаг сонсож, давтамжийн найрлагыг ажиглаарай.</p>
         </div>
+        <div class="experiment-switch" role="group" aria-label="Долгионы туршилт" data-i18n-aria="mixExperimentsAria">
+          <button type="button" data-mix-kind="beats" aria-pressed="false" data-i18n="mixExperimentBeats">Хоёр давтамж</button>
+          <button type="button" data-mix-kind="harmonics" aria-pressed="false" data-i18n="mixExperimentHarmonics">Өнгө бүтээх</button>
+          <button type="button" data-mix-kind="noise" class="selected" aria-pressed="true" data-i18n="mixExperimentNoise">Шуугиан</button>
+        </div>
         <div class="noise-choices" id="noiseChoices" role="group" aria-label="Шуугианы өнгө">
           <button type="button" data-noise-color="white" class="selected" aria-pressed="true" data-i18n="noiseWhite">Цагаан</button>
           <button type="button" data-noise-color="pink" aria-pressed="false" data-i18n="noisePink">Ягаан</button>
@@ -560,7 +578,7 @@
         </div>
         <button id="noiseButton" type="button" class="play-button" aria-pressed="false">
           <span class="play-icon" id="noisePlayIcon" aria-hidden="true">▶</span>
-          <span id="noisePlayLabel" data-i18n="noisePlay">Шуугиан сонсох</span>
+          <span id="noisePlayLabel" data-i18n="noisePlay">Тоглуулах</span>
           <span class="play-caption" id="noisePlayCaption" data-i18n="playCaption">Сонсохын тулд товшино уу</span>
         </button>
         <p id="noiseStatus" class="audio-status" role="status" aria-live="polite">Бэлэн. Сонсох товчийг дарна уу.</p>

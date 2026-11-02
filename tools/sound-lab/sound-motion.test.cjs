@@ -15,6 +15,27 @@ test("theremin pad maps horizontal position logarithmically and vertical positio
   assert.equal(motion.padHz(2), 1600);
 });
 
+test("theremin colors have bounded, distinct harmonic recipes for sound and waveform plots", () => {
+  assert.deepEqual(motion.TIMBRES, ["pure", "rich", "voice", "overtones"]);
+  assert.equal(motion.timbrePartials("pure")[0], 1);
+  assert.equal(motion.timbrePartials("pure").slice(1).every(x => x === 0), true);
+  const signatures = [];
+  for (const timbre of motion.TIMBRES) {
+    const partials = motion.timbrePartials(timbre);
+    assert.equal(partials.length, 8);
+    assert.ok(Object.isFrozen(partials));
+    assert.ok(partials.every(x => Number.isFinite(x) && x >= 0 && x <= 1));
+    const samples = Array.from({ length: 1000 }, (_, i) =>
+      motion.timbreWaveAt(2 * Math.PI * i / 1000, timbre));
+    assert.ok(samples.every(x => Number.isFinite(x) && Math.abs(x) <= 1.001));
+    signatures.push(samples.map(x => x.toFixed(3)).join(","));
+  }
+  assert.equal(new Set(signatures).size, 4);
+  assert.ok(Math.abs(motion.timbreWaveAt(Math.PI / 4, "pure") - Math.SQRT1_2) < 1e-12);
+  assert.throws(() => motion.timbrePartials("piano"), RangeError);
+  assert.throws(() => motion.timbreWaveAt(Infinity, "voice"), RangeError);
+});
+
 test("the abrupt siren alternates between only its two chosen frequencies", () => {
   const recipe = { lowHz: 440, highHz: 880, rate: 1, pattern: "two-tone" };
   assert.equal(motion.sirenHzAt(0, recipe), 440);

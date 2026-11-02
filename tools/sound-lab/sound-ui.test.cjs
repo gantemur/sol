@@ -26,14 +26,14 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /id="frequencyInput"[^>]*type="number"/);
   assert.match(html, /<html lang="mn">/);
   assert.match(html, /id="fixedTimeCheck" checked/);
-  assert.match(html, /src="sound-transient\.js"/);
+  assert.match(html, /src="sound-transient\.js\?v=s015"/);
   assert.match(html, /src="sound-spectrum\.js"/);
-  assert.match(html, /src="sound-motion\.js"/);
+  assert.match(html, /src="sound-motion\.js\?v=s015"/);
   assert.match(html, /src="sound-beats\.js"/);
   assert.match(html, /src="sound-harmonics\.js"/);
   assert.match(html, /src="sound-noise\.js"/);
-  assert.match(html, /src="sound-lab\.js\?v=s014"/);
-  assert.match(html, /href="sound-lab\.css\?v=s014"/);
+  assert.match(html, /src="sound-lab\.js\?v=s015"/);
+  assert.match(html, /href="sound-lab\.css\?v=s015"/);
   assert.match(html, /src="sound-recorder\.js"/);
   assert.match(html, /id="recordPreview"[^>]*controls/);
   assert.match(html, /id="recordDownload"[^>]*download="sound-lab\.wav"/);
@@ -49,8 +49,14 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /id="noiseWorkspace"[^>]*hidden/);
   assert.match(html, /id="harmonicChallenge"[^>]*hidden/);
   assert.match(html, /id="noiseChallenge"[^>]*hidden/);
-  assert.match(html, /id="mixExperimentSwitch"[^>]*hidden/);
-  for (const kind of ["beats", "harmonics", "noise"]) assert.match(html, new RegExp('data-mix-kind="' + kind + '"'));
+  assert.doesNotMatch(html, /id="mixExperimentSwitch"/);
+  assert.equal([...html.matchAll(/class="experiment-switch"/g)].length, 3);
+  assert.equal([...html.matchAll(/data-mix-kind="/g)].length, 9);
+  for (const kind of ["beats", "harmonics", "noise"]) {
+    assert.equal([...html.matchAll(new RegExp('data-mix-kind="' + kind + '"', 'g'))].length, 3);
+  }
+  assert.ok(html.indexOf('id="mixWorkspace"') < html.indexOf('class="experiment-switch"'),
+    "Experiment choices belong within left panels, not under the four main tabs");
   for (const kind of transientModel.KINDS) assert.match(html, new RegExp('data-strike="' + kind + '"'));
   assert.doesNotMatch(html, /id="pianoKeyboard"|class="piano-keys"/);
   assert.match(html, /id="modeMix"[^>]*data-i18n="modeMix"/);
@@ -60,6 +66,10 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   for (const pattern of motionModel.PATTERNS) {
     assert.match(html, new RegExp('data-siren-pattern="' + pattern + '"'));
   }
+  for (const timbre of motionModel.TIMBRES) {
+    assert.match(html, new RegExp('data-theremin-timbre="' + timbre + '"'));
+  }
+  assert.equal([...html.matchAll(/data-theremin-timbre="/g)].length, 4);
   assert.equal([...html.matchAll(/data-siren-pattern="/g)].length, 3);
   assert.equal([...html.matchAll(/data-mix-gap="/g)].length, 4);
   assert.match(html, /id="mixZoomIn"/);
@@ -134,8 +144,10 @@ function fakePage(search = "", supportWorklets = true) {
   const spectrumButtons = ["local", "overall"].map(spectrumView => element({ spectrumView }));
   const motionButtons = ["theremin", "siren"].map(motion => element({ motion }));
   const sirenPatternButtons = motionModel.PATTERNS.map(sirenPattern => element({ sirenPattern }));
+  const timbreButtons = motionModel.TIMBRES.map(thereminTimbre => element({ thereminTimbre }));
   const mixGapButtons = [0, 2, 4, 10].map(mixGap => element({ mixGap: String(mixGap) }));
-  const mixKindButtons = ["beats", "harmonics", "noise"].map(mixKind => element({ mixKind }));
+  const mixKindButtons = Array.from({ length: 3 }, () =>
+    ["beats", "harmonics", "noise"].map(mixKind => element({ mixKind }))).flat();
   const harmonicPresetButtons = ["pure", "odd", "rich"].map(harmonicPreset => element({ harmonicPreset }));
   const harmonicLevelInputs = Array.from({ length: harmonicModel.COUNT }, (_, i) =>
     element({ harmonicLevel: String(i + 1) }));
@@ -155,6 +167,7 @@ function fakePage(search = "", supportWorklets = true) {
       if (selector === "[data-spectrum-view]") return spectrumButtons;
       if (selector === "[data-motion]") return motionButtons;
       if (selector === "[data-siren-pattern]") return sirenPatternButtons;
+      if (selector === "[data-theremin-timbre]") return timbreButtons;
       if (selector === "[data-mix-gap]") return mixGapButtons;
       if (selector === "[data-mix-kind]") return mixKindButtons;
       if (selector === "[data-harmonic-preset]") return harmonicPresetButtons;
@@ -333,7 +346,7 @@ function fakePage(search = "", supportWorklets = true) {
   vm.runInNewContext(browserCode, sandbox, { filename: "sound-lab.js" });
   return {
     contexts, elements, document, window, waveButtons, strikeButtons, drumButtons, spectrumButtons,
-    motionButtons, sirenPatternButtons, mixGapButtons, mixKindButtons,
+    motionButtons, sirenPatternButtons, timbreButtons, mixGapButtons, mixKindButtons,
     harmonicPresetButtons, harmonicLevelInputs, noiseColorButtons,
     hzLabels, objectUrls, revokedUrls,
     analyzedAt,
@@ -780,6 +793,44 @@ test("theremin keyboard arrows change pitch; Space toggles and Escape safely sto
   assert.equal(app.contexts[0].oscillators[0].stopped, true);
 });
 
+test("theremin timbres are silent presets that crossfade when sounding and update harmonic plots", async () => {
+  const app = fakePage();
+  app.fire("modeMotion", "click");
+  assert.equal(app.timbreButtons.length, 4);
+  assert.equal(app.timbreButtons[0].getAttribute("aria-pressed"), "true");
+  app.timbreButtons[2].events.click();
+  assert.equal(app.contexts.length, 0, "Changing timbre does not autoplay");
+  assert.equal(app.timbreButtons[2].getAttribute("aria-pressed"), "true");
+  assert.equal(app.timbreButtons[0].getAttribute("aria-pressed"), "false");
+  assert.ok(app.elements.get("motionSpectrumCanvas").drawnText.includes("3f"));
+
+  await app.fire("thereminPad", "keydown", { key: " " });
+  const context = app.contexts[0];
+  assert.equal(context.oscillators.length, 1);
+  assert.equal(context.periodicWaves.length, 1);
+  assert.equal(context.oscillators[0].periodicWave.imag[3], Math.fround(.85));
+
+  app.timbreButtons[1].events.click();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(context.oscillators.length, 2, "New color crossfades into a new oscillator");
+  assert.equal(context.oscillators[0].stopped, true);
+  assert.equal(context.oscillators[1].periodicWave.imag[2], Math.fround(.60));
+  assert.equal(context.oscillators[1].frequency.value, 440);
+  app.timbreButtons[0].events.click();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(context.oscillators.length, 3);
+  assert.equal(context.oscillators[1].stopped, true);
+  assert.equal(context.oscillators[2].type, "sine");
+  assert.equal(app.elements.get("thereminPad").getAttribute("aria-pressed"), "true");
+  app.fire("stopAll", "click");
+  assert.ok(context.oscillators.every(osc => osc.stopped));
+
+  app.fire("motionReset", "click");
+  assert.equal(app.timbreButtons[0].getAttribute("aria-pressed"), "true");
+  app.fire("langEn", "click");
+  assert.equal(app.elements.get("thereminTimbres").getAttribute("aria-label"), "Theremin timbre options");
+});
+
 test("siren changes two-tone/sweep pitch with its clock; Stop and mode switch cancel sound", async () => {
   const app = fakePage();
   app.fire("modeMotion", "click");
@@ -881,6 +932,33 @@ test("Combine Waves is silent until Play and begins with 440 + 444 Hz in one sha
   await app.fire("mixButton", "click");
   assert.ok(context.oscillators.every(oscillator => oscillator.stopped));
   assert.equal(app.elements.get("mixButton").getAttribute("aria-pressed"), "false");
+});
+
+test("Combine Waves uses three synchronized left-panel choices and uniform Play/Stop labels", async () => {
+  const app = fakePage();
+  app.fire("modeMix", "click");
+  assert.equal(app.mixKindButtons.length, 9);
+  assert.equal(app.elements.get("mixPlayLabel").textContent, "Тоглуулах");
+  app.mixKindButtons[1].events.click();
+  assert.equal(app.elements.get("harmonicWorkspace").hidden, false);
+  assert.equal(app.elements.get("harmonicPlayLabel").textContent, "Тоглуулах");
+  for (const index of [1, 4, 7]) {
+    assert.equal(app.mixKindButtons[index].getAttribute("aria-pressed"), "true");
+  }
+  app.mixKindButtons[8].events.click();
+  assert.equal(app.elements.get("noiseWorkspace").hidden, false);
+  assert.equal(app.elements.get("noisePlayLabel").textContent, "Тоглуулах");
+  for (const index of [2, 5, 8]) {
+    assert.equal(app.mixKindButtons[index].getAttribute("aria-pressed"), "true");
+  }
+  assert.equal(app.contexts.length, 0, "Changing sub-experiment does not autoplay");
+  await app.fire("noiseButton", "click");
+  assert.equal(app.elements.get("noisePlayLabel").textContent, "Зогсоох");
+  app.fire("langEn", "click");
+  assert.equal(app.elements.get("noisePlayLabel").textContent, "Stop");
+  app.mixKindButtons[6].events.click();
+  assert.equal(app.elements.get("mixPlayLabel").textContent, "Play");
+  assert.ok(app.contexts[0].sources.every(source => source.stopped));
 });
 
 test("beating controls retune both voices; gap zero resynchronizes the pair without lingering voices", async () => {
@@ -1015,7 +1093,7 @@ test("modeled piano is an instrument choice with frequency, decay and a single h
   assert.equal(app.elements.get("strikePitchGroup").hidden, false);
   assert.equal(app.elements.get("strikeDrumSizeGroup").hidden, true);
   assert.equal(app.elements.get("strikeButtonLabel").textContent, "Нот тоглуулах");
-  assert.match(app.elements.get("strikeDescription").textContent, /алх цохиход/);
+  assert.match(app.elements.get("strikeDescription").textContent, /Алх цохиход/);
   assert.equal(app.elements.get("strikeDecayValue").textContent, "0.8 сек");
   await app.fire("strikeButton", "click");
   const context = app.contexts[0];
@@ -1117,7 +1195,7 @@ test("harmonic and noise pending playback are canceled before any orphan sound s
   await app.fire("harmonicButton", "click");
   app.fire("langEn", "click");
   assert.equal(app.elements.get("pagePhase").textContent, "04 · Build a sound");
-  assert.equal(app.elements.get("harmonicPlayLabel").textContent, "Stop your sound");
+  assert.equal(app.elements.get("harmonicPlayLabel").textContent, "Stop");
   app.fire("stopAll", "click");
   assert.equal(app.contexts[0].oscillators.at(-1).stopped, true);
 });
