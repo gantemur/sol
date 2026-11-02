@@ -41,6 +41,8 @@ test("invalid or unbounded transient recipes are rejected", () => {
   assert.throws(() => sound.makeSamples("kick", 220, 0.3, 44100, "giant"), RangeError);
   assert.throws(() => sound.makeSamples("kick", 220, .3, 44100, "medium", { drumTension: 3 }), RangeError);
   assert.throws(() => sound.makeSamples("pluck", 220, .3, 44100, "medium", { strumChord: "other" }), RangeError);
+  assert.throws(() => sound.makeSamples("piano", 440, .3, 44100, "medium", { velocity: 1.1 }), RangeError);
+  assert.throws(() => sound.makeSamples("piano", 440, .3, 44100, "medium", { velocity: NaN }), RangeError);
   assert.ok(sound.duration(sound.MAX_DECAY) <= 3);
 });
 
@@ -74,6 +76,37 @@ test("pluck and hammer share decay controls but have measurably different early 
       energy += sample * sample;
     }
     assert.ok(energy > .01, kind + " still vibrates long after the initial excitation");
+  }
+});
+
+test("hammer strength changes piano timbre, not just loudness, and the note decays in two stages", () => {
+  const pitchHz = 440, decaySec = .8;
+  const at = velocity => spectrum.spectrumAt(sound,
+    { kind: "piano", pitchHz, decaySec, options: { velocity } }, .03);
+  const soft = at(.2), hard = at(1);
+  const magnitude = (spec, n) => spec.magnitudes[Math.round(n * pitchHz / spec.binHz)];
+  const brightness = spec => [4, 5, 6].reduce((sum, n) => sum + magnitude(spec, n), 0) /
+    magnitude(spec, 1);
+  assert.ok(brightness(hard) > 2 * brightness(soft),
+    "A harder felt-hammer strike excites much more high-frequency energy");
+  const earlyRate = -Math.log(sound.envelope("piano", .24, decaySec) /
+    sound.envelope("piano", .08, decaySec)) / .16;
+  const lateRate = -Math.log(sound.envelope("piano", 1.2, decaySec) /
+    sound.envelope("piano", .7, decaySec)) / .5;
+  assert.ok(earlyRate > 1.5 * lateRate,
+    "Piano notes fade quickly after the attack, then ring more slowly");
+
+  for (const velocity of [0, .2, .55, 1]) {
+    const sampleRate = 16000;
+    const audio = sound.makeSamples("piano", pitchHz, decaySec, sampleRate,
+      "medium", { velocity });
+    for (const index of [50, 500, 5000, 13000]) {
+      const modeled = sound.plottedSampleAt("piano", index / sampleRate,
+        pitchHz, decaySec, "medium", { velocity });
+      assert.ok(Math.abs(audio[index] - modeled) < 1e-6,
+        "Zoom, spectrum and audio must sample the same velocity-dependent note");
+    }
+    assert.ok(audio.every(value => Number.isFinite(value) && Math.abs(value) <= 1));
   }
 });
 

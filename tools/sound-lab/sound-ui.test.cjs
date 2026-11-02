@@ -26,16 +26,19 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /id="stopAll"/);
   assert.match(html, /id="frequencyInput"[^>]*type="number"/);
   assert.match(html, /<html lang="mn">/);
+  assert.match(html, /id="modeStrike"[^>]*>Цохих\/татах<\/button>/);
+  assert.match(html, /id="modeSustain"[^>]*>Үлээх\/нумдах<\/button>/);
   assert.match(html, /id="fixedTimeCheck" checked/);
   assert.match(html, /src="sound-string\.js\?v=s017"/);
-  assert.match(html, /src="sound-transient\.js\?v=s017"/);
+  assert.match(html, /src="sound-piano\.js\?v=s018"/);
+  assert.match(html, /src="sound-transient\.js\?v=s018"/);
   assert.match(html, /src="sound-sustain\.js\?v=s017"/);
   assert.match(html, /src="sound-spectrum\.js\?v=s017"/);
   assert.match(html, /src="sound-motion\.js\?v=s015"/);
   assert.match(html, /src="sound-beats\.js"/);
   assert.match(html, /src="sound-harmonics\.js"/);
   assert.match(html, /src="sound-noise\.js"/);
-  assert.match(html, /src="sound-lab\.js\?v=s017"/);
+  assert.match(html, /src="sound-lab\.js\?v=s018"/);
   assert.match(html, /href="sound-lab\.css\?v=s017"/);
   assert.match(html, /src="sound-recorder\.js"/);
   assert.match(html, /id="recordPreview"[^>]*controls/);
@@ -844,7 +847,7 @@ test("guitar strum presets model separate strings without autoplay and share plo
   assert.equal(app.contexts.length, 0, "Choosing strum is silent");
   assert.equal(app.elements.get("strikePitchGroup").hidden, true);
   assert.equal(app.elements.get("strikeChordGroup").hidden, false);
-  assert.equal(app.elements.get("strikeButtonLabel").textContent, "Чавхдасуудыг татах");
+  assert.equal(app.elements.get("strikeButtonLabel").textContent, "Цохих");
   await app.fire("strikeButton", "click");
   const em = app.contexts[0].buffers[0].getChannelData(0);
   assert.ok(em.some(value => Math.abs(value) > .02));
@@ -1261,6 +1264,15 @@ test("modeled piano is an instrument choice with frequency, decay and a single h
   assert.equal(context.sources[0].started, true);
   assert.ok(context.buffers[0].getChannelData().some(sample => Math.abs(sample) > .005));
   assert.ok(app.elements.get("strikeSpectrumCanvas").drawnText.some(label => label.includes("кГц")));
+  const softerBuffer = context.buffers[0].getChannelData().slice(0, 256);
+  app.elements.get("strikeStrength").value = "90";
+  app.fire("strikeStrength", "input");
+  assert.equal(context.buffers.length, 1, "Changing strength alone must not start audio");
+  await app.fire("strikeButton", "click");
+  const harderBuffer = context.buffers[1].getChannelData();
+  assert.ok(harderBuffer.some((sample, i) => i < 256 &&
+    Math.abs(sample - softerBuffer[i]) > 0.001),
+  "Hammer strength changes the underlying synthesized piano waveform");
   app.fire("stopAll", "click");
   assert.equal(context.sources[0].stopped, true);
 });
