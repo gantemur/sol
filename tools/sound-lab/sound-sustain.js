@@ -27,7 +27,9 @@
     morin: Object.freeze([.88, .92, .58, .32, .21, .12, .075, .045])
   });
   const DEFAULTS = Object.freeze({
-    flute: Object.freeze({ attack: .08, release: .16, noise: .016, cutoff: 3600 }),
+    // Breath turbulence should be barely audible beside the radiated tone;
+    // the earlier .016 mix sounded too hissy at ordinary listening distance.
+    flute: Object.freeze({ attack: .08, release: .16, noise: .002, cutoff: 3600 }),
     violin: Object.freeze({ attack: .18, release: .29, noise: .024, cutoff: 4600 }),
     morin: Object.freeze({ attack: .11, release: .32, noise: .028, cutoff: 2600 })
   });

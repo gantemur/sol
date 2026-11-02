@@ -60,6 +60,20 @@ test("flute jet model grows from silence, responds to blowing and respects the p
   assert.throws(() => sound.fluteComponents(60, 2000), RangeError);
 });
 
+test("flute breath turbulence stays far below the musical fundamental", () => {
+  // The generated noise is bounded by +/-0.7 * noiseGain before the low-pass.
+  // Compare this deliberately conservative bound to the modeled fundamental,
+  // over the whole pitch range and gentle/default/strong blowing conditions.
+  for (const hz of [110, 220, 440, 880]) {
+    for (const breath of [10, 20, 60, 100]) {
+      const fundamental = sound.partials("flute", breath, hz)[0];
+      const maximumUnfilteredNoise = 0.7 * sound.fluteNoiseGain(breath);
+      assert.ok(maximumUnfilteredNoise / fundamental < .003,
+        `flute breath noise must be subtle at ${hz} Hz, blowing ${breath}%`);
+    }
+  }
+});
+
 test("flute's plotted periodic waveform has exactly its predicted harmonic magnitudes", () => {
   const count = 2048;
   for (const breath of [20, 60, 100]) {
