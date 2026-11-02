@@ -3,7 +3,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const sound = require("./sound-transient.js");
 
-test("pluck and kick are distinct bounded mathematical signals with decaying envelopes", () => {
+test("pluck, kick and modeled piano are distinct bounded decaying mathematical signals", () => {
   for (const kind of sound.KINDS) {
     const decay = kind === "pluck" ? 0.65 : 0.3;
     assert.equal(sound.sampleAt(kind, 0, 220, decay), 0);
@@ -15,6 +15,7 @@ test("pluck and kick are distinct bounded mathematical signals with decaying env
     assert.ok(Math.abs(samples.at(-1)) < 0.001, "Output fades at the end");
   }
   assert.notEqual(sound.sampleAt("pluck", 0.012, 220, 0.65), sound.sampleAt("kick", 0.012, 220, 0.65));
+  assert.notEqual(sound.sampleAt("piano", 0.012, 220, 0.65), sound.sampleAt("pluck", 0.012, 220, 0.65));
 });
 
 test("kick frequency falls while string pitch stays controllable", () => {
@@ -29,10 +30,22 @@ test("kick frequency falls while string pitch stays controllable", () => {
 test("invalid or unbounded transient recipes are rejected", () => {
   assert.throws(() => sound.makeSamples("other", 220, 0.5, 44100), RangeError);
   assert.throws(() => sound.makeSamples("pluck", 2000, 0.5, 44100), RangeError);
+  assert.throws(() => sound.makeSamples("piano", 2000, 0.5, 44100), RangeError);
   assert.throws(() => sound.makeSamples("pluck", 220, 10, 44100), RangeError);
   assert.throws(() => sound.makeSamples("kick", 220, 0.3, 0), RangeError);
   assert.throws(() => sound.makeSamples("kick", 220, 0.3, 44100, "giant"), RangeError);
   assert.ok(sound.duration(sound.MAX_DECAY) <= 3);
+});
+
+test("modeled piano overtones are slightly inharmonic, unlike an ideal string", () => {
+  assert.ok(sound.pianoPartialHz(440, 2) > 880);
+  assert.ok(sound.pianoPartialHz(440, 8) > 3520);
+  assert.ok(sound.pianoPartialHz(440, 8) < 3600);
+  assert.throws(() => sound.pianoPartialHz(0, 3), RangeError);
+  const t = 0.013, sr = 16000;
+  const samples = sound.makeSamples("piano", 440, .65, sr);
+  assert.ok(Math.abs(samples[Math.round(t * sr)] -
+    sound.plottedSampleAt("piano", t, 440, .65)) < 1e-6);
 });
 
 test("kick-size presets change pitch and preserve modeled waveform/sample agreement", () => {

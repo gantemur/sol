@@ -49,6 +49,10 @@ h1, h2, p { margin-top: 0; }
 .mode-button { min-height: 44px; padding: 10px 17px; border: 1px solid #c7d8ed; border-radius: 11px; background: #fff; color: #466788; font-size: 13px; font-weight: 800; }
 .mode-button:hover { border-color: #78a9df; }
 .mode-button.active { background: #2769ba; color: white; border-color: #2769ba; box-shadow: 0 3px 10px #2769ba25; }
+.experiment-switch { display: flex; flex-wrap: wrap; gap: 8px; margin: -8px 0 20px; }
+.experiment-switch button { min-height: 44px; border: 1px solid #c7d8ed; border-radius: 10px; padding: 9px 14px; background: #fff; color: #486b88; font-size: 12px; font-weight: 800; }
+.experiment-switch button:hover { border-color: #74aaa8; }
+.experiment-switch button.selected { background: #e0f4ee; border-color: #298d84; color: #176e67; }
 
 .record-anchor { position: relative; flex: none; }
 .record-button { display: inline-flex; justify-content: center; align-items: center; gap: 5px; min-height: 43px; padding: 8px 12px; border: 1px solid #e18e94; border-radius: 9px; background: #283e59; color: #ff9ca6; font-size: 12px; font-weight: 850; white-space: nowrap; }
@@ -78,8 +82,9 @@ h1, h2, p { margin-top: 0; }
 .wave-choice:hover { border-color: #8eb3e4; }
 .wave-choice.selected { background: #eaf3ff; border: 2px solid #427bd8; color: #2b62b8; padding: 7px 1px 6px; }
 .wave-choice svg { width: 52px; max-width: 90%; height: 23px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-.strike-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.strike-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .strike-choice { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 69px; padding: 11px 7px; border: 1px solid #dae5f1; border-radius: 11px; background: #f8fbff; color: #456787; font-size: 12px; font-weight: 800; }
+.strike-choice { flex-direction: column; gap: 3px; text-align: center; }
 .strike-choice:hover { border-color: #8eb3e4; }
 .strike-choice.selected { border: 2px solid #248a91; padding: 10px 6px; background: #e4f6f2; color: #176b72; }
 .motion-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
@@ -145,6 +150,15 @@ h1, h2, p { margin-top: 0; }
 .mix-presets button { border: 1px solid #cee0f1; border-radius: 8px; background: #f3f8ff; color: #315b8c; padding: 8px 10px; min-height: 35px; font-size: 11px; font-weight: 750; }
 .mix-presets button:hover { background: #e5f0ff; }
 .mix-presets button.selected { background: #e2f5f0; color: #16716c; border-color: #2e9e93; }
+.harmonic-presets, .noise-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.harmonic-presets button, .noise-choices button { min-height: 44px; padding: 8px 5px; border: 1px solid #cee0f1; border-radius: 9px; background: #f3f8ff; color: #315b8c; font-size: 12px; font-weight: 750; }
+.harmonic-presets button:hover, .noise-choices button:hover { background: #e5f0ff; }
+.harmonic-presets button.selected, .noise-choices button.selected { background: #e2f5f0; color: #16716c; border-color: #2e9e93; }
+.harmonic-sliders { display: grid; gap: 6px; }
+.harmonic-row { display: grid; grid-template-columns: 30px minmax(0, 1fr) 40px; align-items: center; gap: 9px; min-height: 30px; }
+.harmonic-row label { color: #3d6082; font-size: 12px; font-weight: 850; }
+.harmonic-row input { min-height: 26px; }
+.harmonic-row output { text-align: right; color: #367091; font-size: 11px; font-weight: 800; font-variant-numeric: tabular-nums; }
 .mix-comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
 .mix-comparison > div { min-width: 0; display: flex; flex-direction: column; gap: 6px; padding: 12px 10px; border-radius: 10px; background: #eaf4fc; }
 .mix-comparison span { color: #658098; font-size: 11px; line-height: 1.35; }
@@ -221,7 +235,7 @@ h1, h2, p { margin-top: 0; }
   .controls { padding: 22px; }
   .description { min-height: 0; }
   .visuals { grid-template-columns: 1fr 1fr; }
-  #mixWorkspace .visuals { grid-template-columns: 1fr; }
+  #mixWorkspace .visuals, #harmonicWorkspace .visuals, #noiseWorkspace .visuals { grid-template-columns: 1fr; }
   .chart-panel canvas { height: 188px; }
   .chart-panel #spectrumCanvas { height: 188px; }
   .chart-panel #strikeSpectrumCanvas { height: 188px; }
@@ -241,6 +255,8 @@ h1, h2, p { margin-top: 0; }
   .stop-all { padding: 8px 9px; min-height: 40px; font-size: 12px; }
   .container { padding: 16px 14px 36px; }
   .mode-bar { margin-bottom: 16px; }
+  .experiment-switch { margin: -5px 0 14px; }
+  .experiment-switch button { flex: 1 1 auto; padding: 9px 7px; }
   .record-button { min-height: 40px; padding: 7px 9px; }
   .record-popover { right: -55px; }
   .mode-switch { width: 100%; }
