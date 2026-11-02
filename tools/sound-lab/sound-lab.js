@@ -1,10 +1,11 @@
-/* Sound Lab: pure tones and short, modeled strike/pluck sounds. */
+/* Sound Lab: pure tones, modeled transients, moving pitch, and two-tone interference. */
 (() => {
   "use strict";
   const model = window.SoundLabModel;
   const transientModel = window.SoundLabTransientModel;
   const spectrumModel = window.SoundLabSpectrum;
   const motionModel = window.SoundLabMotionModel;
+  const beatsModel = window.SoundLabBeats;
   const recorderModel = window.SoundLabRecorder;
   const $ = id => document.getElementById(id);
 
@@ -36,7 +37,7 @@
       lessonOne: "A periodic wave has a lowest frequency, called its fundamental. This determines the pitch we hear. Higher harmonics occur at whole-number multiples of it: 2f, 3f, 4f, and so on.",
       lessonTwo: "The wave shape determines the mixture of harmonics. A pure sine wave has only its fundamental. Two instruments can play the same pitch yet sound different because their harmonic mixtures are different.",
       footer: "Sol Sound Lab · Sound and recordings stay on your device; nothing is uploaded.",
-      recordStart: "REC", recordStop: "SAVE", recordSave: "Download WAV again",
+      recordStart: "REC", recordStop: "SAVE", recordSave: "Download WAV",
       recordStartAria: "Start recording up to 15 seconds of Sound Lab audio; no microphone",
       recordStopAria: "Stop recording and save the WAV file",
       recordSavedShort: "Your WAV is ready", recordResultAria: "Last recorded sound",
@@ -60,7 +61,34 @@
       unsupported: "This browser does not support Web Audio playback.",
       blocked: "The sound could not start. Check browser audio permission and try Play again.",
       invalid: "Enter a frequency between 20 and 12,000 Hz.",
-      modePure: "Pure tones", modeStrike: "Strike & Pluck", modeMotion: "Moving Pitch", modeSwitchAria: "Sound categories",
+      modePure: "Pure tones", modeStrike: "Strike & Pluck", modeMotion: "Moving Pitch",
+      modeMix: "Combine waves", modeSwitchAria: "Sound categories",
+      mixPhase: "04 · Two-tone beats",
+      mixChoose: "Combine two tones", mixDescription: "Two nearby frequencies reinforce and cancel, making the volume pulse.",
+      mixPlay: "Play both tones", mixStop: "Stop both tones",
+      mixBase: "First frequency", mixGap: "Frequency difference (Δf)",
+      mixTryGap: "Try:", mixZeroGap: "0 Hz", mixTwoGap: "2 Hz", mixFourGap: "4 Hz", mixTenGap: "10 Hz",
+      mixTwoFrequencies: "Two frequencies", mixBeatRate: "Volume pulses", mixBeatUnit: "pulses/s",
+      mixWaveTitle: "Combined waveform", mixWaveHint: "Zoom in to 20 ms to reveal the fast vibrations inside the pulses.",
+      mixSpectrumTitle: "Two frequency components", mixSpectrumHint: "Pulsing loudness does not create a new low-frequency tone.",
+      mixSpectrumFoot: "Only the original two frequencies appear in the ideal spectrum.",
+      mixWindow20: "20 ms", mixWindow200: "200 ms", mixWindowOne: "1 s", mixWindowTwo: "2 s",
+      mixWaveAria: "Sum of two sine waves and its ideal beat envelope over time",
+      mixSpectrumAria: "Ideal spectrum with one or two distinct sine frequency components",
+      mixBaseSliderAria: "First frequency slider", mixBaseInputAria: "First frequency in hertz",
+      mixGapSliderAria: "Difference between two frequencies in hertz",
+      mixGapPresetsAria: "Frequency difference examples", mixPlotToolsAria: "Waveform time zoom and navigation",
+      mixLeftAria: "Show earlier time", mixRightAria: "Show later time",
+      mixChallenge: "Try differences of 0, 2, 4 and 10 Hz. How does the pulsing change?",
+      mixLearnMore: "Why do two nearby tones make the loudness pulse?",
+      mixLessonOne: "When two sine waves have nearly the same frequency, their vibrations sometimes reinforce each other and sometimes nearly cancel. These changes in loudness are called beats.",
+      mixLessonTwo: "The number of loudness pulses each second is the frequency difference Δf = |f₂ − f₁|. For 440 and 444 Hz, you hear four pulses per second. The ideal spectrum still contains just the original two frequencies, not an extra 4 Hz tone.",
+      mixReady: "Ready. Press Play to hear the two tones.", mixStarting: "Starting both tones…",
+      mixPlaying: "Playing. Adjust the difference to hear the pulses speed up or slow down.",
+      mixStopped: "Stopped. Try another difference.", mixHidden: "Sound stopped when you left the page.",
+      mixUnsupported: "This browser does not support synthesized sound playback.",
+      mixBlocked: "Could not start sound. Check browser audio permission and try again.",
+      mixInvalid: "Enter a first frequency between 120 and 1,000 Hz.",
       strikePhase: "02 · Modeled sounds", strikeChoose: "Choose a modeled sound",
       pluck: "Plucked string", kick: "Bass drum", strikeGroupAria: "Transient sound model",
       strikeCaption: "Tap to sound; tap again to repeat",
@@ -189,7 +217,7 @@
       lessonOne: "Үелэх долгионд хамгийн нам давтамж гэж байх ба үүнийг нь үндсэн давтамж гэдэг. Энэ нь дууны өндрийг тодорхойлно. Үүнээс өндөр давтамжууд буюу дээд гармоникууд нь үндсэн давтамжаасаа үргэлж бүхэл тоо дахин их: 2f, 3f, 4f гэх мэт.",
       lessonTwo: "Долгионы хэлбэрээс хамааран гармоникуудын найрлага өөрчлөгдөнө. Жишээ нь, цэвэр синусоид долгионд үндсэн давтамжаас өөр найрлага байхгүй. Өөр өөр хөгжмийн зэмсгүүд ижил өндөртэй авиа гаргасан ч ялгаатай сонсогддог нь гармоникуудынх нь найрлага өөр байгаа хэрэг.",
       footer: "Sol Дууны лаборатори · Дуу, бичлэг зөвхөн таны төхөөрөмж дээр байна. Хаашаа ч илгээхгүй.",
-      recordStart: "REC", recordStop: "WAV", recordSave: "WAV дахин хадгалах",
+      recordStart: "REC", recordStop: "WAV", recordSave: "WAV татах",
       recordStartAria: "Дууны лабораторийн авиаг 15 сек хүртэл бичих. Микрофон ашиглахгүй",
       recordStopAria: "Бичлэг дуусгаж WAV файл хадгалах",
       recordSavedShort: "WAV бэлэн", recordResultAria: "Сүүлийн бичлэг",
@@ -213,7 +241,34 @@
       unsupported: "Энэ хөтөч Web Audio-гаар авиа тоглуулах боломжгүй байна.",
       blocked: "Авиа эхэлсэнгүй. Хөтчийн дууны зөвшөөрлийг шалгаад дахин оролдоно уу.",
       invalid: "20–12,000 Гц-ийн хооронд давтамж оруулна уу.",
-      modePure: "Цэвэр авиа", modeStrike: "Цохих ба татах", modeMotion: "Хувирдаг давтамж", modeSwitchAria: "Дууны бүлэг",
+      modePure: "Цэвэр авиа", modeStrike: "Цохих ба татах", modeMotion: "Хувирдаг давтамж",
+      modeMix: "Долгион холих", modeSwitchAria: "Дууны бүлэг",
+      mixPhase: "04 · Хоёр авианы биение",
+      mixChoose: "Хоёр авиа нийлүүлэх", mixDescription: "Ойролцоо хоёр давтамж нийлээд дууны чанга, сул нь ээлжлэн өөрчлөгдөнө.",
+      mixPlay: "Хоёр авиа тоглуулах", mixStop: "Хоёр авиа зогсоох",
+      mixBase: "Эхний давтамж", mixGap: "Давтамжийн зөрүү (Δf)",
+      mixTryGap: "Туршиж үз:", mixZeroGap: "0 Гц", mixTwoGap: "2 Гц", mixFourGap: "4 Гц", mixTenGap: "10 Гц",
+      mixTwoFrequencies: "Хоёр давтамж", mixBeatRate: "Чангарч, сулрах хурд", mixBeatUnit: "удаа/сек",
+      mixWaveTitle: "Хоёр долгионы нийлбэр", mixWaveHint: "Чанга, сул ээлжлэх дүрс. 20 мсек болгон томруулж хэлбэлзлийг хараарай.",
+      mixSpectrumTitle: "Давтамжийн хоёр бүрэлдэхүүн", mixSpectrumHint: "Чангарч, сулрах нь шинэ нам давтамж үүсгээгүй.",
+      mixSpectrumFoot: "Спектрт зөвхөн анхныхаа хоёр давтамж харагдана.",
+      mixWindow20: "20 мсек", mixWindow200: "200 мсек", mixWindowOne: "1 сек", mixWindowTwo: "2 сек",
+      mixWaveAria: "Хоёр синус долгионы нийлбэр ба цохилтын далайцын хээ",
+      mixSpectrumAria: "Нэг эсвэл хоёр синус давтамжийн бүрэлдэхүүний идеал спектр",
+      mixBaseSliderAria: "Эхний давтамжийн гулсуур", mixBaseInputAria: "Эхний давтамжийг герцээр оруулах",
+      mixGapSliderAria: "Хоёр давтамжийн зөрүүг герцээр сонгох",
+      mixGapPresetsAria: "Давтамжийн зөрүүний жишээ", mixPlotToolsAria: "Долгионы хугацааны хуваарь",
+      mixLeftAria: "Өмнөх хугацааг харах", mixRightAria: "Дараах хугацааг харах",
+      mixChallenge: "Зөрүүг 0, 2, 4, 10 Гц болгож сонсоод, чангарч сулрах хээ хэрхэн өөрчлөгдөхийг ажиглаарай.",
+      mixLearnMore: "Хоёр авиа нийлээд яагаад чангарч, сулардаг вэ?",
+      mixLessonOne: "Ойролцоо давтамжтай хоёр синус долгион зарим үед бие биеэ дэмжиж, зарим үед бие биеэ сулруулна. Дууны чанга, сул ээлжлэхийг биение буюу цохилт гэнэ.",
+      mixLessonTwo: "Чангарч, сулрах хурд нь хоёр давтамжийн зөрүү: Δf = |f₂ − f₁|. Жишээ нь, 440 ба 444 Гц-д секундэд 4 удаа чангарч сонсогдоно. Спектрт харин 4 Гц-ийн гурав дахь авиа шинээр үүсэхгүй.",
+      mixReady: "Бэлэн. Хоёр авиа тоглуулах товчийг дарна уу.", mixStarting: "Хоёр авиа эхэлж байна…",
+      mixPlaying: "Авиа дуугарч байна. Зөрүүг өөрчилж чангарч, сулрах хурдыг сонсоорой.",
+      mixStopped: "Зогслоо. Өөр давтамжийн зөрүү туршаарай.", mixHidden: "Хуудаснаас гарахад авиа зогслоо.",
+      mixUnsupported: "Энэ хөтөч авиа тоглуулах боломжгүй байна.",
+      mixBlocked: "Авиа эхэлсэнгүй. Хөтчийн дууны зөвшөөрлийг шалгаад дахин оролдоно уу.",
+      mixInvalid: "Эхний давтамжийг 120–1,000 Гц-ийн хооронд оруулна уу.",
       strikePhase: "02 · Загварчилсан дуу", strikeChoose: "Дууны загвар сонгох",
       pluck: "Татсан чавхдас", kick: "Басс бөмбөр", strikeGroupAria: "Цохилтын дууны загвар",
       strikeCaption: "Дарж сонсоод, дахин дарж давтаарай",
@@ -356,7 +411,15 @@
     sirenLow: 440,
     sirenHigh: 880,
     sirenRate: 0.8,
-    sirenVolume: 40
+    sirenVolume: 40,
+    mixBase: 440,
+    mixGap: 4,
+    mixVolume: 40,
+    mixWindowStart: 0,
+    mixWindowSpan: 1,
+    mixPlaying: false,
+    mixStatus: "mixReady",
+    mixError: false
   };
   const text = key => messages[state.language][key];
   const frequencyText = hz => Number(hz.toFixed(2)).toLocaleString("en-US", { maximumFractionDigits: 2 });
@@ -600,9 +663,112 @@
     }
   }
 
+  class BeatsEngine {
+    constructor(contextOwner) {
+      this.contextOwner = contextOwner;
+      this.voices = new Set();
+      this.currentPair = null;
+      this.generation = 0;
+    }
+
+    gainForVolume() {
+      // Two simultaneous oscillators: even at 100%, their combined peak is at most 0.12.
+      return 0.06 * state.mixVolume / 100;
+    }
+
+    fadeAndStop(pair, immediate) {
+      const now = this.contextOwner.context.currentTime;
+      const gain = pair.gain.gain;
+      gain.cancelScheduledValues(now);
+      if (immediate) gain.setValueAtTime(0, now);
+      else gain.setTargetAtTime(0, now, 0.012);
+      if (pair.stopping) return;
+      pair.stopping = true;
+      for (const oscillator of pair.oscillators) {
+        try { oscillator.stop(now + (immediate ? 0.002 : 0.09)); }
+        catch (_) { /* The oscillator may already have stopped. */ }
+      }
+    }
+
+    createSyncedPair(context) {
+      const now = context.currentTime;
+      const gain = context.createGain();
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(this.gainForVolume(), now + 0.035);
+      gain.connect(this.contextOwner.output);
+      const pair = { oscillators: [], gain, stopping: false, ended: 0 };
+      for (const hz of beatsModel.frequencies({ baseHz: state.mixBase, gapHz: state.mixGap })) {
+        const oscillator = context.createOscillator();
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(hz, now);
+        oscillator.connect(gain);
+        oscillator.onended = () => {
+          oscillator.disconnect();
+          pair.ended++;
+          if (pair.ended === 2) {
+            gain.disconnect();
+            this.voices.delete(pair);
+            if (this.currentPair === pair) this.currentPair = null;
+          }
+        };
+        pair.oscillators.push(oscillator);
+      }
+      this.voices.add(pair);
+      this.currentPair = pair;
+      for (const oscillator of pair.oscillators) oscillator.start(now);
+    }
+
+    async start() {
+      const ticket = ++this.generation;
+      const context = await this.contextOwner.readyContext();
+      if (ticket !== this.generation || state.mode !== "mix") return false;
+      for (const pair of this.voices) this.fadeAndStop(pair, false);
+      this.createSyncedPair(context);
+      return true;
+    }
+
+    resyncAtZeroGap() {
+      if (!this.currentPair) return;
+      // Oscillators retain their relative phase after a pitch change. If the
+      // gap reaches zero, that phase could freeze at near-perfect cancellation.
+      // Start an aligned pair so 0 Hz difference always means a steady tone.
+      const oldPair = this.currentPair;
+      const context = this.contextOwner.context;
+      this.createSyncedPair(context);
+      const now = context.currentTime;
+      const gain = oldPair.gain.gain;
+      gain.cancelScheduledValues(now);
+      gain.setTargetAtTime(0, now, 0.006);
+      oldPair.stopping = true;
+      for (const oscillator of oldPair.oscillators) {
+        try { oscillator.stop(now + 0.07); }
+        catch (_) { /* The old pair may already have ended. */ }
+      }
+    }
+
+    update() {
+      if (!this.currentPair) return;
+      const now = this.contextOwner.context.currentTime;
+      const frequencies = beatsModel.frequencies({ baseHz: state.mixBase, gapHz: state.mixGap });
+      this.currentPair.oscillators.forEach((oscillator, index) => {
+        oscillator.frequency.setTargetAtTime(frequencies[index], now, 0.018);
+      });
+      const gain = this.currentPair.gain.gain;
+      gain.cancelScheduledValues(now);
+      gain.setTargetAtTime(this.gainForVolume(), now, 0.012);
+    }
+
+    stop(immediate = false) {
+      this.generation++;
+      for (const pair of this.voices) this.fadeAndStop(pair, immediate);
+      this.currentPair = null;
+    }
+  }
+
   const audio = new ToneEngine();
   const transientAudio = new TransientEngine(audio);
   const motionAudio = new MotionEngine(audio);
+  const mixAudio = new BeatsEngine(audio);
   const recorder = new recorderModel.Recorder(audio, window.AudioWorkletNode);
   let recordStatusKey = "recordReady";
   let recordError = false;
@@ -826,6 +992,126 @@
     $("motionStatus").classList.toggle("error", error);
   }
 
+  function setMixStatus(status, error = false) {
+    state.mixStatus = status;
+    state.mixError = error;
+    $("mixStatus").textContent = text(status);
+    $("mixStatus").classList.toggle("error", error);
+  }
+
+  function mixRecipe() {
+    return { baseHz: state.mixBase, gapHz: state.mixGap };
+  }
+
+  function mixBeatsText() {
+    return frequencyText(state.mixGap) + " " + text("mixBeatUnit");
+  }
+
+  function renderMixControls() {
+    $("mixBaseSlider").value = String(state.mixBase);
+    $("mixBaseInput").value = String(state.mixBase);
+    $("mixBaseInput").setAttribute("aria-valuetext", hzText(state.mixBase));
+    $("mixBaseValue").textContent = hzText(state.mixBase);
+    $("mixGapSlider").value = String(state.mixGap);
+    $("mixGapValue").textContent = hzText(state.mixGap);
+    const [first, second] = beatsModel.frequencies(mixRecipe());
+    $("mixPairValue").textContent = frequencyText(first) + " + " + hzText(second);
+    $("mixBeatValue").textContent = mixBeatsText();
+    $("mixWaveBadge").textContent = mixBeatsText();
+    $("mixSpectrumBadge").textContent = frequencyText(first) + " + " + hzText(second);
+    $("mixVolume").value = String(state.mixVolume);
+    $("mixVolumeValue").textContent = state.mixVolume + "%";
+    $("mixButton").classList.toggle("playing", state.mixPlaying);
+    $("mixButton").setAttribute("aria-pressed", String(state.mixPlaying));
+    $("mixPlayIcon").textContent = state.mixPlaying ? "■" : "▶";
+    $("mixPlayLabel").textContent = text(state.mixPlaying ? "mixStop" : "mixPlay");
+    $("mixPlayCaption").textContent = text(state.mixPlaying ? "stopCaption" : "playCaption");
+    document.querySelectorAll("[data-mix-gap]").forEach(button => {
+      const selected = Number(button.dataset.mixGap) === state.mixGap;
+      button.classList.toggle("selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+    document.querySelectorAll("[data-mix-window]").forEach(button => {
+      const selected = Number(button.dataset.mixWindow) === state.mixWindowSpan;
+      button.classList.toggle("selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+  }
+
+  function stopMixSound(immediate = false, message = "mixStopped") {
+    mixAudio.stop(immediate);
+    state.mixPlaying = false;
+    setMixStatus(message);
+    renderMixControls();
+  }
+
+  async function toggleMixSound() {
+    if (state.mixPlaying) { stopMixSound(); return; }
+    if (state.mode !== "mix") return;
+    setMixStatus("mixStarting");
+    try {
+      if (await mixAudio.start()) {
+        state.mixPlaying = true;
+        setMixStatus("mixPlaying");
+        renderMixControls();
+      }
+    } catch (error) {
+      stopMixSound(true, error.message === "unsupported" ? "mixUnsupported" : "mixBlocked");
+      setMixStatus(state.mixStatus, true);
+    }
+  }
+
+  function setMixBase(input) {
+    const value = Number(input);
+    if (!Number.isFinite(value) || value < beatsModel.MIN_BASE_HZ || value > beatsModel.MAX_BASE_HZ) {
+      setMixStatus("mixInvalid", true);
+      renderMixControls();
+      return;
+    }
+    state.mixBase = value;
+    if (state.mixError) setMixStatus(state.mixPlaying ? "mixPlaying" : "mixReady");
+    mixAudio.update();
+    renderMixControls();
+    if (state.mode === "mix") drawMixPlots();
+  }
+
+  function setMixGap(input) {
+    const value = Number(input);
+    if (!Number.isFinite(value)) return;
+    const previousGap = state.mixGap;
+    state.mixGap = Math.min(beatsModel.MAX_GAP_HZ, Math.max(beatsModel.MIN_GAP_HZ, value));
+    if (state.mixPlaying && previousGap !== 0 && state.mixGap === 0) mixAudio.resyncAtZeroGap();
+    else mixAudio.update();
+    renderMixControls();
+    if (state.mode === "mix") drawMixPlots();
+  }
+
+  function setMixWindow(span) {
+    if (!beatsModel.WINDOWS.includes(span)) return;
+    state.mixWindowSpan = span;
+    state.mixWindowStart = Math.max(0, Math.min(4 - span, state.mixWindowStart));
+    renderMixControls();
+    if (state.mode === "mix") drawMixWave();
+  }
+
+  function panMixWindow(direction) {
+    const span = state.mixWindowSpan;
+    state.mixWindowStart = Math.max(0, Math.min(4 - span, state.mixWindowStart + direction * span / 2));
+    if (state.mode === "mix") drawMixWave();
+  }
+
+  function resetMix() {
+    stopMixSound();
+    state.mixBase = 440;
+    state.mixGap = 4;
+    state.mixVolume = 40;
+    state.mixWindowStart = 0;
+    state.mixWindowSpan = 1;
+    setMixStatus("mixReady");
+    renderMixControls();
+    if (state.mode === "mix") drawMixPlots();
+  }
+
   function sirenRecipe() {
     return { pattern: state.sirenPattern, lowHz: state.sirenLow,
       highHz: state.sirenHigh, rate: state.sirenRate };
@@ -989,21 +1275,27 @@
   function renderMode() {
     const isStrike = state.mode === "strike";
     const isMotion = state.mode === "motion";
-    $("pureWorkspace").hidden = isStrike || isMotion;
-    $("pureChallenge").hidden = isStrike || isMotion;
-    $("pureExplanation").hidden = isStrike || isMotion;
+    const isMix = state.mode === "mix";
+    $("pureWorkspace").hidden = isStrike || isMotion || isMix;
+    $("pureChallenge").hidden = isStrike || isMotion || isMix;
+    $("pureExplanation").hidden = isStrike || isMotion || isMix;
     $("strikeWorkspace").hidden = !isStrike;
     $("strikeChallenge").hidden = !isStrike;
     $("strikeExplanation").hidden = !isStrike;
     $("motionWorkspace").hidden = !isMotion;
     $("motionChallenge").hidden = !isMotion;
     $("motionExplanation").hidden = !isMotion;
-    for (const [id, mode] of [["modePure", "pure"], ["modeStrike", "strike"], ["modeMotion", "motion"]]) {
+    $("mixWorkspace").hidden = !isMix;
+    $("mixChallenge").hidden = !isMix;
+    $("mixExplanation").hidden = !isMix;
+    for (const [id, mode] of [["modePure", "pure"], ["modeStrike", "strike"],
+      ["modeMotion", "motion"], ["modeMix", "mix"]]) {
       const selected = state.mode === mode;
       $(id).classList.toggle("active", selected);
       $(id).setAttribute("aria-pressed", String(selected));
     }
-    $("pagePhase").textContent = text(isStrike ? "strikePhase" : isMotion ? "motionPhase" : "phase");
+    $("pagePhase").textContent = text(isStrike ? "strikePhase" : isMotion ? "motionPhase" :
+      isMix ? "mixPhase" : "phase");
   }
 
   function renderTexts() {
@@ -1047,14 +1339,25 @@
     $("motionPitchCanvas").setAttribute("aria-label", text("motionPitchAria"));
     $("motionWaveCanvas").setAttribute("aria-label", text("motionWaveAria"));
     $("motionSpectrumCanvas").setAttribute("aria-label", text("motionComponentAria"));
+    $("mixWaveCanvas").setAttribute("aria-label", text("mixWaveAria"));
+    $("mixSpectrumCanvas").setAttribute("aria-label", text("mixSpectrumAria"));
+    $("mixBaseSlider").setAttribute("aria-label", text("mixBaseSliderAria"));
+    $("mixBaseInput").setAttribute("aria-label", text("mixBaseInputAria"));
+    $("mixGapSlider").setAttribute("aria-label", text("mixGapSliderAria"));
+    $("mixGapPresets").setAttribute("aria-label", text("mixGapPresetsAria"));
+    $("mixPlotTools").setAttribute("aria-label", text("mixPlotToolsAria"));
+    $("mixViewLeft").setAttribute("aria-label", text("mixLeftAria"));
+    $("mixViewRight").setAttribute("aria-label", text("mixRightAria"));
     document.querySelector(".note-presets").setAttribute("aria-label", text("presetsAria"));
     document.querySelector(".lang-group").setAttribute("aria-label", text("langGroupAria"));
     setStatus(state.status, state.error);
     setStrikeStatus(state.strikeStatus, state.strikeError);
     setMotionStatus(state.motionStatus, state.motionError);
+    setMixStatus(state.mixStatus, state.mixError);
     renderMode();
     renderStrikeControls();
     renderMotionControls();
+    renderMixControls();
     renderStrikeTime();
     renderRecordControls();
   }
@@ -1142,6 +1445,7 @@
     transientAudio.stop(immediate);
     stopStrikeFollow();
     stopMotionSound(immediate, message === "hidden" ? "motionHidden" : "motionStopped");
+    stopMixSound(immediate, message === "hidden" ? "mixHidden" : "mixStopped");
     stopSound(immediate, message);
     setStrikeStatus(message === "hidden" ? "strikeHidden" : "strikeStopped");
   }
@@ -1176,10 +1480,11 @@
   }
 
   function selectMode(mode) {
-    if (mode === state.mode || !["pure", "strike", "motion"].includes(mode)) return;
+    if (mode === state.mode || !["pure", "strike", "motion", "mix"].includes(mode)) return;
     stopAllAudio(false);
     state.mode = mode;
     if (mode === "motion") setMotionStatus("motionReady");
+    if (mode === "mix") setMixStatus("mixReady");
     renderTexts();
     drawPlots();
   }
@@ -1637,6 +1942,119 @@
     drawMotionComponent();
   }
 
+  function mixTimeLabel(seconds, span) {
+    return span < 1 ? millisecondsText(seconds * 1000) : secondsText(seconds);
+  }
+
+  function drawMixWave() {
+    const { ctx, width, height } = plotContext($("mixWaveCanvas"));
+    const left = 43, right = width - 16, top = 24, bottom = height - 32;
+    const start = state.mixWindowStart, span = state.mixWindowSpan;
+    const w = right - left, middle = (top + bottom) / 2;
+    const amplitude = (bottom - top) * 0.46;
+    const recipe = mixRecipe();
+    drawFrame(ctx, width, height, left, right, top, bottom);
+
+    // On a long time scale we show the exact envelope rather than undersampling
+    // hundreds of cycles into a misleading low-frequency waveform.
+    const count = Math.max(500, Math.floor(w * 1.5));
+    ctx.fillStyle = "rgba(47, 125, 203, .12)";
+    ctx.beginPath();
+    for (let i = 0; i <= count; i++) {
+      const fraction = i / count;
+      const envelope = beatsModel.envelopeAt(start + span * fraction, recipe);
+      const x = left + w * fraction;
+      const y = middle - amplitude * envelope;
+      if (!i) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    for (let i = count; i >= 0; i--) {
+      const fraction = i / count;
+      const envelope = beatsModel.envelopeAt(start + span * fraction, recipe);
+      ctx.lineTo(left + w * fraction, middle + amplitude * envelope);
+    }
+    ctx.fill();
+    ctx.strokeStyle = "#28918e";
+    ctx.lineWidth = 1.5;
+    for (const sign of [-1, 1]) {
+      ctx.beginPath();
+      for (let i = 0; i <= count; i++) {
+        const fraction = i / count;
+        const envelope = beatsModel.envelopeAt(start + span * fraction, recipe);
+        const x = left + w * fraction;
+        const y = middle + sign * amplitude * envelope;
+        if (!i) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+    if (span <= 0.0201) {
+      // A fine time window reveals the true sum, sampled at 20+ points per cycle.
+      const countWave = Math.max(1400, Math.ceil((state.mixBase + state.mixGap) * span * 24));
+      ctx.beginPath();
+      ctx.lineWidth = 2.2;
+      ctx.strokeStyle = "#367bd1";
+      for (let i = 0; i <= countWave; i++) {
+        const fraction = i / countWave;
+        const y = middle - amplitude * beatsModel.sampleAt(start + span * fraction, recipe);
+        if (!i) ctx.moveTo(left, y);
+        else ctx.lineTo(left + w * fraction, y);
+      }
+      ctx.stroke();
+    }
+    ctx.fillStyle = "#7489a1";
+    ctx.textAlign = "left";
+    ctx.fillText(text("amplitude"), 10, 13);
+    ctx.textAlign = "center";
+    const ticks = w < 320 ? 2 : 4;
+    for (let i = 0; i <= ticks; i++) {
+      ctx.fillText(mixTimeLabel(start + span * i / ticks, span), left + w * i / ticks, height - 12);
+    }
+    $("mixWindowLabel").textContent = mixTimeLabel(start, span) + " – " +
+      mixTimeLabel(start + span, span) + " · " + mixBeatsText();
+    $("mixViewLeft").disabled = start < 0.000001;
+    $("mixViewRight").disabled = start + span > 3.999999;
+  }
+
+  function drawMixSpectrum() {
+    const { ctx, width, height } = plotContext($("mixSpectrumCanvas"));
+    const left = 44, right = width - 16, top = 20, bottom = height - 33;
+    const w = right - left, h = bottom - top;
+    const lines = beatsModel.spectrumLines(mixRecipe());
+    // Magnify the narrow interval: a 4 Hz separation must be distinguishable.
+    const margin = Math.max(2, state.mixGap * 1.5);
+    const lower = state.mixBase - margin;
+    const upper = state.mixBase + state.mixGap + margin;
+    drawFrame(ctx, width, height, left, right, top, bottom);
+    const xFor = hz => left + (hz - lower) / (upper - lower) * w;
+    lines.forEach((line, index) => {
+      const x = xFor(line.hz);
+      const peak = bottom - line.amplitude * h * (lines.length === 1 ? 0.95 : 1.8);
+      ctx.strokeStyle = index === 0 ? "#347cc9" : "#159c91";
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(x, bottom);
+      ctx.lineTo(x, peak);
+      ctx.stroke();
+      ctx.fillStyle = ctx.strokeStyle;
+      ctx.beginPath();
+      ctx.arc(x, peak, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.font = "11px system-ui, sans-serif";
+    ctx.fillStyle = "#788da2";
+    ctx.textAlign = "center";
+    for (const i of (w < 290 ? [0, 4] : [0, 2, 4])) {
+      const hz = lower + (upper - lower) * i / 4;
+      ctx.fillText(hzText(Math.round(hz)), left + w * i / 4, height - 12);
+    }
+  }
+
+  function drawMixPlots() {
+    drawMixWave();
+    drawMixSpectrum();
+  }
+
   function drawPlots() {
     if (state.mode === "strike") {
       renderStrikeTime();
@@ -1644,6 +2062,8 @@
       drawStrikeSpectrum();
     } else if (state.mode === "motion") {
       drawMotionPlots();
+    } else if (state.mode === "mix") {
+      drawMixPlots();
     } else {
       drawWave();
       drawSpectrum();
@@ -1681,6 +2101,24 @@
       updateSiren();
     });
   });
+  document.querySelectorAll("[data-mix-gap]").forEach(button => {
+    button.addEventListener("click", () => setMixGap(button.dataset.mixGap));
+  });
+  document.querySelectorAll("[data-mix-window]").forEach(button => {
+    button.addEventListener("click", () => setMixWindow(Number(button.dataset.mixWindow)));
+  });
+  $("mixButton").addEventListener("click", toggleMixSound);
+  $("mixBaseSlider").addEventListener("input", event => setMixBase(event.target.value));
+  $("mixBaseInput").addEventListener("change", event => setMixBase(event.target.value));
+  $("mixGapSlider").addEventListener("input", event => setMixGap(event.target.value));
+  $("mixVolume").addEventListener("input", event => {
+    state.mixVolume = Math.max(0, Math.min(100, Number(event.target.value)));
+    mixAudio.update();
+    renderMixControls();
+  });
+  $("mixViewLeft").addEventListener("click", () => panMixWindow(-1));
+  $("mixViewRight").addEventListener("click", () => panMixWindow(1));
+  $("mixReset").addEventListener("click", resetMix);
   const pad = $("thereminPad");
   pad.addEventListener("pointerdown", event => {
     if (state.mode !== "motion" || state.motionKind !== "theremin" || event.button > 0) return;
@@ -1748,6 +2186,7 @@
   $("modePure").addEventListener("click", () => selectMode("pure"));
   $("modeStrike").addEventListener("click", () => selectMode("strike"));
   $("modeMotion").addEventListener("click", () => selectMode("motion"));
+  $("modeMix").addEventListener("click", () => selectMode("mix"));
   $("strikeButton").addEventListener("click", triggerStrike);
   $("strikeFrequencySlider").addEventListener("input", event => {
     setStrikePitch(transientModel.sliderToHz(Number(event.target.value)));
@@ -1829,7 +2268,7 @@
   window.addEventListener("pagehide", () => { stopRecording(); stopAllAudio(true, "hidden"); });
   window.addEventListener("blur", () => {
     if (recorder.state === "recording") stopRecording();
-    if (state.motionPlaying) stopAllAudio(true, "hidden");
+    if (state.motionPlaying || state.mixPlaying) stopAllAudio(true, "hidden");
   });
   if (typeof ResizeObserver !== "undefined") {
     const observer = new ResizeObserver(() => drawPlots());
@@ -1840,6 +2279,8 @@
     observer.observe($("motionPitchCanvas"));
     observer.observe($("motionWaveCanvas"));
     observer.observe($("motionSpectrumCanvas"));
+    observer.observe($("mixWaveCanvas"));
+    observer.observe($("mixSpectrumCanvas"));
   } else window.addEventListener("resize", drawPlots);
 
   renderTexts();

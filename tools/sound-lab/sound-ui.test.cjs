@@ -8,6 +8,7 @@ const model = require("./sound-model.js");
 const transientModel = require("./sound-transient.js");
 const spectrumModel = require("./sound-spectrum.js");
 const motionModel = require("./sound-motion.js");
+const beatsModel = require("./sound-beats.js");
 const recorderModel = require("./sound-recorder.js");
 
 const html = fs.readFileSync(path.join(__dirname, "index.html"), "utf8");
@@ -26,6 +27,7 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-transient\.js"/);
   assert.match(html, /src="sound-spectrum\.js"/);
   assert.match(html, /src="sound-motion\.js"/);
+  assert.match(html, /src="sound-beats\.js"/);
   assert.match(html, /src="sound-recorder\.js"/);
   assert.match(html, /id="recordPreview"[^>]*controls/);
   assert.match(html, /id="recordDownload"[^>]*download="sound-lab\.wav"/);
@@ -34,12 +36,19 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /id="recordResult"[^>]*hidden/);
   assert.match(html, /id="strikeWorkspace"[^>]*hidden/);
   assert.match(html, /id="motionWorkspace"[^>]*hidden/);
+  assert.match(html, /id="mixWorkspace"[^>]*hidden/);
+  assert.match(html, /id="mixExplanation"[^>]*hidden/);
+  assert.match(html, /id="mixChallenge"[^>]*hidden/);
+  assert.match(html, /id="modeMix"[^>]*data-i18n="modeMix"/);
+  assert.match(html, /id="mixBaseInput"[^>]*type="number"/);
   assert.match(html, /data-i18n="unitHz">Гц<\/span>/);
   assert.match(html, /data-i18n="strikePresetOneSecond">1 сек<\/option>/);
   for (const pattern of motionModel.PATTERNS) {
     assert.match(html, new RegExp('data-siren-pattern="' + pattern + '"'));
   }
   assert.equal([...html.matchAll(/data-siren-pattern="/g)].length, 3);
+  assert.equal([...html.matchAll(/data-mix-gap="/g)].length, 4);
+  assert.equal([...html.matchAll(/data-mix-window="/g)].length, beatsModel.WINDOWS.length);
   assert.doesNotMatch(html, /data-siren-pattern="sweep"/);
   assert.match(browserCode, /Нотод тааруулах/);
   assert.doesNotMatch(browserCode, /ноот/i);
@@ -108,6 +117,8 @@ function fakePage(search = "", supportWorklets = true) {
   const spectrumButtons = ["local", "overall"].map(spectrumView => element({ spectrumView }));
   const motionButtons = ["theremin", "siren"].map(motion => element({ motion }));
   const sirenPatternButtons = motionModel.PATTERNS.map(sirenPattern => element({ sirenPattern }));
+  const mixGapButtons = [0, 2, 4, 10].map(mixGap => element({ mixGap: String(mixGap) }));
+  const mixWindowButtons = beatsModel.WINDOWS.map(mixWindow => element({ mixWindow: String(mixWindow) }));
   const noteButtons = [60, 69, 72].map(note => element({ note: String(note) }));
   const hzLabels = [...html.matchAll(/data-unit-hz="([^"]+)"/g)].map(match => element({ unitHz: match[1] }));
   const noteGroup = element(), langGroup = element();
@@ -123,6 +134,8 @@ function fakePage(search = "", supportWorklets = true) {
       if (selector === "[data-spectrum-view]") return spectrumButtons;
       if (selector === "[data-motion]") return motionButtons;
       if (selector === "[data-siren-pattern]") return sirenPatternButtons;
+      if (selector === "[data-mix-gap]") return mixGapButtons;
+      if (selector === "[data-mix-window]") return mixWindowButtons;
       if (selector === "[data-note]") return noteButtons;
       if (selector === "[data-unit-hz]") return hzLabels;
       return [];
@@ -138,6 +151,7 @@ function fakePage(search = "", supportWorklets = true) {
     SoundLabModel: model,
     SoundLabTransientModel: transientModel,
     SoundLabMotionModel: motionModel,
+    SoundLabBeats: beatsModel,
     SoundLabRecorder: recorderModel,
     SoundLabSpectrum: {
       ...spectrumModel,
@@ -273,7 +287,8 @@ function fakePage(search = "", supportWorklets = true) {
   vm.runInNewContext(browserCode, sandbox, { filename: "sound-lab.js" });
   return {
     contexts, elements, document, window, waveButtons, strikeButtons, drumButtons, spectrumButtons,
-    motionButtons, sirenPatternButtons, hzLabels, objectUrls, revokedUrls,
+    motionButtons, sirenPatternButtons, mixGapButtons, mixWindowButtons,
+    hzLabels, objectUrls, revokedUrls,
     analyzedAt,
     tick(seconds) {
       if (contexts[0]) contexts[0].currentTime += seconds;
@@ -772,4 +787,130 @@ test("pending siren start does not produce an orphan voice after leaving Moving 
   app.fire("modeStrike", "click");
   await pending;
   assert.equal(app.contexts[0].oscillators.length, 0);
+});
+
+test("Combine Waves is silent until Play and begins with 440 + 444 Hz in one shared audio context", async () => {
+  const app = fakePage();
+  app.fire("modeMix", "click");
+  assert.equal(app.contexts.length, 0);
+  assert.equal(app.elements.get("pureWorkspace").hidden, true);
+  assert.equal(app.elements.get("mixWorkspace").hidden, false);
+  assert.equal(app.elements.get("mixChallenge").hidden, false);
+  assert.equal(app.elements.get("mixExplanation").hidden, false);
+  assert.equal(app.elements.get("pagePhase").textContent, "04 · Хоёр авианы биение");
+  assert.equal(app.elements.get("mixPairValue").textContent, "440 + 444 Гц");
+  assert.equal(app.elements.get("mixBeatValue").textContent, "4 удаа/сек");
+  assert.equal(app.mixGapButtons[2].getAttribute("aria-pressed"), "true");
+  assert.equal(app.elements.get("mixButton").getAttribute("aria-pressed"), "false");
+  await app.fire("mixButton", "click");
+  const context = app.contexts[0];
+  assert.equal(context.oscillators.length, 2);
+  assert.ok(context.oscillators.every(oscillator => oscillator.type === "sine" && oscillator.started));
+  assert.deepEqual(context.oscillators.map(oscillator => oscillator.frequency.value), [440, 444]);
+  assert.equal(context.gains.at(-1).gain.value, 0.024);
+  assert.equal(app.elements.get("mixButton").getAttribute("aria-pressed"), "true");
+  assert.match(app.elements.get("mixStatus").textContent, /Зөрүүг өөрчилж/);
+  await app.fire("mixButton", "click");
+  assert.ok(context.oscillators.every(oscillator => oscillator.stopped));
+  assert.equal(app.elements.get("mixButton").getAttribute("aria-pressed"), "false");
+});
+
+test("beating controls retune both voices; gap zero resynchronizes the pair without lingering voices", async () => {
+  const app = fakePage();
+  app.fire("modeMix", "click");
+  await app.fire("mixButton", "click");
+  const context = app.contexts[0];
+  app.elements.get("mixGapSlider").value = "10";
+  app.fire("mixGapSlider", "input");
+  assert.deepEqual(context.oscillators.map(oscillator => oscillator.frequency.value), [440, 450]);
+  assert.equal(app.elements.get("mixBeatValue").textContent, "10 удаа/сек");
+  assert.equal(app.mixGapButtons[3].getAttribute("aria-pressed"), "true");
+  app.elements.get("mixBaseInput").value = "500";
+  app.fire("mixBaseInput", "change");
+  assert.deepEqual(context.oscillators.map(oscillator => oscillator.frequency.value), [500, 510]);
+  assert.equal(app.elements.get("mixSpectrumBadge").textContent, "500 + 510 Гц");
+  assert.equal(context.oscillators.length, 2, "Normal retuning preserves both oscillators");
+  app.mixGapButtons[0].events.click();
+  assert.equal(context.oscillators.length, 4, "Returning to zero resynchronizes the pair's relative phase");
+  assert.ok(context.oscillators.slice(0, 2).every(oscillator => oscillator.stopped));
+  assert.deepEqual(context.oscillators.slice(2).map(oscillator => oscillator.frequency.value), [500, 500]);
+  assert.equal(app.elements.get("mixBeatValue").textContent, "0 удаа/сек");
+  assert.equal(app.mixGapButtons[0].getAttribute("aria-pressed"), "true");
+  app.elements.get("mixVolume").value = "100";
+  app.fire("mixVolume", "input");
+  assert.equal(context.gains.at(-1).gain.value, 0.06, "Each oscillator is capped at .06 amplitude");
+  app.elements.get("mixBaseInput").value = "12";
+  app.fire("mixBaseInput", "change");
+  assert.equal(app.elements.get("mixBaseInput").value, "500", "Invalid input restores last valid frequency");
+  assert.equal(app.elements.get("mixStatus").classList.contains("error"), true);
+  app.mixGapButtons[2].events.click();
+  assert.equal(context.oscillators.length, 4, "Leaving zero also reuses the synchronized pair");
+  app.fire("mixReset", "click");
+  assert.ok(context.oscillators.every(oscillator => oscillator.stopped));
+  assert.equal(app.elements.get("mixBaseInput").value, "440");
+  assert.equal(app.elements.get("mixGapValue").textContent, "4 Гц");
+  assert.equal(app.elements.get("mixVolumeValue").textContent, "40%");
+  assert.equal(app.elements.get("mixStatus").classList.contains("error"), false);
+});
+
+test("beats waveform zoom, pan and spectrum remain bilingual and show nearby frequencies", () => {
+  const app = fakePage();
+  app.fire("modeMix", "click");
+  assert.equal(app.elements.get("mixWindowLabel").textContent, "0 сек – 1 сек · 4 удаа/сек");
+  assert.ok(app.elements.get("mixSpectrumCanvas").drawnText.some(label => label.endsWith(" Гц")));
+  assert.equal(app.mixWindowButtons[2].getAttribute("aria-pressed"), "true");
+  app.mixWindowButtons[0].events.click();
+  assert.equal(app.elements.get("mixWindowLabel").textContent, "0 мсек – 20 мсек · 4 удаа/сек");
+  assert.equal(app.elements.get("mixViewLeft").disabled, true);
+  app.fire("mixViewRight", "click");
+  assert.equal(app.elements.get("mixWindowLabel").textContent, "10 мсек – 30 мсек · 4 удаа/сек");
+  assert.equal(app.elements.get("mixViewLeft").disabled, false);
+  app.mixWindowButtons[1].events.click();
+  assert.equal(app.mixWindowButtons[1].getAttribute("aria-pressed"), "true");
+  assert.equal(app.elements.get("mixWindowLabel").textContent, "10 мсек – 210 мсек · 4 удаа/сек");
+  app.fire("langEn", "click");
+  assert.equal(app.elements.get("pagePhase").textContent, "04 · Two-tone beats");
+  assert.equal(app.elements.get("mixBeatValue").textContent, "4 pulses/s");
+  assert.equal(app.elements.get("mixWindowLabel").textContent, "10 ms – 210 ms · 4 pulses/s");
+  assert.equal(app.elements.get("mixBaseInput").getAttribute("aria-label"), "First frequency in hertz");
+  assert.match(browserCode, /recordSave: "Download WAV"/);
+  assert.match(browserCode, /recordSave: "WAV татах"/);
+  assert.doesNotMatch(browserCode, /Download WAV again|WAV дахин хадгалах/);
+});
+
+test("global Stop saves a recording of the combined tones, and modes cancel both voices", async () => {
+  const app = fakePage();
+  await app.fire("recordButton", "click");
+  app.fire("modeMix", "click");
+  await app.fire("mixButton", "click");
+  const context = app.contexts[0];
+  assert.equal(context.oscillators.length, 2);
+  const capture = context.worklets[0];
+  capture.send({ type: "samples", samples: new Float32Array([0.2, -0.2]) });
+  app.fire("stopAll", "click");
+  assert.ok(context.oscillators.every(oscillator => oscillator.stopped));
+  assert.deepEqual(capture.port.lastPosted, { type: "stop" });
+  capture.send({ type: "done" });
+  assert.equal(app.elements.get("recordDownload").clickCount, 1);
+  assert.equal(app.elements.get("recordResult").hidden, false);
+  await app.fire("mixButton", "click");
+  app.fire("modeMotion", "click");
+  assert.ok(context.oscillators.every(oscillator => oscillator.stopped));
+  assert.equal(app.elements.get("mixWorkspace").hidden, true);
+  assert.equal(app.elements.get("motionWorkspace").hidden, false);
+});
+
+test("pending beat start is canceled when the tab changes or the page closes", async () => {
+  const app = fakePage();
+  app.fire("modeMix", "click");
+  const pending = app.fire("mixButton", "click");
+  app.fire("modePure", "click");
+  await pending;
+  assert.equal(app.contexts[0].oscillators.length, 0);
+  app.fire("modeMix", "click");
+  await app.fire("mixButton", "click");
+  assert.equal(app.contexts[0].oscillators.length, 2);
+  app.window.events.pagehide();
+  assert.ok(app.contexts[0].oscillators.every(oscillator => oscillator.stopped));
+  assert.equal(app.elements.get("mixButton").getAttribute("aria-pressed"), "false");
 });
