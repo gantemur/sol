@@ -30,7 +30,6 @@ test("the ideal spectrum shows only the original tones, never a spurious low-fre
     [{ hz: 440, amplitude: 1 }]);
   assert.equal(beats.beatRate({ baseHz: 440, gapHz: 0 }), 0);
   close(beats.envelopeAt(2, { baseHz: 440, gapHz: 0 }), 1);
-  assert.deepEqual(beats.WINDOWS, [0.02, 0.2, 1, 2]);
 });
 
 test("beat calculations reject out-of-range frequencies and invalid times", () => {

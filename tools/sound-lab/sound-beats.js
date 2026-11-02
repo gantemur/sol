@@ -13,7 +13,6 @@
   const MAX_BASE_HZ = 1000;
   const MIN_GAP_HZ = 0;
   const MAX_GAP_HZ = 20;
-  const WINDOWS = Object.freeze([0.02, 0.2, 1, 2]);
 
   function validate(recipe) {
     if (!recipe || !Number.isFinite(recipe.baseHz) || !Number.isFinite(recipe.gapHz) ||
@@ -54,5 +53,5 @@
   }
 
   return Object.freeze({ MIN_BASE_HZ, MAX_BASE_HZ, MIN_GAP_HZ, MAX_GAP_HZ,
-    WINDOWS, validate, frequencies, beatRate, envelopeAt, sampleAt, spectrumLines });
+    validate, frequencies, beatRate, envelopeAt, sampleAt, spectrumLines });
 });

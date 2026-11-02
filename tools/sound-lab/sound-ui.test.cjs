@@ -48,7 +48,10 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   }
   assert.equal([...html.matchAll(/data-siren-pattern="/g)].length, 3);
   assert.equal([...html.matchAll(/data-mix-gap="/g)].length, 4);
-  assert.equal([...html.matchAll(/data-mix-window="/g)].length, beatsModel.WINDOWS.length);
+  assert.match(html, /id="mixZoomIn"/);
+  assert.match(html, /id="mixZoomOut"/);
+  assert.match(html, /id="mixZoomValue"/);
+  assert.doesNotMatch(html, /data-mix-window=/);
   assert.doesNotMatch(html, /data-siren-pattern="sweep"/);
   assert.match(browserCode, /Нотод тааруулах/);
   assert.doesNotMatch(browserCode, /ноот/i);
@@ -118,7 +121,6 @@ function fakePage(search = "", supportWorklets = true) {
   const motionButtons = ["theremin", "siren"].map(motion => element({ motion }));
   const sirenPatternButtons = motionModel.PATTERNS.map(sirenPattern => element({ sirenPattern }));
   const mixGapButtons = [0, 2, 4, 10].map(mixGap => element({ mixGap: String(mixGap) }));
-  const mixWindowButtons = beatsModel.WINDOWS.map(mixWindow => element({ mixWindow: String(mixWindow) }));
   const noteButtons = [60, 69, 72].map(note => element({ note: String(note) }));
   const hzLabels = [...html.matchAll(/data-unit-hz="([^"]+)"/g)].map(match => element({ unitHz: match[1] }));
   const noteGroup = element(), langGroup = element();
@@ -135,7 +137,6 @@ function fakePage(search = "", supportWorklets = true) {
       if (selector === "[data-motion]") return motionButtons;
       if (selector === "[data-siren-pattern]") return sirenPatternButtons;
       if (selector === "[data-mix-gap]") return mixGapButtons;
-      if (selector === "[data-mix-window]") return mixWindowButtons;
       if (selector === "[data-note]") return noteButtons;
       if (selector === "[data-unit-hz]") return hzLabels;
       return [];
@@ -287,7 +288,7 @@ function fakePage(search = "", supportWorklets = true) {
   vm.runInNewContext(browserCode, sandbox, { filename: "sound-lab.js" });
   return {
     contexts, elements, document, window, waveButtons, strikeButtons, drumButtons, spectrumButtons,
-    motionButtons, sirenPatternButtons, mixGapButtons, mixWindowButtons,
+    motionButtons, sirenPatternButtons, mixGapButtons,
     hzLabels, objectUrls, revokedUrls,
     analyzedAt,
     tick(seconds) {
@@ -494,6 +495,19 @@ test("language, volume, reset and hiding the page cannot trigger autoplay", asyn
   assert.equal(app.elements.get("volumeReadout").textContent, "40%");
 });
 
+test("pure tones gain extra headroom without autoplay or exceeding the bounded peak", async () => {
+  const app = fakePage();
+  assert.equal(app.contexts.length, 0);
+  await app.fire("playButton", "click");
+  const context = app.contexts[0];
+  assert.equal(context.gains.at(-1).gain.value, 0.12, "Default 40% produces 0.12 amplitude");
+  app.elements.get("volumeSlider").value = "100";
+  app.fire("volumeSlider", "input");
+  assert.equal(context.gains.at(-1).gain.value, 0.3);
+  app.fire("stopAll", "click");
+  assert.equal(context.oscillators[0].stopped, true);
+});
+
 test("an explicit English URL overrides the Mongolian default", () => {
   const app = fakePage("?lang=en");
   assert.equal(app.document.documentElement.lang, "en");
@@ -562,8 +576,14 @@ test("Strike & Pluck begins silently, triggers modeled buffers and bounds simult
   const context = app.contexts[0];
   assert.equal(context.sources.length, 1);
   assert.equal(context.sources[0].started, true);
+  assert.ok(Math.abs(context.gains.at(-1).gain.value - 0.1155) < 1e-10);
   assert.ok(context.buffers[0].length > 10000);
   assert.ok(context.buffers[0].getChannelData(0).some(x => Math.abs(x) > 0.05));
+
+  app.elements.get("strikeStrength").value = "100";
+  app.fire("strikeStrength", "input");
+  await app.fire("strikeButton", "click");
+  assert.equal(context.gains.at(-1).gain.value, 0.21, "Max impact keeps per-voice amplitude bounded");
 
   app.strikeButtons[1].events.click();
   assert.equal(app.elements.get("strikePitchGroup").hidden, true, "Kick has no fake musical note control");
@@ -571,6 +591,7 @@ test("Strike & Pluck begins silently, triggers modeled buffers and bounds simult
   assert.equal(context.sources[0].stopped, true, "Switching recipes stops the old sound");
   for (let n = 0; n < 5; n++) await app.fire("strikeButton", "click");
   assert.ok(context.sources.filter(x => !x.stopped).length <= 4);
+  assert.ok(context.sources.filter(x => !x.stopped).length * 0.21 < 1);
   app.fire("stopAll", "click");
   assert.ok(context.sources.every(x => x.stopped), "Master Stop silences all transient voices");
 
@@ -693,7 +714,7 @@ test("Moving Pitch theremin uses a pointer gesture, shared audio, live pitch and
   app.fire("thereminPad", "pointermove", { clientX: 600, clientY: 15 });
   assert.ok(context.oscillators[0].frequency.value > firstHz);
   assert.ok(context.gains.at(-1).gain.value > 0);
-  assert.ok(context.gains.at(-1).gain.value <= 0.12);
+  assert.ok(context.gains.at(-1).gain.value <= 0.24);
   app.tick(0.05);
   assert.match(app.elements.get("motionPitchBadge").textContent, /Гц/);
   app.fire("thereminPad", "pointerup", { clientX: 600, clientY: 15 });
@@ -724,6 +745,7 @@ test("siren changes two-tone/sweep pitch with its clock; Stop and mode switch ca
   assert.equal(app.elements.get("sirenHighValue").textContent, "1,000 Гц");
   await app.fire("sirenButton", "click");
   const context = app.contexts[0];
+  assert.equal(context.gains.at(-1).gain.value, 0.096, "Default siren level is louder but capped");
   assert.match(app.elements.get("motionStatus").textContent, /Дохио зогсоох/);
   assert.doesNotMatch(app.elements.get("motionStatus").textContent, /Гараа авах/);
   assert.equal(context.oscillators[0].frequency.value, 440);
@@ -807,7 +829,7 @@ test("Combine Waves is silent until Play and begins with 440 + 444 Hz in one sha
   assert.equal(context.oscillators.length, 2);
   assert.ok(context.oscillators.every(oscillator => oscillator.type === "sine" && oscillator.started));
   assert.deepEqual(context.oscillators.map(oscillator => oscillator.frequency.value), [440, 444]);
-  assert.equal(context.gains.at(-1).gain.value, 0.024);
+  assert.equal(context.gains.at(-1).gain.value, 0.048);
   assert.equal(app.elements.get("mixButton").getAttribute("aria-pressed"), "true");
   assert.match(app.elements.get("mixStatus").textContent, /Зөрүүг өөрчилж/);
   await app.fire("mixButton", "click");
@@ -839,7 +861,7 @@ test("beating controls retune both voices; gap zero resynchronizes the pair with
   assert.equal(app.mixGapButtons[0].getAttribute("aria-pressed"), "true");
   app.elements.get("mixVolume").value = "100";
   app.fire("mixVolume", "input");
-  assert.equal(context.gains.at(-1).gain.value, 0.06, "Each oscillator is capped at .06 amplitude");
+  assert.equal(context.gains.at(-1).gain.value, 0.12, "Each oscillator receives at most .12 amplitude");
   app.elements.get("mixBaseInput").value = "12";
   app.fire("mixBaseInput", "change");
   assert.equal(app.elements.get("mixBaseInput").value, "500", "Invalid input restores last valid frequency");
@@ -859,22 +881,41 @@ test("beats waveform zoom, pan and spectrum remain bilingual and show nearby fre
   const app = fakePage();
   app.fire("modeMix", "click");
   assert.equal(app.elements.get("mixWindowLabel").textContent, "0 сек – 1 сек · 4 удаа/сек");
+  assert.equal(app.elements.get("mixZoomValue").textContent, "1 сек");
+  assert.equal(app.elements.get("mixZoomOut").disabled, false);
+  assert.equal(app.elements.get("mixZoomIn").disabled, false);
   assert.ok(app.elements.get("mixSpectrumCanvas").drawnText.some(label => label.endsWith(" Гц")));
-  assert.equal(app.mixWindowButtons[2].getAttribute("aria-pressed"), "true");
-  app.mixWindowButtons[0].events.click();
-  assert.equal(app.elements.get("mixWindowLabel").textContent, "0 мсек – 20 мсек · 4 удаа/сек");
+  assert.match(app.elements.get("mixWaveHint").textContent, /\+ дарж/);
+  app.fire("mixZoomIn", "click");
+  assert.equal(app.elements.get("mixZoomValue").textContent, "250 мсек");
+  app.fire("mixZoomIn", "click");
+  assert.equal(app.elements.get("mixZoomValue").textContent, "62.5 мсек");
+  app.fire("mixZoomIn", "click");
+  assert.equal(app.elements.get("mixZoomValue").textContent, "15.63 мсек");
+  assert.match(app.elements.get("mixWaveHint").textContent, /Цэнхэр шугам/);
   assert.equal(app.elements.get("mixViewLeft").disabled, true);
   app.fire("mixViewRight", "click");
-  assert.equal(app.elements.get("mixWindowLabel").textContent, "10 мсек – 30 мсек · 4 удаа/сек");
+  assert.equal(app.elements.get("mixWindowLabel").textContent, "7.81 мсек – 23.44 мсек · 4 удаа/сек");
   assert.equal(app.elements.get("mixViewLeft").disabled, false);
-  app.mixWindowButtons[1].events.click();
-  assert.equal(app.mixWindowButtons[1].getAttribute("aria-pressed"), "true");
-  assert.equal(app.elements.get("mixWindowLabel").textContent, "10 мсек – 210 мсек · 4 удаа/сек");
+  app.fire("mixZoomIn", "click");
+  app.fire("mixZoomIn", "click");
+  assert.equal(app.elements.get("mixZoomValue").textContent, "2 мсек");
+  assert.equal(app.elements.get("mixZoomIn").disabled, true);
+  assert.equal(app.elements.get("mixWindowLabel").textContent, "7.81 мсек – 9.81 мсек · 4 удаа/сек");
   app.fire("langEn", "click");
   assert.equal(app.elements.get("pagePhase").textContent, "04 · Two-tone beats");
   assert.equal(app.elements.get("mixBeatValue").textContent, "4 pulses/s");
-  assert.equal(app.elements.get("mixWindowLabel").textContent, "10 ms – 210 ms · 4 pulses/s");
+  assert.equal(app.elements.get("mixWindowLabel").textContent, "7.81 ms – 9.81 ms · 4 pulses/s");
+  assert.equal(app.elements.get("mixZoomIn").getAttribute("aria-label"), "Zoom in to individual vibrations");
+  assert.match(app.elements.get("mixWaveHint").textContent, /actual combined oscillation/);
   assert.equal(app.elements.get("mixBaseInput").getAttribute("aria-label"), "First frequency in hertz");
+  for (let i = 0; i < 6; i++) app.fire("mixZoomOut", "click");
+  assert.equal(app.elements.get("mixZoomValue").textContent, "4 s");
+  assert.equal(app.elements.get("mixZoomOut").disabled, true);
+  assert.equal(app.elements.get("mixViewRight").disabled, true);
+  assert.match(app.elements.get("mixWaveHint").textContent, /Press \+ to zoom/);
+  app.fire("mixReset", "click");
+  assert.equal(app.elements.get("mixZoomValue").textContent, "1 s");
   app.mixGapButtons[0].events.click();
   assert.match(app.elements.get("mixSpectrumFoot").textContent, /one spectral peak/);
   assert.match(browserCode, /recordSave: "Download WAV"/);

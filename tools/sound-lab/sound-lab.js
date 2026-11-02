@@ -20,7 +20,7 @@
       sliderHint: "The slider is logarithmic. Type a frequency for values outside its range.",
       sliderOutside: "The typed frequency is beyond the slider range; the exact value is still used.",
       tryNote: "Try a note:", volume: "Volume",
-      safeVolume: "Starts quietly. Increase volume carefully, especially with headphones.",
+      safeVolume: "Start at a low volume and increase carefully, especially with headphones.",
       settings: "⚙ Settings", tuning: "Tuning for snapped notes",
       tuningHint: "The note names use 12-tone equal temperament for now.",
       equal: "12-tone equal", fixedTime: "Keep the time window fixed at 20 ms",
@@ -69,11 +69,13 @@
       mixBase: "First frequency", mixGap: "Frequency difference (Δf)",
       mixTryGap: "Try:", mixZeroGap: "0 Hz", mixTwoGap: "2 Hz", mixFourGap: "4 Hz", mixTenGap: "10 Hz",
       mixTwoFrequencies: "Two frequencies", mixBeatRate: "Volume pulses", mixBeatUnit: "pulses/s",
-      mixWaveTitle: "Combined waveform", mixWaveHint: "At long times, only the loudness envelope is shown. Zoom to 20 ms to see the actual vibrations.",
+      mixWaveTitle: "Combined waveform", mixWaveHint: "Long windows show the loudness envelope. Press + to zoom in and see the actual vibrations.",
+      mixWaveHintFine: "Blue: the actual combined oscillation. Green: its loudness envelope.",
       mixSpectrumTitle: "Frequency components", mixSpectrumHint: "Pulsing loudness does not create a new low-frequency tone.",
       mixSpectrumFoot: "Only the original two frequencies appear in the ideal spectrum.",
       mixSpectrumZeroFoot: "At zero difference, the two identical frequencies merge into one spectral peak.",
-      mixWindow20: "20 ms", mixWindow200: "200 ms", mixWindowOne: "1 s", mixWindowTwo: "2 s",
+      mixZoomLabel: "Zoom", mixPanLabel: "Move", mixZoomValueAria: "Visible time span",
+      mixZoomOutAria: "Zoom out in time", mixZoomInAria: "Zoom in to individual vibrations",
       mixWaveAria: "Sum of two sine waves and its ideal beat envelope over time",
       mixSpectrumAria: "Ideal spectrum with one or two distinct sine frequency components",
       mixBaseSliderAria: "First frequency slider", mixBaseInputAria: "First frequency in hertz",
@@ -201,7 +203,7 @@
       sliderHint: "Гулсуур нь логарифм хуваарьтай. Хязгаараас гадуур утгыг гараар оруулж болно.",
       sliderOutside: "Гараар оруулсан давтамж гулсуурын хязгаараас гадуур боловч яг тэр утгыг хэрэглэнэ.",
       tryNote: "Нот турших:", volume: "Дууны хэмжээ",
-      safeVolume: "Эхэндээ аяархан дуугарна. Ялангуяа чихэвч хэрэглэвэл болгоомжтой нэмээрэй.",
+      safeVolume: "Ялангуяа чихэвч хэрэглэвэл дууны хэмжээг багаас эхлүүлж, болгоомжтой нэмээрэй.",
       settings: "⚙ Тохиргоо", tuning: "Нотод тааруулах хөглөлт",
       tuningHint: "Одоохондоо 12 тэнцүү хагас авианы хөглөлт ашиглана.",
       equal: "12 тэнцүү хуваарь", fixedTime: "Хугацааны цонхыг 20 мсек-д тогтмол байлгах",
@@ -250,11 +252,13 @@
       mixBase: "Эхний давтамж", mixGap: "Давтамжийн зөрүү (Δf)",
       mixTryGap: "Туршиж үз:", mixZeroGap: "0 Гц", mixTwoGap: "2 Гц", mixFourGap: "4 Гц", mixTenGap: "10 Гц",
       mixTwoFrequencies: "Хоёр давтамж", mixBeatRate: "Чангарч, сулрах хурд", mixBeatUnit: "удаа/сек",
-      mixWaveTitle: "Хоёр долгионы нийлбэр", mixWaveHint: "Том цонхонд чанга, сулын хүрээг харуулна. 20 мсек болгон томруулбал жинхэнэ хэлбэлзэл харагдана.",
+      mixWaveTitle: "Хоёр долгионы нийлбэр", mixWaveHint: "Том цонхонд дууны чанга, сулын хүрээ харагдана. + дарж томруулбал жинхэнэ хэлбэлзлийг харна.",
+      mixWaveHintFine: "Цэнхэр шугам: хоёр долгионы жинхэнэ нийлбэр. Ногоон шугам: далайцын хүрээ.",
       mixSpectrumTitle: "Давтамжийн бүрэлдэхүүнүүд", mixSpectrumHint: "Чангарч, сулрах нь шинэ нам давтамж үүсгээгүй.",
       mixSpectrumFoot: "Спектрт зөвхөн анхныхаа хоёр давтамж харагдана.",
       mixSpectrumZeroFoot: "Зөрүү 0 байхад ижил хоёр давтамж спектрт нэг оргил болж нийлнэ.",
-      mixWindow20: "20 мсек", mixWindow200: "200 мсек", mixWindowOne: "1 сек", mixWindowTwo: "2 сек",
+      mixZoomLabel: "Томруулах", mixPanLabel: "Шилжүүлэх", mixZoomValueAria: "Харагдах хугацаа",
+      mixZoomOutAria: "Томруулалтыг багасгах", mixZoomInAria: "Долгионыг томруулах",
       mixWaveAria: "Хоёр синус долгионы нийлбэр ба цохилтын далайцын хээ",
       mixSpectrumAria: "Нэг эсвэл хоёр синус давтамжийн бүрэлдэхүүний идеал спектр",
       mixBaseSliderAria: "Эхний давтамжийн гулсуур", mixBaseInputAria: "Эхний давтамжийг герцээр оруулах",
@@ -431,6 +435,12 @@
   const secondsText = seconds => frequencyText(seconds) + " " + text("unitSeconds");
   const secondsFixedText = seconds => seconds.toFixed(2) + " " + text("unitSeconds");
   const millisecondsText = ms => frequencyText(ms) + " " + text("unitMilliseconds");
+  // More headroom for small built-in speakers; still bounded below full-scale output.
+  // Four simultaneous triggered voices have a total worst-case gain below 1.
+  const maxGain = Object.freeze({ tone: 0.30, transient: 0.21, motion: 0.24, beatVoice: 0.12 });
+  const MIX_MIN_VIEW_SECONDS = 0.002;
+  const MIX_MAX_VIEW_SECONDS = 4;
+  const MIX_ZOOM_FACTOR = 4;
 
   class ToneEngine {
     constructor() {
@@ -442,8 +452,7 @@
     }
 
     gainForVolume() {
-      // Hard cap: a single oscillator cannot exceed 0.15 linear amplitude.
-      return 0.15 * state.volume / 100;
+      return maxGain.tone * state.volume / 100;
     }
 
     createVoice() {
@@ -574,7 +583,7 @@
       const gain = context.createGain();
       const now = context.currentTime;
       source.buffer = buffer;
-      gain.gain.setValueAtTime(0.12 * state.strikeStrength / 100, now);
+      gain.gain.setValueAtTime(maxGain.transient * state.strikeStrength / 100, now);
       source.connect(gain);
       gain.connect(this.contextOwner.output);
 
@@ -633,7 +642,7 @@
       oscillator.type = "sine";
       oscillator.frequency.setValueAtTime(state.motionHz, now);
       gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(0.12 * state.motionLevel, now + 0.035);
+      gain.gain.linearRampToValueAtTime(maxGain.motion * state.motionLevel, now + 0.035);
       oscillator.connect(gain);
       gain.connect(this.contextOwner.output);
       const voice = { oscillator, gain, stopping: false };
@@ -655,7 +664,7 @@
       this.currentVoice.oscillator.frequency.setTargetAtTime(state.motionHz, now, 0.018);
       const gain = this.currentVoice.gain.gain;
       gain.cancelScheduledValues(now);
-      gain.setTargetAtTime(0.12 * state.motionLevel, now, 0.012);
+      gain.setTargetAtTime(maxGain.motion * state.motionLevel, now, 0.012);
     }
 
     stop(immediate = false) {
@@ -674,8 +683,8 @@
     }
 
     gainForVolume() {
-      // Two simultaneous oscillators: even at 100%, their combined peak is at most 0.12.
-      return 0.06 * state.mixVolume / 100;
+      // Two simultaneous oscillators: combined steady-state peak stays at or below 0.24.
+      return maxGain.beatVoice * state.mixVolume / 100;
     }
 
     fadeAndStop(pair, immediate) {
@@ -1009,6 +1018,15 @@
     return frequencyText(state.mixGap) + " " + text("mixBeatUnit");
   }
 
+  function renderMixView() {
+    const span = state.mixWindowSpan, start = state.mixWindowStart;
+    $("mixZoomValue").textContent = mixTimeLabel(span, span);
+    $("mixZoomOut").disabled = span >= MIX_MAX_VIEW_SECONDS - 1e-9;
+    $("mixZoomIn").disabled = span <= MIX_MIN_VIEW_SECONDS + 1e-9;
+    $("mixViewLeft").disabled = start <= 1e-9;
+    $("mixViewRight").disabled = start + span >= MIX_MAX_VIEW_SECONDS - 1e-9;
+  }
+
   function renderMixControls() {
     $("mixBaseSlider").value = String(state.mixBase);
     $("mixBaseInput").value = String(state.mixBase);
@@ -1034,11 +1052,7 @@
       button.classList.toggle("selected", selected);
       button.setAttribute("aria-pressed", String(selected));
     });
-    document.querySelectorAll("[data-mix-window]").forEach(button => {
-      const selected = Number(button.dataset.mixWindow) === state.mixWindowSpan;
-      button.classList.toggle("selected", selected);
-      button.setAttribute("aria-pressed", String(selected));
-    });
+    renderMixView();
   }
 
   function stopMixSound(immediate = false, message = "mixStopped") {
@@ -1089,17 +1103,24 @@
     if (state.mode === "mix") drawMixPlots();
   }
 
-  function setMixWindow(span) {
-    if (!beatsModel.WINDOWS.includes(span)) return;
-    state.mixWindowSpan = span;
-    state.mixWindowStart = Math.max(0, Math.min(4 - span, state.mixWindowStart));
-    renderMixControls();
+  function zoomMix(direction) {
+    const span = state.mixWindowSpan;
+    const next = direction > 0 ? Math.max(MIX_MIN_VIEW_SECONDS, span / MIX_ZOOM_FACTOR) :
+      Math.min(MIX_MAX_VIEW_SECONDS, span * MIX_ZOOM_FACTOR);
+    if (next === span) return;
+    state.mixWindowSpan = next;
+    // Preserve the left-hand time coordinate so successive zooms reveal the
+    // same oscillations rather than unexpectedly jumping to a different phase.
+    state.mixWindowStart = Math.min(state.mixWindowStart, MIX_MAX_VIEW_SECONDS - next);
+    renderMixView();
     if (state.mode === "mix") drawMixWave();
   }
 
   function panMixWindow(direction) {
     const span = state.mixWindowSpan;
-    state.mixWindowStart = Math.max(0, Math.min(4 - span, state.mixWindowStart + direction * span / 2));
+    state.mixWindowStart = Math.max(0, Math.min(MIX_MAX_VIEW_SECONDS - span,
+      state.mixWindowStart + direction * span / 2));
+    renderMixView();
     if (state.mode === "mix") drawMixWave();
   }
 
@@ -1349,6 +1370,11 @@
     $("mixGapSlider").setAttribute("aria-label", text("mixGapSliderAria"));
     $("mixGapPresets").setAttribute("aria-label", text("mixGapPresetsAria"));
     $("mixPlotTools").setAttribute("aria-label", text("mixPlotToolsAria"));
+    for (const [id, key] of [["mixZoomOut", "mixZoomOutAria"], ["mixZoomIn", "mixZoomInAria"]]) {
+      $(id).setAttribute("aria-label", text(key));
+      $(id).setAttribute("title", text(key));
+    }
+    $("mixZoomValue").setAttribute("aria-label", text("mixZoomValueAria"));
     $("mixViewLeft").setAttribute("aria-label", text("mixLeftAria"));
     $("mixViewRight").setAttribute("aria-label", text("mixRightAria"));
     document.querySelector(".note-presets").setAttribute("aria-label", text("presetsAria"));
@@ -1991,8 +2017,9 @@
       }
       ctx.stroke();
     }
-    if (span <= 0.0201) {
-      // A fine time window reveals the true sum, sampled at 20+ points per cycle.
+    const showOscillations = (state.mixBase + state.mixGap) * span <= Math.max(5, w / 20);
+    if (showOscillations) {
+      // Render a true sum only when the display can resolve individual cycles.
       const countWave = Math.max(1400, Math.ceil((state.mixBase + state.mixGap) * span * 24));
       ctx.beginPath();
       ctx.lineWidth = 2.2;
@@ -2015,8 +2042,8 @@
     }
     $("mixWindowLabel").textContent = mixTimeLabel(start, span) + " – " +
       mixTimeLabel(start + span, span) + " · " + mixBeatsText();
-    $("mixViewLeft").disabled = start < 0.000001;
-    $("mixViewRight").disabled = start + span > 3.999999;
+    $("mixWaveHint").textContent = text(showOscillations ? "mixWaveHintFine" : "mixWaveHint");
+    renderMixView();
   }
 
   function drawMixSpectrum() {
@@ -2107,9 +2134,8 @@
   document.querySelectorAll("[data-mix-gap]").forEach(button => {
     button.addEventListener("click", () => setMixGap(button.dataset.mixGap));
   });
-  document.querySelectorAll("[data-mix-window]").forEach(button => {
-    button.addEventListener("click", () => setMixWindow(Number(button.dataset.mixWindow)));
-  });
+  $("mixZoomOut").addEventListener("click", () => zoomMix(-1));
+  $("mixZoomIn").addEventListener("click", () => zoomMix(1));
   $("mixButton").addEventListener("click", toggleMixSound);
   $("mixBaseSlider").addEventListener("input", event => setMixBase(event.target.value));
   $("mixBaseInput").addEventListener("change", event => setMixBase(event.target.value));
