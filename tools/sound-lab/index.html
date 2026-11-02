@@ -4,16 +4,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#192d49">
-  <meta name="description" content="Explore ideal sound waves, plucked strings, drums, theremin gestures and sirens with interactive waveforms and bilingual controls.">
+  <meta name="description" content="Explore sound waves, modeled piano and drums, harmonic synthesis, noise, a theremin and sirens with interactive plots and bilingual controls.">
   <title>Sound Lab · Sol</title>
-  <link rel="stylesheet" href="sound-lab.css?v=s013">
+  <link rel="stylesheet" href="sound-lab.css?v=s014">
   <script src="sound-model.js" defer></script>
   <script src="sound-transient.js" defer></script>
   <script src="sound-spectrum.js" defer></script>
   <script src="sound-motion.js" defer></script>
   <script src="sound-beats.js" defer></script>
+  <script src="sound-harmonics.js" defer></script>
+  <script src="sound-noise.js" defer></script>
   <script src="sound-recorder.js" defer></script>
-  <script src="sound-lab.js?v=s013" defer></script>
+  <script src="sound-lab.js?v=s014" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -60,6 +62,12 @@
         <button type="button" id="modeMix" class="mode-button" aria-pressed="false" data-i18n="modeMix">Долгион холих</button>
       </nav>
       <span class="pill" id="pagePhase" data-i18n="phase">01 · Энгийн дохионууд</span>
+    </div>
+
+    <div class="experiment-switch" id="mixExperimentSwitch" role="group" aria-label="Долгионы туршилт" hidden>
+      <button type="button" data-mix-kind="beats" class="selected" aria-pressed="true" data-i18n="mixExperimentBeats">Хоёр авиа</button>
+      <button type="button" data-mix-kind="harmonics" aria-pressed="false" data-i18n="mixExperimentHarmonics">Гармоник бүтээх</button>
+      <button type="button" data-mix-kind="noise" aria-pressed="false" data-i18n="mixExperimentNoise">Шуугиан судлах</button>
     </div>
 
     <div class="workspace" id="pureWorkspace">
@@ -195,6 +203,9 @@
           </button>
           <button type="button" class="strike-choice" data-strike="kick" aria-pressed="false">
             <span aria-hidden="true" class="strike-glyph">🥁</span><span data-i18n="kick">Басс бөмбөр</span>
+          </button>
+          <button type="button" class="strike-choice" data-strike="piano" aria-pressed="false">
+            <span aria-hidden="true" class="strike-glyph">🎹</span><span data-i18n="piano">Төгөлдөр хуур</span>
           </button>
         </div>
         <button id="strikeButton" type="button" class="play-button strike-button">
@@ -469,6 +480,122 @@
       </div>
     </div>
 
+    <div class="workspace" id="harmonicWorkspace" hidden>
+      <section class="panel controls" aria-labelledby="harmonic-controls-title">
+        <div class="section-top">
+          <h2 id="harmonic-controls-title" data-i18n="harmonicChoose">Гармоникуудыг нэмэх</h2>
+          <p class="description" data-i18n="harmonicDescription">Нэг давтамжийн бүхэл тоон үржвэрүүдийг нийлүүлж шинэ авиа бүтээнэ.</p>
+        </div>
+        <button id="harmonicButton" type="button" class="play-button" aria-pressed="false">
+          <span class="play-icon" id="harmonicPlayIcon" aria-hidden="true">▶</span>
+          <span id="harmonicPlayLabel" data-i18n="harmonicPlay">Авиа тоглуулах</span>
+          <span class="play-caption" id="harmonicPlayCaption" data-i18n="playCaption">Сонсохын тулд товшино уу</span>
+        </button>
+        <p id="harmonicStatus" class="audio-status" role="status" aria-live="polite">Бэлэн. Авиа тоглуулах товчийг дарна уу.</p>
+
+        <div class="field-group">
+          <div class="field-title"><label for="harmonicBaseInput" data-i18n="harmonicBase">Үндсэн давтамж</label><output id="harmonicNote">A3 · Ля3</output></div>
+          <div class="frequency-controls">
+            <input id="harmonicBaseSlider" type="range" min="120" max="1000" step="1" value="220">
+            <div class="number-wrap"><input id="harmonicBaseInput" type="number" min="120" max="1000" step="any" inputmode="decimal" value="220"><span data-i18n="unitHz">Гц</span></div>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-title"><span data-i18n="harmonicPresetsTitle">Бэлэн найрлагууд</span></div>
+          <div class="harmonic-presets" id="harmonicPresets" role="group" aria-label="Гармоникийн бэлэн найрлага">
+            <button type="button" data-harmonic-preset="pure" class="selected" aria-pressed="true" data-i18n="harmonicPure">Цэвэр</button>
+            <button type="button" data-harmonic-preset="odd" aria-pressed="false" data-i18n="harmonicOdd">Сондгой</button>
+            <button type="button" data-harmonic-preset="rich" aria-pressed="false" data-i18n="harmonicRich">Олон гармоник</button>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-title"><span data-i18n="harmonicStrengths">Гармоник бүрийн хүч</span><span class="field-help" data-i18n="harmonicNotation">f, 2f, 3f…</span></div>
+          <div class="harmonic-sliders" id="harmonicSliders" role="group" aria-label="Найман гармоникийн далайц">
+            <div class="harmonic-row"><label for="harmonicLevel1">f</label><input id="harmonicLevel1" data-harmonic-level="1" type="range" min="10" max="100" step="1" value="100"><output id="harmonicLevelValue1">100%</output></div>
+            <div class="harmonic-row"><label for="harmonicLevel2">2f</label><input id="harmonicLevel2" data-harmonic-level="2" type="range" min="0" max="100" step="1" value="0"><output id="harmonicLevelValue2">0%</output></div>
+            <div class="harmonic-row"><label for="harmonicLevel3">3f</label><input id="harmonicLevel3" data-harmonic-level="3" type="range" min="0" max="100" step="1" value="0"><output id="harmonicLevelValue3">0%</output></div>
+            <div class="harmonic-row"><label for="harmonicLevel4">4f</label><input id="harmonicLevel4" data-harmonic-level="4" type="range" min="0" max="100" step="1" value="0"><output id="harmonicLevelValue4">0%</output></div>
+            <div class="harmonic-row"><label for="harmonicLevel5">5f</label><input id="harmonicLevel5" data-harmonic-level="5" type="range" min="0" max="100" step="1" value="0"><output id="harmonicLevelValue5">0%</output></div>
+            <div class="harmonic-row"><label for="harmonicLevel6">6f</label><input id="harmonicLevel6" data-harmonic-level="6" type="range" min="0" max="100" step="1" value="0"><output id="harmonicLevelValue6">0%</output></div>
+            <div class="harmonic-row"><label for="harmonicLevel7">7f</label><input id="harmonicLevel7" data-harmonic-level="7" type="range" min="0" max="100" step="1" value="0"><output id="harmonicLevelValue7">0%</output></div>
+            <div class="harmonic-row"><label for="harmonicLevel8">8f</label><input id="harmonicLevel8" data-harmonic-level="8" type="range" min="0" max="100" step="1" value="0"><output id="harmonicLevelValue8">0%</output></div>
+          </div>
+        </div>
+        <div class="field-group volume-field">
+          <div class="field-title"><label for="harmonicVolume" data-i18n="volume">Дууны хэмжээ</label><output id="harmonicVolumeValue">35%</output></div>
+          <input id="harmonicVolume" type="range" min="0" max="100" step="1" value="35">
+          <p class="field-help" data-i18n="safeVolume">Эхэндээ аяархан сонсоорой.</p>
+        </div>
+      </section>
+      <div class="visuals">
+        <section class="panel chart-panel" aria-labelledby="harmonic-wave-title">
+          <div class="chart-heading">
+            <div><h2 id="harmonic-wave-title" data-i18n="harmonicWaveTitle">Нийлбэр долгион</h2><p data-i18n="harmonicWaveHint">Гармоник нэмж, долгионы хэлбэр хэрхэн өөрчлөгдөхийг хараарай.</p></div>
+            <span class="chart-badge" id="harmonicWaveBadge">f = 220 Гц</span>
+          </div>
+          <canvas id="harmonicWaveCanvas" width="740" height="265" role="img" aria-label="Гармоникуудаас бүтсэн долгионы загвар"></canvas>
+          <div class="chart-foot"><span id="harmonicWaveFoot">0–20 мсек</span><span data-i18n="timeAxis">хугацаа →</span></div>
+        </section>
+        <section class="panel chart-panel" aria-labelledby="harmonic-spectrum-title">
+          <div class="chart-heading">
+            <div><h2 id="harmonic-spectrum-title" data-i18n="harmonicSpectrumTitle">Гармоникийн найрлага</h2><p data-i18n="harmonicSpectrumHint">Багананууд нь f, 2f, 3f… давтамжийн хэмжээг харуулна.</p></div>
+            <span class="chart-badge" id="harmonicSpectrumBadge">8 гармоник</span>
+          </div>
+          <canvas id="harmonicSpectrumCanvas" width="740" height="220" role="img" aria-label="Найман гармоникийн далайц ба давтамж"></canvas>
+          <div class="chart-foot"><span data-i18n="harmonicSpectrumFoot">Давтамжийг өөрчлөхөд оргилууд хамт шилжинэ.</span><span data-i18n="frequencyAxis">давтамж →</span></div>
+        </section>
+      </div>
+    </div>
+
+    <div class="workspace" id="noiseWorkspace" hidden>
+      <section class="panel controls" aria-labelledby="noise-controls-title">
+        <div class="section-top">
+          <h2 id="noise-controls-title" data-i18n="noiseChoose">Шуугианы өнгө сонгох</h2>
+          <p class="description" data-i18n="noiseDescription">Олон давтамж санамсаргүй нийлсэн авиаг сонсож, давтамжийн найрлагыг ажиглаарай.</p>
+        </div>
+        <div class="noise-choices" id="noiseChoices" role="group" aria-label="Шуугианы өнгө">
+          <button type="button" data-noise-color="white" class="selected" aria-pressed="true" data-i18n="noiseWhite">Цагаан</button>
+          <button type="button" data-noise-color="pink" aria-pressed="false" data-i18n="noisePink">Ягаан</button>
+          <button type="button" data-noise-color="brown" aria-pressed="false" data-i18n="noiseBrown">Бор</button>
+        </div>
+        <button id="noiseButton" type="button" class="play-button" aria-pressed="false">
+          <span class="play-icon" id="noisePlayIcon" aria-hidden="true">▶</span>
+          <span id="noisePlayLabel" data-i18n="noisePlay">Шуугиан сонсох</span>
+          <span class="play-caption" id="noisePlayCaption" data-i18n="playCaption">Сонсохын тулд товшино уу</span>
+        </button>
+        <p id="noiseStatus" class="audio-status" role="status" aria-live="polite">Бэлэн. Сонсох товчийг дарна уу.</p>
+        <p id="noiseColorDescription" class="description">Бүх давтамжид ойролцоогоор ижил чадалтай.</p>
+        <div class="field-group">
+          <div class="field-title"><label for="noiseCutoff" data-i18n="noiseCutoff">Өндөр давтамжийг шүүх</label><output id="noiseCutoffValue">8,000 Гц</output></div>
+          <input id="noiseCutoff" type="range" min="250" max="8000" step="50" value="8000">
+          <p class="field-help" data-i18n="noiseCutoffHint">Багасгахад дээд давтамжууд суларч, шуугиан бүдгэрнэ.</p>
+        </div>
+        <div class="field-group volume-field">
+          <div class="field-title"><label for="noiseVolume" data-i18n="volume">Дууны хэмжээ</label><output id="noiseVolumeValue">25%</output></div>
+          <input id="noiseVolume" type="range" min="0" max="100" step="1" value="25">
+          <p class="field-help" data-i18n="noiseSafety">Шуугиан хурц сонсогдож болно. Чихэвчтэй бол багаас эхлээрэй.</p>
+        </div>
+      </section>
+      <div class="visuals">
+        <section class="panel chart-panel" aria-labelledby="noise-wave-title">
+          <div class="chart-heading">
+            <div><h2 id="noise-wave-title" data-i18n="noiseWaveTitle">Шуугианы долгион</h2><p data-i18n="noiseWaveHint">40 мсек үргэлжлэх нэг санамсаргүй хэсэг. Үелэхгүй.</p></div>
+            <span class="chart-badge" id="noiseWaveBadge">40 мсек</span>
+          </div>
+          <canvas id="noiseWaveCanvas" width="740" height="265" role="img" aria-label="Үелдэггүй шуугианы долгионы жишээ"></canvas>
+          <div class="chart-foot"><span id="noiseWaveFoot">0–40 мсек</span><span data-i18n="timeAxis">хугацаа →</span></div>
+        </section>
+        <section class="panel chart-panel" aria-labelledby="noise-spectrum-title">
+          <div class="chart-heading">
+            <div><h2 id="noise-spectrum-title" data-i18n="noiseSpectrumTitle">Давтамжийн тархалт</h2><p data-i18n="noiseSpectrumHint">Нэг нэг оргил биш, олон давтамжийн ерөнхий чиг хандлага.</p></div>
+            <span class="chart-badge" id="noiseSpectrumBadge">Цагаан</span>
+          </div>
+          <canvas id="noiseSpectrumCanvas" width="740" height="220" role="img" aria-label="Шуугианы өнгө ба шүүлтүүрийн идеал давтамжийн чиг хандлага"></canvas>
+          <div class="chart-foot"><span data-i18n="noiseSpectrumFoot">Энэ нь хэмжилт биш, хүлээгдэх ерөнхий хэлбэр юм.</span><span data-i18n="frequencyAxis">давтамж →</span></div>
+        </section>
+      </div>
+    </div>
+
     <section class="challenge" id="pureChallenge" aria-labelledby="challenge-heading">
       <div class="challenge-icon" aria-hidden="true">✧</div>
       <div class="challenge-copy">
@@ -497,6 +624,16 @@
       <div class="challenge-copy"><h2 id="mix-challenge-heading" data-i18n="tryThis">ТУРШИЖ ҮЗ</h2><p data-i18n="mixChallenge">Зөрүүг 0, 2, 4, 10 Гц болгож сонсоод, хэлбэлзлийн хээ хэрхэн өөрчлөгдөхийг ажиглаарай.</p></div>
       <button type="button" id="mixReset" class="reset-button" data-i18n="reset">↺ Эхнээс нь</button>
     </section>
+    <section class="challenge" id="harmonicChallenge" aria-labelledby="harmonic-challenge-heading" hidden>
+      <div class="challenge-icon" aria-hidden="true">✧</div>
+      <div class="challenge-copy"><h2 id="harmonic-challenge-heading" data-i18n="tryThis">ТУРШИЖ ҮЗ</h2><p data-i18n="harmonicChallenge">Үндсэн давтамжийг хэвээр үлдээгээд 3f, 5f гармоникуудыг нэм. Өнгө нь хэрхэн өөрчлөгдөв?</p></div>
+      <button type="button" id="harmonicReset" class="reset-button" data-i18n="reset">↺ Эхнээс нь</button>
+    </section>
+    <section class="challenge" id="noiseChallenge" aria-labelledby="noise-challenge-heading" hidden>
+      <div class="challenge-icon" aria-hidden="true">✧</div>
+      <div class="challenge-copy"><h2 id="noise-challenge-heading" data-i18n="tryThis">ТУРШИЖ ҮЗ</h2><p data-i18n="noiseChallenge">Цагаан, ягаан, бор шуугианыг ижил дууны хэмжээгээр харьцуул.</p></div>
+      <button type="button" id="noiseReset" class="reset-button" data-i18n="reset">↺ Эхнээс нь</button>
+    </section>
 
     <details class="explanation" id="pureExplanation">
       <summary data-i18n="learnMore">Дууны долгион яагаад өөр өөр сонсогддог вэ?</summary>
@@ -517,6 +654,16 @@
       <summary data-i18n="mixLearnMore">Хоёр авиа нийлээд яагаад чангарч, сулардаг вэ?</summary>
       <p data-i18n="mixLessonOne">Ойролцоо давтамжтай хоёр синус долгион зарим үед бие биеэ дэмжиж, зарим үед бие биеэ сулруулна. Дууны чанга, сул ээлжлэхийг биение буюу цохилт гэнэ.</p>
       <p data-i18n="mixLessonTwo">Чангарч, сулрах хурд нь хоёр давтамжийн зөрүү: Δf = |f₂ − f₁|. Жишээ нь, 440 ба 444 Гц-д секундэд 4 удаа чангарч сонсогдоно. Спектрт харин 4 Гц-ийн гурав дахь авиа шинээр үүсэхгүй.</p>
+    </details>
+    <details class="explanation" id="harmonicExplanation" hidden>
+      <summary data-i18n="harmonicLearnMore">Гармоникууд дууны өнгийг хэрхэн бүтээдэг вэ?</summary>
+      <p data-i18n="harmonicLessonOne">Үндсэн давтамж f дээр 2f, 3f, 4f… долгионуудыг нэмэхэд нийлбэр долгионы хэлбэр, дууны өнгө өөрчлөгдөнө.</p>
+      <p data-i18n="harmonicLessonTwo">Гармоник тус бүрийн хүч өөр боловч тэдгээрийн давтамж нь үндсэн давтамжийн бүхэл тоон үржвэр байна. Хүүхэд өөрөө найрлагыг нь сонгож болно.</p>
+    </details>
+    <details class="explanation" id="noiseExplanation" hidden>
+      <summary data-i18n="noiseLearnMore">Шуугиан яагаад цэвэр авианаас өөр вэ?</summary>
+      <p data-i18n="noiseLessonOne">Цэвэр авиа нэг давтамжтай. Харин шуугиан олон давтамжийн санамсаргүй хэлбэлзлээс бүтдэг тул тогтмол давтагдах үе байхгүй.</p>
+      <p data-i18n="noiseLessonTwo">Цагаан шуугианд давтамж бүрийн нэгж зурваст чадал ойролцоогоор ижил. Ягаан, бор шуугианд нам давтамжууд харьцангуй хүчтэй. Дээд давтамжийг шүүхэд авиа бүдгэрнэ.</p>
     </details>
   </main>
 

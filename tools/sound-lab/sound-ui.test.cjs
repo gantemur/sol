@@ -9,6 +9,8 @@ const transientModel = require("./sound-transient.js");
 const spectrumModel = require("./sound-spectrum.js");
 const motionModel = require("./sound-motion.js");
 const beatsModel = require("./sound-beats.js");
+const harmonicModel = require("./sound-harmonics.js");
+const noiseModel = require("./sound-noise.js");
 const recorderModel = require("./sound-recorder.js");
 
 const html = fs.readFileSync(path.join(__dirname, "index.html"), "utf8");
@@ -28,8 +30,10 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-spectrum\.js"/);
   assert.match(html, /src="sound-motion\.js"/);
   assert.match(html, /src="sound-beats\.js"/);
-  assert.match(html, /src="sound-lab\.js\?v=s013"/);
-  assert.match(html, /href="sound-lab\.css\?v=s013"/);
+  assert.match(html, /src="sound-harmonics\.js"/);
+  assert.match(html, /src="sound-noise\.js"/);
+  assert.match(html, /src="sound-lab\.js\?v=s014"/);
+  assert.match(html, /href="sound-lab\.css\?v=s014"/);
   assert.match(html, /src="sound-recorder\.js"/);
   assert.match(html, /id="recordPreview"[^>]*controls/);
   assert.match(html, /id="recordDownload"[^>]*download="sound-lab\.wav"/);
@@ -41,6 +45,14 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /id="mixWorkspace"[^>]*hidden/);
   assert.match(html, /id="mixExplanation"[^>]*hidden/);
   assert.match(html, /id="mixChallenge"[^>]*hidden/);
+  assert.match(html, /id="harmonicWorkspace"[^>]*hidden/);
+  assert.match(html, /id="noiseWorkspace"[^>]*hidden/);
+  assert.match(html, /id="harmonicChallenge"[^>]*hidden/);
+  assert.match(html, /id="noiseChallenge"[^>]*hidden/);
+  assert.match(html, /id="mixExperimentSwitch"[^>]*hidden/);
+  for (const kind of ["beats", "harmonics", "noise"]) assert.match(html, new RegExp('data-mix-kind="' + kind + '"'));
+  for (const kind of transientModel.KINDS) assert.match(html, new RegExp('data-strike="' + kind + '"'));
+  assert.doesNotMatch(html, /id="pianoKeyboard"|class="piano-keys"/);
   assert.match(html, /id="modeMix"[^>]*data-i18n="modeMix"/);
   assert.match(html, /id="mixBaseInput"[^>]*type="number"/);
   assert.match(html, /data-i18n="unitHz">Гц<\/span>/);
@@ -123,6 +135,11 @@ function fakePage(search = "", supportWorklets = true) {
   const motionButtons = ["theremin", "siren"].map(motion => element({ motion }));
   const sirenPatternButtons = motionModel.PATTERNS.map(sirenPattern => element({ sirenPattern }));
   const mixGapButtons = [0, 2, 4, 10].map(mixGap => element({ mixGap: String(mixGap) }));
+  const mixKindButtons = ["beats", "harmonics", "noise"].map(mixKind => element({ mixKind }));
+  const harmonicPresetButtons = ["pure", "odd", "rich"].map(harmonicPreset => element({ harmonicPreset }));
+  const harmonicLevelInputs = Array.from({ length: harmonicModel.COUNT }, (_, i) =>
+    element({ harmonicLevel: String(i + 1) }));
+  const noiseColorButtons = noiseModel.COLORS.map(noiseColor => element({ noiseColor }));
   const noteButtons = [60, 69, 72].map(note => element({ note: String(note) }));
   const hzLabels = [...html.matchAll(/data-unit-hz="([^"]+)"/g)].map(match => element({ unitHz: match[1] }));
   const noteGroup = element(), langGroup = element();
@@ -139,6 +156,10 @@ function fakePage(search = "", supportWorklets = true) {
       if (selector === "[data-motion]") return motionButtons;
       if (selector === "[data-siren-pattern]") return sirenPatternButtons;
       if (selector === "[data-mix-gap]") return mixGapButtons;
+      if (selector === "[data-mix-kind]") return mixKindButtons;
+      if (selector === "[data-harmonic-preset]") return harmonicPresetButtons;
+      if (selector === "[data-harmonic-level]") return harmonicLevelInputs;
+      if (selector === "[data-noise-color]") return noiseColorButtons;
       if (selector === "[data-note]") return noteButtons;
       if (selector === "[data-unit-hz]") return hzLabels;
       return [];
@@ -155,6 +176,8 @@ function fakePage(search = "", supportWorklets = true) {
     SoundLabTransientModel: transientModel,
     SoundLabMotionModel: motionModel,
     SoundLabBeats: beatsModel,
+    SoundLabHarmonics: harmonicModel,
+    SoundLabNoise: noiseModel,
     SoundLabRecorder: recorderModel,
     SoundLabSpectrum: {
       ...spectrumModel,
@@ -188,6 +211,8 @@ function fakePage(search = "", supportWorklets = true) {
       this.gains = [];
       this.worklets = [];
       this.constantSources = [];
+      this.periodicWaves = [];
+      this.filters = [];
       this.addedModules = [];
       this.audioWorklet = {
         addModule: async url => { this.addedModules.push(url); }
@@ -199,6 +224,7 @@ function fakePage(search = "", supportWorklets = true) {
     createOscillator() {
       const osc = {
         type: "sine",
+        setPeriodicWave(wave) { this.periodicWave = wave; },
         frequency: {
           value: null,
           setValueAtTime(value) { this.value = value; },
@@ -222,6 +248,23 @@ function fakePage(search = "", supportWorklets = true) {
       const buffer = { channels, length, sampleRate, getChannelData() { return data; } };
       this.buffers.push(buffer);
       return buffer;
+    }
+    createPeriodicWave(real, imag) {
+      const wave = { real, imag };
+      this.periodicWaves.push(wave);
+      return wave;
+    }
+    createBiquadFilter() {
+      const filter = {
+        type: "lowpass",
+        Q: { value: 0, setValueAtTime(value) { this.value = value; } },
+        frequency: { value: 0,
+          setValueAtTime(value) { this.value = value; },
+          setTargetAtTime(value) { this.value = value; } },
+        connect() {}, disconnect() {}
+      };
+      this.filters.push(filter);
+      return filter;
     }
     createBufferSource() {
       const source = {
@@ -290,7 +333,8 @@ function fakePage(search = "", supportWorklets = true) {
   vm.runInNewContext(browserCode, sandbox, { filename: "sound-lab.js" });
   return {
     contexts, elements, document, window, waveButtons, strikeButtons, drumButtons, spectrumButtons,
-    motionButtons, sirenPatternButtons, mixGapButtons,
+    motionButtons, sirenPatternButtons, mixGapButtons, mixKindButtons,
+    harmonicPresetButtons, harmonicLevelInputs, noiseColorButtons,
     hzLabels, objectUrls, revokedUrls,
     analyzedAt,
     tick(seconds) {
@@ -960,4 +1004,120 @@ test("pending beat start is canceled when the tab changes or the page closes", a
   app.window.events.pagehide();
   assert.ok(app.contexts[0].oscillators.every(oscillator => oscillator.stopped));
   assert.equal(app.elements.get("mixButton").getAttribute("aria-pressed"), "false");
+});
+
+test("modeled piano is an instrument choice with frequency, decay and a single hit button", async () => {
+  const app = fakePage();
+  app.fire("modeStrike", "click");
+  const piano = app.strikeButtons.find(button => button.dataset.strike === "piano");
+  piano.events.click();
+  assert.equal(app.contexts.length, 0, "Switching instrument must stay silent");
+  assert.equal(app.elements.get("strikePitchGroup").hidden, false);
+  assert.equal(app.elements.get("strikeDrumSizeGroup").hidden, true);
+  assert.equal(app.elements.get("strikeButtonLabel").textContent, "Нот тоглуулах");
+  assert.match(app.elements.get("strikeDescription").textContent, /алх цохиход/);
+  assert.equal(app.elements.get("strikeDecayValue").textContent, "0.8 сек");
+  await app.fire("strikeButton", "click");
+  const context = app.contexts[0];
+  assert.equal(context.sources.length, 1);
+  assert.equal(context.sources[0].started, true);
+  assert.ok(context.buffers[0].getChannelData().some(sample => Math.abs(sample) > .005));
+  assert.ok(app.elements.get("strikeSpectrumCanvas").drawnText.some(label => label.includes("кГц")));
+  app.fire("stopAll", "click");
+  assert.equal(context.sources[0].stopped, true);
+});
+
+test("harmonic builder is an interactive eight-partial synthesis without autoplay", async () => {
+  const app = fakePage();
+  app.fire("modeMix", "click");
+  app.mixKindButtons[1].events.click();
+  assert.equal(app.contexts.length, 0);
+  assert.equal(app.elements.get("mixWorkspace").hidden, true);
+  assert.equal(app.elements.get("harmonicWorkspace").hidden, false);
+  assert.equal(app.elements.get("harmonicExplanation").hidden, false);
+  assert.equal(app.elements.get("noiseWorkspace").hidden, true);
+  assert.equal(app.elements.get("pagePhase").textContent, "04 · Авиа бүтээх");
+  assert.equal(app.harmonicLevelInputs.length, 8);
+  assert.equal(app.elements.get("harmonicLevelValue1").textContent, "100%");
+  app.harmonicPresetButtons[2].events.click();
+  assert.equal(app.elements.get("harmonicLevelValue2").textContent, "50%");
+  app.harmonicLevelInputs[2].events.input({ target: { value: "70" } });
+  assert.equal(app.elements.get("harmonicLevelValue3").textContent, "70%");
+  assert.ok(app.elements.get("harmonicWaveCanvas").drawnText.some(label => label.endsWith("мсек")));
+  await app.fire("harmonicButton", "click");
+  const context = app.contexts[0];
+  assert.equal(context.oscillators.length, 1);
+  assert.equal(context.oscillators[0].periodicWave.imag[3], Math.fround(0.7));
+  assert.equal(context.oscillators[0].frequency.value, 220);
+  assert.ok(Math.abs(context.gains.at(-1).gain.value - .084) < 1e-12);
+  app.elements.get("harmonicBaseInput").value = "330";
+  app.fire("harmonicBaseInput", "change");
+  assert.equal(context.oscillators[0].frequency.value, 330);
+  app.harmonicPresetButtons[0].events.click();
+  assert.equal(context.oscillators.length, 2, "New periodic wave crossfades to a new oscillator");
+  assert.equal(context.oscillators[0].stopped, true);
+  app.elements.get("harmonicBaseInput").value = "9999";
+  app.fire("harmonicBaseInput", "change");
+  assert.equal(app.elements.get("harmonicBaseInput").value, "330");
+  assert.equal(app.elements.get("harmonicStatus").classList.contains("error"), true);
+  app.fire("harmonicReset", "click");
+  assert.equal(app.elements.get("harmonicBaseInput").value, "220");
+  assert.equal(app.elements.get("harmonicLevelValue3").textContent, "0%");
+  assert.ok(context.oscillators.every(oscillator => oscillator.stopped));
+});
+
+test("noise colors loop filtered model buffers safely; changing experiment silences them", async () => {
+  const app = fakePage();
+  app.fire("modeMix", "click");
+  app.mixKindButtons[2].events.click();
+  assert.equal(app.contexts.length, 0);
+  assert.equal(app.elements.get("noiseWorkspace").hidden, false);
+  assert.equal(app.elements.get("noiseChallenge").hidden, false);
+  assert.equal(app.elements.get("pagePhase").textContent, "04 · Шуугиан судлах");
+  assert.match(app.elements.get("noiseColorDescription").textContent, /герцийн зурвас/);
+  assert.ok(app.elements.get("noiseSpectrumCanvas").drawnText.some(label => label.includes("Гц")));
+  await app.fire("noiseButton", "click");
+  const context = app.contexts[0];
+  assert.equal(context.sources.length, 1);
+  assert.equal(context.sources[0].loop, true);
+  assert.equal(context.filters.length, 1);
+  assert.equal(context.filters[0].type, "lowpass");
+  assert.equal(context.gains.at(-1).gain.value, .2 * .25);
+  app.noiseColorButtons[1].events.click();
+  assert.equal(context.sources.length, 2);
+  assert.equal(context.sources[0].stopped, true);
+  assert.match(app.elements.get("noiseColorDescription").textContent, /октав/);
+  app.elements.get("noiseCutoff").value = "1200";
+  app.fire("noiseCutoff", "input");
+  assert.equal(context.filters.at(-1).frequency.value, 1200);
+  app.elements.get("noiseVolume").value = "100";
+  app.fire("noiseVolume", "input");
+  assert.equal(context.gains.at(-1).gain.value, .2);
+  app.mixKindButtons[0].events.click();
+  assert.ok(context.sources.every(source => source.stopped));
+  assert.equal(app.elements.get("noiseButton").getAttribute("aria-pressed"), "false");
+  assert.equal(app.elements.get("mixWorkspace").hidden, false);
+  assert.equal(app.elements.get("noiseWorkspace").hidden, true);
+});
+
+test("harmonic and noise pending playback are canceled before any orphan sound starts", async () => {
+  const app = fakePage();
+  app.fire("modeMix", "click");
+  app.mixKindButtons[1].events.click();
+  const pendingHarmonics = app.fire("harmonicButton", "click");
+  app.mixKindButtons[2].events.click();
+  await pendingHarmonics;
+  assert.equal(app.contexts[0].oscillators.length, 0);
+  const pendingNoise = app.fire("noiseButton", "click");
+  app.fire("modePure", "click");
+  await pendingNoise;
+  assert.equal(app.contexts[0].sources.length, 0);
+  app.fire("modeMix", "click");
+  app.mixKindButtons[1].events.click();
+  await app.fire("harmonicButton", "click");
+  app.fire("langEn", "click");
+  assert.equal(app.elements.get("pagePhase").textContent, "04 · Build a sound");
+  assert.equal(app.elements.get("harmonicPlayLabel").textContent, "Stop your sound");
+  app.fire("stopAll", "click");
+  assert.equal(app.contexts[0].oscillators.at(-1).stopped, true);
 });

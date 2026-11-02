@@ -1,4 +1,4 @@
-/* Small, deterministic models of a struck drum and a plucked string.
+/* Small, deterministic models of a struck drum, plucked string and piano key.
  * Both the speaker buffer and the explanatory plots use these same formulas.
  * This is a teaching model, not a recording or physical instrument simulation.
  */
@@ -11,7 +11,7 @@
   "use strict";
 
   const TAU = 2 * Math.PI;
-  const KINDS = Object.freeze(["pluck", "kick"]);
+  const KINDS = Object.freeze(["pluck", "kick", "piano"]);
   const MIN_PITCH_HZ = 110;
   const MAX_PITCH_HZ = 880;
   const MIN_DECAY = 0.12;
@@ -28,14 +28,25 @@
     return Math.sin(Math.PI * n * 0.22) / Math.pow(n, 1.15);
   });
   const pluckNormalization = pluckWeights.reduce((sum, weight) => sum + Math.abs(weight), 0);
+  const pianoWeights = Object.freeze([1, .52, .27, .18, .10, .075, .047, .03]);
+  const pianoNormalization = pianoWeights.reduce((sum, weight) => sum + Math.abs(weight), 0) + .10;
+  const PIANO_STIFFNESS = 0.00016; // Slightly sharp overtones of an idealized stiff string.
+
+  function pianoPartialHz(fundamentalHz, number) {
+    if (!Number.isFinite(fundamentalHz) || fundamentalHz <= 0 || number < 1) {
+      throw new RangeError("Invalid piano-string partial");
+    }
+    return fundamentalHz * number * Math.sqrt(1 + PIANO_STIFFNESS * number * number);
+  }
 
   function validate(kind, pitchHz, decaySec, kickSize = "medium") {
     if (!KINDS.includes(kind)) throw new RangeError("Unknown transient sound");
     if (!Number.isFinite(decaySec) || decaySec < MIN_DECAY || decaySec > MAX_DECAY) {
       throw new RangeError("Decay outside the supported range");
     }
-    if (kind === "pluck" && (!Number.isFinite(pitchHz) || pitchHz < MIN_PITCH_HZ || pitchHz > MAX_PITCH_HZ)) {
-      throw new RangeError("Plucked-string frequency outside the supported range");
+    if ((kind === "pluck" || kind === "piano") &&
+        (!Number.isFinite(pitchHz) || pitchHz < MIN_PITCH_HZ || pitchHz > MAX_PITCH_HZ)) {
+      throw new RangeError("Pitched-string frequency outside the supported range");
     }
     if (kind === "kick" && !Object.hasOwn(KICK_SIZES, kickSize)) {
       throw new RangeError("Unknown drum-size preset");
@@ -44,7 +55,7 @@
 
   function envelope(kind, time, decaySec) {
     if (time <= 0) return 0;
-    const attack = kind === "kick" ? 0.0015 : 0.0025;
+    const attack = kind === "kick" ? 0.0015 : kind === "piano" ? 0.0008 : 0.0025;
     return (1 - Math.exp(-time / attack)) * Math.exp(-time / decaySec);
   }
 
@@ -61,6 +72,18 @@
       const phase = TAU * KICK_SIZES[kickSize] * (KICK_LOW_HZ * time +
         KICK_SWEEP_HZ * KICK_SWEEP_TIME * (1 - Math.exp(-time / KICK_SWEEP_TIME)));
       return level * Math.sin(phase);
+    }
+    if (kind === "piano") {
+      let value = 0;
+      for (let i = 0; i < pianoWeights.length; i++) {
+        const number = i + 1;
+        const highPartialDecay = Math.exp(-i * time / .16);
+        value += pianoWeights[i] * highPartialDecay *
+          Math.sin(TAU * pianoPartialHz(pitchHz, number) * time);
+      }
+      // A modeled hammer contact gives a short bright onset without a sample.
+      const hammer = .10 * Math.exp(-time / .004) * Math.sin(TAU * 2800 * time);
+      return level * (value + hammer) / pianoNormalization;
     }
     let value = 0;
     for (let i = 0; i < pluckWeights.length; i++) {
@@ -113,6 +136,7 @@
 
   return Object.freeze({
     KINDS, KICK_SIZES, MIN_PITCH_HZ, MAX_PITCH_HZ, MIN_DECAY, MAX_DECAY,
+    PIANO_STIFFNESS, pianoPartialHz,
     validate, envelope, plottedEnvelope, kickFrequency, sampleAt, plottedSampleAt,
     duration, makeSamples, sliderToHz, hzToSlider
   });
