@@ -32,13 +32,13 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-string\.js\?v=s017"/);
   assert.match(html, /src="sound-piano\.js\?v=s019"/);
   assert.match(html, /src="sound-transient\.js\?v=s019"/);
-  assert.match(html, /src="sound-sustain\.js\?v=s020a1"/);
+  assert.match(html, /src="sound-sustain\.js\?v=s020b"/);
   assert.match(html, /src="sound-spectrum\.js\?v=s017"/);
   assert.match(html, /src="sound-motion\.js\?v=s015"/);
   assert.match(html, /src="sound-beats\.js"/);
   assert.match(html, /src="sound-harmonics\.js"/);
   assert.match(html, /src="sound-noise\.js"/);
-  assert.match(html, /src="sound-lab\.js\?v=s020"/);
+  assert.match(html, /src="sound-lab\.js\?v=s020b"/);
   assert.match(html, /href="sound-lab\.css\?v=s017"/);
   assert.match(html, /src="sound-recorder\.js"/);
   assert.match(html, /id="recordPreview"[^>]*controls/);
@@ -77,6 +77,7 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   for (const kind of sustainModel.KINDS) assert.match(html, new RegExp('data-sustain="' + kind + '"'));
   for (const gesture of ["hold", "toggle"]) assert.match(html, new RegExp('data-sustain-gesture="' + gesture + '"'));
   assert.match(html, /id="sustainBreath" type="range" min="0" max="100"/);
+  assert.match(html, /id="sustainBowPressure" type="range" min="0" max="100"/);
   assert.ok(html.indexOf('id="modeStrike"') < html.indexOf('id="modeSustain"') &&
     html.indexOf('id="modeSustain"') < html.indexOf('id="modeMotion"'),
   "Held sound tab belongs between strike and moving pitch");
@@ -295,8 +296,8 @@ function fakePage(search = "", supportWorklets = true) {
       this.buffers.push(buffer);
       return buffer;
     }
-    createPeriodicWave(real, imag) {
-      const wave = { real, imag };
+    createPeriodicWave(real, imag, options = {}) {
+      const wave = { real, imag, options };
       this.periodicWaves.push(wave);
       return wave;
     }
@@ -309,6 +310,7 @@ function fakePage(search = "", supportWorklets = true) {
       const filter = {
         type: "lowpass",
         Q: { value: 0, setValueAtTime(value) { this.value = value; } },
+        gain: { value: 0, setValueAtTime(value) { this.value = value; } },
         frequency: { value: 0,
           setValueAtTime(value) { this.value = value; },
           setTargetAtTime(value) { this.value = value; } },
@@ -439,18 +441,76 @@ test("held flute plays only while pressed, and release follows the chosen decay"
   await app.fire("sustainButton", "click", { detail: 1 });
   assert.equal(context.oscillators.length, 1, "Pointer-generated click is ignored after release");
 
-  // Other instruments retain their deliberately simple periodic waves.
+  // Bowed instruments now use two phase-locked stick/slip source waves,
+  // blended smoothly and passed through a separate body-filter chain.
   app.sustainButtons[1].events.click();
   assert.equal(app.elements.get("sustainBreathGroup").hidden, true);
+  assert.equal(app.elements.get("sustainBowGroup").hidden, false);
   assert.match(app.elements.get("sustainDescription").textContent, /хурц/);
   assert.equal(app.elements.get("sustainAttackValue").textContent, "0.18 сек");
   await app.fire("sustainButton", "pointerdown", { pointerId: 12 });
-  assert.equal(context.oscillators.length, 2);
-  assert.equal(context.periodicWaves.length, 1);
-  assert.equal(context.periodicWaves[0].imag.length, 9);
+  assert.equal(context.oscillators.length, 3);
+  assert.equal(context.periodicWaves.length, 2);
+  assert.equal(context.periodicWaves[0].imag.length, sustainModel.BOW_PARTIALS + 1);
+  assert.equal(context.periodicWaves[0].options.disableNormalization, true);
+  assert.equal(context.filters[3].type, "peaking");
+  assert.equal(context.filters[4].type, "peaking");
+  assert.equal(context.filters[5].type, "lowpass");
   app.fire("stopAll", "click");
   assert.equal(app.elements.get("sustainButton").getAttribute("aria-pressed"), "false");
   assert.equal(context.oscillators[1].stopped, true);
+  assert.equal(context.oscillators[2].stopped, true);
+});
+
+test("bow pressure smoothly crossfades both bowed strings and keeps plots and language in sync", async () => {
+  const app = fakePage();
+  app.fire("modeSustain", "click");
+  assert.equal(app.elements.get("sustainBowGroup").hidden, true, "flute has no bow control");
+  app.sustainButtons[1].events.click();
+  assert.equal(app.elements.get("sustainBowGroup").hidden, false);
+  assert.equal(app.elements.get("sustainBowValue").textContent, "60%");
+  assert.match(app.elements.get("sustainChallengeText").textContent, /нумын даралтыг/);
+  await app.fire("sustainButton", "pointerdown", { pointerId: 24 });
+  const context = app.contexts[0];
+  const weights = sustainModel.bowPressureWeights(60);
+  const soft = context.gains.find(g => Math.abs(g.gain.value - weights.soft) < 1e-9).gain;
+  const hard = context.gains.find(g => Math.abs(g.gain.value - weights.hard) < 1e-9).gain;
+  const noise = context.gains.find(g =>
+    Math.abs(g.gain.value - sustainModel.bowNoiseGain("violin", 60)) < 1e-9).gain;
+  assert.equal(context.oscillators.length, 2);
+  assert.equal(context.periodicWaves.length, 2);
+  app.elements.get("sustainBowPressure").value = "100";
+  app.fire("sustainBowPressure", "input");
+  assert.equal(soft.value, 0);
+  assert.ok(hard.value > weights.hard);
+  assert.ok(noise.value > sustainModel.bowNoiseGain("violin", 60));
+  assert.equal(app.elements.get("sustainBowValue").textContent, "100%");
+  assert.equal(context.oscillators.length, 2, "the held note is not restarted when pressure changes");
+  app.elements.get("sustainFrequencyInput").value = "330";
+  app.fire("sustainFrequencyInput", "change");
+  assert.equal(context.oscillators[0].frequency.value, 330);
+  assert.equal(context.oscillators[1].frequency.value, 330);
+  app.elements.get("sustainBowPressure").value = "0";
+  app.fire("sustainBowPressure", "input");
+  assert.equal(soft.value, 0);
+  assert.equal(hard.value, 0);
+  assert.equal(noise.value, 0);
+  app.fire("langEn", "click");
+  assert.match(app.elements.get("sustainDescription").textContent, /stick–slip/);
+  assert.match(app.elements.get("sustainDetailHint").textContent, /body filters/);
+  assert.match(app.elements.get("sustainChallengeText").textContent, /bow pressure/);
+  app.sustainButtons[2].events.click();
+  assert.equal(context.oscillators[0].stopped, true);
+  assert.equal(context.oscillators[1].stopped, true);
+  assert.equal(app.elements.get("sustainBowValue").textContent, "0%");
+  await app.fire("sustainButton", "pointerdown", { pointerId: 25 });
+  assert.equal(context.oscillators.length, 4);
+  assert.ok(context.filters.some(f => f.type === "peaking" && f.frequency.value === 310),
+    "morin khuur has a distinct illustrative body response");
+  app.fire("sustainReset", "click");
+  assert.equal(app.elements.get("sustainBowGroup").hidden, true);
+  assert.equal(app.elements.get("sustainBowValue").textContent, "60%");
+  assert.ok(context.oscillators.every(osc => osc.stopped));
 });
 
 test("flute blowing strength alters the running jet smoothly and updates both plotted and spoken language", async () => {

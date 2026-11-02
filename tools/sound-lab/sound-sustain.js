@@ -2,7 +2,9 @@
  * nonlinear jet exciter followed by two bore/radiation filters. The Fourier
  * components below predict that Web Audio path for the plotted periodic tone.
  * This is not a self-oscillating, jet/bore-feedback physical flute model.
- * Bowed-string recipes remain intentionally stylized.
+ * Bowed strings use a smoothed Helmholtz-like stick/slip velocity surrogate
+ * followed by illustrative bridge/body filters. Their pitch is imposed: no
+ * nonlinear bow/string waveguide feedback is solved in this teaching model.
  */
 (function (root, makeModel) {
   "use strict";
@@ -20,18 +22,31 @@
   const MIN_RELEASE = 0.04;
   const MAX_RELEASE = 1.2;
   const EXAMPLE_HOLD = 1.2;
-  const PARTIALS = Object.freeze({
-    violin: Object.freeze([.84, .72, .58, .47, .36, .27, .19, .12]),
-    // A dark bowed-string illustration, with a strong second partial instead
-    // of an unsupported assumption that a morin khuur stresses odd harmonics.
-    morin: Object.freeze([.88, .92, .58, .32, .21, .12, .075, .045])
+  const BOW_PARTIALS = 24;
+  const DEFAULT_BOW_PRESSURE = 60;
+  const BOW = Object.freeze({
+    violin: Object.freeze({
+      slipFraction: .135, sourceGain: 1.03, softWidth: .05, hardWidth: .013,
+      body: Object.freeze({ cutoff: 6200, peaks: Object.freeze([
+        Object.freeze({ frequency: 420, q: 1.15, gain: 3.5 }),
+        Object.freeze({ frequency: 2850, q: 1.05, gain: 4 })
+      ]) })
+    }),
+    morin: Object.freeze({
+      slipFraction: .19, sourceGain: 1.0, softWidth: .055, hardWidth: .017,
+      // Illustrative body coloration, not a measured morin-khuur response.
+      body: Object.freeze({ cutoff: 3600, peaks: Object.freeze([
+        Object.freeze({ frequency: 310, q: .9, gain: 3.5 }),
+        Object.freeze({ frequency: 1050, q: .75, gain: 2.5 })
+      ]) })
+    })
   });
   const DEFAULTS = Object.freeze({
     // Breath turbulence should be barely audible beside the radiated tone;
     // the earlier .016 mix sounded too hissy at ordinary listening distance.
     flute: Object.freeze({ attack: .08, release: .16, noise: .002, cutoff: 3600 }),
-    violin: Object.freeze({ attack: .18, release: .29, noise: .024, cutoff: 4600 }),
-    morin: Object.freeze({ attack: .11, release: .32, noise: .028, cutoff: 2600 })
+    violin: Object.freeze({ attack: .18, release: .29, noise: .003, cutoff: 4600 }),
+    morin: Object.freeze({ attack: .11, release: .32, noise: .0035, cutoff: 2600 })
   });
   const DEFAULT_BREATH = 60;
   const FLUTE_TONE_GAIN = 1.2;
@@ -105,6 +120,101 @@
     return components.reduce((sum, c, index) =>
       sum + c.sin * Math.sin((index + 1) * phase) + c.cos * Math.cos((index + 1) * phase), 0);
   }
+  function bowBody(kind) {
+    if (!BOW[kind]) throw new RangeError("Unknown bowed-string model");
+    return BOW[kind].body;
+  }
+  function bowPressureWeights(pressure = DEFAULT_BOW_PRESSURE) {
+    if (!Number.isFinite(pressure) || pressure < 0 || pressure > 100) {
+      throw new RangeError("Bow pressure must be between 0 and 100");
+    }
+    const fraction = pressure / 100;
+    const sharp = smoothstep(fraction);
+    const drive = .88 * Math.pow(fraction, .6);
+    return Object.freeze({ soft: drive * (1 - sharp), hard: drive * sharp });
+  }
+  function bowNoiseGain(kind, pressure = DEFAULT_BOW_PRESSURE) {
+    bowBody(kind);
+    bowPressureWeights(pressure);
+    return DEFAULTS[kind].noise * Math.pow(pressure / DEFAULT_BOW_PRESSURE, .7);
+  }
+  // In idealized Helmholtz motion the bow-point string velocity alternates
+  // between a long stick interval and a brief backward slip interval. The
+  // Fourier coefficients of that zero-mean rectangular velocity have a 1/n
+  // factor and a slip-duration-dependent spectral comb. Gaussian smoothing
+  // represents a finite slip-transition time, not a solved friction law.
+  function bowSourceComponents(kind, edge) {
+    const preset = BOW[kind];
+    if (!preset || !["soft", "hard"].includes(edge)) throw new RangeError("Invalid bow profile");
+    const width = edge === "soft" ? preset.softWidth : preset.hardWidth;
+    return Array.from({ length: BOW_PARTIALS }, (_, index) => {
+      const n = index + 1, phase = 2 * Math.PI * n * preset.slipFraction;
+      const rolloff = Math.exp(-.5 * Math.pow(2 * Math.PI * n * width, 2));
+      const amplitude = preset.sourceGain * rolloff / (Math.PI * n);
+      return Object.freeze({ sin: -amplitude * (1 - Math.cos(phase)),
+        cos: -amplitude * Math.sin(phase) });
+    });
+  }
+  const BOW_SOURCES = Object.freeze(Object.fromEntries(Object.keys(BOW).map(kind => [kind,
+    Object.freeze({ soft: Object.freeze(bowSourceComponents(kind, "soft")),
+      hard: Object.freeze(bowSourceComponents(kind, "hard")) })])));
+  function complexProduct(a, b) {
+    return { real: a.real * b.real - a.imag * b.imag,
+      imag: a.real * b.imag + a.imag * b.real };
+  }
+  // RBJ peaking-biquad response: same coefficients as Web Audio's peaking
+  // BiquadFilterNode, so the plotted phases match the generated body filter.
+  function peakingResponse(hz, frequency, q, gain, sampleRate) {
+    const omega = 2 * Math.PI * frequency / sampleRate;
+    const c = Math.cos(omega), alpha = Math.sin(omega) / (2 * q);
+    const a = Math.pow(10, gain / 40);
+    const coefficients = { b0: 1 + alpha * a, b1: -2 * c, b2: 1 - alpha * a,
+      a0: 1 + alpha / a, a1: -2 * c, a2: 1 - alpha / a };
+    const theta = 2 * Math.PI * hz / sampleRate;
+    const br = coefficients.b0 + coefficients.b1 * Math.cos(theta) +
+      coefficients.b2 * Math.cos(2 * theta);
+    const bi = -coefficients.b1 * Math.sin(theta) - coefficients.b2 * Math.sin(2 * theta);
+    const ar = coefficients.a0 + coefficients.a1 * Math.cos(theta) +
+      coefficients.a2 * Math.cos(2 * theta);
+    const ai = -coefficients.a1 * Math.sin(theta) - coefficients.a2 * Math.sin(2 * theta);
+    const divisor = ar * ar + ai * ai;
+    return { real: (br * ar + bi * ai) / divisor,
+      imag: (bi * ar - br * ai) / divisor };
+  }
+  function bowedBodyResponse(kind, frequency, sampleRate) {
+    const body = bowBody(kind);
+    let response = { real: 1, imag: 0 };
+    for (const peak of body.peaks) {
+      response = complexProduct(response,
+        peakingResponse(frequency, peak.frequency, peak.q, peak.gain, sampleRate));
+    }
+    return complexProduct(response,
+      biquadResponse("lowpass", frequency, body.cutoff, sampleRate));
+  }
+  function bowedComponents(kind, pressure = DEFAULT_BOW_PRESSURE, hz = 440,
+    sampleRate = FLUTE_PLOT_SAMPLE_RATE) {
+    bowBody(kind);
+    if (!Number.isFinite(hz) || hz < MIN_HZ || hz > MAX_HZ ||
+        !Number.isFinite(sampleRate) || sampleRate < 16000) {
+      throw new RangeError("Invalid bowed-string pitch or sample rate");
+    }
+    const weights = bowPressureWeights(pressure);
+    const source = BOW_SOURCES[kind];
+    return source.soft.map((soft, index) => {
+      const hard = source.hard[index];
+      const sin = weights.soft * soft.sin + weights.hard * hard.sin;
+      const cos = weights.soft * soft.cos + weights.hard * hard.cos;
+      const response = bowedBodyResponse(kind, (index + 1) * hz, sampleRate);
+      return Object.freeze({ sin: sin * response.real - cos * response.imag,
+        cos: sin * response.imag + cos * response.real });
+    });
+  }
+  function bowedWaveFromComponents(phase, components) {
+    if (!Number.isFinite(phase) || !Array.isArray(components) ||
+        components.length !== BOW_PARTIALS) throw new RangeError("Invalid bowed-string waveform");
+    return components.reduce((value, c, index) => value +
+      c.sin * Math.sin((index + 1) * phase) + c.cos * Math.cos((index + 1) * phase), 0);
+  }
   function validate(kind, hz, attack, release) {
     if (!KINDS.includes(kind)) throw new RangeError("Unknown held-sound model");
     if (!Number.isFinite(hz) || hz < MIN_HZ || hz > MAX_HZ) {
@@ -115,30 +225,20 @@
       throw new RangeError("Held-sound envelope outside supported range");
     }
   }
-  function partials(kind, breath = DEFAULT_BREATH, hz = 440) {
+  function partials(kind, strength = DEFAULT_BREATH, hz = 440) {
     if (!KINDS.includes(kind)) throw new RangeError("Unknown held-sound model");
-    if (kind === "flute") return fluteComponents(breath, hz).map(c => Math.hypot(c.sin, c.cos));
-    return PARTIALS[kind];
+    const components = kind === "flute" ? fluteComponents(strength, hz) :
+      bowedComponents(kind, strength, hz);
+    return components.map(c => Math.hypot(c.sin, c.cos));
   }
   function defaults(kind) {
     if (!KINDS.includes(kind)) throw new RangeError("Unknown held-sound model");
     return DEFAULTS[kind];
   }
-  const PEAKS = Object.freeze(Object.fromEntries(["violin", "morin"].map(kind => {
-    let peak = 0;
-    for (let i = 0; i < 4096; i++) {
-      const phase = 2 * Math.PI * i / 4096;
-      const value = PARTIALS[kind].reduce((sum, strength, index) =>
-        sum + strength * Math.sin((index + 1) * phase), 0);
-      peak = Math.max(peak, Math.abs(value));
-    }
-    return [kind, peak];
-  })));
-  function waveAt(phase, kind, breath = DEFAULT_BREATH, hz = 440) {
+  function waveAt(phase, kind, strength = DEFAULT_BREATH, hz = 440) {
     if (!Number.isFinite(phase)) throw new RangeError("Invalid wave phase");
-    if (kind === "flute") return fluteWaveFromComponents(phase, fluteComponents(breath, hz));
-    return partials(kind).reduce((sum, strength, index) =>
-      sum + strength * Math.sin((index + 1) * phase), 0) / PEAKS[kind];
+    if (kind === "flute") return fluteWaveFromComponents(phase, fluteComponents(strength, hz));
+    return bowedWaveFromComponents(phase, bowedComponents(kind, strength, hz));
   }
   function smoothstep(fraction) {
     const x = Math.max(0, Math.min(1, fraction));
@@ -169,9 +269,11 @@
 
   return Object.freeze({
     KINDS, MIN_HZ, MAX_HZ, MIN_ATTACK, MAX_ATTACK, MIN_RELEASE, MAX_RELEASE,
-    EXAMPLE_HOLD, DEFAULT_BREATH, FLUTE_TONE_GAIN, FLUTE_HIGHPASS, FLUTE_LOWPASS, FLUTE_Q,
+    EXAMPLE_HOLD, DEFAULT_BREATH, DEFAULT_BOW_PRESSURE, BOW_PARTIALS,
+    FLUTE_TONE_GAIN, FLUTE_HIGHPASS, FLUTE_LOWPASS, FLUTE_Q,
     validate, defaults, partials, waveAt, fluteDrive, fluteJetAt, fluteNoiseGain,
-    fluteComponents, fluteWaveFromComponents, smoothstep,
+    fluteComponents, fluteWaveFromComponents, bowBody, bowPressureWeights,
+    bowNoiseGain, bowSourceComponents, bowedComponents, bowedWaveFromComponents, smoothstep,
     attackLevelAt, releaseLevelAt, envelopeAt, sliderToHz, hzToSlider
   });
 });
