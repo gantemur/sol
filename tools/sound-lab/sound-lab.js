@@ -204,18 +204,20 @@
       sustainTogglePlay: "Play", sustainToggleStop: "Stop", sustainToggleCaption: "Tap again to release the note.",
       sustainPitch: "Note frequency", sustainPitchSliderAria: "Held note pitch slider",
       sustainPitchInputAria: "Held note frequency in hertz", sustainAttack: "Attack time", sustainRelease: "Release time",
+      sustainBreath: "Blowing strength", sustainBreathHint: "A stronger air jet changes the flute's loudness, harmonics and breath noise.",
       sustainEnvelopeHelp: "Attack applies to the next note; release applies when you let go.",
-      sustainEnvelopeTitle: "Loudness over time", sustainEnvelopeHint: "Example: hold for 1.2 s, then release. Attack, sustain and release.",
+      sustainEnvelopeTitle: "Loudness over time", sustainEnvelopeHint: "Normalized attack and release of a 1.2 s note; actual loudness also depends on blowing strength.",
       sustainEnvelopeFoot: "The vertical mark is the release at 1.2 s.",
       sustainDetailTitle: "Waveform and harmonics", sustainDetailHint: "20 ms periodic component. The soft breath/bow noise is omitted from these plots.",
+      sustainFluteDetailHint: "20 ms modeled flute tone after jet shaping and air-column filtering; random breath noise is omitted.",
       sustainWaveTitle: "Waveform", sustainSpectrumTitle: "Harmonics",
       sustainEnvelopeAria: "Example held-note attack, sustain and release curve",
       sustainWaveAria: "Modeled twenty millisecond sustained periodic waveform",
       sustainSpectrumAria: "Relative strengths of eight modeled harmonics",
-      sustainChallenge: "Keep the same note. Compare flute, violin and morin khuur and change the attack and release times.",
+      sustainChallenge: "Keep the flute's pitch fixed. Try gentle and strong blowing: what happens to loudness and the upper harmonics?",
       sustainLearnMore: "Why can these sounds continue?",
       sustainLessonOne: "Blowing a flute or bowing a string keeps feeding energy into its vibration. A plucked string is set moving once and then fades.",
-      sustainLessonTwo: "These simple models combine harmonics with a small breath/bow noise component. They do not reproduce the full instrument body, bow or breath mechanics.",
+      sustainLessonTwo: "The flute uses a nonlinear jet-like exciter and simple filters to change harmonics with blowing strength. Its sustained pitch is imposed, not produced by true jet–bore feedback. The bowed strings remain simplified harmonic mixtures.",
       sustainReady: "Ready. Hold the button or use tap-to-toggle mode.", sustainStarting: "Starting the note…",
       sustainPlayingHold: "Sounding. Release the button to fade.", sustainPlayingToggle: "Sounding. Tap again to release.",
       sustainReleased: "Released. The sound fades away.", sustainStopped: "Stopped. Try another instrument.",
@@ -224,9 +226,9 @@
       sustainBlocked: "The sound could not start. Check browser sound permission.",
       sustainInvalid: "Enter a frequency between 110 and 880 Hz.",
       sustainDesc: {
-        flute: "A soft, nearly pure tone with a little modeled breath noise.",
+        flute: "A flute-like air-jet model: stronger blowing makes the sound louder and brings out more upper harmonics.",
         violin: "A bright bowed-string color rich in upper harmonics.",
-        morin: "A darker bowed-string color with emphasized odd harmonics, inspired by the morin khuur."
+        morin: "A darker bowed-string color with a strong second harmonic, inspired by the morin khuur."
       },
       motionPhase: "04 · Moving frequency", motionChoose: "Choose a moving sound",
       theremin: "Theremin", siren: "Fire-truck siren",
@@ -475,18 +477,20 @@
       sustainTogglePlay: "Тоглуулах", sustainToggleStop: "Зогсоох", sustainToggleCaption: "Дахин товшиж намдаана.",
       sustainPitch: "Нотын давтамж", sustainPitchSliderAria: "Нотын давтамжийн гулсуур",
       sustainPitchInputAria: "Нотын давтамжийг герцээр оруулах", sustainAttack: "Эхлэх хугацаа", sustainRelease: "Намдах хугацаа",
+      sustainBreath: "Үлээлтийн хүч", sustainBreathHint: "Илүү хүчтэй үлээхэд дуу чангарч, гармоникууд болон амьсгалын шуугиан өөрчлөгдөнө.",
       sustainEnvelopeHelp: "Эхлэх хугацаа дараагийн нотод, намдах хугацаа тавихад үйлчилнэ.",
-      sustainEnvelopeTitle: "Дууны хүч хугацаанд", sustainEnvelopeHint: "1.2 сек дараад тавьсан жишээ. Эхлэл, үргэлжлэх үе, намдалт.",
+      sustainEnvelopeTitle: "Дууны хүч хугацаанд", sustainEnvelopeHint: "1.2 сек үргэлжилсэн авианы хэвийн болгосон эхлэл, намдалт. Үлээлтийн хүч бас чанга сулд нөлөөлнө.",
       sustainEnvelopeFoot: "Босоо шугам нь тавих мөч (1.2 сек).",
       sustainDetailTitle: "Долгион ба гармоникууд", sustainDetailHint: "20 мсек-ийн үелэх хэсэг. Амьсгаа, нумын зөөлөн шуугианыг энд зураагүй.",
+      sustainFluteDetailHint: "Үлээлт ба агаарын баганын шүүлтүүрээр загварчилсан 20 мсек-ийн долгион. Санамсаргүй шуугианыг оруулаагүй.",
       sustainWaveTitle: "Долгион", sustainSpectrumTitle: "Гармоникууд",
       sustainEnvelopeAria: "Дууг эхлүүлж, барьж, тавих үеийн далайцын загвар",
       sustainWaveAria: "20 мсек-ийн үргэлжлэх долгионы загвар",
       sustainSpectrumAria: "Найман гармоникийн харьцангуй хүч",
-      sustainChallenge: "Ижил нот дээр лимбэ, хийл, морин хуурыг сонсож, эхлэл ба гармоникуудыг харьцуул.",
+      sustainChallenge: "Лимбэний давтамжийг тогтмол байлгаад зөөлөн, хүчтэй үлээхийг харьцуул. Дээд гармоникууд хэрхэн өөрчлөгдөв?",
       sustainLearnMore: "Эдгээр дуу яагаад үргэлжилдэг вэ?",
       sustainLessonOne: "Лимбэ үлээх, хийл болон морин хуур нумдах үед хэлбэлзэлд энерги тасралтгүй өгөгдөнө. Татаж тавьсан чавхдас харин аажмаар намдана.",
-      sustainLessonTwo: "Эдгээр нь гармоник, бага хэмжээний шуугианаар бүтээсэн хялбаршуулсан загвар. Жинхэнэ зэмсгийн их бие, нум болон амьсгалын нарийн хөдөлгөөнийг дуурайгаагүй.",
+      sustainLessonTwo: "Лимбэний загварт үлээлтийн шугаман бус үйлчлэл, агаарын баганын энгийн шүүлтүүр оруулсан. Жинхэнэ лимбэний агаарын урсгал ба баганын харилцан үйлчлэлийг бүрэн тооцоогүй. Нумдсан зэмсгүүд одоохондоо гармоникийн хялбаршуулсан найрлагатай.",
       sustainReady: "Бэлэн. Дарж барих эсвэл товшиж асаах аргыг сонгоорой.", sustainStarting: "Дууг эхлүүлж байна…",
       sustainPlayingHold: "Дуугарч байна. Гараа авахад намдана.", sustainPlayingToggle: "Дуугарч байна. Дахин товшиж намдаана.",
       sustainReleased: "Тавилаа. Дуу аажмаар намдаж байна.", sustainStopped: "Зогслоо. Өөр зэмсэг туршаарай.",
@@ -495,9 +499,9 @@
       sustainBlocked: "Дуу эхэлсэнгүй. Хөтчийн дууны зөвшөөрлийг шалгана уу.",
       sustainInvalid: "Нотын давтамжийг 110–880 Гц-ийн хооронд оруулна уу.",
       sustainDesc: {
-        flute: "Нам гүм, цэвэрхэн өнгөтэй, бага зэрэг амьсгалын шуугиантай загвар.",
+        flute: "Үлээлтийн хүчнээс дууны хэмжээ, дээд гармоникууд нь өөрчлөгдөх лимбэний хялбаршуулсан загвар.",
         violin: "Дээд гармоникууд баялаг, хурц өнгөтэй нумдсан чавхдасны загвар.",
-        morin: "Сондгой гармоникууд нь тод, бараан өнгөтэй морин хуураас санаа авсан загвар."
+        morin: "Хоёрдугаар гармоник нь тод, бараан өнгөтэй морин хуураас санаа авсан загвар."
       },
       motionPhase: "04 · Хувирдаг давтамж", motionChoose: "Хөдөлгөөнт дуу сонгох",
       theremin: "Теремин", siren: "Галын машины дохио",
@@ -591,6 +595,7 @@
     sustainGesture: "hold",
     sustainPitch: 440,
     sustainSnap: false,
+    sustainBreath: sustainModel.DEFAULT_BREATH,
     sustainAttack: sustainModel.defaults("flute").attack,
     sustainRelease: sustainModel.defaults("flute").release,
     sustainVolume: 40,
@@ -887,11 +892,44 @@
         this.voices.delete(oldest);
       }
       const now = context.currentTime;
-      const partials = sustainModel.partials(state.sustainKind);
       const oscillator = context.createOscillator();
-      const real = new Float32Array(partials.length + 1);
-      const imag = new Float32Array([0, ...partials]);
-      oscillator.setPeriodicWave(context.createPeriodicWave(real, imag));
+      let fluteNodes = null;
+      if (state.sustainKind === "flute") {
+        // Illustrative source-filter flute: sine bore pressure excites an
+        // asymmetric, saturating jet; AC-coupling removes the jet's DC flow.
+        // The two filters use the same coefficients as the plotted model.
+        const drive = context.createGain();
+        drive.gain.setValueAtTime(sustainModel.fluteDrive(state.sustainBreath), now);
+        const shaper = context.createWaveShaper();
+        const curve = new Float32Array(2049);
+        for (let i = 0; i < curve.length; i++) {
+          curve[i] = sustainModel.fluteJetAt(2 * i / (curve.length - 1) - 1);
+        }
+        shaper.curve = curve;
+        shaper.oversample = "4x";
+        const highpass = context.createBiquadFilter();
+        highpass.type = "highpass";
+        highpass.frequency.setValueAtTime(sustainModel.FLUTE_HIGHPASS, now);
+        highpass.Q.setValueAtTime(sustainModel.FLUTE_Q, now);
+        const lowpass = context.createBiquadFilter();
+        lowpass.type = "lowpass";
+        lowpass.frequency.setValueAtTime(sustainModel.FLUTE_LOWPASS, now);
+        lowpass.Q.setValueAtTime(sustainModel.FLUTE_Q, now);
+        const toneGain = context.createGain();
+        toneGain.gain.setValueAtTime(sustainModel.FLUTE_TONE_GAIN, now);
+        oscillator.type = "sine";
+        oscillator.connect(drive);
+        drive.connect(shaper);
+        shaper.connect(highpass);
+        highpass.connect(lowpass);
+        lowpass.connect(toneGain);
+        fluteNodes = { drive, shaper, highpass, lowpass, toneGain };
+      } else {
+        const partials = sustainModel.partials(state.sustainKind);
+        const real = new Float32Array(partials.length + 1);
+        const imag = new Float32Array([0, ...partials]);
+        oscillator.setPeriodicWave(context.createPeriodicWave(real, imag));
+      }
       oscillator.frequency.setValueAtTime(state.sustainPitch, now);
       const envelope = context.createGain();
       const volume = context.createGain();
@@ -899,7 +937,8 @@
       volume.gain.setValueAtTime(this.volumeGain(), now);
       envelope.gain.setValueAtTime(0, now);
       this.ramp(envelope.gain, 0, 1, now, state.sustainAttack);
-      oscillator.connect(envelope);
+      if (fluteNodes) fluteNodes.toneGain.connect(envelope);
+      else oscillator.connect(envelope);
 
       // Gentle unpitched breath/bow texture, deliberately quieter than the tone.
       const noise = context.createBufferSource();
@@ -909,17 +948,19 @@
       filter.type = "lowpass";
       filter.frequency.setValueAtTime(defaults.cutoff, now);
       const noiseGain = context.createGain();
-      noiseGain.gain.setValueAtTime(defaults.noise, now);
+      noiseGain.gain.setValueAtTime(fluteNodes ?
+        sustainModel.fluteNoiseGain(state.sustainBreath) : defaults.noise, now);
       noise.connect(filter);
       filter.connect(noiseGain);
       noiseGain.connect(envelope);
       envelope.connect(volume);
       volume.connect(this.contextOwner.output);
-      const voice = { oscillator, noise, noiseGain, filter, envelope, volume,
+      const voice = { oscillator, noise, noiseGain, filter, envelope, volume, fluteNodes,
         startedAt: now, attack: state.sustainAttack, stopping: false };
       this.voices.add(voice);
       oscillator.onended = () => {
-        for (const node of [oscillator, noise, noiseGain, filter, envelope, volume]) node.disconnect();
+        for (const node of [oscillator, noise, noiseGain, filter, envelope, volume,
+          ...Object.values(fluteNodes || {})]) node.disconnect();
         this.voices.delete(voice);
         if (this.currentVoice === voice) this.currentVoice = null;
       };
@@ -941,6 +982,12 @@
       const now = this.contextOwner.context.currentTime;
       this.currentVoice.oscillator.frequency.setTargetAtTime(state.sustainPitch, now, .018);
       this.currentVoice.volume.gain.setTargetAtTime(this.volumeGain(), now, .015);
+      if (this.currentVoice.fluteNodes) {
+        this.currentVoice.fluteNodes.drive.gain.setTargetAtTime(
+          sustainModel.fluteDrive(state.sustainBreath), now, .025);
+        this.currentVoice.noiseGain.gain.setTargetAtTime(
+          sustainModel.fluteNoiseGain(state.sustainBreath), now, .025);
+      }
     }
 
     stop(immediate = false) {
@@ -2251,6 +2298,11 @@
       note.english + " · " + note.mongolian;
     $("sustainSnap").checked = state.sustainSnap;
     $("sustainDescription").textContent = text("sustainDesc")[state.sustainKind];
+    $("sustainBreathGroup").hidden = state.sustainKind !== "flute";
+    $("sustainBreath").value = String(state.sustainBreath);
+    $("sustainBreathValue").textContent = state.sustainBreath + "%";
+    $("sustainDetailHint").textContent = text(state.sustainKind === "flute" ?
+      "sustainFluteDetailHint" : "sustainDetailHint");
     $("sustainAttack").value = String(state.sustainAttack);
     $("sustainAttackValue").textContent = secondsFixedText(state.sustainAttack);
     $("sustainRelease").value = String(state.sustainRelease);
@@ -2342,6 +2394,7 @@
     state.sustainGesture = "hold";
     state.sustainPitch = 440;
     state.sustainSnap = false;
+    state.sustainBreath = sustainModel.DEFAULT_BREATH;
     state.sustainAttack = sustainModel.defaults("flute").attack;
     state.sustainRelease = sustainModel.defaults("flute").release;
     state.sustainVolume = 40;
@@ -2838,12 +2891,16 @@
     const w = right - left, span = .02;
     drawFrame(ctx, width, height, left, right, top, bottom);
     const count = Math.max(700, Math.ceil(state.sustainPitch * 8 * span * 10));
+    const flute = state.sustainKind === "flute" ?
+      sustainModel.fluteComponents(state.sustainBreath, state.sustainPitch) : null;
     ctx.strokeStyle = "#367bd1";
     ctx.lineWidth = 2.1;
     ctx.beginPath();
     for (let i = 0; i <= count; i++) {
       const t = span * i / count;
-      const value = sustainModel.waveAt(2 * Math.PI * state.sustainPitch * t, state.sustainKind);
+      const phase = 2 * Math.PI * state.sustainPitch * t;
+      const value = flute ? sustainModel.fluteWaveFromComponents(phase, flute) :
+        sustainModel.waveAt(phase, state.sustainKind);
       if (!i) ctx.moveTo(left, middle - value * amp);
       else ctx.lineTo(left + w * i / count, middle - value * amp);
     }
@@ -2858,7 +2915,7 @@
   function drawSustainSpectrum() {
     const { ctx, width, height } = plotContext($("sustainSpectrumCanvas"));
     const left = 36, right = width - 14, top = 21, bottom = height - 29;
-    const partials = sustainModel.partials(state.sustainKind);
+    const partials = sustainModel.partials(state.sustainKind, state.sustainBreath, state.sustainPitch);
     const w = right - left, h = bottom - top, slot = w / partials.length;
     drawFrame(ctx, width, height, left, right, top, bottom);
     partials.forEach((strength, i) => {
@@ -3541,6 +3598,12 @@
     state.sustainSnap = event.target.checked;
     if (state.sustainSnap) setSustainPitch(state.sustainPitch);
     else renderSustainControls();
+  });
+  $("sustainBreath").addEventListener("input", event => {
+    state.sustainBreath = Math.max(0, Math.min(100, Number(event.target.value)));
+    sustainAudio.update();
+    renderSustainControls();
+    if (state.mode === "sustain") drawSustainPlots();
   });
   $("sustainAttack").addEventListener("input", event => {
     state.sustainAttack = Math.max(sustainModel.MIN_ATTACK,
