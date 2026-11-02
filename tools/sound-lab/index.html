@@ -11,14 +11,14 @@
   <script src="sound-string.js?v=s017" defer></script>
   <script src="sound-piano.js?v=s019" defer></script>
   <script src="sound-transient.js?v=s019" defer></script>
-  <script src="sound-sustain.js?v=s017" defer></script>
+  <script src="sound-sustain.js?v=s020" defer></script>
   <script src="sound-spectrum.js?v=s017" defer></script>
   <script src="sound-motion.js?v=s015" defer></script>
   <script src="sound-beats.js" defer></script>
   <script src="sound-harmonics.js" defer></script>
   <script src="sound-noise.js" defer></script>
   <script src="sound-recorder.js" defer></script>
-  <script src="sound-lab.js?v=s019" defer></script>
+  <script src="sound-lab.js?v=s020" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -387,6 +387,11 @@
           </div>
           <div class="scale-row"><span data-unit-hz="110">110 Гц</span><label class="check-label"><input id="sustainSnap" type="checkbox"> <span data-i18n="snap">Нотод тааруулах</span></label><span data-unit-hz="880">880 Гц</span></div>
         </div>
+        <div class="field-group" id="sustainBreathGroup">
+          <div class="field-title"><label for="sustainBreath" data-i18n="sustainBreath">Үлээлтийн хүч</label><output id="sustainBreathValue">60%</output></div>
+          <input id="sustainBreath" type="range" min="0" max="100" step="1" value="60">
+          <p class="field-help" data-i18n="sustainBreathHint">Илүү хүчтэй үлээхэд дуу чангарч, гармоникууд болон амьсгалын шуугиан өөрчлөгдөнө.</p>
+        </div>
         <div class="field-group">
           <div class="field-title"><label for="sustainAttack" data-i18n="sustainAttack">Эхлэх хугацаа</label><output id="sustainAttackValue">0.14 сек</output></div>
           <input id="sustainAttack" type="range" min="0.02" max="0.6" step="0.01" value="0.14">
@@ -413,7 +418,7 @@
         </section>
         <section class="panel chart-panel" aria-labelledby="sustain-detail-title">
           <div class="chart-heading">
-            <div><h2 id="sustain-detail-title" data-i18n="sustainDetailTitle">Долгион ба гармоникууд</h2><p data-i18n="sustainDetailHint">20 мсек-ийн үелэх хэсэг. Амьсгаа, нумын зөөлөн шуугианыг энд зураагүй.</p></div>
+            <div><h2 id="sustain-detail-title" data-i18n="sustainDetailTitle">Долгион ба гармоникууд</h2><p id="sustainDetailHint" data-i18n="sustainDetailHint">20 мсек-ийн үелэх хэсэг. Амьсгаа, нумын зөөлөн шуугианыг энд зураагүй.</p></div>
             <span class="chart-badge" id="sustainDetailBadge">440 Гц</span>
           </div>
           <div class="motion-mini-plots">

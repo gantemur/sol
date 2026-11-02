@@ -32,13 +32,13 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-string\.js\?v=s017"/);
   assert.match(html, /src="sound-piano\.js\?v=s019"/);
   assert.match(html, /src="sound-transient\.js\?v=s019"/);
-  assert.match(html, /src="sound-sustain\.js\?v=s017"/);
+  assert.match(html, /src="sound-sustain\.js\?v=s020"/);
   assert.match(html, /src="sound-spectrum\.js\?v=s017"/);
   assert.match(html, /src="sound-motion\.js\?v=s015"/);
   assert.match(html, /src="sound-beats\.js"/);
   assert.match(html, /src="sound-harmonics\.js"/);
   assert.match(html, /src="sound-noise\.js"/);
-  assert.match(html, /src="sound-lab\.js\?v=s019"/);
+  assert.match(html, /src="sound-lab\.js\?v=s020"/);
   assert.match(html, /href="sound-lab\.css\?v=s017"/);
   assert.match(html, /src="sound-recorder\.js"/);
   assert.match(html, /id="recordPreview"[^>]*controls/);
@@ -76,6 +76,7 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.doesNotMatch(html, /id="pianoKeyboard"|class="piano-keys"/);
   for (const kind of sustainModel.KINDS) assert.match(html, new RegExp('data-sustain="' + kind + '"'));
   for (const gesture of ["hold", "toggle"]) assert.match(html, new RegExp('data-sustain-gesture="' + gesture + '"'));
+  assert.match(html, /id="sustainBreath" type="range" min="0" max="100"/);
   assert.ok(html.indexOf('id="modeStrike"') < html.indexOf('id="modeSustain"') &&
     html.indexOf('id="modeSustain"') < html.indexOf('id="modeMotion"'),
   "Held sound tab belongs between strike and moving pitch");
@@ -257,6 +258,7 @@ function fakePage(search = "", supportWorklets = true) {
       this.constantSources = [];
       this.periodicWaves = [];
       this.filters = [];
+      this.shapers = [];
       this.addedModules = [];
       this.audioWorklet = {
         addModule: async url => { this.addedModules.push(url); }
@@ -297,6 +299,11 @@ function fakePage(search = "", supportWorklets = true) {
       const wave = { real, imag };
       this.periodicWaves.push(wave);
       return wave;
+    }
+    createWaveShaper() {
+      const shaper = { curve: null, oversample: "none", connect() {}, disconnect() {} };
+      this.shapers.push(shaper);
+      return shaper;
     }
     createBiquadFilter() {
       const filter = {
@@ -412,10 +419,16 @@ test("held flute plays only while pressed, and release follows the chosen decay"
   const context = app.contexts[0];
   assert.equal(context.oscillators.length, 1);
   assert.equal(context.oscillators[0].started, true);
-  assert.ok(context.oscillators[0].periodicWave);
+  assert.equal(context.oscillators[0].type, "sine");
+  assert.equal(context.shapers.length, 1);
+  assert.equal(context.shapers[0].curve.length, 2049);
+  assert.equal(context.shapers[0].oversample, "4x");
+  assert.equal(context.filters[0].type, "highpass");
+  assert.equal(context.filters[1].type, "lowpass");
+  assert.equal(context.filters[2].type, "lowpass", "the third filter colors breath noise");
   assert.equal(context.sources.length, 1, "Gentle breath noise is generated locally");
   assert.equal(context.sources[0].loop, true);
-  assert.equal(context.filters[0].type, "lowpass");
+  assert.equal(app.elements.get("sustainBreathValue").textContent, "60%");
   assert.equal(app.elements.get("sustainButton").getAttribute("aria-pressed"), "true");
   app.tick(.08);
   app.fire("sustainButton", "pointerup", { pointerId: 11 });
@@ -426,17 +439,51 @@ test("held flute plays only while pressed, and release follows the chosen decay"
   await app.fire("sustainButton", "click", { detail: 1 });
   assert.equal(context.oscillators.length, 1, "Pointer-generated click is ignored after release");
 
-  // Each instrument selection changes the periodic waveform and plotted bars.
+  // Other instruments retain their deliberately simple periodic waves.
   app.sustainButtons[1].events.click();
+  assert.equal(app.elements.get("sustainBreathGroup").hidden, true);
   assert.match(app.elements.get("sustainDescription").textContent, /хурц/);
   assert.equal(app.elements.get("sustainAttackValue").textContent, "0.18 сек");
   await app.fire("sustainButton", "pointerdown", { pointerId: 12 });
   assert.equal(context.oscillators.length, 2);
-  assert.notDeepEqual(Array.from(context.periodicWaves[0].imag),
-    Array.from(context.periodicWaves[1].imag));
+  assert.equal(context.periodicWaves.length, 1);
+  assert.equal(context.periodicWaves[0].imag.length, 9);
   app.fire("stopAll", "click");
   assert.equal(app.elements.get("sustainButton").getAttribute("aria-pressed"), "false");
   assert.equal(context.oscillators[1].stopped, true);
+});
+
+test("flute blowing strength alters the running jet smoothly and updates both plotted and spoken language", async () => {
+  const app = fakePage();
+  app.fire("modeSustain", "click");
+  assert.equal(app.elements.get("sustainBreathGroup").hidden, false);
+  assert.equal(app.elements.get("sustainBreathValue").textContent, "60%");
+  assert.match(app.elements.get("sustainDetailHint").textContent, /агаарын баганын/);
+  await app.fire("sustainButton", "pointerdown", { pointerId: 22 });
+  const context = app.contexts[0];
+  assert.equal(context.oscillators.length, 1);
+  const drive = context.gains.find(gain =>
+    Math.abs(gain.gain.value - sustainModel.fluteDrive(60)) < 1e-8).gain;
+  const original = drive.value;
+  const noise = context.gains.find(gain =>
+    Math.abs(gain.gain.value - sustainModel.fluteNoiseGain(60)) < 1e-8).gain;
+  app.elements.get("sustainBreath").value = "100";
+  app.fire("sustainBreath", "input");
+  assert.ok(drive.value > original);
+  assert.ok(noise.value > sustainModel.fluteNoiseGain(60));
+  assert.equal(app.elements.get("sustainBreathValue").textContent, "100%");
+  assert.equal(context.oscillators.length, 1, "no oscillator restart while moving the breath slider");
+  app.elements.get("sustainBreath").value = "0";
+  app.fire("sustainBreath", "input");
+  assert.equal(drive.value, 0);
+  assert.equal(noise.value, 0);
+  app.fire("langEn", "click");
+  assert.match(app.elements.get("sustainDescription").textContent, /air-jet/);
+  assert.match(app.elements.get("sustainDetailHint").textContent, /air-column/);
+  assert.equal(app.elements.get("sustainBreathValue").textContent, "0%");
+  app.fire("sustainReset", "click");
+  assert.equal(app.elements.get("sustainBreathValue").textContent, "60%");
+  assert.equal(context.oscillators[0].stopped, true);
 });
 
 test("held note toggle, keyboard access, pitch snap, language and mode cleanup", async () => {
