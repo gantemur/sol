@@ -50,19 +50,20 @@ h1, h2, p { margin-top: 0; }
 .mode-button:hover { border-color: #78a9df; }
 .mode-button.active { background: #2769ba; color: white; border-color: #2769ba; box-shadow: 0 3px 10px #2769ba25; }
 
-.record-panel { margin-bottom: 18px; padding: 13px 18px; border: 1px solid #c8dce9; border-radius: 13px; background: #eef7fb; }
-.record-heading { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
-.record-heading h2 { margin-bottom: 3px; color: #2d5775; font-size: 14px; }
-.record-heading p { max-width: 660px; margin: 0; color: #55758b; font-size: 11px; }
-.record-actions { display: flex; align-items: center; gap: 11px; flex: none; }
-.record-button { min-height: 40px; padding: 8px 14px; border: 1px solid #b85155; border-radius: 9px; background: #fff; color: #a52b39; font-size: 12px; font-weight: 800; }
-.record-button.recording { background: #c63d4b; color: white; }
+.record-anchor { position: relative; flex: none; }
+.record-button { display: inline-flex; justify-content: center; align-items: center; gap: 5px; min-height: 43px; padding: 8px 12px; border: 1px solid #e18e94; border-radius: 9px; background: #283e59; color: #ff9ca6; font-size: 12px; font-weight: 850; white-space: nowrap; }
+.record-button:hover { background: #3a4f67; }
+.record-symbol { font-size: 15px; line-height: 1; }
+.record-button.recording { background: #b93645; border-color: #e7818e; color: #fff; }
+.record-button.recording:hover { background: #a32939; }
 .record-button:disabled { opacity: .6; cursor: wait; }
-.record-timer { min-width: 90px; text-align: right; white-space: nowrap; font-size: 12px; font-weight: 800; color: #52768c; font-variant-numeric: tabular-nums; }
-.record-status { margin: 7px 0 0; font-size: 11px; color: #617e90; }
-.record-status.error { color: #b23f42; }
-.record-result { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
-.record-result audio { width: min(100%, 320px); height: 36px; }
+.record-timer { margin-left: 4px; font-size: 11px; font-weight: 750; color: #fff; font-variant-numeric: tabular-nums; }
+.record-status.error { position: absolute; right: 0; top: calc(100% + 12px); z-index: 31; width: 270px; margin: 0; padding: 11px 13px; border: 1px solid #d88c8c; border-radius: 10px; background: #fff4f4; color: #9e2332; box-shadow: 0 7px 24px #0b203933; font-size: 12px; }
+.record-popover { position: absolute; right: 0; top: calc(100% + 12px); z-index: 30; width: min(330px, calc(100vw - 24px)); padding: 14px; border: 1px solid #c8dce9; border-radius: 13px; background: #f5fbff; color: #2d5775; box-shadow: 0 14px 38px #0b203959; }
+.record-popover-heading { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 13px; }
+.record-dismiss { min-width: 30px; min-height: 30px; border: 0; border-radius: 6px; background: transparent; color: #52718c; font-size: 21px; line-height: 1; }
+.record-dismiss:hover { background: #dcebf5; }
+.record-popover audio { display: block; width: 100%; height: 36px; margin-bottom: 10px; }
 .record-download { display: inline-block; padding: 8px 13px; border: 1px solid #549b90; border-radius: 8px; background: #e6f6f0; color: #176b64; font-size: 12px; font-weight: 800; text-decoration: none; }
 .record-download:hover { background: #d5efe5; }
 
@@ -223,9 +224,8 @@ h1, h2, p { margin-top: 0; }
   .stop-all { padding: 8px 9px; min-height: 40px; font-size: 12px; }
   .container { padding: 16px 14px 36px; }
   .mode-bar { margin-bottom: 16px; }
-  .record-panel { padding: 12px 14px; margin-bottom: 15px; }
-  .record-heading { align-items: stretch; flex-direction: column; gap: 9px; }
-  .record-actions { justify-content: space-between; }
+  .record-button { min-height: 40px; padding: 7px 9px; }
+  .record-popover { right: -55px; }
   .mode-switch { width: 100%; }
   .mode-button { flex: 1 1 auto; padding: 9px 11px; font-size: 12px; }
   .controls { padding: 18px 16px; }
@@ -241,12 +241,21 @@ h1, h2, p { margin-top: 0; }
   .reset-button { margin-left: auto; }
   .footer { padding: 2px 14px 28px; }
 }
-@media (max-width: 380px) {
-  .back-link span { display: none; }
+@media (max-width: 470px) {
   .brand-mark, .brand small { display: none; }
+  .record-button-label, .record-timer { display: none; }
+  .record-button { min-width: 38px; padding: 7px; }
+  .record-popover { position: fixed; right: 12px; top: 64px; }
+  .record-status.error { position: fixed; right: 12px; top: 64px; max-width: calc(100vw - 24px); }
+}
+@media (max-width: 380px) {
+  .topbar-inner { padding: 10px 6px; gap: 4px; }
+  .back-link { padding: 8px 2px; }
+  .back-link span { display: none; }
   .brand h1 { font-size: 15px; }
-  .brand small { font-size: 9px; }
-  .top-actions { gap: 6px; }
+  .top-actions { gap: 4px; }
+  .record-button { min-width: 36px; padding: 7px; }
+  .stop-all { padding: 8px 6px; font-size: 11px; }
   .wave-choices { grid-template-columns: repeat(2, 1fr); }
   .strike-choice { flex-direction: column; gap: 2px; font-size: 11px; }
   .mode-switch { gap: 6px; }

@@ -29,6 +29,9 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-recorder\.js"/);
   assert.match(html, /id="recordPreview"[^>]*controls/);
   assert.match(html, /id="recordDownload"[^>]*download="sound-lab\.wav"/);
+  assert.match(html, /class="top-actions"[\s\S]*id="recordButton"[\s\S]*id="stopAll"/);
+  assert.doesNotMatch(html, /class="record-panel"/);
+  assert.match(html, /id="recordResult"[^>]*hidden/);
   assert.match(html, /id="strikeWorkspace"[^>]*hidden/);
   assert.match(html, /id="motionWorkspace"[^>]*hidden/);
   assert.match(html, /data-i18n="unitHz">Гц<\/span>/);
@@ -51,7 +54,7 @@ test("compact header removes the redundant mode introductions but keeps one page
   assert.match(html, /Дууны долгион яагаад өөр өөр сонсогддог вэ\?/);
 });
 
-function fakePage(search = "") {
+function fakePage(search = "", supportWorklets = true) {
   const contexts = [];
   const analyzedAt = [];
   const objectUrls = [];
@@ -83,6 +86,7 @@ function fakePage(search = "") {
       setAttribute(name, value) { attributes[name] = String(value); },
       getAttribute(name) { return attributes[name]; },
       addEventListener(name, callback) { this.events[name] = callback; },
+      click() { this.clickCount = (this.clickCount || 0) + 1; if (this.events.click) this.events.click(); },
       getBoundingClientRect() { return { left: 0, top: 0, width: 710, height: 210 }; },
       setPointerCapture() {}, releasePointerCapture() {},
       pause() { this.paused = true; },
@@ -264,7 +268,7 @@ function fakePage(search = "") {
     static revokeObjectURL(url) { revokedUrls.push(url); }
   }
   window.AudioContext = FakeAudioContext;
-  window.AudioWorkletNode = FakeAudioWorkletNode;
+  window.AudioWorkletNode = supportWorklets ? FakeAudioWorkletNode : undefined;
   const sandbox = { document, window, URL: FakeURL, Blob, URLSearchParams, ResizeObserver: undefined };
   vm.runInNewContext(browserCode, sandbox, { filename: "sound-lab.js" });
   return {
@@ -320,6 +324,9 @@ test("Record starts silently, captures generated sound, previews and downloads a
   const app = fakePage();
   assert.equal(app.elements.get("recordResult").hidden, true);
   assert.equal(app.elements.get("recordButton").getAttribute("aria-pressed"), "false");
+  assert.equal(app.elements.get("recordButtonLabel").textContent, "REC");
+  assert.equal(app.elements.get("recordSymbol").textContent, "●");
+  assert.match(app.elements.get("recordButton").getAttribute("aria-label"), /15 сек/);
   assert.equal(app.contexts.length, 0);
   await app.fire("recordButton", "click");
   const context = app.contexts[0];
@@ -329,13 +336,17 @@ test("Record starts silently, captures generated sound, previews and downloads a
   assert.equal(context.worklets[0].processorName, "sol-wav-capture");
   assert.equal(context.constantSources[0].started, true);
   assert.equal(app.elements.get("recordButton").getAttribute("aria-pressed"), "true");
+  assert.equal(app.elements.get("recordButtonLabel").textContent, "WAV");
+  assert.equal(app.elements.get("recordSymbol").textContent, "⬇");
+  assert.match(app.elements.get("recordButton").getAttribute("aria-label"), /хадгалах/);
   assert.match(app.elements.get("recordStatus").textContent, /Дуу бичиж байна/);
 
   await app.fire("playButton", "click");
   assert.equal(context.oscillators.length, 1);
   assert.equal(context.oscillators[0].started, true);
   app.tick(0.12);
-  assert.equal(app.elements.get("recordTimer").textContent, "0.1 / 15 сек");
+  assert.equal(app.elements.get("recordTimer").textContent, "0.1/15");
+  assert.equal(app.elements.get("recordTimer").hidden, false);
   const capture = context.worklets[0];
   capture.send({ type: "samples", samples: new Float32Array([0, 0.5, -0.5, 1]) });
   await app.fire("recordButton", "click");
@@ -352,11 +363,16 @@ test("Record starts silently, captures generated sound, previews and downloads a
   assert.equal(new DataView(bytes.buffer).getUint32(24, true), 44100);
   assert.equal(new DataView(bytes.buffer).getInt16(46, true), 16384);
   assert.equal(app.elements.get("recordResult").hidden, false);
+  assert.equal(app.elements.get("recordDownload").clickCount, 1, "Stop/Save starts a real download");
   assert.equal(app.elements.get("recordPreview").src, app.objectUrls[0].url);
   assert.equal(app.elements.get("recordDownload").href, app.objectUrls[0].url);
   assert.match(app.elements.get("recordDownload").download, /^sound-lab-\d{4}-\d\d-\d\dT\d\d-\d\d-\d\d\.wav$/);
   assert.equal(app.elements.get("recordButton").disabled, false);
   assert.equal(app.elements.get("recordButton").getAttribute("aria-pressed"), "false");
+  assert.equal(app.elements.get("recordButtonLabel").textContent, "REC");
+  assert.equal(app.elements.get("recordTimer").hidden, true);
+  app.fire("recordDismiss", "click");
+  assert.equal(app.elements.get("recordResult").hidden, true, "The preview closes without clearing saved audio");
   app.fire("stopAll", "click");
   assert.equal(context.oscillators[0].stopped, true);
 });
@@ -376,6 +392,7 @@ test("recording continues across modes, Stop ends it, and new captures replace o
   assert.deepEqual(context.worklets[0].port.lastPosted, { type: "stop" });
   context.worklets[0].send({ type: "done" });
   const previous = app.elements.get("recordDownload").href;
+  assert.equal(app.elements.get("recordDownload").clickCount, 1, "Master Stop saves an active recording");
 
   app.fire("modeMotion", "click");
   app.motionButtons[1].events.click();
@@ -388,11 +405,13 @@ test("recording continues across modes, Stop ends it, and new captures replace o
   assert.equal(context.oscillators[0].stopped, true);
   context.worklets[1].send({ type: "done" });
   assert.equal(app.objectUrls.length, 2);
+  assert.equal(app.elements.get("recordDownload").clickCount, 1, "Page hiding finalizes without starting a new download");
   assert.deepEqual(app.revokedUrls, [previous]);
   assert.notEqual(app.elements.get("recordDownload").href, previous);
   app.fire("langEn", "click");
-  assert.equal(app.elements.get("recordButton").textContent, "● Record");
-  assert.equal(app.elements.get("recordTimer").textContent, "0.0 / 15 s");
+  assert.equal(app.elements.get("recordButtonLabel").textContent, "REC");
+  assert.match(app.elements.get("recordButton").getAttribute("aria-label"), /15 seconds/);
+  assert.equal(app.elements.get("recordTimer").hidden, true);
 });
 
 test("pagehide during recording preparation cancels before worklet installation", async () => {
@@ -403,6 +422,25 @@ test("pagehide during recording preparation cancels before worklet installation"
   assert.equal(app.contexts[0].worklets.length, 0);
   assert.equal(app.elements.get("recordButton").getAttribute("aria-pressed"), "false");
   assert.equal(app.elements.get("recordResult").hidden, true);
+});
+
+test("the 15-second limit automatically downloads, and unsupported browsers show a visible error", async () => {
+  const app = fakePage();
+  await app.fire("recordButton", "click");
+  const context = app.contexts[0];
+  context.worklets[0].send({ type: "samples", samples: new Float32Array(44100 * 15) });
+  context.worklets[0].send({ type: "done" });
+  assert.equal(app.elements.get("recordResult").hidden, false);
+  assert.equal(app.elements.get("recordDownload").clickCount, 1);
+  assert.equal(app.objectUrls[0].blob.size, 44 + 44100 * 15 * 2);
+
+  const unsupported = fakePage("", false);
+  await unsupported.fire("recordButton", "click");
+  assert.equal(unsupported.elements.get("recordButton").disabled, false);
+  assert.match(unsupported.elements.get("recordStatus").textContent, /боломжгүй/);
+  assert.equal(unsupported.elements.get("recordStatus").classList.contains("error"), true);
+  assert.equal(unsupported.elements.get("recordStatus").classList.contains("sr-only"), false);
+  assert.equal(unsupported.elements.get("recordResult").hidden, true);
 });
 
 test("fixed time view shows changing cycle counts; four-period zoom is optional", () => {

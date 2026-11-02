@@ -36,8 +36,11 @@
       lessonOne: "A periodic wave has a lowest frequency, called its fundamental. This determines the pitch we hear. Higher harmonics occur at whole-number multiples of it: 2f, 3f, 4f, and so on.",
       lessonTwo: "The wave shape determines the mixture of harmonics. A pure sine wave has only its fundamental. Two instruments can play the same pitch yet sound different because their harmonic mixtures are different.",
       footer: "Sol Sound Lab · Sound and recordings stay on your device; nothing is uploaded.",
-      recordTitle: "Record sound", recordHint: "Record up to 15 seconds of sounds made here. No microphone or upload.",
-      recordStart: "● Record", recordStop: "■ Finish recording", recordSave: "Save WAV",
+      recordStart: "REC", recordStop: "SAVE", recordSave: "Download WAV again",
+      recordStartAria: "Start recording up to 15 seconds of Sound Lab audio; no microphone",
+      recordStopAria: "Stop recording and save the WAV file",
+      recordSavedShort: "Your WAV is ready", recordResultAria: "Last recorded sound",
+      recordDismissAria: "Close recorded sound preview",
       recordReady: "Press Record, then play a tone, strike, or move the theremin.",
       recordPreparing: "Preparing local recording…", recordRecording: "Recording this tool's sound…",
       recordSaving: "Preparing WAV…", recordSaved: "Ready. Listen or save the WAV file.",
@@ -186,8 +189,11 @@
       lessonOne: "Үелэх долгионд хамгийн нам давтамж гэж байх ба үүнийг нь үндсэн давтамж гэдэг. Энэ нь дууны өндрийг тодорхойлно. Үүнээс өндөр давтамжууд буюу дээд гармоникууд нь үндсэн давтамжаасаа үргэлж бүхэл тоо дахин их: 2f, 3f, 4f гэх мэт.",
       lessonTwo: "Долгионы хэлбэрээс хамааран гармоникуудын найрлага өөрчлөгдөнө. Жишээ нь, цэвэр синусоид долгионд үндсэн давтамжаас өөр найрлага байхгүй. Өөр өөр хөгжмийн зэмсгүүд ижил өндөртэй авиа гаргасан ч ялгаатай сонсогддог нь гармоникуудынх нь найрлага өөр байгаа хэрэг.",
       footer: "Sol Дууны лаборатори · Дуу, бичлэг зөвхөн таны төхөөрөмж дээр байна. Хаашаа ч илгээхгүй.",
-      recordTitle: "Дуу бичих", recordHint: "Энд үүсгэсэн дууг 15 сек хүртэл бичнэ. Микрофон ашиглахгүй, хаашаа ч илгээхгүй.",
-      recordStart: "● Бичлэг эхлэх", recordStop: "■ Бичлэг дуусгах", recordSave: "WAV хадгалах",
+      recordStart: "REC", recordStop: "WAV", recordSave: "WAV дахин хадгалах",
+      recordStartAria: "Дууны лабораторийн авиаг 15 сек хүртэл бичих. Микрофон ашиглахгүй",
+      recordStopAria: "Бичлэг дуусгаж WAV файл хадгалах",
+      recordSavedShort: "WAV бэлэн", recordResultAria: "Сүүлийн бичлэг",
+      recordDismissAria: "Бичлэгийг сонсох цонхыг хаах",
       recordReady: "Бичлэг эхлүүлээд авиа тоглуулж эсвэл цохиж үзээрэй.",
       recordPreparing: "Бичлэг бэлтгэж байна…", recordRecording: "Дуу бичиж байна…",
       recordSaving: "WAV файл бэлдэж байна…", recordSaved: "Бичлэг бэлэн. Сонсоод WAV болгон хадгалж болно.",
@@ -601,7 +607,8 @@
   let recordStatusKey = "recordReady";
   let recordError = false;
   let recordUrl = null;
-  let recordedDuration = 0;
+  let showRecordResult = false;
+  let saveWhenDone = false;
   let recordFrame = null;
 
   function stopRecordFrame() {
@@ -612,15 +619,21 @@
   function renderRecordControls() {
     const active = recorder.state === "recording";
     const busy = recorder.state === "starting" || recorder.state === "stopping";
-    $("recordButton").disabled = busy;
-    $("recordButton").classList.toggle("recording", active);
-    $("recordButton").setAttribute("aria-pressed", String(active));
-    $("recordButton").textContent = text(active ? "recordStop" : "recordStart");
-    $("recordTimer").textContent = (active ? recorder.elapsed : recordedDuration).toFixed(1) +
-      " / " + recorderModel.MAX_SECONDS + " " + text("unitSeconds");
+    const button = $("recordButton");
+    button.disabled = busy;
+    button.classList.toggle("recording", active);
+    button.setAttribute("aria-pressed", String(active));
+    const action = text(active ? "recordStopAria" : "recordStartAria");
+    button.setAttribute("aria-label", action);
+    button.title = action;
+    $("recordSymbol").textContent = active ? "⬇" : "●";
+    $("recordButtonLabel").textContent = text(active ? "recordStop" : "recordStart");
+    $("recordTimer").hidden = !active;
+    $("recordTimer").textContent = recorder.elapsed.toFixed(1) + "/" + recorderModel.MAX_SECONDS;
     $("recordStatus").textContent = text(recordStatusKey);
     $("recordStatus").classList.toggle("error", recordError);
-    $("recordResult").hidden = !recordUrl;
+    $("recordStatus").classList.toggle("sr-only", !recordError);
+    $("recordResult").hidden = !showRecordResult;
   }
 
   function followRecording() {
@@ -629,17 +642,18 @@
     recordFrame = window.requestAnimationFrame(followRecording);
   }
 
-  function stopRecording() {
+  function stopRecording(save = false) {
+    if (recorder.state === "recording") saveWhenDone = save;
     if (!recorder.stop()) return;
     stopRecordFrame();
-    recordedDuration = recorder.elapsed;
     recordStatusKey = recorder.state === "stopping" ? "recordSaving" : "recordReady";
     renderRecordControls();
   }
 
   recorder.onDone = (bytes, duration) => {
     stopRecordFrame();
-    recordedDuration = duration;
+    const download = saveWhenDone || duration >= recorderModel.MAX_SECONDS - 0.05;
+    saveWhenDone = false;
     if (bytes && bytes.length > 44) {
       if (recordUrl) URL.revokeObjectURL(recordUrl);
       recordUrl = URL.createObjectURL(new Blob([bytes], { type: "audio/wav" }));
@@ -648,23 +662,33 @@
       $("recordDownload").download = "sound-lab-" +
         new Date().toISOString().slice(0, 19).replace(/:/g, "-") + ".wav";
       recordStatusKey = "recordSaved";
-    } else recordStatusKey = "recordEmpty";
+      showRecordResult = true;
+    } else {
+      recordStatusKey = "recordEmpty";
+      showRecordResult = false;
+    }
     recordError = false;
     renderRecordControls();
+    // The action is the child's Stop/Save press. The visible link remains as a fallback
+    // when a browser blocks a download begun after the worklet's async finalization.
+    if (download && bytes && bytes.length > 44) $("recordDownload").click();
   };
   recorder.onError = () => {
     stopRecordFrame();
+    saveWhenDone = false;
     recordStatusKey = "recordError";
     recordError = true;
+    showRecordResult = false;
     renderRecordControls();
   };
 
   async function toggleRecording() {
-    if (recorder.state === "recording") { stopRecording(); return; }
+    if (recorder.state === "recording") { stopRecording(true); return; }
     if (recorder.state !== "idle") return;
+    showRecordResult = false;
+    saveWhenDone = false;
     recordStatusKey = "recordPreparing";
     recordError = false;
-    recordedDuration = 0;
     renderRecordControls();
     try {
       const started = await recorder.start();
@@ -1774,7 +1798,11 @@
   });
   $("playButton").addEventListener("click", toggleSound);
   $("recordButton").addEventListener("click", toggleRecording);
-  $("stopAll").addEventListener("click", () => { stopRecording(); stopAllAudio(); });
+  $("recordDismiss").addEventListener("click", () => {
+    showRecordResult = false;
+    renderRecordControls();
+  });
+  $("stopAll").addEventListener("click", () => { stopRecording(true); stopAllAudio(); });
   $("frequencySlider").addEventListener("input", event => setFrequency(model.sliderToFrequency(Number(event.target.value))));
   $("frequencyInput").addEventListener("change", event => setFrequency(event.target.value));
   $("snapCheck").addEventListener("change", event => {
