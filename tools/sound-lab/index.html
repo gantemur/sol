@@ -20,7 +20,7 @@
         <div class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 42 42"><path d="M3 21C9 21 9 7 15 7s6 28 12 28 6-19 12-19" fill="none" stroke="white" stroke-width="3.4" stroke-linecap="round"/></svg>
         </div>
-        <div><strong>Sound Lab</strong><small>Дууны лаборатори</small></div>
+        <div><h1>Sound Lab</h1><small>Дууны лаборатори</small></div>
       </div>
       <div class="top-actions">
         <div class="lang-group" role="group" aria-label="Interface language">
@@ -33,19 +33,13 @@
   </header>
 
   <main class="container">
-    <div class="page-head">
-      <div>
-        <div class="eyebrow" id="pageEyebrow" data-i18n="eyebrow">ДУУ АВИА СУДЛАХ · ЦЭВЭР АВИА</div>
-        <h1 id="pageTitle" data-i18n="title">Долгион ямар сонсогддог вэ?</h1>
-        <p id="pageIntro" data-i18n="intro">Авиа тоглуулж, давтамж ба хэлбэрийг нь өөрчлөөд долгион, гармоникууд нь хэрхэн хувирахыг ажиглаарай.</p>
-      </div>
+    <div class="mode-bar">
+      <nav class="mode-switch" aria-label="Дууны бүлэг" id="modeSwitch">
+        <button type="button" id="modePure" class="mode-button active" aria-pressed="true" data-i18n="modePure">Цэвэр авиа</button>
+        <button type="button" id="modeStrike" class="mode-button" aria-pressed="false" data-i18n="modeStrike">Цохих ба татах</button>
+      </nav>
       <span class="pill" id="pagePhase" data-i18n="phase">01 · Энгийн дохионууд</span>
     </div>
-
-    <nav class="mode-switch" aria-label="Дууны бүлэг" id="modeSwitch">
-      <button type="button" id="modePure" class="mode-button active" aria-pressed="true" data-i18n="modePure">Цэвэр авиа</button>
-      <button type="button" id="modeStrike" class="mode-button" aria-pressed="false" data-i18n="modeStrike">Цохих ба татах</button>
-    </nav>
 
     <div class="workspace" id="pureWorkspace">
       <section class="panel controls" aria-labelledby="controls-title">
@@ -313,14 +307,14 @@
     </section>
 
     <details class="explanation" id="pureExplanation">
-      <summary data-i18n="learnMore">Why do the wave shapes sound different?</summary>
-      <p data-i18n="lessonOne">Every repeating wave has a fundamental frequency. The higher harmonic peaks occur at whole-number multiples of it: 2f, 3f, 4f, and so on.</p>
-      <p data-i18n="lessonTwo">Changing the wave shape changes the strengths of those harmonics. The pitch can stay the same even when the sound's character changes.</p>
+      <summary data-i18n="learnMore">Дууны долгион яагаад өөр өөр сонсогддог вэ?</summary>
+      <p data-i18n="lessonOne">Үелэх долгионд хамгийн нам давтамж гэж байх ба үүнийг нь үндсэн давтамж гэдэг. Энэ нь дууны өндрийг тодорхойлно. Үүнээс өндөр давтамжууд буюу дээд гармоникууд нь үндсэн давтамжаасаа үргэлж бүхэл тоо дахин их: 2f, 3f, 4f гэх мэт.</p>
+      <p data-i18n="lessonTwo">Долгионы хэлбэрээс хамааран гармоникуудын найрлага өөрчлөгдөнө. Жишээ нь, цэвэр синусоид долгионд үндсэн давтамжаас өөр найрлага байхгүй. Өөр өөр хөгжмийн зэмсгүүд ижил өндөртэй авиа гаргасан ч ялгаатай сонсогддог нь гармоникуудынх нь найрлага өөр байгаа хэрэг.</p>
     </details>
     <details class="explanation" id="strikeExplanation" hidden>
       <summary data-i18n="strikeLearnMore">Яагаад эдгээр дуу намддаг вэ?</summary>
       <p data-i18n="strikeLessonOne">Чавхдас олон давтамжаар хэлбэлзэж, өндөр гармоникууд нь хурдан намдана.</p>
-      <p data-i18n="strikeLessonTwo">Басс бөмбөрийн цохилтын давтамж богино хугацаанд буурч, далайц нь аажмаар намдана.</p>
+      <p data-i18n="strikeLessonTwo">Басс бөмбөрийн цохилтын давтамж эхлээд хурдан буурч, далайц нь аажмаар намдана. Эдгээрийн долгионы график ерөнхийдөө төстэй харагдах боловч давтамжийн найрлага нь тэс өөр. 20 мс болгон томруулж эсвэл спектрийг нь харьцуулж ялгааг нь хараарай.</p>
     </details>
   </main>
 

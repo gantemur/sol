@@ -28,6 +28,15 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.doesNotMatch(browserCode, /ноот/i);
 });
 
+test("compact header removes the redundant mode introductions but keeps one page heading", () => {
+  assert.match(html, /<h1>Sound Lab<\/h1>/);
+  assert.equal([...html.matchAll(/<h1\b/g)].length, 1);
+  assert.match(html, /class="mode-bar"/);
+  assert.doesNotMatch(html, /id="page(?:Eyebrow|Title|Intro)"/);
+  assert.doesNotMatch(browserCode, /strikeEyebrow|strikeTitle|strikeIntro/);
+  assert.match(html, /Дууны долгион яагаад өөр өөр сонсогддог вэ\?/);
+});
+
 function fakePage(search = "") {
   const contexts = [];
   const analyzedAt = [];
@@ -274,6 +283,23 @@ test("an explicit English URL overrides the Mongolian default", () => {
   const app = fakePage("?lang=en");
   assert.equal(app.document.documentElement.lang, "en");
   assert.equal(app.elements.get("windowLabel").textContent, "0–20 ms · 8.8 cycles");
+});
+
+test("revised Mongolian wave descriptions, examples and mode labels render correctly", () => {
+  const app = fakePage();
+  assert.equal(app.elements.get("pagePhase").textContent, "01 · Энгийн дохионууд");
+  assert.equal(app.elements.get("challengeText").textContent, "Давтамжийг хоёр дахин өсгө. Дууны өнгө болон үе хэрхэн өөрчлөгдөж байна вэ?");
+  app.waveButtons[1].events.click();
+  assert.equal(app.elements.get("soundDescription").textContent, "Дээд сондгой гармоникууд нь сул");
+  assert.match(app.elements.get("challengeText").textContent, /дөрвөлжин/);
+  app.waveButtons[2].events.click();
+  assert.equal(app.elements.get("soundDescription").textContent, "Сондгой гармоникууд нь хүчтэй");
+  app.waveButtons[3].events.click();
+  assert.equal(app.elements.get("soundDescription").textContent, "Олон гармониктой, баялаг өнгөтэй");
+  app.fire("modeStrike", "click");
+  assert.equal(app.elements.get("pagePhase").textContent, "02 · Загварчилсан дуу");
+  app.fire("langEn", "click");
+  assert.equal(app.elements.get("pagePhase").textContent, "02 · Modeled sounds");
 });
 
 test("Strike & Pluck begins silently, triggers modeled buffers and bounds simultaneous voices", async () => {

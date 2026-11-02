@@ -8,9 +8,7 @@
 
   const messages = {
     en: {
-      backLabel: "Back to Sol tools", stop: "■ Stop", eyebrow: "EXPLORE SOUNDS · PURE TONES",
-      title: "What does a wave sound like?",
-      intro: "Play a simple sound, change its pitch or shape, and watch what happens to its wave and harmonics.",
+      backLabel: "Back to Sol tools", stop: "■ Stop",
       phase: "01 · Ideal signals", chooseShape: "Choose a wave shape",
       sine: "Sine", triangle: "Triangle", square: "Square", sawtooth: "Sawtooth",
       play: "Play tone", playCaption: "Tap or click to hear",
@@ -30,9 +28,9 @@
       spectrumTitle: "Harmonics", spectrumSubtitle: "Ideal frequency components, relative to the first",
       timeAxis: "time →", frequencyAxis: "frequency →",
       tryThis: "TRY THIS", reset: "↺ Reset",
-      learnMore: "Why do the wave shapes sound different?",
-      lessonOne: "Every repeating wave has a fundamental frequency. The higher harmonic peaks occur at whole-number multiples of it: 2f, 3f, 4f, and so on.",
-      lessonTwo: "Changing the wave shape changes the strengths of those harmonics. The pitch can stay the same even when the sound's character changes.",
+      learnMore: "Why do sound waves sound different?",
+      lessonOne: "A periodic wave has a lowest frequency, called its fundamental. This determines the pitch we hear. Higher harmonics occur at whole-number multiples of it: 2f, 3f, 4f, and so on.",
+      lessonTwo: "The wave shape determines the mixture of harmonics. A pure sine wave has only its fundamental. Two instruments can play the same pitch yet sound different because their harmonic mixtures are different.",
       footer: "Sol Sound Lab · Sound is generated on your device; nothing is recorded or uploaded.",
       future: "More sounds and music-making are planned.",
       waveAria: "Modeled waveform over time", spectrumAria: "Modeled harmonic magnitude spectrum",
@@ -48,9 +46,6 @@
       blocked: "The sound could not start. Check browser audio permission and try Play again.",
       invalid: "Enter a frequency between 20 and 12,000 Hz.",
       modePure: "Pure tones", modeStrike: "Strike & Pluck", modeSwitchAria: "Sound categories",
-      strikeEyebrow: "EXPLORE SOUNDS · STRIKES & PLUCKS",
-      strikeTitle: "What happens after a sound begins?",
-      strikeIntro: "Pluck a string or strike a drum. Watch the vibration begin and fade away.",
       strikePhase: "02 · Modeled sounds", strikeChoose: "Choose a modeled sound",
       pluck: "Plucked string", kick: "Bass drum", strikeGroupAria: "Transient sound model",
       strikeCaption: "Tap to sound; tap again to repeat",
@@ -86,7 +81,7 @@
       strikeChallenge: "Change the decay time. What happens to the sound and its envelope?",
       strikeLearnMore: "Why do these sounds fade away?",
       strikeLessonOne: "A plucked string vibrates at several frequencies. Its higher harmonics fade faster than its fundamental.",
-      strikeLessonTwo: "The bass drum begins at a higher frequency, rapidly drops in pitch, and gradually fades. On the full three-second plot, both sounds look similar as they fade. Zoom to 20 ms or compare their spectra to see the difference.",
+      strikeLessonTwo: "The bass drum begins at a higher frequency, rapidly drops in pitch, and gradually fades. Their overall waveforms can look similar, but their frequency content is very different. Zoom to 20 ms or compare their spectra to see the difference.",
       strikeReady: "Ready. Sound starts only when you tap the pad.",
       strikeStarting: "Preparing the sound…", strikeDone: "Sound triggered. Tap again to repeat.",
       strikeStopped: "Stopped. Tap the pad to try again.",
@@ -100,9 +95,9 @@
       },
       desc: {
         sine: "One smooth vibration, with a single frequency.",
-        triangle: "A gentle-edged wave with weak, odd-numbered harmonics.",
-        square: "A bright wave with strong odd-numbered harmonics.",
-        sawtooth: "A buzzy wave containing many harmonics."
+        triangle: "Weak upper odd harmonics.",
+        square: "Strong odd harmonics.",
+        sawtooth: "Many harmonics, with a rich tone."
       },
       insight: {
         sine: "Only the fundamental is present in an ideal sine wave.",
@@ -119,11 +114,8 @@
     },
     mn: {
       backLabel: "Sol-ийн хэрэгслүүд рүү буцах", stop: "■ Зогсоох",
-      eyebrow: "ДУУ АВИА СУДЛАХ · ЦЭВЭР АВИА",
-      title: "Долгион ямар сонсогддог вэ?",
-      intro: "Авиа тоглуулж, давтамж ба хэлбэрийг нь өөрчлөөд долгион, гармоникууд нь хэрхэн хувирахыг ажиглаарай.",
       phase: "01 · Энгийн дохионууд", chooseShape: "Долгионы хэлбэр сонгох",
-      sine: "Синус", triangle: "Гурвалжин", square: "Тэгш өнцөгт", sawtooth: "Хөрөө",
+      sine: "Синус", triangle: "Гурвалжин", square: "Дөрвөлжин", sawtooth: "Хөрөө",
       play: "Авиа тоглуулах", playCaption: "Сонсохын тулд товшино уу",
       stopTone: "Авиа зогсоох", stopCaption: "Авиа дуугарч байна · зогсоохын тулд товшино уу",
       frequency: "Давтамж", snap: "Нотод тааруулах",
@@ -141,9 +133,9 @@
       spectrumTitle: "Гармоникууд", spectrumSubtitle: "Үндсэн давтамжтай харьцуулсан идеал бүрэлдэхүүн",
       timeAxis: "хугацаа →", frequencyAxis: "давтамж →",
       tryThis: "ТУРШИЖ ҮЗ", reset: "↺ Эхнээс нь",
-      learnMore: "Долгионы хэлбэрүүд яагаад өөр сонсогддог вэ?",
-      lessonOne: "Үелэх долгионд үндсэн давтамж байдаг. Дээд гармоникууд нь үндсэн давтамжийн бүхэл тоон үржвэрүүд: 2f, 3f, 4f гэх мэт.",
-      lessonTwo: "Долгионы хэлбэр өөрчлөгдөхөд гармоникуудын хүч өөрчлөгдөнө. Авиа нэг өндөртэй атлаа өөр өнгөтэй сонсогдож болно.",
+      learnMore: "Дууны долгион яагаад өөр өөр сонсогддог вэ?",
+      lessonOne: "Үелэх долгионд хамгийн нам давтамж гэж байх ба үүнийг нь үндсэн давтамж гэдэг. Энэ нь дууны өндрийг тодорхойлно. Үүнээс өндөр давтамжууд буюу дээд гармоникууд нь үндсэн давтамжаасаа үргэлж бүхэл тоо дахин их: 2f, 3f, 4f гэх мэт.",
+      lessonTwo: "Долгионы хэлбэрээс хамааран гармоникуудын найрлага өөрчлөгдөнө. Жишээ нь, цэвэр синусоид долгионд үндсэн давтамжаас өөр найрлага байхгүй. Өөр өөр хөгжмийн зэмсгүүд ижил өндөртэй авиа гаргасан ч ялгаатай сонсогддог нь гармоникуудынх нь найрлага өөр байгаа хэрэг.",
       footer: "Sol Дууны лаборатори · Авиа зөвхөн таны төхөөрөмж дээр үүснэ. Бичиж авахгүй, илгээхгүй.",
       future: "Цаашид өөр авиа, хөгжим зохиох боломж нэмэгдэнэ.",
       waveAria: "Хугацааны дагуух долгионы загвар", spectrumAria: "Гармоникийн далайцын загвар",
@@ -159,9 +151,6 @@
       blocked: "Авиа эхэлсэнгүй. Хөтчийн дууны зөвшөөрлийг шалгаад дахин оролдоно уу.",
       invalid: "20–12,000 Гц-ийн хооронд давтамж оруулна уу.",
       modePure: "Цэвэр авиа", modeStrike: "Цохих ба татах", modeSwitchAria: "Дууны бүлэг",
-      strikeEyebrow: "ДУУ АВИА СУДЛАХ · ЦОХИХ БА ТАТАХ",
-      strikeTitle: "Дуу гарсны дараа юу болдог вэ?",
-      strikeIntro: "Чавхдас татаж, бөмбөр цохиод хэлбэлзэл хэрхэн эхэлж, намддагийг ажиглаарай.",
       strikePhase: "02 · Загварчилсан дуу", strikeChoose: "Дууны загвар сонгох",
       pluck: "Татсан чавхдас", kick: "Басс бөмбөр", strikeGroupAria: "Цохилтын дууны загвар",
       strikeCaption: "Дарж сонсоод, дахин дарж давтаарай",
@@ -197,7 +186,7 @@
       strikeChallenge: "Намдах хугацааг өөрчил. Дуу болон график хэрхэн өөрчлөгдөж байна вэ?",
       strikeLearnMore: "Яагаад эдгээр дуу намддаг вэ?",
       strikeLessonOne: "Чавхдас олон давтамжаар хэлбэлзэнэ. Өндөр гармоникууд нь үндсэн давтамжаас хурдан намдана.",
-      strikeLessonTwo: "Басс бөмбөрийн цохилтын давтамж эхлээд хурдан буурч, далайц нь аажмаар намдана. Графикт бүх 3 секундийг харуулахад хоёр дуу төстэй харагдана. 20 мс болгон томруулж эсвэл спектрийг нь харьцуулж ялгааг нь хараарай.",
+      strikeLessonTwo: "Басс бөмбөрийн цохилтын давтамж эхлээд хурдан буурч, далайц нь аажмаар намдана. Эдгээрийн долгионы график ерөнхийдөө төстэй харагдах боловч давтамжийн найрлага нь тэс өөр. 20 мс болгон томруулж эсвэл спектрийг нь харьцуулж ялгааг нь хараарай.",
       strikeReady: "Бэлэн. Дарахад л дуу гарна.",
       strikeStarting: "Дууг бэлтгэж байна…", strikeDone: "Дуугарлаа. Дахин дарж болно.",
       strikeStopped: "Зогслоо. Дахин дарж сонсоорой.",
@@ -211,9 +200,9 @@
       },
       desc: {
         sine: "Нэг үндсэн давтамжтай жигд хэлбэлзэл.",
-        triangle: "Дээд сондгой гармоникууд нь сул долгион.",
-        square: "Сондгой гармоникууд нь хүчтэй, тод сонсогдох долгион.",
-        sawtooth: "Олон гармониктой, баялаг өнгөтэй долгион."
+        triangle: "Дээд сондгой гармоникууд нь сул",
+        square: "Сондгой гармоникууд нь хүчтэй",
+        sawtooth: "Олон гармониктой, баялаг өнгөтэй"
       },
       insight: {
         sine: "Идеал синус долгион зөвхөн үндсэн давтамжтай.",
@@ -222,9 +211,9 @@
         sawtooth: "Бүхэл тоон гармоник бүр бий, хүч нь аажмаар суларна."
       },
       challenge: {
-        sine: "Давтамжийг хоёр дахин өсгө. Авиа ба үе хэрхэн өөрчлөгдөх вэ?",
-        triangle: "Ижил давтамжтай гурвалжин ба тэгш өнцөгт долгионыг харьцуул. Алиных нь дээд гармоник сул вэ?",
-        square: "Давтамжаа өөрчлөхгүйгээр синусыг тэгш өнцөгт болго. Авиа өндөр хэвээр үлдэх үү?",
+        sine: "Давтамжийг хоёр дахин өсгө. Дууны өнгө болон үе хэрхэн өөрчлөгдөж байна вэ?",
+        triangle: "Ижил давтамжтай гурвалжин ба дөрвөлжин долгионыг харьцуул. Алиных нь дээд гармоник сул вэ?",
+        square: "Давтамжаа өөрчлөхгүйгээр синусыг дөрвөлжин болго. Авиа өндөр хэвээр үлдэх үү?",
         sawtooth: "Синус ба хөрөө хэлбэрийн спектрийг харьцуул. Хэдэн оргил харагдаж байна вэ?"
       }
     }
@@ -544,12 +533,7 @@
       $(id).classList.toggle("active", selected);
       $(id).setAttribute("aria-pressed", String(selected));
     }
-    for (const [id, key, alternate] of [
-      ["pageEyebrow", "eyebrow", "strikeEyebrow"],
-      ["pageTitle", "title", "strikeTitle"],
-      ["pageIntro", "intro", "strikeIntro"],
-      ["pagePhase", "phase", "strikePhase"]
-    ]) $(id).textContent = text(isStrike ? alternate : key);
+    $("pagePhase").textContent = text(isStrike ? "strikePhase" : "phase");
   }
 
   function renderTexts() {
