@@ -22,6 +22,8 @@
       settings: "⚙ Settings", tuning: "Tuning for snapped notes",
       tuningHint: "The note names use 12-tone equal temperament for now.",
       equal: "12-tone equal", fixedTime: "Keep the time window fixed at 20 ms",
+      unitHz: "Hz", unitKHz: "kHz", unitSeconds: "s", unitMilliseconds: "ms",
+      strikePresetOneSecond: "1 s", strikePreset200Ms: "200 ms", strikePreset20Ms: "20 ms",
       fixedHint: "Uncheck to zoom into four periods and examine the wave shape. The time scale then changes with frequency.",
       waveTitle: "Waveform over time", waveSubtitle: "Same 20 ms at every frequency: higher pitch means more cycles.",
       waveSubtitleZoom: "Zoomed to four periods: the time scale now changes with frequency.",
@@ -115,6 +117,7 @@
       motionSafety: "Start quietly, especially with headphones. Changing category or pressing Stop ends playback.",
       motionPitchTitle: "Pitch over time", motionPitchTheremin: "The last four seconds of your finger movement.",
       motionPitchSiren: "The siren's frequency pattern across a four-second window.",
+      motionPitchSirenSweep: "Linear in Hz; the logarithmic vertical scale makes the sweep look curved.",
       motionPitchScale: "Logarithmic frequency · 120–1600 Hz", motionPitchAria: "Ideal pitch path over time",
       motionDetailTitle: "At this moment", motionDetailHint: "The same sound as a waveform and its current ideal frequency component.",
       motionWaveTitle: "20 ms waveform", motionComponentTitle: "Frequency component",
@@ -125,7 +128,7 @@
       },
       motionLearnMore: "Why does moving the pitch change the sound?",
       motionLessonOne: "Moving to the right makes the oscillator vibrate faster, so its pitch rises. Up and down changes the amplitude, making the sound louder or softer.",
-      motionLessonTwo: "A siren switches between two frequencies or smoothly moves between them. The top graph shows the changing pitch; the lower graphs show the modeled signal at one instant.",
+      motionLessonTwo: "A siren switches between two frequencies or glides between them. Rise and fall changes frequency linearly in Hz, but looks curved on the logarithmic graph. Other trajectories would sound different.",
       desc: {
         sine: "One smooth vibration, with a single frequency.",
         triangle: "Weak upper odd harmonics.",
@@ -159,6 +162,8 @@
       settings: "⚙ Тохиргоо", tuning: "Нотод тааруулах хөглөлт",
       tuningHint: "Одоохондоо 12 тэнцүү хагас авианы хөглөлт ашиглана.",
       equal: "12 тэнцүү хуваарь", fixedTime: "Хугацааны цонхыг 20 мс-д тогтмол байлгах",
+      unitHz: "Гц", unitKHz: "кГц", unitSeconds: "сек", unitMilliseconds: "мс",
+      strikePresetOneSecond: "1 сек", strikePreset200Ms: "200 мс", strikePreset20Ms: "20 мс",
       fixedHint: "Долгионы хэлбэрийг сайн харахын тулд тэмдэглэгээг арилгаж дөрвөн үеийг томруулна. Ингэвэл хугацааны хуваарь өөрчлөгдөнө.",
       waveTitle: "Хугацааны дагуух долгион", waveSubtitle: "Хугацаа 20 мс хэвээр: давтамж ихсэхэд олон үе багтана.",
       waveSubtitleZoom: "Дөрвөн үеийг томруулж харуулав. Давтамжтай хамт хугацааны хуваарь өөрчлөгдөнө.",
@@ -242,7 +247,7 @@
       padAria: "Теремин тоглох талбар", thereminKeyboardHelp: "Гарын товчлуураар: сумаар хөдөлгөж, Space/Enter-ээр дууг асааж эсвэл зогсооно. Escape зогсооно.",
       sirenPatternAria: "Дохионы хээ", sirenTwoTone: "Хоёр авиа", sirenSweep: "Өсөх, буурах",
       sirenPlay: "Дохио тоглуулах", sirenStop: "Дохио зогсоох", sirenCaption: "Дахин дарж зогсооно",
-      sirenLow: "Нам давтамж", sirenHigh: "Өндөр давтамж", sirenRate: "Давтах хурд", sirenRateUnit: "удаа/с",
+      sirenLow: "Нам давтамж", sirenHigh: "Өндөр давтамж", sirenRate: "Давтах хурд", sirenRateUnit: "удаа/сек",
       motionReady: "Бэлэн. Талбар дээр дарж эсвэл дохиог тоглуулаарай.", motionStarting: "Дууг эхлүүлж байна…",
       motionPlayingTheremin: "Дуугарч байна. Гараа авах эсвэл Зогсоох дээр дарна уу.",
       motionPlayingSiren: "Дохио дуугарч байна. «Дохио зогсоох» эсвэл улаан «Зогсоох» товчийг дарна уу.",
@@ -252,7 +257,8 @@
       motionSafety: "Ялангуяа чихэвчтэй бол эхэндээ аяархан сонсоорой. Өөр бүлэгт орох эсвэл Зогсоох дээр дарахад дуу зогсоно.",
       motionPitchTitle: "Давтамжийн өөрчлөлт", motionPitchTheremin: "Сүүлийн дөрвөн секундийн давтамжийг ажиглаарай.",
       motionPitchSiren: "Дохионы давтамжийн өөрчлөлтийг дөрвөн секундийн хугацаанд харуулна.",
-      motionPitchScale: "Логарифм давтамж · 120–1600 Hz", motionPitchAria: "Хугацаанд өөрчлөгдөх давтамжийн загвар",
+      motionPitchSirenSweep: "Давтамж Гц-ээр жигд өөрчлөгдөх боловч логарифм хуваарьт муруй харагдана.",
+      motionPitchScale: "Логарифм давтамж · 120–1600 Гц", motionPitchAria: "Хугацаанд өөрчлөгдөх давтамжийн загвар",
       motionDetailTitle: "Энэ мөчийн дохио", motionDetailHint: "Ижил давтамжийг долгион болон нэг бүрэлдэхүүнээр харуулав.",
       motionWaveTitle: "20 мс-ийн долгион", motionComponentTitle: "Давтамжийн бүрэлдэхүүн",
       motionWaveAria: "Тухайн мөчийн 20 миллисекундийн синус долгион", motionComponentAria: "Одоогийн нэг давтамжийн бүрэлдэхүүн",
@@ -262,7 +268,7 @@
       },
       motionLearnMore: "Давтамж өөрчлөгдөхөд яагаад авиа өөр сонсогддог вэ?",
       motionLessonOne: "Баруун тийш хөдөлгөхөд хэлбэлзэл түргэсэж, авиа өндөрсөж сонсогдоно. Дээш, доош хөдөлгөхөд далайц буюу дууны чанга сул өөрчлөгдөнө.",
-      motionLessonTwo: "Дохио нь хоёр давтамжийг ээлжлэн тоглуулах эсвэл давтамжийг аажмаар өсгөж бууруулдаг. Дээд график энэ замыг, доод графикууд тухайн агшны долгион ба давтамжийг харуулна.",
+      motionLessonTwo: "Дохио нь хоёр давтамжийг ээлжлүүлэх эсвэл тэдгээрийн хооронд шилждэг. «Өсөх, буурах»-д давтамж Гц-ээр жигд өсөж буурна. Графикийн босоо хуваарь логарифм тул муруй харагдана. Өөр зам сонговол дуу нь ч өөр болно.",
       desc: {
         sine: "Нэг үндсэн давтамжтай жигд хэлбэлзэл.",
         triangle: "Дээд сондгой гармоникууд нь сул",
@@ -327,6 +333,12 @@
   };
   const text = key => messages[state.language][key];
   const frequencyText = hz => Number(hz.toFixed(2)).toLocaleString("en-US", { maximumFractionDigits: 2 });
+  const hzText = hz => frequencyText(hz) + " " + text("unitHz");
+  const kHzText = (hz, oneDecimal = false) =>
+    (oneDecimal ? (hz / 1000).toFixed(1) : frequencyText(hz / 1000)) + " " + text("unitKHz");
+  const secondsText = seconds => frequencyText(seconds) + " " + text("unitSeconds");
+  const secondsFixedText = seconds => seconds.toFixed(2) + " " + text("unitSeconds");
+  const millisecondsText = ms => frequencyText(ms) + " " + text("unitMilliseconds");
 
   class ToneEngine {
     constructor() {
@@ -598,14 +610,14 @@
   }
 
   function strikeTimeText(time) {
-    return time < 0.1 ? frequencyText(time * 1000) + " ms" : frequencyText(time) + " s";
+    return time < 0.1 ? millisecondsText(time * 1000) : secondsText(time);
   }
 
   function renderStrikeTime() {
     $("strikeTimeSlider").value = String(Math.round(state.strikeCursor * 1000));
-    $("strikeTimeValue").textContent = "t = " + state.strikeCursor.toFixed(2) + " s";
+    $("strikeTimeValue").textContent = "t = " + secondsFixedText(state.strikeCursor);
     $("strikeSpectrumBadge").textContent = state.strikeSpectrumView === "local" ?
-      "t = " + state.strikeCursor.toFixed(2) + " s" : text("strikeSpectrumWhole");
+      "t = " + secondsFixedText(state.strikeCursor) : text("strikeSpectrumWhole");
     $("strikeSpectrumHint").textContent = text(state.strikeSpectrumView === "local" ?
       "strikeSpectrumHint" : "strikeSpectrumWholeHint");
   }
@@ -706,7 +718,8 @@
     $("thereminControls").hidden = !isTheremin;
     $("sirenControls").hidden = isTheremin;
     $("motionDescription").textContent = text("motionDesc")[state.motionKind];
-    $("motionPitchSubtitle").textContent = text(isTheremin ? "motionPitchTheremin" : "motionPitchSiren");
+    $("motionPitchSubtitle").textContent = text(isTheremin ? "motionPitchTheremin" :
+      state.sirenPattern === "sweep" ? "motionPitchSirenSweep" : "motionPitchSiren");
     $("motionChallengeText").textContent = text("motionChallenge")[state.motionKind];
     document.querySelectorAll("[data-motion]").forEach(button => {
       const active = button.dataset.motion === state.motionKind;
@@ -721,14 +734,14 @@
     $("thereminCursor").style.left = (state.motionX * 100).toFixed(2) + "%";
     $("thereminCursor").style.top = (state.motionY * 100).toFixed(2) + "%";
     $("thereminPad").setAttribute("aria-pressed", String(isTheremin && state.motionPlaying));
-    $("motionCurrentHz").textContent = frequencyText(state.motionHz) + " Hz";
+    $("motionCurrentHz").textContent = hzText(state.motionHz);
     $("motionCurrentLevel").textContent = Math.round(state.motionLevel * 100) + "%";
     $("sirenLow").value = String(state.sirenLow);
     $("sirenHigh").value = String(state.sirenHigh);
     $("sirenRate").value = String(state.sirenRate);
     $("sirenVolume").value = String(state.sirenVolume);
-    $("sirenLowValue").textContent = state.sirenLow + " Hz";
-    $("sirenHighValue").textContent = state.sirenHigh + " Hz";
+    $("sirenLowValue").textContent = hzText(state.sirenLow);
+    $("sirenHighValue").textContent = hzText(state.sirenHigh);
     $("sirenRateValue").textContent = frequencyText(state.sirenRate) + " " + text("sirenRateUnit");
     $("sirenVolumeValue").textContent = state.sirenVolume + "%";
     $("sirenButton").classList.toggle("playing", !isTheremin && state.motionPlaying);
@@ -862,6 +875,9 @@
       const key = element.getAttribute("data-i18n");
       if (typeof text(key) === "string") element.textContent = text(key);
     });
+    document.querySelectorAll("[data-unit-hz]").forEach(element => {
+      element.textContent = element.dataset.unitHz + " " + text("unitHz");
+    });
     document.querySelectorAll("[data-i18n-aria]").forEach(element => {
       element.setAttribute("aria-label", text(element.getAttribute("data-i18n-aria")));
     });
@@ -908,12 +924,12 @@
   function renderControls() {
     $("frequencySlider").value = String(Math.round(model.frequencyToSlider(state.frequency)));
     $("frequencyInput").value = String(Number(state.frequency.toFixed(6)));
-    $("frequencyInput").setAttribute("aria-valuetext", String(Number(state.frequency.toFixed(6))) + " Hz");
+    $("frequencyInput").setAttribute("aria-valuetext", String(Number(state.frequency.toFixed(6))) + " " + text("unitHz"));
     const note = model.nearestNote(state.frequency);
     const differenceCents = 1200 * Math.log2(state.frequency / note.frequency);
     const approx = !state.snap && Math.abs(differenceCents) >= 0.5 ? "≈ " : "";
     $("noteLabel").textContent = approx + note.english + " · " + note.mongolian;
-    $("noteLabel").title = "12-TET: " + frequencyText(note.frequency) + " Hz";
+    $("noteLabel").title = "12-TET: " + hzText(note.frequency);
     $("snapCheck").checked = state.snap;
     $("volumeSlider").value = String(state.volume);
     $("volumeReadout").textContent = state.volume + "%";
@@ -944,11 +960,11 @@
     $("strikeDrumSizeGroup").hidden = state.strikeKind !== "kick";
     $("strikeDrumFrequencies").textContent =
       Math.round(transientModel.kickFrequency(0, state.strikeDrumSize)) + " → " +
-      Math.round(transientModel.kickFrequency(3, state.strikeDrumSize)) + " Hz";
+      hzText(Math.round(transientModel.kickFrequency(3, state.strikeDrumSize)));
     $("strikeStrength").value = String(state.strikeStrength);
     $("strikeStrengthValue").textContent = state.strikeStrength + "%";
     $("strikeDecay").value = String(state.strikeDecay);
-    $("strikeDecayValue").textContent = frequencyText(state.strikeDecay) + " s";
+    $("strikeDecayValue").textContent = secondsText(state.strikeDecay);
     $("strikeDescription").textContent = text("strikeDesc")[state.strikeKind];
     $("strikeButtonLabel").textContent = text(state.strikeKind === "pluck" ? "strikePluckButton" : "strikeKickButton");
     document.querySelectorAll("[data-strike]").forEach(button => {
@@ -1162,11 +1178,11 @@
     drawFrame(ctx, width, height, left, right, top, bottom);
     const duration = state.fixedTime ? 0.020 : 4 / state.frequency;
     const periodMs = 1000 / state.frequency;
-    $("periodBadge").textContent = "T = " + frequencyText(periodMs) + " ms";
-    $("windowLabel").textContent = "0–" + frequencyText(duration * 1000) + " ms · " +
+    $("periodBadge").textContent = "T = " + millisecondsText(periodMs);
+    $("windowLabel").textContent = "0–" + millisecondsText(duration * 1000) + " · " +
       frequencyText(duration * state.frequency) + " " + text("cyclesUnit");
     $("waveSubtitle").textContent = text(state.fixedTime ? "waveSubtitle" : "waveSubtitleZoom");
-    $("fundamentalBadge").textContent = "f₀ = " + frequencyText(state.frequency) + " Hz";
+    $("fundamentalBadge").textContent = "f₀ = " + hzText(state.frequency);
     ctx.fillStyle = "#7489a1";
     ctx.textAlign = "left";
     ctx.fillText(text("amplitude"), 9, 13);
@@ -1191,7 +1207,7 @@
     ctx.textAlign = "center";
     for (let i = 0; i <= 4; i++) {
       const x = left + (right - left) * i / 4;
-      ctx.fillText(frequencyText(duration * 250 * i) + " ms", x, height - 12);
+      ctx.fillText(millisecondsText(duration * 250 * i), x, height - 12);
     }
   }
 
@@ -1228,7 +1244,7 @@
     for (const n of [1, 4, 8, 12]) {
       const x = left + (n - .5) * slot;
       const hz = n * state.frequency;
-      const label = hz < 1000 ? Math.round(hz) + " Hz" : (hz / 1000).toFixed(1) + " kHz";
+      const label = hz < 1000 ? hzText(Math.round(hz)) : kHzText(hz, true);
       ctx.fillText(label, x, height - 13);
     }
   }
@@ -1240,7 +1256,7 @@
     const plotWidth = right - left, middle = (top + bottom) / 2;
     const amplitude = (bottom - top) * 0.45 * Math.sqrt(state.strikeStrength / 100);
     drawFrame(ctx, width, height, left, right, top, bottom);
-    $("strikeDurationBadge").textContent = "τ = " + frequencyText(state.strikeDecay) + " s";
+    $("strikeDurationBadge").textContent = "τ = " + secondsText(state.strikeDecay);
     $("strikeWindowLabel").textContent = strikeTimeText(start) + " – " + strikeTimeText(start + span);
     $("strikeViewPreset").value = [3, 1, 0.2, 0.02].some(value => Math.abs(span - value) < 1e-7) ? String(span) : "custom";
     $("strikeViewZoomIn").disabled = span <= 0.0101;
@@ -1365,7 +1381,7 @@
     ctx.textAlign = "center";
     for (let i = 0; i <= 4; i++) {
       const hz = maxHz * i / 4;
-      ctx.fillText(hz >= 1000 ? frequencyText(hz / 1000) + " kHz" : Math.round(hz) + " Hz",
+      ctx.fillText(hz >= 1000 ? kHzText(hz) : hzText(Math.round(hz)),
         left + i * w / 4, height - 12);
     }
   }
@@ -1391,7 +1407,7 @@
     for (let i = 0; i <= 4; i++) {
       const x = left + w * i / 4;
       ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke();
-      ctx.fillText(frequencyText(viewStart + i) + " s", x, height - 12);
+      ctx.fillText(secondsText(viewStart + i), x, height - 12);
     }
     ctx.lineWidth = 2.5;
     ctx.strokeStyle = state.motionKind === "siren" ? "#7861bb" : "#168f9b";
@@ -1424,8 +1440,8 @@
       ctx.arc(x, yAt(state.motionHz), 5, 0, Math.PI * 2);
       ctx.fill();
     }
-    $("motionPitchBadge").textContent = frequencyText(state.motionHz) + " Hz";
-    $("motionDetailBadge").textContent = frequencyText(state.motionHz) + " Hz";
+    $("motionPitchBadge").textContent = hzText(state.motionHz);
+    $("motionDetailBadge").textContent = hzText(state.motionHz);
   }
 
   function drawMotionWave() {
@@ -1450,7 +1466,7 @@
     ctx.textAlign = "left";
     ctx.fillText("0", left, height - 9);
     ctx.textAlign = "right";
-    ctx.fillText("20 ms", right, height - 9);
+    ctx.fillText(millisecondsText(20), right, height - 9);
   }
 
   function drawMotionComponent() {
@@ -1472,9 +1488,9 @@
     ctx.fillStyle = "#7489a1";
     ctx.font = "11px system-ui, sans-serif";
     ctx.textAlign = "left";
-    ctx.fillText("120 Hz", left, height - 9);
+    ctx.fillText(hzText(motionModel.MIN_HZ), left, height - 9);
     ctx.textAlign = "right";
-    ctx.fillText("1,600 Hz", right, height - 9);
+    ctx.fillText(hzText(motionModel.MAX_HZ), right, height - 9);
   }
 
   function drawMotionPlots() {

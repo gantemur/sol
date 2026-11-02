@@ -27,6 +27,8 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-motion\.js"/);
   assert.match(html, /id="strikeWorkspace"[^>]*hidden/);
   assert.match(html, /id="motionWorkspace"[^>]*hidden/);
+  assert.match(html, /data-i18n="unitHz">Гц<\/span>/);
+  assert.match(html, /data-i18n="strikePresetOneSecond">1 сек<\/option>/);
   assert.match(browserCode, /Нотод тааруулах/);
   assert.doesNotMatch(browserCode, /ноот/i);
 });
@@ -57,8 +59,10 @@ function fakePage(search = "") {
   };
   function element(dataset = {}) {
     const attributes = {};
+    const drawnText = [];
     return {
       dataset,
+      drawnText,
       events: {},
       value: "",
       checked: false,
@@ -74,7 +78,7 @@ function fakePage(search = "") {
         const noop = () => {};
         return {
           setTransform: noop, clearRect: noop, fillRect: noop, beginPath: noop,
-          moveTo: noop, lineTo: noop, stroke: noop, fillText: noop,
+          moveTo: noop, lineTo: noop, stroke: noop, fillText(value) { drawnText.push(String(value)); },
           arc: noop, fill: noop
         };
       }
@@ -89,6 +93,7 @@ function fakePage(search = "") {
   const motionButtons = ["theremin", "siren"].map(motion => element({ motion }));
   const sirenPatternButtons = motionModel.PATTERNS.map(sirenPattern => element({ sirenPattern }));
   const noteButtons = [60, 69, 72].map(note => element({ note: String(note) }));
+  const hzLabels = [...html.matchAll(/data-unit-hz="([^"]+)"/g)].map(match => element({ unitHz: match[1] }));
   const noteGroup = element(), langGroup = element();
   const document = {
     documentElement: {},
@@ -103,6 +108,7 @@ function fakePage(search = "") {
       if (selector === "[data-motion]") return motionButtons;
       if (selector === "[data-siren-pattern]") return sirenPatternButtons;
       if (selector === "[data-note]") return noteButtons;
+      if (selector === "[data-unit-hz]") return hzLabels;
       return [];
     },
     querySelector(selector) {
@@ -211,7 +217,7 @@ function fakePage(search = "") {
   vm.runInNewContext(browserCode, sandbox, { filename: "sound-lab.js" });
   return {
     contexts, elements, document, window, waveButtons, strikeButtons, drumButtons, spectrumButtons,
-    motionButtons, sirenPatternButtons,
+    motionButtons, sirenPatternButtons, hzLabels,
     analyzedAt,
     tick(seconds) {
       if (contexts[0]) contexts[0].currentTime += seconds;
@@ -261,18 +267,18 @@ test("initialization is silent; Play, live Hz, note snap, shape and Stop work", 
 test("fixed time view shows changing cycle counts; four-period zoom is optional", () => {
   const app = fakePage();
   assert.equal(app.elements.get("fixedTimeCheck").checked, true);
-  assert.equal(app.elements.get("windowLabel").textContent, "0–20 ms · 8.8 үе");
+  assert.equal(app.elements.get("windowLabel").textContent, "0–20 мс · 8.8 үе");
   app.elements.get("frequencyInput").value = "880";
   app.fire("frequencyInput", "change");
-  assert.equal(app.elements.get("windowLabel").textContent, "0–20 ms · 17.6 үе");
+  assert.equal(app.elements.get("windowLabel").textContent, "0–20 мс · 17.6 үе");
   assert.match(app.elements.get("waveSubtitle").textContent, /20 мс/);
   app.elements.get("fixedTimeCheck").checked = false;
   app.fire("fixedTimeCheck", "change");
-  assert.equal(app.elements.get("windowLabel").textContent, "0–4.55 ms · 4 үе");
+  assert.equal(app.elements.get("windowLabel").textContent, "0–4.55 мс · 4 үе");
   assert.match(app.elements.get("waveSubtitle").textContent, /Дөрвөн үе/);
   app.fire("resetButton", "click");
   assert.equal(app.elements.get("fixedTimeCheck").checked, true);
-  assert.equal(app.elements.get("windowLabel").textContent, "0–20 ms · 8.8 үе");
+  assert.equal(app.elements.get("windowLabel").textContent, "0–20 мс · 8.8 үе");
 });
 
 test("language, volume, reset and hiding the page cannot trigger autoplay", async () => {
@@ -298,6 +304,35 @@ test("an explicit English URL overrides the Mongolian default", () => {
   const app = fakePage("?lang=en");
   assert.equal(app.document.documentElement.lang, "en");
   assert.equal(app.elements.get("windowLabel").textContent, "0–20 ms · 8.8 cycles");
+});
+
+test("Mongolian units cover static ranges, readouts and plotted axes; English remains unchanged", () => {
+  const app = fakePage();
+  assert.equal(app.hzLabels.length, 6);
+  assert.ok(app.hzLabels.every(label => label.textContent.endsWith(" Гц")));
+  assert.equal(app.elements.get("frequencyInput").getAttribute("aria-valuetext"), "440 Гц");
+  assert.equal(app.elements.get("fundamentalBadge").textContent, "f₀ = 440 Гц");
+  assert.match(app.elements.get("noteLabel").title, /440 Гц$/);
+  assert.match(app.elements.get("periodBadge").textContent, /мс$/);
+  assert.ok(app.elements.get("spectrumCanvas").drawnText.some(label => label.endsWith(" кГц")));
+  assert.ok(app.elements.get("waveCanvas").drawnText.some(label => label.endsWith(" мс")));
+  app.fire("modeStrike", "click");
+  assert.equal(app.elements.get("strikeDecayValue").textContent, "0.65 сек");
+  assert.ok(app.elements.get("strikeSpectrumCanvas").drawnText.some(label => label.endsWith(" Гц")));
+  app.fire("modeMotion", "click");
+  assert.equal(app.elements.get("motionCurrentHz").textContent, "440 Гц");
+  assert.ok(app.elements.get("motionPitchCanvas").drawnText.some(label => label.endsWith(" сек")));
+  assert.ok(app.elements.get("motionSpectrumCanvas").drawnText.some(label => label.endsWith(" Гц")));
+  app.motionButtons[1].events.click();
+  assert.equal(app.elements.get("sirenRateValue").textContent, "0.8 удаа/сек");
+  app.sirenPatternButtons[1].events.click();
+  assert.match(app.elements.get("motionPitchSubtitle").textContent, /логарифм хуваарьт муруй/);
+  app.fire("langEn", "click");
+  assert.ok(app.hzLabels.every(label => label.textContent.endsWith(" Hz")));
+  assert.equal(app.elements.get("sirenRateValue").textContent, "0.8 /s");
+  assert.match(app.elements.get("motionPitchSubtitle").textContent, /Linear in Hz/);
+  assert.equal(app.elements.get("motionPitchBadge").textContent, "440 Hz");
+  assert.equal(app.elements.get("strikeDecayValue").textContent, "0.65 s");
 });
 
 test("revised Mongolian wave descriptions, examples and mode labels render correctly", () => {
@@ -352,8 +387,8 @@ test("transient controls change modeled decay and category changes cancel pendin
   app.fire("modeStrike", "click");
   app.elements.get("strikeDecay").value = "1.1";
   app.fire("strikeDecay", "input");
-  assert.equal(app.elements.get("strikeDurationBadge").textContent, "τ = 1.1 s");
-  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 ms – 3 s");
+  assert.equal(app.elements.get("strikeDurationBadge").textContent, "τ = 1.1 сек");
+  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 мс – 3 сек");
   app.elements.get("strikeFrequencyInput").value = "440";
   app.fire("strikeFrequencyInput", "change");
   assert.equal(app.elements.get("strikeNote").textContent, "A4 · Ля4");
@@ -364,7 +399,7 @@ test("transient controls change modeled decay and category changes cancel pendin
   app.fire("modeStrike", "click");
   app.fire("strikeReset", "click");
   assert.equal(app.elements.get("strikeFrequencyInput").value, "220");
-  assert.equal(app.elements.get("strikeDecayValue").textContent, "0.65 s");
+  assert.equal(app.elements.get("strikeDecayValue").textContent, "0.65 сек");
 });
 
 test("string snap and small/medium/large drum recipes are separate controls", async () => {
@@ -382,11 +417,11 @@ test("string snap and small/medium/large drum recipes are separate controls", as
   assert.equal(app.elements.get("strikeDrumSizeGroup").hidden, false);
   app.drumButtons[0].events.click();
   assert.equal(app.drumButtons[0].getAttribute("aria-pressed"), "true");
-  assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "127 → 35 Hz");
+  assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "127 → 35 Гц");
   await app.fire("strikeButton", "click");
   assert.equal(app.contexts[0].sources.length, 1);
   app.drumButtons[2].events.click();
-  assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "246 → 67 Hz");
+  assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "246 → 67 Гц");
   assert.equal(app.contexts[0].sources[0].stopped, true);
   await app.fire("strikeButton", "click");
   const first = app.contexts[0].buffers[0].getChannelData(0);
@@ -397,19 +432,19 @@ test("string snap and small/medium/large drum recipes are separate controls", as
 test("one transient waveform supports zoom, pan, presets and time scrubbing", () => {
   const app = fakePage();
   app.fire("modeStrike", "click");
-  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 ms – 3 s");
+  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 мс – 3 сек");
   app.elements.get("strikeViewPreset").value = "0.02";
   app.fire("strikeViewPreset", "change");
-  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 ms – 20 ms");
+  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 мс – 20 мс");
   app.fire("strikeViewZoomOut", "click");
-  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 ms – 40 ms");
+  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 мс – 40 мс");
   app.fire("strikeViewRight", "click");
-  assert.equal(app.elements.get("strikeWindowLabel").textContent, "20 ms – 60 ms");
+  assert.equal(app.elements.get("strikeWindowLabel").textContent, "20 мс – 60 мс");
   app.fire("strikeViewFit", "click");
-  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 ms – 3 s");
+  assert.equal(app.elements.get("strikeWindowLabel").textContent, "0 мс – 3 сек");
   app.elements.get("strikeTimeSlider").value = "1500";
   app.fire("strikeTimeSlider", "input");
-  assert.equal(app.elements.get("strikeTimeValue").textContent, "t = 1.50 s");
+  assert.equal(app.elements.get("strikeTimeValue").textContent, "t = 1.50 сек");
   assert.equal(app.analyzedAt.at(-1), 1.5);
   app.spectrumButtons[1].events.click();
   assert.equal(app.spectrumButtons[1].getAttribute("aria-pressed"), "true");
@@ -421,19 +456,19 @@ test("Hit follows Web Audio playback time, then allows manual passive inspection
   app.fire("modeStrike", "click");
   assert.equal(app.contexts.length, 0);
   await app.fire("strikeButton", "click");
-  assert.equal(app.elements.get("strikeTimeValue").textContent, "t = 0.00 s");
+  assert.equal(app.elements.get("strikeTimeValue").textContent, "t = 0.00 сек");
   app.tick(0.08);
-  assert.equal(app.elements.get("strikeTimeValue").textContent, "t = 0.08 s");
+  assert.equal(app.elements.get("strikeTimeValue").textContent, "t = 0.08 сек");
   assert.ok(app.analyzedAt.at(-1) >= 0.08 - 1e-9);
   app.tick(0.15);
-  assert.equal(app.elements.get("strikeTimeValue").textContent, "t = 0.23 s");
+  assert.equal(app.elements.get("strikeTimeValue").textContent, "t = 0.23 сек");
   app.elements.get("strikeTimeSlider").value = "450";
   app.fire("strikeTimeSlider", "input");
   assert.equal(app.analyzedAt.at(-1), 0.45);
   app.tick(0.3);
-  assert.equal(app.elements.get("strikeTimeValue").textContent, "t = 0.45 s", "Manual scrub overrides visual follow");
+  assert.equal(app.elements.get("strikeTimeValue").textContent, "t = 0.45 сек", "Manual scrub overrides visual follow");
   await app.fire("strikeButton", "click");
-  assert.equal(app.elements.get("strikeTimeValue").textContent, "t = 0.00 s", "New hit restarts follow");
+  assert.equal(app.elements.get("strikeTimeValue").textContent, "t = 0.00 сек", "New hit restarts follow");
   app.tick(0.10);
   app.fire("stopAll", "click");
   const stoppedAt = app.elements.get("strikeTimeValue").textContent;
@@ -462,7 +497,7 @@ test("Moving Pitch theremin uses a pointer gesture, shared audio, live pitch and
   assert.ok(context.gains[0].gain.value > 0);
   assert.ok(context.gains[0].gain.value <= 0.12);
   app.tick(0.05);
-  assert.match(app.elements.get("motionPitchBadge").textContent, /Hz/);
+  assert.match(app.elements.get("motionPitchBadge").textContent, /Гц/);
   app.fire("thereminPad", "pointerup", { clientX: 600, clientY: 15 });
   assert.equal(context.oscillators[0].stopped, true);
   assert.equal(app.elements.get("thereminPad").getAttribute("aria-pressed"), "false");
@@ -488,7 +523,7 @@ test("siren changes two-tone/sweep pitch with its clock; Stop and mode switch ca
   assert.equal(app.elements.get("sirenControls").hidden, false);
   app.elements.get("sirenHigh").value = "1000";
   app.fire("sirenHigh", "input");
-  assert.equal(app.elements.get("sirenHighValue").textContent, "1000 Hz");
+  assert.equal(app.elements.get("sirenHighValue").textContent, "1,000 Гц");
   await app.fire("sirenButton", "click");
   const context = app.contexts[0];
   assert.match(app.elements.get("motionStatus").textContent, /Дохио зогсоох/);
