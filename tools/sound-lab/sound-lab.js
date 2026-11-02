@@ -69,9 +69,10 @@
       mixBase: "First frequency", mixGap: "Frequency difference (Δf)",
       mixTryGap: "Try:", mixZeroGap: "0 Hz", mixTwoGap: "2 Hz", mixFourGap: "4 Hz", mixTenGap: "10 Hz",
       mixTwoFrequencies: "Two frequencies", mixBeatRate: "Volume pulses", mixBeatUnit: "pulses/s",
-      mixWaveTitle: "Combined waveform", mixWaveHint: "Zoom in to 20 ms to reveal the fast vibrations inside the pulses.",
-      mixSpectrumTitle: "Two frequency components", mixSpectrumHint: "Pulsing loudness does not create a new low-frequency tone.",
+      mixWaveTitle: "Combined waveform", mixWaveHint: "At long times, only the loudness envelope is shown. Zoom to 20 ms to see the actual vibrations.",
+      mixSpectrumTitle: "Frequency components", mixSpectrumHint: "Pulsing loudness does not create a new low-frequency tone.",
       mixSpectrumFoot: "Only the original two frequencies appear in the ideal spectrum.",
+      mixSpectrumZeroFoot: "At zero difference, the two identical frequencies merge into one spectral peak.",
       mixWindow20: "20 ms", mixWindow200: "200 ms", mixWindowOne: "1 s", mixWindowTwo: "2 s",
       mixWaveAria: "Sum of two sine waves and its ideal beat envelope over time",
       mixSpectrumAria: "Ideal spectrum with one or two distinct sine frequency components",
@@ -249,9 +250,10 @@
       mixBase: "Эхний давтамж", mixGap: "Давтамжийн зөрүү (Δf)",
       mixTryGap: "Туршиж үз:", mixZeroGap: "0 Гц", mixTwoGap: "2 Гц", mixFourGap: "4 Гц", mixTenGap: "10 Гц",
       mixTwoFrequencies: "Хоёр давтамж", mixBeatRate: "Чангарч, сулрах хурд", mixBeatUnit: "удаа/сек",
-      mixWaveTitle: "Хоёр долгионы нийлбэр", mixWaveHint: "Чанга, сул ээлжлэх дүрс. 20 мсек болгон томруулж хэлбэлзлийг хараарай.",
-      mixSpectrumTitle: "Давтамжийн хоёр бүрэлдэхүүн", mixSpectrumHint: "Чангарч, сулрах нь шинэ нам давтамж үүсгээгүй.",
+      mixWaveTitle: "Хоёр долгионы нийлбэр", mixWaveHint: "Том цонхонд чанга, сулын хүрээг харуулна. 20 мсек болгон томруулбал жинхэнэ хэлбэлзэл харагдана.",
+      mixSpectrumTitle: "Давтамжийн бүрэлдэхүүнүүд", mixSpectrumHint: "Чангарч, сулрах нь шинэ нам давтамж үүсгээгүй.",
       mixSpectrumFoot: "Спектрт зөвхөн анхныхаа хоёр давтамж харагдана.",
+      mixSpectrumZeroFoot: "Зөрүү 0 байхад ижил хоёр давтамж спектрт нэг оргил болж нийлнэ.",
       mixWindow20: "20 мсек", mixWindow200: "200 мсек", mixWindowOne: "1 сек", mixWindowTwo: "2 сек",
       mixWaveAria: "Хоёр синус долгионы нийлбэр ба цохилтын далайцын хээ",
       mixSpectrumAria: "Нэг эсвэл хоёр синус давтамжийн бүрэлдэхүүний идеал спектр",
@@ -1019,6 +1021,7 @@
     $("mixBeatValue").textContent = mixBeatsText();
     $("mixWaveBadge").textContent = mixBeatsText();
     $("mixSpectrumBadge").textContent = frequencyText(first) + " + " + hzText(second);
+    $("mixSpectrumFoot").textContent = text(state.mixGap === 0 ? "mixSpectrumZeroFoot" : "mixSpectrumFoot");
     $("mixVolume").value = String(state.mixVolume);
     $("mixVolumeValue").textContent = state.mixVolume + "%";
     $("mixButton").classList.toggle("playing", state.mixPlaying);
