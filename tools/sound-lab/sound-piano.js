@@ -16,11 +16,17 @@
   const PARTIALS = 11;
   const REFERENCE_RATE = 48000;
   const HAMMER_POINT = 1 / 7; // A hammer near a seventh of the string suppresses partial 7.
+  // The central string carries a stable part of the tone. If all three
+  // amplitudes are nearly equal, their beats can almost erase the fundamental
+  // while an upper partial remains loud, making the late tail very metallic.
   const UNISONS = Object.freeze([
-    Object.freeze({ ratio: Math.pow(2, -1.15 / 1200), mix: .31 }),
-    Object.freeze({ ratio: 1, mix: .36 }),
-    Object.freeze({ ratio: Math.pow(2, 1.05 / 1200), mix: .33 })
+    Object.freeze({ ratio: Math.pow(2, -.68 / 1200), mix: .20 }),
+    Object.freeze({ ratio: 1, mix: .60 }),
+    Object.freeze({ ratio: Math.pow(2, .74 / 1200), mix: .20 })
   ]);
+  const TOUCHES = Object.freeze(["press", "tap"]);
+  const TAP_RELEASE = .16;
+  const TAP_DAMPING = .055;
   const recipeCache = new Map();
   const waveCache = new Map();
 
@@ -34,6 +40,17 @@
 
   function validVelocity(velocity) {
     return Number.isFinite(velocity) && velocity >= 0 && velocity <= 1;
+  }
+
+  function validTouch(touch) {
+    return TOUCHES.includes(touch);
+  }
+
+  function damperGain(time, touch = "press") {
+    // A press represents a held key (free decay). A brief tap releases the
+    // damper after 160 ms; exponential damping avoids an audible click.
+    return touch === "tap" && time > TAP_RELEASE ?
+      Math.exp(-(time - TAP_RELEASE) / TAP_DAMPING) : 1;
   }
 
   // A broad frequency response stands in for the bridge and soundboard. It
@@ -59,7 +76,13 @@
       const felt = Math.exp(-Math.pow((n - 1) / cutoff, 2));
       const weight = hammerPosition * felt *
         Math.pow(n, -1.15 - .45 * (1 - velocity)) * soundboardGain(hz);
-      modes.push({ n, weight, frequencies: UNISONS.map(string => hz * string.ratio) });
+      // Cap absolute unison detuning for high notes: a fixed cents offset
+      // otherwise makes the upper keyboard's fundamental beat too rapidly.
+      const frequencies = UNISONS.map(string => {
+        const offset = Math.max(-.14, Math.min(.14, pitchHz * (string.ratio - 1)));
+        return hz * (1 + offset / pitchHz);
+      });
+      modes.push({ n, weight, frequencies });
       totalWeight += weight;
     }
     return { modes, normalization: Math.max(1, totalWeight) };
@@ -74,11 +97,12 @@
     return recipeCache.get(key);
   }
 
-  function envelope(time, decaySec) {
+  function envelope(time, decaySec, touch = "press") {
     if (time <= 0) return 0;
     const attack = 1 - Math.exp(-time / .00055);
     return attack * (.64 * Math.exp(-time / (decaySec * .29)) +
-      .36 * Math.exp(-time / (decaySec * 1.85)));
+      .36 * Math.exp(-time / (decaySec * 1.85))) *
+      (touch === "tap" ? .72 : 1) * damperGain(time, touch);
   }
 
   function oscillator(hz) {
@@ -104,7 +128,7 @@
         early: 1,
         late: 1,
         earlyStep: Math.exp(-(1 + .15 * higher) / (REFERENCE_RATE * decaySec * .29)),
-        lateStep: Math.exp(-(1 + .085 * higher) / (REFERENCE_RATE * decaySec * 1.85))
+        lateStep: Math.exp(-(1 + .28 * higher) / (REFERENCE_RATE * decaySec * 1.85))
       };
     });
     const contactHigh = oscillator(4130), contactLow = oscillator(2530);
@@ -144,14 +168,20 @@
     return waveCache.get(key);
   }
 
-  function sampleAt(time, pitchHz, decaySec, velocity = .55) {
+  function sampleAt(time, pitchHz, decaySec, velocity = .55, touch = "press") {
+    if (!validVelocity(velocity) || !validTouch(touch)) {
+      throw new RangeError("Invalid piano hammer velocity or touch");
+    }
     if (time <= 0 || time >= Math.max(.35, Math.min(3, decaySec * 4))) return 0;
-    const samples = wave(pitchHz, decaySec, velocity);
+    // Tapping also excites fewer high modes: hammer speed and damper timing
+    // remain separate physical effects even though the UI offers a preset.
+    const samples = wave(pitchHz, decaySec, touch === "tap" ? .7 * velocity : velocity);
     const index = time * REFERENCE_RATE;
     const previous = Math.floor(index), fraction = index - previous;
-    return samples[previous] * (1 - fraction) + samples[previous + 1] * fraction;
+    return (samples[previous] * (1 - fraction) + samples[previous + 1] * fraction) *
+      (touch === "tap" ? .72 : 1) * damperGain(time, touch);
   }
 
-  return Object.freeze({ STIFFNESS, PARTIALS, pianoPartialHz, validVelocity,
-    soundboardGain, envelope, sampleAt });
+  return Object.freeze({ STIFFNESS, PARTIALS, TOUCHES, pianoPartialHz, validVelocity,
+    validTouch, soundboardGain, damperGain, envelope, sampleAt });
 });

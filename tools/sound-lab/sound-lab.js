@@ -144,7 +144,10 @@
       strikePhase: "02 · Modeled sounds", strikeChoose: "Choose a modeled sound",
       pluck: "Guitar string", kick: "Drum", piano: "Piano", strikeGroupAria: "Transient sound model",
       strikeCaption: "Tap to sound; tap again to repeat",
-      strikePluckButton: "Pluck", strikeStrumButton: "Strum", strikeKickButton: "Strike", strikePianoButton: "Play note",
+      strikePluckButton: "Pluck", strikeStrumButton: "Strum", strikeKickButton: "Strike",
+      strikePianoButton: "Press", strikePianoTapButton: "Tap",
+      strikePianoTouchTitle: "How to play", strikePianoPress: "Press", strikePianoTap: "Tap",
+      strikePianoTouchHint: "Press models a held key with free decay. Tap is gentler and brings the damper back after a short press.",
       strikeGuitarPlay: "Play guitar", strikeSingle: "One string", strikeStrum: "Several strings",
       strikeChord: "Choose a chord", strikeChordHint: "The pick sweeps across the strings. Frets change each string's pitch; muted strings are skipped.",
       strikePluckPosition: "Pluck position", strikePluckPositionHint: "Plucking nearer the end brings out more high harmonics.",
@@ -412,7 +415,10 @@
       strikePhase: "02 · Загварчилсан дуу", strikeChoose: "Дууны загвар сонгох",
       pluck: "Гитарын чавхдас", kick: "Бөмбөр", piano: "Төгөлдөр хуур", strikeGroupAria: "Цохилтын дууны загвар",
       strikeCaption: "Дарж сонсоод, дахин дарж давтаарай",
-      strikePluckButton: "Татах", strikeStrumButton: "Цохих", strikeKickButton: "Цохих", strikePianoButton: "Нот тоглуулах",
+      strikePluckButton: "Татах", strikeStrumButton: "Цохих", strikeKickButton: "Цохих",
+      strikePianoButton: "Дарах", strikePianoTapButton: "Товших",
+      strikePianoTouchTitle: "Тоглох арга", strikePianoPress: "Дарах", strikePianoTap: "Товших",
+      strikePianoTouchHint: "Дарахад товчлуурыг барьсан үеийн авиа чөлөөтэй намдана. Товшиход алх зөөлөн цохиж, намжаагч удахгүй буцна.",
       strikeGuitarPlay: "Гитар тоглуулах", strikeSingle: "Нэг чавхдас", strikeStrum: "Олон чавхдас",
       strikeChord: "Аккорд сонгох", strikeChordHint: "Цохиход чавхдасууд ээлжлэн дуугарна. Аккордоос хамаарч дарсан нот нь өөр, зарим чавхдас дуугарахгүй.",
       strikePluckPosition: "Татах байрлал", strikePluckPositionHint: "Үзүүрт нь ойр татахад дээд гармоникууд тодордог.",
@@ -571,6 +577,7 @@
     strikeGuitarPlay: "single",
     strikeChord: "em",
     strikePluckPosition: .22,
+    strikePianoTouch: "press",
     strikeStrength: 55,
     strikeDecay: 0.65,
     strikeStatus: "strikeReady",
@@ -1424,7 +1431,8 @@
       options: {
         position: state.strikePluckPosition,
         drumTension: state.strikeDrumTension,
-        ...(state.strikeKind === "piano" ? { velocity: state.strikeStrength / 100 } : {}),
+        ...(state.strikeKind === "piano" ?
+          { velocity: state.strikeStrength / 100, touch: state.strikePianoTouch } : {}),
         ...(state.strikeKind === "pluck" && state.strikeGuitarPlay === "strum" ?
           { strumChord: state.strikeChord } : {})
       } };
@@ -2187,6 +2195,7 @@
     $("strikePitchGroup").hidden = state.strikeKind === "kick" ||
       (state.strikeKind === "pluck" && state.strikeGuitarPlay === "strum");
     $("strikeGuitarGroup").hidden = state.strikeKind !== "pluck";
+    $("strikePianoTouchGroup").hidden = state.strikeKind !== "piano";
     $("strikeChordGroup").hidden = state.strikeKind !== "pluck" || state.strikeGuitarPlay !== "strum";
     $("strikePluckPositionGroup").hidden = state.strikeKind !== "pluck";
     $("strikePluckPosition").value = String(Math.round(100 * state.strikePluckPosition));
@@ -2203,7 +2212,9 @@
     $("strikeDescription").textContent = text("strikeDesc")[state.strikeKind];
     $("strikeButtonLabel").textContent = text(state.strikeKind === "pluck" ?
       state.strikeGuitarPlay === "strum" ? "strikeStrumButton" : "strikePluckButton" :
-      state.strikeKind === "piano" ? "strikePianoButton" : "strikeKickButton");
+      state.strikeKind === "piano" ?
+        state.strikePianoTouch === "tap" ? "strikePianoTapButton" : "strikePianoButton" :
+        "strikeKickButton");
     document.querySelectorAll("[data-guitar-play]").forEach(button => {
       const selected = button.dataset.guitarPlay === state.strikeGuitarPlay;
       button.classList.toggle("selected", selected);
@@ -2211,6 +2222,11 @@
     });
     document.querySelectorAll("[data-guitar-chord]").forEach(button => {
       const selected = button.dataset.guitarChord === state.strikeChord;
+      button.classList.toggle("selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+    document.querySelectorAll("[data-piano-touch]").forEach(button => {
+      const selected = button.dataset.pianoTouch === state.strikePianoTouch;
       button.classList.toggle("selected", selected);
       button.setAttribute("aria-pressed", String(selected));
     });
@@ -2471,6 +2487,7 @@
     state.strikeGuitarPlay = "single";
     state.strikeChord = "em";
     state.strikePluckPosition = .22;
+    state.strikePianoTouch = "press";
     state.strikeStrength = 55;
     state.strikeDecay = 0.65;
     state.strikeCursor = 0;
@@ -3280,6 +3297,15 @@
       if (state.strikeGuitarPlay === button.dataset.guitarPlay) return;
       stopStrikeForEdit();
       state.strikeGuitarPlay = button.dataset.guitarPlay;
+      renderStrikeControls();
+      drawPlots();
+    });
+  });
+  document.querySelectorAll("[data-piano-touch]").forEach(button => {
+    button.addEventListener("click", () => {
+      if (state.strikePianoTouch === button.dataset.pianoTouch) return;
+      stopStrikeForEdit();
+      state.strikePianoTouch = button.dataset.pianoTouch;
       renderStrikeControls();
       drawPlots();
     });
