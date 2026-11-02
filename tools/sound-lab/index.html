@@ -128,7 +128,7 @@
             <output id="volumeReadout" for="volumeSlider">40%</output>
           </div>
           <input id="volumeSlider" type="range" min="0" max="100" step="1" value="40">
-          <p class="field-help" data-i18n="safeVolume">Starts quietly. Increase volume carefully, especially with headphones.</p>
+          <p class="field-help" data-i18n="safeVolume">Start at a low volume and increase carefully, especially with headphones.</p>
         </div>
 
         <details id="settings" class="settings">
@@ -439,16 +439,21 @@
       <div class="visuals">
         <section class="panel chart-panel" aria-labelledby="mix-wave-title">
           <div class="chart-heading">
-            <div><h2 id="mix-wave-title" data-i18n="mixWaveTitle">Хоёр долгионы нийлбэр</h2><p data-i18n="mixWaveHint">Том цонхонд чанга, сулын хүрээг харуулна. 20 мсек болгон томруулбал жинхэнэ хэлбэлзэл харагдана.</p></div>
+            <div><h2 id="mix-wave-title" data-i18n="mixWaveTitle">Хоёр долгионы нийлбэр</h2><p id="mixWaveHint" data-i18n="mixWaveHint">Том цонхонд дууны чанга, сулын хүрээ харагдана. + дарж томруулбал жинхэнэ хэлбэлзлийг харна.</p></div>
             <span class="chart-badge" id="mixWaveBadge">4 удаа/сек</span>
           </div>
           <div class="mix-plot-tools" id="mixPlotTools" role="group" aria-label="Хугацааны цонх">
-            <button type="button" id="mixViewLeft" aria-label="Хугацаагаар зүүн тийш">←</button>
-            <button type="button" data-mix-window="0.02" data-i18n="mixWindow20">20 мсек</button>
-            <button type="button" data-mix-window="0.2" data-i18n="mixWindow200">200 мсек</button>
-            <button type="button" data-mix-window="1" data-i18n="mixWindowOne" class="selected" aria-pressed="true">1 сек</button>
-            <button type="button" data-mix-window="2" data-i18n="mixWindowTwo">2 сек</button>
-            <button type="button" id="mixViewRight" aria-label="Хугацаагаар баруун тийш">→</button>
+            <div class="mix-control-cluster">
+              <span data-i18n="mixZoomLabel">Томруулах</span>
+              <button type="button" id="mixZoomOut" aria-label="Томруулалтыг багасгах" title="Томруулалтыг багасгах">−</button>
+              <button type="button" id="mixZoomIn" aria-label="Томруулах" title="Томруулах">+</button>
+              <output id="mixZoomValue" aria-label="Харагдах хугацаа">1 сек</output>
+            </div>
+            <div class="mix-control-cluster mix-pan-group">
+              <span data-i18n="mixPanLabel">Шилжүүлэх</span>
+              <button type="button" id="mixViewLeft" aria-label="Өмнөх хугацааг харах">←</button>
+              <button type="button" id="mixViewRight" aria-label="Дараах хугацааг харах">→</button>
+            </div>
           </div>
           <canvas id="mixWaveCanvas" width="740" height="280" role="img" aria-label="Хоёр давтамжийн нийлбэрийн хугацааны график"></canvas>
           <div class="chart-foot"><span id="mixWindowLabel">0–1 сек · 4 удаа</span><span data-i18n="timeAxis">хугацаа →</span></div>
