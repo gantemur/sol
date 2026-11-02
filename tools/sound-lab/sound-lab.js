@@ -1369,6 +1369,7 @@
     const { ctx, width, height } = plotContext($("motionPitchCanvas"));
     const left = 47, right = width - 16, top = 19, bottom = height - 30;
     const w = right - left, h = bottom - top;
+    const viewStart = Math.max(0, state.motionElapsed - 4);
     const yAt = hz => bottom - Math.log(hz / motionModel.MIN_HZ) /
       Math.log(motionModel.MAX_HZ / motionModel.MIN_HZ) * h;
     ctx.strokeStyle = "#e8eff7";
@@ -1385,14 +1386,13 @@
     for (let i = 0; i <= 4; i++) {
       const x = left + w * i / 4;
       ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke();
-      ctx.fillText(i + " s", x, height - 12);
+      ctx.fillText(frequencyText(viewStart + i) + " s", x, height - 12);
     }
     ctx.lineWidth = 2.5;
     ctx.strokeStyle = state.motionKind === "siren" ? "#7861bb" : "#168f9b";
     ctx.beginPath();
     // Both modes show the most recent four seconds after playback passes 4 s.
     // A siren's audio phase must not appear to reset when its plot reaches the edge.
-    const viewStart = Math.max(0, state.motionElapsed - 4);
     if (state.motionKind === "siren") {
       const recipe = sirenRecipe();
       for (let i = 0; i <= 400; i++) {
