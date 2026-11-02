@@ -85,7 +85,8 @@ h1, h2, p { margin-top: 0; }
 .pad-range { color: #7893a9; font-size: 11px; margin-top: -10px; }
 .pad-readout { border-radius: 10px; padding: 9px 12px; background: #e8f5fb; color: #216387; font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums; }
 .siren-patterns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-.siren-patterns button { min-height: 44px; padding: 8px 6px; border: 1px solid #d2e2ef; border-radius: 9px; color: #3b698f; background: #f5f9ff; font-size: 12px; font-weight: 750; }
+.siren-trajectory-label { margin-bottom: -7px; font-weight: 800; color: #456787; }
+.siren-patterns button { min-height: 52px; padding: 8px 6px; border: 1px solid #d2e2ef; border-radius: 9px; color: #3b698f; background: #f5f9ff; font-size: 12px; font-weight: 750; }
 .siren-patterns button.selected { border: 2px solid #248a91; color: #176b72; background: #e4f6f2; padding: 7px 5px; }
 .siren-button { background: linear-gradient(130deg, #306cbd, #514eab); min-height: 112px; }
 .siren-button:hover { background: linear-gradient(130deg, #265eab, #44419d); }

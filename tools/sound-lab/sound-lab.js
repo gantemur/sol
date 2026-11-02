@@ -100,12 +100,13 @@
       theremin: "Theremin", siren: "Fire-truck siren",
       motionDesc: {
         theremin: "Move your finger to change the pitch and loudness continuously.",
-        siren: "Hear a repeating high-and-low signal or a smooth rise and fall."
+        siren: "Hear how different paths between the same two frequencies change the sound."
       },
       motionGroupAria: "Moving sound choices", thereminHelp: "Press and move: right makes the pitch higher; up makes it louder. Release to stop.",
       padLoud: "Louder ↑", padStart: "Press and move", padHigh: "Higher pitch →",
       padAria: "Theremin touch pad", thereminKeyboardHelp: "Keyboard: use arrow keys to move; Space or Enter toggles the sound. Escape stops.",
-      sirenPatternAria: "Siren pitch pattern", sirenTwoTone: "Two tones", sirenSweep: "Rise and fall",
+      sirenPatternAria: "Frequency trajectory", sirenTwoTone: "Rectangular · two tones", sirenSweep: "Linear in Hz",
+      sirenPitchSweep: "Linear in semitones", sirenSineSweep: "Sinusoidal",
       sirenPlay: "Play siren", sirenStop: "Stop siren", sirenCaption: "Tap again to stop",
       sirenLow: "Low frequency", sirenHigh: "High frequency", sirenRate: "Repetitions per second", sirenRateUnit: "/s",
       motionReady: "Ready. Press the pad or Play to hear.", motionStarting: "Starting sound…",
@@ -116,19 +117,21 @@
       motionBlocked: "Sound could not start. Check browser sound permission and try again.",
       motionSafety: "Start quietly, especially with headphones. Changing category or pressing Stop ends playback.",
       motionPitchTitle: "Pitch over time", motionPitchTheremin: "The last four seconds of your finger movement.",
-      motionPitchSiren: "The siren's frequency pattern across a four-second window.",
+      motionPitchSiren: "Abruptly alternates two frequencies: a rectangular trajectory.",
       motionPitchSirenSweep: "Linear in Hz; the logarithmic vertical scale makes the sweep look curved.",
+      motionPitchSirenPitch: "Equal semitones per second: a straight path on the logarithmic frequency chart.",
+      motionPitchSirenSine: "Sinusoidal in Hz: slow near the extremes and fastest in the middle.",
       motionPitchScale: "Logarithmic frequency · 120–1600 Hz", motionPitchAria: "Ideal pitch path over time",
       motionDetailTitle: "At this moment", motionDetailHint: "The same sound as a waveform and its current ideal frequency component.",
       motionWaveTitle: "20 ms waveform", motionComponentTitle: "Frequency component",
       motionWaveAria: "Modeled 20 millisecond sine waveform at current pitch", motionComponentAria: "Current single ideal frequency component",
       motionChallenge: {
         theremin: "Move left and right without changing the loudness. What changes in the waveform?",
-        siren: "Compare two tones with a smooth sweep at the same frequencies. Which one sounds more like a siren?"
+        siren: "Keep the low and high frequencies and speed fixed. How do the four trajectories sound different?"
       },
       motionLearnMore: "Why does moving the pitch change the sound?",
       motionLessonOne: "Moving to the right makes the oscillator vibrate faster, so its pitch rises. Up and down changes the amplitude, making the sound louder or softer.",
-      motionLessonTwo: "A siren switches between two frequencies or glides between them. Rise and fall changes frequency linearly in Hz, but looks curved on the logarithmic graph. Other trajectories would sound different.",
+      motionLessonTwo: "The frequency trajectory changes what we hear. Rectangular jumps abruptly between two tones. Linear in Hz changes by equal frequency increments; linear in semitones changes by equal pitch intervals and looks straight on the logarithmic graph. Sinusoidal changes slow down at both extremes.",
       desc: {
         sine: "One smooth vibration, with a single frequency.",
         triangle: "Weak upper odd harmonics.",
@@ -161,11 +164,11 @@
       safeVolume: "Эхэндээ аяархан дуугарна. Ялангуяа чихэвч хэрэглэвэл болгоомжтой нэмээрэй.",
       settings: "⚙ Тохиргоо", tuning: "Нотод тааруулах хөглөлт",
       tuningHint: "Одоохондоо 12 тэнцүү хагас авианы хөглөлт ашиглана.",
-      equal: "12 тэнцүү хуваарь", fixedTime: "Хугацааны цонхыг 20 мс-д тогтмол байлгах",
-      unitHz: "Гц", unitKHz: "кГц", unitSeconds: "сек", unitMilliseconds: "мс",
-      strikePresetOneSecond: "1 сек", strikePreset200Ms: "200 мс", strikePreset20Ms: "20 мс",
+      equal: "12 тэнцүү хуваарь", fixedTime: "Хугацааны цонхыг 20 мсек-д тогтмол байлгах",
+      unitHz: "Гц", unitKHz: "кГц", unitSeconds: "сек", unitMilliseconds: "мсек",
+      strikePresetOneSecond: "1 сек", strikePreset200Ms: "200 мсек", strikePreset20Ms: "20 мсек",
       fixedHint: "Долгионы хэлбэрийг сайн харахын тулд тэмдэглэгээг арилгаж дөрвөн үеийг томруулна. Ингэвэл хугацааны хуваарь өөрчлөгдөнө.",
-      waveTitle: "Хугацааны дагуух долгион", waveSubtitle: "Хугацаа 20 мс хэвээр: давтамж ихсэхэд олон үе багтана.",
+      waveTitle: "Хугацааны дагуух долгион", waveSubtitle: "Хугацаа 20 мсек хэвээр: давтамж ихсэхэд олон үе багтана.",
       waveSubtitleZoom: "Дөрвөн үеийг томруулж харуулав. Давтамжтай хамт хугацааны хуваарь өөрчлөгдөнө.",
       cyclesUnit: "үе",
       spectrumTitle: "Гармоникууд", spectrumSubtitle: "Үндсэн давтамжтай харьцуулсан идеал бүрэлдэхүүн",
@@ -207,7 +210,7 @@
       strikeTime: "Дууны хугацааг шинжлэх", strikeTimeAria: "Спектрт шинжлэх хугацаа",
       strikeTimeHint: "Цохиход спектр дууг дагана. Дараа нь гулсуураар хугацааг сонгоорой.",
       strikeLocalSpectrumTitle: "Давтамжийн спектр",
-      strikeLocalSpectrumSubtitle: "Сонгосон хугацааны орчмын 128 мс долгионы Фурье шинжилгээ",
+      strikeLocalSpectrumSubtitle: "Сонгосон хугацааны орчмын 128 мсек долгионы Фурье шинжилгээ",
       strikeSpectrumHere: "Энэ мөчид", strikeSpectrumWhole: "Бүх дуу",
       strikeSpectrumModesAria: "Спектрийн хугацааны сонголт",
       strikeSpectrumHint: "Чавхдасны дээд гармоник хурдан намдаж, бөмбөрийн давтамж буурна.",
@@ -217,14 +220,14 @@
       strikeSafety: "Дуу өөрөө намдана. Ялангуяа чихэвчтэй бол эхэндээ аяархан сонсоорой.",
       strikeEnvelopeTitle: "Дууны хүч хэрхэн намдах вэ?",
       strikeEnvelopeSubtitle: "Бүх цохилтыг нэг ижил 3 секундийн хуваарьт харуулав",
-      strikeZoomTitle: "Эхний 20 мс-ийн долгион",
+      strikeZoomTitle: "Эхний 20 мсек-ийн долгион",
       strikeZoomSubtitle: "Түргэн хэлбэлзлийг томруулж харах",
       strikeEnvelopeAria: "Намдах далайцын математик загвар",
-      strikeZoomAria: "Эхний 20 мс-ийн долгионы загвар",
+      strikeZoomAria: "Эхний 20 мсек-ийн долгионы загвар",
       strikeChallenge: "Намдах хугацааг өөрчил. Дуу болон график хэрхэн өөрчлөгдөж байна вэ?",
       strikeLearnMore: "Яагаад эдгээр дуу намддаг вэ?",
       strikeLessonOne: "Чавхдас олон давтамжаар хэлбэлзэнэ. Өндөр гармоникууд нь үндсэн давтамжаас хурдан намдана.",
-      strikeLessonTwo: "Басс бөмбөрийн цохилтын давтамж эхлээд хурдан буурч, далайц нь аажмаар намдана. Эдгээрийн долгионы график ерөнхийдөө төстэй харагдах боловч давтамжийн найрлага нь тэс өөр. 20 мс болгон томруулж эсвэл спектрийг нь харьцуулж ялгааг нь хараарай.",
+      strikeLessonTwo: "Басс бөмбөрийн цохилтын давтамж эхлээд хурдан буурч, далайц нь аажмаар намдана. Эдгээрийн долгионы график ерөнхийдөө төстэй харагдах боловч давтамжийн найрлага нь тэс өөр. 20 мсек болгон томруулж эсвэл спектрийг нь харьцуулж ялгааг нь хараарай.",
       strikeReady: "Бэлэн. Дарахад л дуу гарна.",
       strikeStarting: "Дууг бэлтгэж байна…", strikeDone: "Дуугарлаа. Дахин дарж болно.",
       strikeStopped: "Зогслоо. Дахин дарж сонсоорой.",
@@ -240,12 +243,13 @@
       theremin: "Теремин", siren: "Галын машины дохио",
       motionDesc: {
         theremin: "Гараа хөдөлгөж давтамж ба дууны хэмжээг өөрчил.",
-        siren: "Хоёр авиаг ээлжлүүлэх эсвэл давтамжийг аажмаар өсгөж бууруулахыг сонсоорой."
+        siren: "Ижил хоёр давтамжийн хооронд өөр өөр замаар шилжүүлж сонсоорой."
       },
       motionGroupAria: "Хөдөлгөөнт дууны төрөл", thereminHelp: "Талбар дээр дарж хөдөлгөнө: баруун тийш өндөр, дээш чанга дуугарна. Гараа авахад зогсоно.",
       padLoud: "Чанга ↑", padStart: "Дараад хөдөлгөөрэй", padHigh: "Өндөр авиа →",
       padAria: "Теремин тоглох талбар", thereminKeyboardHelp: "Гарын товчлуураар: сумаар хөдөлгөж, Space/Enter-ээр дууг асааж эсвэл зогсооно. Escape зогсооно.",
-      sirenPatternAria: "Дохионы хээ", sirenTwoTone: "Хоёр авиа", sirenSweep: "Өсөх, буурах",
+      sirenPatternAria: "Давтамжийн замнал", sirenTwoTone: "Дөрвөлжин · хоёр авиа", sirenSweep: "Гц-ээр жигд",
+      sirenPitchSweep: "Хагас тоноор жигд", sirenSineSweep: "Синусоид",
       sirenPlay: "Дохио тоглуулах", sirenStop: "Дохио зогсоох", sirenCaption: "Дахин дарж зогсооно",
       sirenLow: "Нам давтамж", sirenHigh: "Өндөр давтамж", sirenRate: "Давтах хурд", sirenRateUnit: "удаа/сек",
       motionReady: "Бэлэн. Талбар дээр дарж эсвэл дохиог тоглуулаарай.", motionStarting: "Дууг эхлүүлж байна…",
@@ -256,19 +260,21 @@
       motionBlocked: "Авиа эхэлсэнгүй. Хөтчийн дууны зөвшөөрлийг шалгаад дахин оролдоно уу.",
       motionSafety: "Ялангуяа чихэвчтэй бол эхэндээ аяархан сонсоорой. Өөр бүлэгт орох эсвэл Зогсоох дээр дарахад дуу зогсоно.",
       motionPitchTitle: "Давтамжийн өөрчлөлт", motionPitchTheremin: "Сүүлийн дөрвөн секундийн давтамжийг ажиглаарай.",
-      motionPitchSiren: "Дохионы давтамжийн өөрчлөлтийг дөрвөн секундийн хугацаанд харуулна.",
+      motionPitchSiren: "Хоёр давтамжийн хооронд огцом шилжинэ: дөрвөлжин замнал.",
       motionPitchSirenSweep: "Давтамж Гц-ээр жигд өөрчлөгдөх боловч логарифм хуваарьт муруй харагдана.",
+      motionPitchSirenPitch: "Хагас тоноор жигд өөрчлөгдөнө. Логарифм графикт шулуун харагдана.",
+      motionPitchSirenSine: "Синусоид замналын захад удаан, дунд хэсэгт хурдан өөрчлөгдөнө.",
       motionPitchScale: "Логарифм давтамж · 120–1600 Гц", motionPitchAria: "Хугацаанд өөрчлөгдөх давтамжийн загвар",
       motionDetailTitle: "Энэ мөчийн дохио", motionDetailHint: "Ижил давтамжийг долгион болон нэг бүрэлдэхүүнээр харуулав.",
-      motionWaveTitle: "20 мс-ийн долгион", motionComponentTitle: "Давтамжийн бүрэлдэхүүн",
+      motionWaveTitle: "20 мсек-ийн долгион", motionComponentTitle: "Давтамжийн бүрэлдэхүүн",
       motionWaveAria: "Тухайн мөчийн 20 миллисекундийн синус долгион", motionComponentAria: "Одоогийн нэг давтамжийн бүрэлдэхүүн",
       motionChallenge: {
         theremin: "Дууны хэмжээг өөрчлөхгүйгээр зүүн, баруун тийш хөдөлгө. Долгионы үе хэрхэн өөрчлөгдөв?",
-        siren: "Хоёр авиаг ээлжлүүлэх болон давтамжийг аажмаар өсгөж бууруулахыг харьцуул. Аль нь галын машины дохиотой төстэй вэ?"
+        siren: "Хоёр захын давтамж, хурдыг өөрчлөхгүйгээр дөрвөн замналыг сонс. Ямар ялгаа байна вэ?"
       },
       motionLearnMore: "Давтамж өөрчлөгдөхөд яагаад авиа өөр сонсогддог вэ?",
       motionLessonOne: "Баруун тийш хөдөлгөхөд хэлбэлзэл түргэсэж, авиа өндөрсөж сонсогдоно. Дээш, доош хөдөлгөхөд далайц буюу дууны чанга сул өөрчлөгдөнө.",
-      motionLessonTwo: "Дохио нь хоёр давтамжийг ээлжлүүлэх эсвэл тэдгээрийн хооронд шилждэг. «Өсөх, буурах»-д давтамж Гц-ээр жигд өсөж буурна. Графикийн босоо хуваарь логарифм тул муруй харагдана. Өөр зам сонговол дуу нь ч өөр болно.",
+      motionLessonTwo: "Давтамжийн замнал нь сонсогдох дуунд нөлөөлнө. Дөрвөлжин замналд хоёр авиа огцом солигдоно. Гц-ээр жигд эсвэл хагас тоноор жигд өсгөж бууруулж болно. Синусоид замнал захын цэгүүддээ удааширна. Логарифм графикт хагас тоноор жигд замнал шулуун харагдана.",
       desc: {
         sine: "Нэг үндсэн давтамжтай жигд хэлбэлзэл.",
         triangle: "Дээд сондгой гармоникууд нь сул",
@@ -718,8 +724,12 @@
     $("thereminControls").hidden = !isTheremin;
     $("sirenControls").hidden = isTheremin;
     $("motionDescription").textContent = text("motionDesc")[state.motionKind];
+    const sirenHintKeys = {
+      "two-tone": "motionPitchSiren", "sweep": "motionPitchSirenSweep",
+      "pitch-sweep": "motionPitchSirenPitch", "sine-sweep": "motionPitchSirenSine"
+    };
     $("motionPitchSubtitle").textContent = text(isTheremin ? "motionPitchTheremin" :
-      state.sirenPattern === "sweep" ? "motionPitchSirenSweep" : "motionPitchSiren");
+      sirenHintKeys[state.sirenPattern]);
     $("motionChallengeText").textContent = text("motionChallenge")[state.motionKind];
     document.querySelectorAll("[data-motion]").forEach(button => {
       const active = button.dataset.motion === state.motionKind;
