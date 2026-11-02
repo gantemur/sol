@@ -5,13 +5,15 @@
 (function (root, makeModel) {
   "use strict";
   const strings = typeof module === "object" && module.exports ? require("./sound-string.js") : root.SoundLabString;
-  const model = makeModel(strings);
+  const piano = typeof module === "object" && module.exports ? require("./sound-piano.js") : root.SoundLabPiano;
+  const model = makeModel(strings, piano);
   if (typeof module === "object" && module.exports) module.exports = model;
   if (root) root.SoundLabTransientModel = model;
-})(typeof globalThis !== "undefined" ? globalThis : this, function (strings) {
+})(typeof globalThis !== "undefined" ? globalThis : this, function (strings, piano) {
   "use strict";
 
   if (!strings) throw new Error("String synthesis must load before transient synthesis");
+  if (!piano) throw new Error("Piano synthesis must load before transient synthesis");
 
   const TAU = 2 * Math.PI;
   const KINDS = Object.freeze(["pluck", "kick", "piano"]);
@@ -26,20 +28,6 @@
   const DRUM_MIN_TENSION = .5;
   const DRUM_MAX_TENSION = 2;
   const KICK_SIZES = Object.freeze({ large: 0.72, medium: 1, small: 1.4 });
-  const pianoWeights = Object.freeze([1, .74, .48, .32, .21, .12, .07, .04]);
-  const PIANO_HAMMER_LEVEL = .16;
-  const pianoNormalization = pianoWeights.reduce((sum, weight) => sum + Math.abs(weight), 0) + PIANO_HAMMER_LEVEL;
-  const PIANO_STIFFNESS = 0.00016; // Slightly sharp overtones of an idealized stiff string.
-  // A piano often has multiple strings for one note. Tiny unison offsets cause
-  // a changing overtone pattern as the struck strings ring together.
-  const pianoUnisonRatios = Object.freeze([-0.9, 0, 1.0].map(cents => Math.pow(2, cents / 1200)));
-
-  function pianoPartialHz(fundamentalHz, number) {
-    if (!Number.isFinite(fundamentalHz) || fundamentalHz <= 0 || number < 1) {
-      throw new RangeError("Invalid piano-string partial");
-    }
-    return fundamentalHz * number * Math.sqrt(1 + PIANO_STIFFNESS * number * number);
-  }
 
   function validate(kind, pitchHz, decaySec, kickSize = "medium", options = {}) {
     if (!KINDS.includes(kind)) throw new RangeError("Unknown transient sound");
@@ -60,11 +48,15 @@
         (options.strumChord !== undefined && !Object.hasOwn(strings.CHORDS, options.strumChord)))) {
       throw new RangeError("Unknown pluck position or guitar chord");
     }
+    if (kind === "piano" && !piano.validVelocity(options.velocity ?? .55)) {
+      throw new RangeError("Piano hammer velocity outside the supported range");
+    }
   }
 
   function envelope(kind, time, decaySec) {
     if (time <= 0) return 0;
-    const attack = kind === "kick" ? 0.0015 : kind === "piano" ? 0.0008 : 0.0025;
+    if (kind === "piano") return piano.envelope(time, decaySec);
+    const attack = kind === "kick" ? 0.0015 : 0.0025;
     return (1 - Math.exp(-time / attack)) * Math.exp(-time / decaySec);
   }
 
@@ -79,11 +71,6 @@
   function drumModeFrequencies(size = "medium", tension = 1) {
     const fundamental = kickFrequency(0, size, tension);
     return DRUM_ZEROS.map(zero => fundamental * zero / DRUM_ZEROS[0]);
-  }
-
-  function pianoUnisonAt(frequency, time) {
-    return pianoUnisonRatios.reduce((sum, ratio) =>
-      sum + Math.sin(TAU * frequency * ratio * time), 0) / pianoUnisonRatios.length;
   }
 
   function sampleAt(kind, time, pitchHz, decaySec, kickSize = "medium", options = {}) {
@@ -107,19 +94,7 @@
         strings.strumAt(time, options.strumChord, decaySec, position) :
         strings.pluckAt(time, pitchHz, decaySec, position);
     }
-    // A compact additive piano-string approximation, retained until the next pass.
-    const weights = pianoWeights;
-    let value = 0;
-    for (let i = 0; i < weights.length; i++) {
-      const n = i + 1;
-      const highPartialDecay = Math.exp(-i * time / 0.16);
-      const frequency = pianoPartialHz(pitchHz, n);
-      const vibration = pianoUnisonAt(frequency, time);
-      value += weights[i] * highPartialDecay * vibration;
-    }
-    // Hammer felt has a bright, short contact sound; plucking does not.
-    const hammer = PIANO_HAMMER_LEVEL * Math.exp(-time / .008) * Math.sin(TAU * 2800 * time);
-    return envelope(kind, time, decaySec) * (value + hammer) / pianoNormalization;
+    return piano.sampleAt(time, pitchHz, decaySec, options.velocity ?? .55);
   }
 
   function duration(decaySec) {
@@ -165,7 +140,7 @@
   return Object.freeze({
     KINDS, KICK_SIZES, DRUM_MIN_TENSION, DRUM_MAX_TENSION, STRUM_CHORDS: strings.CHORDS,
     MIN_PITCH_HZ, MAX_PITCH_HZ, MIN_DECAY, MAX_DECAY,
-    PIANO_STIFFNESS, pianoPartialHz,
+    PIANO_STIFFNESS: piano.STIFFNESS, pianoPartialHz: piano.pianoPartialHz,
     validate, envelope, plottedEnvelope, kickFrequency, drumModeFrequencies, sampleAt, plottedSampleAt,
     duration, makeSamples, sliderToHz, hzToSlider
   });

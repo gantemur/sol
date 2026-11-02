@@ -64,7 +64,7 @@
       unsupported: "This browser does not support Web Audio playback.",
       blocked: "The sound could not start. Check browser audio permission and try Play again.",
       invalid: "Enter a frequency between 20 and 12,000 Hz.",
-      modePure: "Pure tones", modeStrike: "Strike & Pluck", modeSustain: "Blow & Bow", modeMotion: "Moving Pitch",
+      modePure: "Pure tones", modeStrike: "Strike/Pluck", modeSustain: "Blow/Bow", modeMotion: "Moving Pitch",
       modeMix: "Combine waves", modeSwitchAria: "Sound categories",
       mixExperimentsAria: "Explore combined and complex sounds",
       mixExperimentBeats: "Two frequencies", mixExperimentHarmonics: "Build timbre",
@@ -191,7 +191,7 @@
       strikeDesc: {
         pluck: "A plucked string repeatedly reflects its vibration, losing some energy each cycle. Several strings can form a chord.",
         kick: "A vibrating circular membrane has several natural modes, with frequencies set by its size and tension.",
-        piano: "A hammer excites slightly detuned strings together, with a bright onset and stretched overtones."
+        piano: "Hammer force changes the brightness of slightly detuned, stiff strings. Their overtones fade at different rates."
       },
       sustainPhase: "03 · Held sounds", sustainChoose: "Choose a held sound",
       sustainFlute: "Flute", sustainViolin: "Violin", sustainMorin: "Morin khuur",
@@ -332,7 +332,7 @@
       unsupported: "Энэ хөтөч Web Audio-гаар авиа тоглуулах боломжгүй байна.",
       blocked: "Авиа эхэлсэнгүй. Хөтчийн дууны зөвшөөрлийг шалгаад дахин оролдоно уу.",
       invalid: "20–12,000 Гц-ийн хооронд давтамж оруулна уу.",
-      modePure: "Цэвэр авиа", modeStrike: "Цохих ба татах", modeSustain: "Үлээх ба нумдах", modeMotion: "Хувирдаг давтамж",
+      modePure: "Цэвэр авиа", modeStrike: "Цохих/татах", modeSustain: "Үлээх/нумдах", modeMotion: "Хувирдаг давтамж",
       modeMix: "Долгион холих", modeSwitchAria: "Дууны бүлэг",
       mixExperimentsAria: "Холимог ба нийлмэл авианы туршилтууд",
       mixExperimentBeats: "Хоёр давтамж", mixExperimentHarmonics: "Өнгө бүтээх",
@@ -412,9 +412,9 @@
       strikePhase: "02 · Загварчилсан дуу", strikeChoose: "Дууны загвар сонгох",
       pluck: "Гитарын чавхдас", kick: "Бөмбөр", piano: "Төгөлдөр хуур", strikeGroupAria: "Цохилтын дууны загвар",
       strikeCaption: "Дарж сонсоод, дахин дарж давтаарай",
-      strikePluckButton: "Татах", strikeStrumButton: "Чавхдасуудыг татах", strikeKickButton: "Цохих", strikePianoButton: "Нот тоглуулах",
+      strikePluckButton: "Татах", strikeStrumButton: "Цохих", strikeKickButton: "Цохих", strikePianoButton: "Нот тоглуулах",
       strikeGuitarPlay: "Гитар тоглуулах", strikeSingle: "Нэг чавхдас", strikeStrum: "Олон чавхдас",
-      strikeChord: "Аккорд сонгох", strikeChordHint: "Чавхдасууд ээлжлэн дуугарна. Аккордоос хамаарч дарсан нот нь өөр, зарим чавхдас дуугарахгүй.",
+      strikeChord: "Аккорд сонгох", strikeChordHint: "Цохиход чавхдасууд ээлжлэн дуугарна. Аккордоос хамаарч дарсан нот нь өөр, зарим чавхдас дуугарахгүй.",
       strikePluckPosition: "Татах байрлал", strikePluckPositionHint: "Үзүүрт нь ойр татахад дээд гармоникууд тодордог.",
       strikePitch: "Нотын давтамж", strikePitchSliderAria: "Нотын давтамжийн гулсуур",
       strikePitchInputAria: "Нотын давтамжийг герцээр оруулах",
@@ -459,7 +459,7 @@
       strikeDesc: {
         pluck: "Чавхдасны хэлбэлзэл эргэж ойж, энергиэ бага багаар алддаг. Хэд хэдэн чавхдас аккорд үүсгэнэ.",
         kick: "Дугуй мембран олон өөрийн модоор хэлбэлзэнэ. Давтамжууд нь хэмжээ ба таталтаас хамаарна.",
-        piano: "Алх цохиход өчүүхэн зөрүүтэй хэдэн чавхдас зэрэг хэлбэлзэж, эхэндээ хурц авиа үүсгэнэ."
+        piano: "Алх цохиход өчүүхэн зөрүүтэй чавхдас зэрэг хэлбэлзэнэ. Цохилтын хүчийг өсгөхөд дээд гармоникууд тодорч, авиа хурц болно."
       },
       sustainPhase: "03 · Үргэлжлэх авиа", sustainChoose: "Үргэлжлэх дуу сонгох",
       sustainFlute: "Лимбэ", sustainViolin: "Хийл", sustainMorin: "Морин хуур",
@@ -1424,6 +1424,7 @@
       options: {
         position: state.strikePluckPosition,
         drumTension: state.strikeDrumTension,
+        ...(state.strikeKind === "piano" ? { velocity: state.strikeStrength / 100 } : {}),
         ...(state.strikeKind === "pluck" && state.strikeGuitarPlay === "strum" ?
           { strumChord: state.strikeChord } : {})
       } };
