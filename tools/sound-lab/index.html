@@ -11,14 +11,14 @@
   <script src="sound-string.js?v=s017" defer></script>
   <script src="sound-piano.js?v=s019" defer></script>
   <script src="sound-transient.js?v=s019" defer></script>
-  <script src="sound-sustain.js?v=s020a1" defer></script>
+  <script src="sound-sustain.js?v=s020b" defer></script>
   <script src="sound-spectrum.js?v=s017" defer></script>
   <script src="sound-motion.js?v=s015" defer></script>
   <script src="sound-beats.js" defer></script>
   <script src="sound-harmonics.js" defer></script>
   <script src="sound-noise.js" defer></script>
   <script src="sound-recorder.js" defer></script>
-  <script src="sound-lab.js?v=s020" defer></script>
+  <script src="sound-lab.js?v=s020b" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -392,6 +392,11 @@
           <input id="sustainBreath" type="range" min="0" max="100" step="1" value="60">
           <p class="field-help" data-i18n="sustainBreathHint">Илүү хүчтэй үлээхэд дуу чангарч, гармоникууд болон амьсгалын шуугиан өөрчлөгдөнө.</p>
         </div>
+        <div class="field-group" id="sustainBowGroup" hidden>
+          <div class="field-title"><label for="sustainBowPressure" data-i18n="sustainBow">Нумын даралт</label><output id="sustainBowValue">60%</output></div>
+          <input id="sustainBowPressure" type="range" min="0" max="100" step="1" value="60">
+          <p class="field-help" data-i18n="sustainBowHint">Нумын даралтыг нэмэхэд авиа чангарч, дээд гармоникууд тодорно.</p>
+        </div>
         <div class="field-group">
           <div class="field-title"><label for="sustainAttack" data-i18n="sustainAttack">Эхлэх хугацаа</label><output id="sustainAttackValue">0.14 сек</output></div>
           <input id="sustainAttack" type="range" min="0.02" max="0.6" step="0.01" value="0.14">
@@ -749,7 +754,7 @@
 
     <section class="challenge" id="sustainChallenge" aria-labelledby="sustain-challenge-heading" hidden>
       <div class="challenge-icon" aria-hidden="true">✧</div>
-      <div class="challenge-copy"><h2 id="sustain-challenge-heading" data-i18n="tryThis">ТУРШИЖ ҮЗ</h2><p data-i18n="sustainChallenge">Ижил нот дээр лимбэ, хийл, морин хуурыг сонсож, эхлэл ба гармоникуудыг харьцуул.</p></div>
+      <div class="challenge-copy"><h2 id="sustain-challenge-heading" data-i18n="tryThis">ТУРШИЖ ҮЗ</h2><p id="sustainChallengeText" data-i18n="sustainChallenge">Ижил нот дээр лимбэ, хийл, морин хуурыг сонсож, эхлэл ба гармоникуудыг харьцуул.</p></div>
       <button type="button" id="sustainReset" class="reset-button" data-i18n="reset">↺ Эхнээс нь</button>
     </section>
 
