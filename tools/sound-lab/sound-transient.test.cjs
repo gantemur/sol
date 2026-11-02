@@ -19,10 +19,14 @@ test("pluck, kick and modeled piano are distinct bounded decaying mathematical s
   assert.notEqual(sound.sampleAt("piano", 0.012, 220, 0.65), sound.sampleAt("pluck", 0.012, 220, 0.65));
 });
 
-test("kick frequency falls while string pitch stays controllable", () => {
-  assert.ok(sound.kickFrequency(0) > sound.kickFrequency(0.05));
-  assert.ok(sound.kickFrequency(0.05) > sound.kickFrequency(0.3));
-  assert.ok(Math.abs(sound.kickFrequency(0.3) - 48) < 0.1);
+test("membrane fundamentals depend on size and the square root of tension", () => {
+  assert.equal(sound.kickFrequency(0), sound.kickFrequency(.3));
+  assert.ok(Math.abs(sound.kickFrequency(0) - 112) < 0.1);
+  assert.ok(Math.abs(sound.kickFrequency(0, "medium", 2) / sound.kickFrequency(0) - Math.sqrt(2)) < 1e-9);
+  const modes = sound.drumModeFrequencies("medium");
+  assert.equal(modes.length, 8);
+  assert.ok(modes[1] > 1.5 * modes[0] && modes[1] < 1.7 * modes[0]);
+  assert.ok(modes[2] > 2.1 * modes[0] && modes[2] < 2.2 * modes[0]);
   for (const hz of [110, 220, 440, 880]) {
     assert.ok(Math.abs(sound.sliderToHz(sound.hzToSlider(hz)) - hz) < 1e-7);
   }
@@ -35,6 +39,8 @@ test("invalid or unbounded transient recipes are rejected", () => {
   assert.throws(() => sound.makeSamples("pluck", 220, 10, 44100), RangeError);
   assert.throws(() => sound.makeSamples("kick", 220, 0.3, 0), RangeError);
   assert.throws(() => sound.makeSamples("kick", 220, 0.3, 44100, "giant"), RangeError);
+  assert.throws(() => sound.makeSamples("kick", 220, .3, 44100, "medium", { drumTension: 3 }), RangeError);
+  assert.throws(() => sound.makeSamples("pluck", 220, .3, 44100, "medium", { strumChord: "other" }), RangeError);
   assert.ok(sound.duration(sound.MAX_DECAY) <= 3);
 });
 
@@ -82,4 +88,16 @@ test("kick-size presets change pitch and preserve modeled waveform/sample agreem
       sound.plottedSampleAt("kick", t, 220, 0.3, size)) < 1e-6);
   }
   assert.equal(sound.plottedSampleAt("pluck", 3, 220, 0.65), 0);
+});
+
+test("one strum reuses the same plotted and audible wave, with chord-specific spectra", () => {
+  const options = { strumChord: "em", position: .22 };
+  const rate = 16000;
+  const buffer = sound.makeSamples("pluck", 220, .65, rate, "medium", options);
+  for (const index of [100, 400, 1200, 4000]) {
+    assert.ok(Math.abs(buffer[index] - sound.plottedSampleAt("pluck", index / rate,
+      220, .65, "medium", options)) < 1e-6);
+  }
+  assert.notEqual(sound.sampleAt("pluck", .1, 220, .65, "medium", options),
+    sound.sampleAt("pluck", .1, 220, .65));
 });

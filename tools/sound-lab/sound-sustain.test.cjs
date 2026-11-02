@@ -20,8 +20,10 @@ test("held instrument recipes are valid and spectrally distinct", () => {
   }
   assert.ok(sound.partials("violin")[1] > sound.partials("flute")[1] * 3,
     "bowed violin has much stronger second harmonic than flute");
-  assert.ok(sound.partials("morin")[2] > sound.partials("morin")[1] * 2,
-    "stylized morin khuur emphasizes a different harmonic region");
+  assert.ok(sound.partials("morin")[1] > sound.partials("morin")[0],
+    "stylized morin khuur no longer assumes odd harmonics must dominate");
+  assert.ok(sound.partials("morin")[6] < sound.partials("violin")[6],
+    "morin khuur illustration is darker in the upper harmonics");
   assert.notEqual(sound.waveAt(.43, "violin"), sound.waveAt(.43, "morin"));
 });
 

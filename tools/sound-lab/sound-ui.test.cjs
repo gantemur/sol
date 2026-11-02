@@ -27,15 +27,16 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /id="frequencyInput"[^>]*type="number"/);
   assert.match(html, /<html lang="mn">/);
   assert.match(html, /id="fixedTimeCheck" checked/);
-  assert.match(html, /src="sound-transient\.js\?v=s015"/);
-  assert.match(html, /src="sound-sustain\.js\?v=s016"/);
-  assert.match(html, /src="sound-spectrum\.js"/);
+  assert.match(html, /src="sound-string\.js\?v=s017"/);
+  assert.match(html, /src="sound-transient\.js\?v=s017"/);
+  assert.match(html, /src="sound-sustain\.js\?v=s017"/);
+  assert.match(html, /src="sound-spectrum\.js\?v=s017"/);
   assert.match(html, /src="sound-motion\.js\?v=s015"/);
   assert.match(html, /src="sound-beats\.js"/);
   assert.match(html, /src="sound-harmonics\.js"/);
   assert.match(html, /src="sound-noise\.js"/);
-  assert.match(html, /src="sound-lab\.js\?v=s016"/);
-  assert.match(html, /href="sound-lab\.css\?v=s016"/);
+  assert.match(html, /src="sound-lab\.js\?v=s017"/);
+  assert.match(html, /href="sound-lab\.css\?v=s017"/);
   assert.match(html, /src="sound-recorder\.js"/);
   assert.match(html, /id="recordPreview"[^>]*controls/);
   assert.match(html, /id="recordDownload"[^>]*download="sound-lab\.wav"/);
@@ -63,6 +64,9 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.ok(html.indexOf('id="mixWorkspace"') < html.indexOf('class="experiment-switch"'),
     "Experiment choices belong within left panels, not under the four main tabs");
   for (const kind of transientModel.KINDS) assert.match(html, new RegExp('data-strike="' + kind + '"'));
+  for (const chord of Object.keys(transientModel.STRUM_CHORDS)) {
+    assert.match(html, new RegExp('data-guitar-chord="' + chord + '"'));
+  }
   assert.doesNotMatch(html, /id="pianoKeyboard"|class="piano-keys"/);
   for (const kind of sustainModel.KINDS) assert.match(html, new RegExp('data-sustain="' + kind + '"'));
   for (const gesture of ["hold", "toggle"]) assert.match(html, new RegExp('data-sustain-gesture="' + gesture + '"'));
@@ -150,6 +154,8 @@ function fakePage(search = "", supportWorklets = true) {
   const elements = new Map(ids.map(id => [id, element()]));
   const waveButtons = model.WAVEFORMS.map(wave => element({ wave }));
   const strikeButtons = transientModel.KINDS.map(strike => element({ strike }));
+  const guitarPlayButtons = ["single", "strum"].map(guitarPlay => element({ guitarPlay }));
+  const guitarChordButtons = Object.keys(transientModel.STRUM_CHORDS).map(guitarChord => element({ guitarChord }));
   const sustainButtons = sustainModel.KINDS.map(sustain => element({ sustain }));
   const sustainGestureButtons = ["hold", "toggle"].map(sustainGesture => element({ sustainGesture }));
   const drumButtons = Object.keys(transientModel.KICK_SIZES).map(drumSize => element({ drumSize }));
@@ -175,6 +181,8 @@ function fakePage(search = "", supportWorklets = true) {
     querySelectorAll(selector) {
       if (selector === "[data-wave]") return waveButtons;
       if (selector === "[data-strike]") return strikeButtons;
+      if (selector === "[data-guitar-play]") return guitarPlayButtons;
+      if (selector === "[data-guitar-chord]") return guitarChordButtons;
       if (selector === "[data-sustain]") return sustainButtons;
       if (selector === "[data-sustain-gesture]") return sustainGestureButtons;
       if (selector === "[data-drum-size]") return drumButtons;
@@ -360,7 +368,7 @@ function fakePage(search = "", supportWorklets = true) {
   const sandbox = { document, window, URL: FakeURL, Blob, URLSearchParams, ResizeObserver: undefined };
   vm.runInNewContext(browserCode, sandbox, { filename: "sound-lab.js" });
   return {
-    contexts, elements, document, window, waveButtons, strikeButtons, sustainButtons,
+    contexts, elements, document, window, waveButtons, strikeButtons, guitarPlayButtons, guitarChordButtons, sustainButtons,
     sustainGestureButtons, drumButtons, spectrumButtons,
     motionButtons, sirenPatternButtons, timbreButtons, mixGapButtons, mixKindButtons,
     harmonicPresetButtons, harmonicLevelInputs, noiseColorButtons,
@@ -412,7 +420,7 @@ test("held flute plays only while pressed, and release follows the chosen decay"
   // Each instrument selection changes the periodic waveform and plotted bars.
   app.sustainButtons[1].events.click();
   assert.match(app.elements.get("sustainDescription").textContent, /хурц/);
-  assert.equal(app.elements.get("sustainAttackValue").textContent, "0.32 сек");
+  assert.equal(app.elements.get("sustainAttackValue").textContent, "0.18 сек");
   await app.fire("sustainButton", "pointerdown", { pointerId: 12 });
   assert.equal(context.oscillators.length, 2);
   assert.notDeepEqual(Array.from(context.periodicWaves[0].imag),
@@ -815,16 +823,48 @@ test("string snap and small/medium/large drum recipes are separate controls", as
   assert.equal(app.elements.get("strikeDrumSizeGroup").hidden, false);
   app.drumButtons[0].events.click();
   assert.equal(app.drumButtons[0].getAttribute("aria-pressed"), "true");
-  assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "127 → 35 Гц");
+  assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "81 Гц");
   await app.fire("strikeButton", "click");
   assert.equal(app.contexts[0].sources.length, 1);
   app.drumButtons[2].events.click();
-  assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "246 → 67 Гц");
+  assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "157 Гц");
   assert.equal(app.contexts[0].sources[0].stopped, true);
   await app.fire("strikeButton", "click");
   const first = app.contexts[0].buffers[0].getChannelData(0);
   const second = app.contexts[0].buffers[1].getChannelData(0);
   assert.notEqual(first[400], second[400], "Drum size changes actual audio samples");
+});
+
+test("guitar strum presets model separate strings without autoplay and share plotted audio", async () => {
+  const app = fakePage();
+  app.fire("modeStrike", "click");
+  assert.equal(app.elements.get("strikeGuitarGroup").hidden, false);
+  assert.equal(app.elements.get("strikeChordGroup").hidden, true);
+  app.guitarPlayButtons[1].click();
+  assert.equal(app.contexts.length, 0, "Choosing strum is silent");
+  assert.equal(app.elements.get("strikePitchGroup").hidden, true);
+  assert.equal(app.elements.get("strikeChordGroup").hidden, false);
+  assert.equal(app.elements.get("strikeButtonLabel").textContent, "Чавхдасуудыг татах");
+  await app.fire("strikeButton", "click");
+  const em = app.contexts[0].buffers[0].getChannelData(0);
+  assert.ok(em.some(value => Math.abs(value) > .02));
+  app.guitarChordButtons[1].click();
+  assert.equal(app.contexts[0].sources[0].stopped, true, "Chord change stops previous strum");
+  await app.fire("strikeButton", "click");
+  const g = app.contexts[0].buffers[1].getChannelData(0);
+  assert.notEqual(em[3000], g[3000], "Different fret patterns produce different audio");
+  app.elements.get("strikePluckPosition").value = "48";
+  app.fire("strikePluckPosition", "input");
+  assert.equal(app.elements.get("strikePluckPositionValue").textContent, "48%");
+  app.guitarPlayButtons[0].click();
+  assert.equal(app.elements.get("strikePitchGroup").hidden, false);
+  assert.equal(app.elements.get("strikeChordGroup").hidden, true);
+  app.strikeButtons[1].click();
+  assert.equal(app.elements.get("strikeGuitarGroup").hidden, true);
+  app.elements.get("strikeDrumTension").value = "200";
+  app.fire("strikeDrumTension", "input");
+  assert.equal(app.elements.get("strikeDrumTensionValue").textContent, "200%");
+  assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "158 Гц");
 });
 
 test("one transient waveform supports zoom, pan, presets and time scrubbing", () => {
