@@ -6,6 +6,7 @@ const vm = require("node:vm");
 const path = require("node:path");
 const model = require("./sound-model.js");
 const transientModel = require("./sound-transient.js");
+const sustainModel = require("./sound-sustain.js");
 const spectrumModel = require("./sound-spectrum.js");
 const motionModel = require("./sound-motion.js");
 const beatsModel = require("./sound-beats.js");
@@ -27,13 +28,14 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /<html lang="mn">/);
   assert.match(html, /id="fixedTimeCheck" checked/);
   assert.match(html, /src="sound-transient\.js\?v=s015"/);
+  assert.match(html, /src="sound-sustain\.js\?v=s016"/);
   assert.match(html, /src="sound-spectrum\.js"/);
   assert.match(html, /src="sound-motion\.js\?v=s015"/);
   assert.match(html, /src="sound-beats\.js"/);
   assert.match(html, /src="sound-harmonics\.js"/);
   assert.match(html, /src="sound-noise\.js"/);
-  assert.match(html, /src="sound-lab\.js\?v=s015"/);
-  assert.match(html, /href="sound-lab\.css\?v=s015"/);
+  assert.match(html, /src="sound-lab\.js\?v=s016"/);
+  assert.match(html, /href="sound-lab\.css\?v=s016"/);
   assert.match(html, /src="sound-recorder\.js"/);
   assert.match(html, /id="recordPreview"[^>]*controls/);
   assert.match(html, /id="recordDownload"[^>]*download="sound-lab\.wav"/);
@@ -41,6 +43,9 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.doesNotMatch(html, /class="record-panel"/);
   assert.match(html, /id="recordResult"[^>]*hidden/);
   assert.match(html, /id="strikeWorkspace"[^>]*hidden/);
+  assert.match(html, /id="sustainWorkspace"[^>]*hidden/);
+  assert.match(html, /id="sustainChallenge"[^>]*hidden/);
+  assert.match(html, /id="sustainExplanation"[^>]*hidden/);
   assert.match(html, /id="motionWorkspace"[^>]*hidden/);
   assert.match(html, /id="mixWorkspace"[^>]*hidden/);
   assert.match(html, /id="mixExplanation"[^>]*hidden/);
@@ -59,6 +64,11 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
     "Experiment choices belong within left panels, not under the four main tabs");
   for (const kind of transientModel.KINDS) assert.match(html, new RegExp('data-strike="' + kind + '"'));
   assert.doesNotMatch(html, /id="pianoKeyboard"|class="piano-keys"/);
+  for (const kind of sustainModel.KINDS) assert.match(html, new RegExp('data-sustain="' + kind + '"'));
+  for (const gesture of ["hold", "toggle"]) assert.match(html, new RegExp('data-sustain-gesture="' + gesture + '"'));
+  assert.ok(html.indexOf('id="modeStrike"') < html.indexOf('id="modeSustain"') &&
+    html.indexOf('id="modeSustain"') < html.indexOf('id="modeMotion"'),
+  "Held sound tab belongs between strike and moving pitch");
   assert.match(html, /id="modeMix"[^>]*data-i18n="modeMix"/);
   assert.match(html, /id="mixBaseInput"[^>]*type="number"/);
   assert.match(html, /data-i18n="unitHz">Гц<\/span>/);
@@ -140,6 +150,8 @@ function fakePage(search = "", supportWorklets = true) {
   const elements = new Map(ids.map(id => [id, element()]));
   const waveButtons = model.WAVEFORMS.map(wave => element({ wave }));
   const strikeButtons = transientModel.KINDS.map(strike => element({ strike }));
+  const sustainButtons = sustainModel.KINDS.map(sustain => element({ sustain }));
+  const sustainGestureButtons = ["hold", "toggle"].map(sustainGesture => element({ sustainGesture }));
   const drumButtons = Object.keys(transientModel.KICK_SIZES).map(drumSize => element({ drumSize }));
   const spectrumButtons = ["local", "overall"].map(spectrumView => element({ spectrumView }));
   const motionButtons = ["theremin", "siren"].map(motion => element({ motion }));
@@ -163,6 +175,8 @@ function fakePage(search = "", supportWorklets = true) {
     querySelectorAll(selector) {
       if (selector === "[data-wave]") return waveButtons;
       if (selector === "[data-strike]") return strikeButtons;
+      if (selector === "[data-sustain]") return sustainButtons;
+      if (selector === "[data-sustain-gesture]") return sustainGestureButtons;
       if (selector === "[data-drum-size]") return drumButtons;
       if (selector === "[data-spectrum-view]") return spectrumButtons;
       if (selector === "[data-motion]") return motionButtons;
@@ -187,6 +201,7 @@ function fakePage(search = "", supportWorklets = true) {
   const window = {
     SoundLabModel: model,
     SoundLabTransientModel: transientModel,
+    SoundLabSustain: sustainModel,
     SoundLabMotionModel: motionModel,
     SoundLabBeats: beatsModel,
     SoundLabHarmonics: harmonicModel,
@@ -345,7 +360,8 @@ function fakePage(search = "", supportWorklets = true) {
   const sandbox = { document, window, URL: FakeURL, Blob, URLSearchParams, ResizeObserver: undefined };
   vm.runInNewContext(browserCode, sandbox, { filename: "sound-lab.js" });
   return {
-    contexts, elements, document, window, waveButtons, strikeButtons, drumButtons, spectrumButtons,
+    contexts, elements, document, window, waveButtons, strikeButtons, sustainButtons,
+    sustainGestureButtons, drumButtons, spectrumButtons,
     motionButtons, sirenPatternButtons, timbreButtons, mixGapButtons, mixKindButtons,
     harmonicPresetButtons, harmonicLevelInputs, noiseColorButtons,
     hzLabels, objectUrls, revokedUrls,
@@ -362,6 +378,110 @@ function fakePage(search = "", supportWorklets = true) {
     }
   };
 }
+
+test("held flute plays only while pressed, and release follows the chosen decay", async () => {
+  const app = fakePage();
+  assert.equal(app.contexts.length, 0, "No audio until a deliberate gesture");
+  app.fire("modeSustain", "click");
+  assert.equal(app.elements.get("sustainWorkspace").hidden, false);
+  assert.equal(app.elements.get("strikeWorkspace").hidden, true);
+  assert.equal(app.elements.get("modeSustain").getAttribute("aria-pressed"), "true");
+  assert.match(app.elements.get("pagePhase").textContent, /^03/);
+  assert.equal(app.elements.get("sustainButton").getAttribute("aria-pressed"), "false");
+
+  // A normal pointer click after press/release must not restart hold mode.
+  await app.fire("sustainButton", "pointerdown", { pointerId: 11 });
+  assert.equal(app.contexts.length, 1);
+  const context = app.contexts[0];
+  assert.equal(context.oscillators.length, 1);
+  assert.equal(context.oscillators[0].started, true);
+  assert.ok(context.oscillators[0].periodicWave);
+  assert.equal(context.sources.length, 1, "Gentle breath noise is generated locally");
+  assert.equal(context.sources[0].loop, true);
+  assert.equal(context.filters[0].type, "lowpass");
+  assert.equal(app.elements.get("sustainButton").getAttribute("aria-pressed"), "true");
+  app.tick(.08);
+  app.fire("sustainButton", "pointerup", { pointerId: 11 });
+  assert.equal(app.elements.get("sustainButton").getAttribute("aria-pressed"), "false");
+  assert.equal(context.oscillators[0].stopped, true);
+  assert.equal(context.sources[0].stopped, true);
+  assert.match(app.elements.get("sustainStatus").textContent, /намдаж/);
+  await app.fire("sustainButton", "click", { detail: 1 });
+  assert.equal(context.oscillators.length, 1, "Pointer-generated click is ignored after release");
+
+  // Each instrument selection changes the periodic waveform and plotted bars.
+  app.sustainButtons[1].events.click();
+  assert.match(app.elements.get("sustainDescription").textContent, /хурц/);
+  assert.equal(app.elements.get("sustainAttackValue").textContent, "0.32 сек");
+  await app.fire("sustainButton", "pointerdown", { pointerId: 12 });
+  assert.equal(context.oscillators.length, 2);
+  assert.notDeepEqual(Array.from(context.periodicWaves[0].imag),
+    Array.from(context.periodicWaves[1].imag));
+  app.fire("stopAll", "click");
+  assert.equal(app.elements.get("sustainButton").getAttribute("aria-pressed"), "false");
+  assert.equal(context.oscillators[1].stopped, true);
+});
+
+test("held note toggle, keyboard access, pitch snap, language and mode cleanup", async () => {
+  const app = fakePage();
+  app.fire("modeSustain", "click");
+  app.sustainGestureButtons[1].events.click();
+  assert.equal(app.elements.get("sustainPlayLabel").textContent, "Тоглуулах");
+  await app.fire("sustainButton", "click", { detail: 1 });
+  const context = app.contexts[0];
+  assert.equal(app.elements.get("sustainButton").getAttribute("aria-pressed"), "true");
+  assert.equal(app.elements.get("sustainPlayLabel").textContent, "Зогсоох");
+  app.elements.get("sustainFrequencyInput").value = "437";
+  app.fire("sustainFrequencyInput", "change");
+  assert.equal(context.oscillators[0].frequency.value, 437);
+  app.elements.get("sustainSnap").checked = true;
+  app.fire("sustainSnap", "change");
+  assert.equal(context.oscillators[0].frequency.value, 440);
+  app.elements.get("sustainVolume").value = "70";
+  app.fire("sustainVolume", "input");
+  assert.equal(app.elements.get("sustainVolumeValue").textContent, "70%");
+  app.fire("langEn", "click");
+  assert.equal(app.elements.get("sustainPlayLabel").textContent, "Stop");
+  assert.match(app.elements.get("sustainEnvelopeBadge").textContent, /s/);
+  await app.fire("sustainButton", "click", { detail: 1 });
+  assert.equal(context.oscillators[0].stopped, true);
+
+  app.sustainGestureButtons[0].events.click();
+  await app.fire("sustainButton", "keydown", { key: " " });
+  assert.equal(context.oscillators.length, 2);
+  assert.equal(app.elements.get("sustainButton").getAttribute("aria-pressed"), "true");
+  app.fire("sustainButton", "keyup", { key: " " });
+  assert.equal(context.oscillators[1].stopped, true);
+  await app.fire("sustainButton", "click", { detail: 0 });
+  assert.equal(context.oscillators.length, 3, "Assistive-technology click can toggle hold mode");
+  app.fire("modeMotion", "click");
+  assert.equal(context.oscillators[2].stopped, true);
+  assert.equal(app.elements.get("sustainWorkspace").hidden, true);
+  assert.equal(app.elements.get("modeMotion").getAttribute("aria-pressed"), "true");
+});
+
+test("quick lift cancels pending audio start; tab hide and blur silence held notes", async () => {
+  const app = fakePage();
+  app.fire("modeSustain", "click");
+  const pending = app.fire("sustainButton", "pointerdown", { pointerId: 5 });
+  app.fire("sustainButton", "pointercancel", { pointerId: 5 });
+  await pending;
+  assert.equal(app.contexts[0].oscillators.length, 0, "Released before resume; no late ghost note");
+
+  await app.fire("sustainButton", "pointerdown", { pointerId: 6 });
+  assert.equal(app.contexts[0].oscillators.length, 1);
+  app.window.events.blur();
+  assert.equal(app.contexts[0].oscillators[0].stopped, true);
+  assert.equal(app.elements.get("sustainButton").getAttribute("aria-pressed"), "false");
+
+  app.sustainGestureButtons[1].events.click();
+  await app.fire("sustainButton", "click", { detail: 1 });
+  assert.equal(app.contexts[0].oscillators.length, 2);
+  app.document.hidden = true;
+  app.document.events.visibilitychange();
+  assert.equal(app.contexts[0].oscillators[1].stopped, true);
+  assert.equal(app.elements.get("sustainButton").getAttribute("aria-pressed"), "false");
+});
 
 test("initialization is silent; Play, live Hz, note snap, shape and Stop work", async () => {
   const app = fakePage();
@@ -575,7 +695,7 @@ test("an explicit English URL overrides the Mongolian default", () => {
 
 test("Mongolian units cover static ranges, readouts and plotted axes; English remains unchanged", () => {
   const app = fakePage();
-  assert.equal(app.hzLabels.length, 6);
+  assert.equal(app.hzLabels.length, 8);
   assert.ok(app.hzLabels.every(label => label.textContent.endsWith(" Гц")));
   assert.equal(app.elements.get("frequencyInput").getAttribute("aria-valuetext"), "440 Гц");
   assert.equal(app.elements.get("fundamentalBadge").textContent, "f₀ = 440 Гц");
@@ -759,7 +879,7 @@ test("Moving Pitch theremin uses a pointer gesture, shared audio, live pitch and
   app.fire("modeMotion", "click");
   assert.equal(app.elements.get("pureWorkspace").hidden, true);
   assert.equal(app.elements.get("motionWorkspace").hidden, false);
-  assert.equal(app.elements.get("pagePhase").textContent, "03 · Хувирдаг давтамж");
+  assert.equal(app.elements.get("pagePhase").textContent, "04 · Хувирдаг давтамж");
   assert.match(app.elements.get("motionStatus").textContent, /^Бэлэн\./,
     "A newly opened sound category must say Ready, not Stopped");
   assert.equal(app.contexts.length, 0, "Mode switching remains silent");
@@ -916,7 +1036,7 @@ test("Combine Waves is silent until Play and begins with 440 + 444 Hz in one sha
   assert.equal(app.elements.get("mixWorkspace").hidden, false);
   assert.equal(app.elements.get("mixChallenge").hidden, false);
   assert.equal(app.elements.get("mixExplanation").hidden, false);
-  assert.equal(app.elements.get("pagePhase").textContent, "04 · Хоёр авианы биение");
+  assert.equal(app.elements.get("pagePhase").textContent, "05 · Хоёр авианы биение");
   assert.equal(app.elements.get("mixPairValue").textContent, "440 + 444 Гц");
   assert.equal(app.elements.get("mixBeatValue").textContent, "4 удаа/сек");
   assert.equal(app.mixGapButtons[2].getAttribute("aria-pressed"), "true");
@@ -1027,7 +1147,7 @@ test("beats waveform zoom, pan and spectrum remain bilingual and show nearby fre
   assert.equal(app.elements.get("mixZoomIn").disabled, true);
   assert.equal(app.elements.get("mixWindowLabel").textContent, "7.81 мсек – 9.81 мсек · 4 удаа/сек");
   app.fire("langEn", "click");
-  assert.equal(app.elements.get("pagePhase").textContent, "04 · Two-tone beats");
+  assert.equal(app.elements.get("pagePhase").textContent, "05 · Two-tone beats");
   assert.equal(app.elements.get("mixBeatValue").textContent, "4 pulses/s");
   assert.equal(app.elements.get("mixWindowLabel").textContent, "7.81 ms – 9.81 ms · 4 pulses/s");
   assert.equal(app.elements.get("mixZoomIn").getAttribute("aria-label"), "Zoom in to individual vibrations");
@@ -1114,7 +1234,7 @@ test("harmonic builder is an interactive eight-partial synthesis without autopla
   assert.equal(app.elements.get("harmonicWorkspace").hidden, false);
   assert.equal(app.elements.get("harmonicExplanation").hidden, false);
   assert.equal(app.elements.get("noiseWorkspace").hidden, true);
-  assert.equal(app.elements.get("pagePhase").textContent, "04 · Авиа бүтээх");
+  assert.equal(app.elements.get("pagePhase").textContent, "05 · Авиа бүтээх");
   assert.equal(app.harmonicLevelInputs.length, 8);
   assert.equal(app.elements.get("harmonicLevelValue1").textContent, "100%");
   app.harmonicPresetButtons[2].events.click();
@@ -1151,7 +1271,7 @@ test("noise colors loop filtered model buffers safely; changing experiment silen
   assert.equal(app.contexts.length, 0);
   assert.equal(app.elements.get("noiseWorkspace").hidden, false);
   assert.equal(app.elements.get("noiseChallenge").hidden, false);
-  assert.equal(app.elements.get("pagePhase").textContent, "04 · Шуугиан судлах");
+  assert.equal(app.elements.get("pagePhase").textContent, "05 · Шуугиан судлах");
   assert.match(app.elements.get("noiseColorDescription").textContent, /герцийн зурвас/);
   assert.ok(app.elements.get("noiseSpectrumCanvas").drawnText.some(label => label.includes("Гц")));
   await app.fire("noiseButton", "click");
@@ -1194,7 +1314,7 @@ test("harmonic and noise pending playback are canceled before any orphan sound s
   app.mixKindButtons[1].events.click();
   await app.fire("harmonicButton", "click");
   app.fire("langEn", "click");
-  assert.equal(app.elements.get("pagePhase").textContent, "04 · Build a sound");
+  assert.equal(app.elements.get("pagePhase").textContent, "05 · Build a sound");
   assert.equal(app.elements.get("harmonicPlayLabel").textContent, "Stop");
   app.fire("stopAll", "click");
   assert.equal(app.contexts[0].oscillators.at(-1).stopped, true);

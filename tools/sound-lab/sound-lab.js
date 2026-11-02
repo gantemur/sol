@@ -3,6 +3,7 @@
   "use strict";
   const model = window.SoundLabModel;
   const transientModel = window.SoundLabTransientModel;
+  const sustainModel = window.SoundLabSustain;
   const spectrumModel = window.SoundLabSpectrum;
   const motionModel = window.SoundLabMotionModel;
   const beatsModel = window.SoundLabBeats;
@@ -63,12 +64,12 @@
       unsupported: "This browser does not support Web Audio playback.",
       blocked: "The sound could not start. Check browser audio permission and try Play again.",
       invalid: "Enter a frequency between 20 and 12,000 Hz.",
-      modePure: "Pure tones", modeStrike: "Strike & Pluck", modeMotion: "Moving Pitch",
+      modePure: "Pure tones", modeStrike: "Strike & Pluck", modeSustain: "Blow & Bow", modeMotion: "Moving Pitch",
       modeMix: "Combine waves", modeSwitchAria: "Sound categories",
       mixExperimentsAria: "Explore combined and complex sounds",
       mixExperimentBeats: "Two frequencies", mixExperimentHarmonics: "Build timbre",
       mixExperimentNoise: "Noise",
-      harmonicPhase: "04 · Build a sound", noisePhase: "04 · Explore noise",
+      harmonicPhase: "05 · Build a sound", noisePhase: "05 · Explore noise",
       harmonicChoose: "Add harmonics", harmonicDescription: "Combine whole-number multiples of a frequency to build a new sound.",
       harmonicPlay: "Play", harmonicStop: "Stop", harmonicBase: "Fundamental frequency",
       harmonicPresetsTitle: "Example mixtures", harmonicPure: "Pure", harmonicOdd: "Odd harmonics",
@@ -111,7 +112,7 @@
       noiseWaveAria: "Modeled example of a nonperiodic noise waveform",
       noiseSpectrumAria: "Expected frequency magnitude profile of colored and filtered noise",
       noiseChoicesAria: "Noise color choices",
-      mixPhase: "04 · Two-tone beats",
+      mixPhase: "05 · Two-tone beats",
       mixChoose: "Combine two tones", mixDescription: "Two nearby frequencies reinforce and cancel, making the volume pulse.",
       mixPlay: "Play", mixStop: "Stop",
       mixBase: "First frequency", mixGap: "Frequency difference (Δf)",
@@ -188,7 +189,39 @@
         kick: "A drum hit drops in pitch while its vibration fades.",
         piano: "A hammer excites slightly detuned strings together, with a bright onset and stretched overtones."
       },
-      motionPhase: "03 · Moving frequency", motionChoose: "Choose a moving sound",
+      sustainPhase: "03 · Held sounds", sustainChoose: "Choose a held sound",
+      sustainFlute: "Flute", sustainViolin: "Violin", sustainMorin: "Morin khuur",
+      sustainGroupAria: "Held instrument models", sustainGestureTitle: "How to play",
+      sustainGestureAria: "Hold or toggle the sound", sustainHold: "Press and hold", sustainToggle: "Tap to toggle",
+      sustainPress: "Hold to play", sustainPressing: "Sounding…", sustainPressCaption: "Hold the button; release to fade.",
+      sustainTogglePlay: "Play", sustainToggleStop: "Stop", sustainToggleCaption: "Tap again to release the note.",
+      sustainPitch: "Note frequency", sustainPitchSliderAria: "Held note pitch slider",
+      sustainPitchInputAria: "Held note frequency in hertz", sustainAttack: "Attack time", sustainRelease: "Release time",
+      sustainEnvelopeHelp: "Attack applies to the next note; release applies when you let go.",
+      sustainEnvelopeTitle: "Loudness over time", sustainEnvelopeHint: "Example: hold for 1.2 s, then release. Attack, sustain and release.",
+      sustainEnvelopeFoot: "The vertical mark is the release at 1.2 s.",
+      sustainDetailTitle: "Waveform and harmonics", sustainDetailHint: "20 ms periodic component. The soft breath/bow noise is omitted from these plots.",
+      sustainWaveTitle: "Waveform", sustainSpectrumTitle: "Harmonics",
+      sustainEnvelopeAria: "Example held-note attack, sustain and release curve",
+      sustainWaveAria: "Modeled twenty millisecond sustained periodic waveform",
+      sustainSpectrumAria: "Relative strengths of eight modeled harmonics",
+      sustainChallenge: "Keep the same note. Compare flute, violin and morin khuur and change the attack and release times.",
+      sustainLearnMore: "Why can these sounds continue?",
+      sustainLessonOne: "Blowing a flute or bowing a string keeps feeding energy into its vibration. A plucked string is set moving once and then fades.",
+      sustainLessonTwo: "These simple models combine harmonics with a small breath/bow noise component. They do not reproduce the full instrument body, bow or breath mechanics.",
+      sustainReady: "Ready. Hold the button or use tap-to-toggle mode.", sustainStarting: "Starting the note…",
+      sustainPlayingHold: "Sounding. Release the button to fade.", sustainPlayingToggle: "Sounding. Tap again to release.",
+      sustainReleased: "Released. The sound fades away.", sustainStopped: "Stopped. Try another instrument.",
+      sustainHidden: "Sound stopped when you left the page.",
+      sustainUnsupported: "This browser cannot play generated instruments.",
+      sustainBlocked: "The sound could not start. Check browser sound permission.",
+      sustainInvalid: "Enter a frequency between 110 and 880 Hz.",
+      sustainDesc: {
+        flute: "A soft, nearly pure tone with a little modeled breath noise.",
+        violin: "A bright bowed-string color rich in upper harmonics.",
+        morin: "A darker bowed-string color with emphasized odd harmonics, inspired by the morin khuur."
+      },
+      motionPhase: "04 · Moving frequency", motionChoose: "Choose a moving sound",
       theremin: "Theremin", siren: "Fire-truck siren",
       motionDesc: {
         theremin: "Move your finger to change the pitch and loudness continuously.",
@@ -295,12 +328,12 @@
       unsupported: "Энэ хөтөч Web Audio-гаар авиа тоглуулах боломжгүй байна.",
       blocked: "Авиа эхэлсэнгүй. Хөтчийн дууны зөвшөөрлийг шалгаад дахин оролдоно уу.",
       invalid: "20–12,000 Гц-ийн хооронд давтамж оруулна уу.",
-      modePure: "Цэвэр авиа", modeStrike: "Цохих ба татах", modeMotion: "Хувирдаг давтамж",
+      modePure: "Цэвэр авиа", modeStrike: "Цохих ба татах", modeSustain: "Үлээх ба нумдах", modeMotion: "Хувирдаг давтамж",
       modeMix: "Долгион холих", modeSwitchAria: "Дууны бүлэг",
       mixExperimentsAria: "Холимог ба нийлмэл авианы туршилтууд",
       mixExperimentBeats: "Хоёр давтамж", mixExperimentHarmonics: "Өнгө бүтээх",
       mixExperimentNoise: "Шуугиан",
-      harmonicPhase: "04 · Авиа бүтээх", noisePhase: "04 · Шуугиан судлах",
+      harmonicPhase: "05 · Авиа бүтээх", noisePhase: "05 · Шуугиан судлах",
       harmonicChoose: "Гармоникуудыг нэмэх", harmonicDescription: "Нэг давтамжийн бүхэл тоон үржвэрүүдийг нийлүүлж шинэ авиа бүтээнэ.",
       harmonicPlay: "Тоглуулах", harmonicStop: "Зогсоох", harmonicBase: "Үндсэн давтамж",
       harmonicPresetsTitle: "Бэлэн найрлагууд", harmonicPure: "Цэвэр", harmonicOdd: "Сондгой",
@@ -343,7 +376,7 @@
       noiseWaveAria: "Үелдэггүй шуугианы долгионы загвар",
       noiseSpectrumAria: "Өнгөт болон шүүсэн шуугианы давтамжийн хүлээгдэх тархалт",
       noiseChoicesAria: "Шуугианы өнгө сонгох",
-      mixPhase: "04 · Хоёр авианы биение",
+      mixPhase: "05 · Хоёр авианы биение",
       mixChoose: "Хоёр авиа нийлүүлэх", mixDescription: "Ойролцоо хоёр давтамж нийлээд дууны чанга, сул нь ээлжлэн өөрчлөгдөнө.",
       mixPlay: "Тоглуулах", mixStop: "Зогсоох",
       mixBase: "Эхний давтамж", mixGap: "Давтамжийн зөрүү (Δf)",
@@ -420,7 +453,39 @@
         kick: "Бөмбөрийн цохилтын давтамж буурч, хэлбэлзэл нь намдана.",
         piano: "Алх цохиход өчүүхэн зөрүүтэй хэдэн чавхдас зэрэг хэлбэлзэж, эхэндээ хурц авиа үүсгэнэ."
       },
-      motionPhase: "03 · Хувирдаг давтамж", motionChoose: "Хөдөлгөөнт дуу сонгох",
+      sustainPhase: "03 · Үргэлжлэх авиа", sustainChoose: "Үргэлжлэх дуу сонгох",
+      sustainFlute: "Лимбэ", sustainViolin: "Хийл", sustainMorin: "Морин хуур",
+      sustainGroupAria: "Үргэлжлэх авианы загвар", sustainGestureTitle: "Дуугаргах арга",
+      sustainGestureAria: "Дууг барих эсвэл товшиж асаах", sustainHold: "Дарж барих", sustainToggle: "Товшиж асаах",
+      sustainPress: "Дарж дуугаргах", sustainPressing: "Дуугарч байна…", sustainPressCaption: "Дараад барина, тавихад аажмаар намдана.",
+      sustainTogglePlay: "Тоглуулах", sustainToggleStop: "Зогсоох", sustainToggleCaption: "Дахин товшиж намдаана.",
+      sustainPitch: "Нотын давтамж", sustainPitchSliderAria: "Нотын давтамжийн гулсуур",
+      sustainPitchInputAria: "Нотын давтамжийг герцээр оруулах", sustainAttack: "Эхлэх хугацаа", sustainRelease: "Намдах хугацаа",
+      sustainEnvelopeHelp: "Эхлэх хугацаа дараагийн нотод, намдах хугацаа тавихад үйлчилнэ.",
+      sustainEnvelopeTitle: "Дууны хүч хугацаанд", sustainEnvelopeHint: "1.2 сек дараад тавьсан жишээ. Эхлэл, үргэлжлэх үе, намдалт.",
+      sustainEnvelopeFoot: "Босоо шугам нь тавих мөч (1.2 сек).",
+      sustainDetailTitle: "Долгион ба гармоникууд", sustainDetailHint: "20 мсек-ийн үелэх хэсэг. Амьсгаа, нумын зөөлөн шуугианыг энд зураагүй.",
+      sustainWaveTitle: "Долгион", sustainSpectrumTitle: "Гармоникууд",
+      sustainEnvelopeAria: "Дууг эхлүүлж, барьж, тавих үеийн далайцын загвар",
+      sustainWaveAria: "20 мсек-ийн үргэлжлэх долгионы загвар",
+      sustainSpectrumAria: "Найман гармоникийн харьцангуй хүч",
+      sustainChallenge: "Ижил нот дээр лимбэ, хийл, морин хуурыг сонсож, эхлэл ба гармоникуудыг харьцуул.",
+      sustainLearnMore: "Эдгээр дуу яагаад үргэлжилдэг вэ?",
+      sustainLessonOne: "Лимбэ үлээх, хийл болон морин хуур нумдах үед хэлбэлзэлд энерги тасралтгүй өгөгдөнө. Татаж тавьсан чавхдас харин аажмаар намдана.",
+      sustainLessonTwo: "Эдгээр нь гармоник, бага хэмжээний шуугианаар бүтээсэн хялбаршуулсан загвар. Жинхэнэ зэмсгийн их бие, нум болон амьсгалын нарийн хөдөлгөөнийг дуурайгаагүй.",
+      sustainReady: "Бэлэн. Дарж барих эсвэл товшиж асаах аргыг сонгоорой.", sustainStarting: "Дууг эхлүүлж байна…",
+      sustainPlayingHold: "Дуугарч байна. Гараа авахад намдана.", sustainPlayingToggle: "Дуугарч байна. Дахин товшиж намдаана.",
+      sustainReleased: "Тавилаа. Дуу аажмаар намдаж байна.", sustainStopped: "Зогслоо. Өөр зэмсэг туршаарай.",
+      sustainHidden: "Хуудаснаас гарахад авиа зогслоо.",
+      sustainUnsupported: "Энэ хөтөч загварчилсан зэмсэг тоглуулах боломжгүй байна.",
+      sustainBlocked: "Дуу эхэлсэнгүй. Хөтчийн дууны зөвшөөрлийг шалгана уу.",
+      sustainInvalid: "Нотын давтамжийг 110–880 Гц-ийн хооронд оруулна уу.",
+      sustainDesc: {
+        flute: "Нам гүм, цэвэрхэн өнгөтэй, бага зэрэг амьсгалын шуугиантай загвар.",
+        violin: "Дээд гармоникууд баялаг, хурц өнгөтэй нумдсан чавхдасны загвар.",
+        morin: "Сондгой гармоникууд нь тод, бараан өнгөтэй морин хуураас санаа авсан загвар."
+      },
+      motionPhase: "04 · Хувирдаг давтамж", motionChoose: "Хөдөлгөөнт дуу сонгох",
       theremin: "Теремин", siren: "Галын машины дохио",
       motionDesc: {
         theremin: "Гараа хөдөлгөж давтамж ба дууны хэмжээг өөрчил.",
@@ -503,6 +568,16 @@
     strikeCursor: 0,
     strikeSpectrumView: "local",
     strikeFollowing: false,
+    sustainKind: "flute",
+    sustainGesture: "hold",
+    sustainPitch: 440,
+    sustainSnap: false,
+    sustainAttack: sustainModel.defaults("flute").attack,
+    sustainRelease: sustainModel.defaults("flute").release,
+    sustainVolume: 40,
+    sustainPlaying: false,
+    sustainStatus: "sustainReady",
+    sustainError: false,
     motionKind: "theremin",
     motionTimbre: "pure",
     motionX: motionModel.padFraction(440),
@@ -552,7 +627,7 @@
   const millisecondsText = ms => frequencyText(ms) + " " + text("unitMilliseconds");
   // More headroom for small built-in speakers; still bounded below full-scale output.
   // Four simultaneous triggered voices have a total worst-case gain below 1.
-  const maxGain = Object.freeze({ tone: 0.30, transient: 0.21, motion: 0.24,
+  const maxGain = Object.freeze({ tone: 0.30, transient: 0.21, sustain: 0.22, motion: 0.24,
     beatVoice: 0.12, harmonics: 0.24, noise: 0.20 });
   const MIX_MIN_VIEW_SECONDS = 0.002;
   const MIX_MAX_VIEW_SECONDS = 4;
@@ -718,6 +793,140 @@
       };
       source.start(now);
       return { context, startedAt: now, duration: samples.length / context.sampleRate };
+    }
+  }
+
+  class SustainEngine {
+    constructor(contextOwner) {
+      this.contextOwner = contextOwner;
+      this.voices = new Set();
+      this.currentVoice = null;
+      this.generation = 0;
+      this.noiseBuffer = null;
+    }
+
+    makeNoiseBuffer(context) {
+      if (this.noiseBuffer && this.noiseBuffer.sampleRate === context.sampleRate) return this.noiseBuffer;
+      const count = Math.round(context.sampleRate);
+      const buffer = context.createBuffer(1, count, context.sampleRate);
+      const samples = buffer.getChannelData(0);
+      let seed = 0x518c3f27;
+      for (let i = 0; i < count; i++) {
+        seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+        samples[i] = (seed / 0x80000000 - 1) * 0.7;
+      }
+      this.noiseBuffer = buffer;
+      return buffer;
+    }
+
+    volumeGain() {
+      return maxGain.sustain * state.sustainVolume / 100;
+    }
+
+    // Piecewise Web Audio ramps approximate the same smoothstep curve as the plot.
+    ramp(param, startLevel, endLevel, startTime, duration) {
+      param.cancelScheduledValues(startTime);
+      param.setValueAtTime(startLevel, startTime);
+      for (let i = 1; i <= 12; i++) {
+        const fraction = i / 12;
+        const value = startLevel + (endLevel - startLevel) * sustainModel.smoothstep(fraction);
+        param.linearRampToValueAtTime(value, startTime + duration * fraction);
+      }
+    }
+
+    fadeAndStop(voice, immediate, duration = .05) {
+      const now = this.contextOwner.context.currentTime;
+      if (voice.stopping && !immediate) return;
+      if (voice.stopping && immediate) {
+        voice.envelope.gain.cancelScheduledValues(now);
+        voice.envelope.gain.setValueAtTime(0, now);
+        return;
+      }
+      voice.stopping = true;
+      const held = Math.max(0, now - voice.startedAt);
+      const level = sustainModel.attackLevelAt(held, voice.attack);
+      if (immediate) {
+        voice.envelope.gain.cancelScheduledValues(now);
+        voice.envelope.gain.setValueAtTime(0, now);
+      } else this.ramp(voice.envelope.gain, level, 0, now, duration);
+      const stopAt = now + (immediate ? .002 : duration + .025);
+      try { voice.oscillator.stop(stopAt); } catch (_) { /* May already be scheduled. */ }
+      try { voice.noise.stop(stopAt); } catch (_) { /* May already be scheduled. */ }
+    }
+
+    async start() {
+      const ticket = ++this.generation;
+      const context = await this.contextOwner.readyContext();
+      if (ticket !== this.generation || state.mode !== "sustain") return false;
+      sustainModel.validate(state.sustainKind, state.sustainPitch,
+        state.sustainAttack, state.sustainRelease);
+      for (const voice of this.voices) this.fadeAndStop(voice, false);
+      while (this.voices.size >= 2) {
+        const oldest = this.voices.values().next().value;
+        this.fadeAndStop(oldest, true);
+        this.voices.delete(oldest);
+      }
+      const now = context.currentTime;
+      const partials = sustainModel.partials(state.sustainKind);
+      const oscillator = context.createOscillator();
+      const real = new Float32Array(partials.length + 1);
+      const imag = new Float32Array([0, ...partials]);
+      oscillator.setPeriodicWave(context.createPeriodicWave(real, imag));
+      oscillator.frequency.setValueAtTime(state.sustainPitch, now);
+      const envelope = context.createGain();
+      const volume = context.createGain();
+      const defaults = sustainModel.defaults(state.sustainKind);
+      volume.gain.setValueAtTime(this.volumeGain(), now);
+      envelope.gain.setValueAtTime(0, now);
+      this.ramp(envelope.gain, 0, 1, now, state.sustainAttack);
+      oscillator.connect(envelope);
+
+      // Gentle unpitched breath/bow texture, deliberately quieter than the tone.
+      const noise = context.createBufferSource();
+      noise.buffer = this.makeNoiseBuffer(context);
+      noise.loop = true;
+      const filter = context.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(defaults.cutoff, now);
+      const noiseGain = context.createGain();
+      noiseGain.gain.setValueAtTime(defaults.noise, now);
+      noise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(envelope);
+      envelope.connect(volume);
+      volume.connect(this.contextOwner.output);
+      const voice = { oscillator, noise, noiseGain, filter, envelope, volume,
+        startedAt: now, attack: state.sustainAttack, stopping: false };
+      this.voices.add(voice);
+      oscillator.onended = () => {
+        for (const node of [oscillator, noise, noiseGain, filter, envelope, volume]) node.disconnect();
+        this.voices.delete(voice);
+        if (this.currentVoice === voice) this.currentVoice = null;
+      };
+      oscillator.start(now);
+      noise.start(now);
+      this.currentVoice = voice;
+      return { context, startedAt: now };
+    }
+
+    release() {
+      ++this.generation; // A quick press-and-release also cancels an async start.
+      if (!this.currentVoice) return;
+      this.fadeAndStop(this.currentVoice, false, state.sustainRelease);
+      this.currentVoice = null;
+    }
+
+    update() {
+      if (!this.currentVoice) return;
+      const now = this.contextOwner.context.currentTime;
+      this.currentVoice.oscillator.frequency.setTargetAtTime(state.sustainPitch, now, .018);
+      this.currentVoice.volume.gain.setTargetAtTime(this.volumeGain(), now, .015);
+    }
+
+    stop(immediate = false) {
+      ++this.generation;
+      for (const voice of this.voices) this.fadeAndStop(voice, immediate);
+      this.currentVoice = null;
     }
   }
 
@@ -1078,6 +1287,7 @@
 
   const audio = new ToneEngine();
   const transientAudio = new TransientEngine(audio);
+  const sustainAudio = new SustainEngine(audio);
   const motionAudio = new MotionEngine(audio);
   const mixAudio = new BeatsEngine(audio);
   const harmonicAudio = new HarmonicEngine(audio);
@@ -1187,6 +1397,8 @@
   let motionStartedAt = 0;
   let motionLastDraw = -1;
   let motionPointerId = null;
+  let sustainPointerId = null;
+  let sustainKeyboardHeld = false;
   let followFrame = null;
   let followInfo = null;
   let overallSpectrumCache = null;
@@ -1296,6 +1508,13 @@
     state.strikeError = error;
     $("strikeStatus").textContent = text(status);
     $("strikeStatus").classList.toggle("error", error);
+  }
+
+  function setSustainStatus(status, error = false) {
+    state.sustainStatus = status;
+    state.sustainError = error;
+    $("sustainStatus").textContent = text(status);
+    $("sustainStatus").classList.toggle("error", error);
   }
 
   function setMotionStatus(status, error = false) {
@@ -1778,17 +1997,21 @@
 
   function renderMode() {
     const isStrike = state.mode === "strike";
+    const isSustain = state.mode === "sustain";
     const isMotion = state.mode === "motion";
     const isMix = state.mode === "mix";
     const isBeats = isMix && state.mixKind === "beats";
     const isHarmonics = isMix && state.mixKind === "harmonics";
     const isNoise = isMix && state.mixKind === "noise";
-    $("pureWorkspace").hidden = isStrike || isMotion || isMix;
-    $("pureChallenge").hidden = isStrike || isMotion || isMix;
-    $("pureExplanation").hidden = isStrike || isMotion || isMix;
+    $("pureWorkspace").hidden = isStrike || isSustain || isMotion || isMix;
+    $("pureChallenge").hidden = isStrike || isSustain || isMotion || isMix;
+    $("pureExplanation").hidden = isStrike || isSustain || isMotion || isMix;
     $("strikeWorkspace").hidden = !isStrike;
     $("strikeChallenge").hidden = !isStrike;
     $("strikeExplanation").hidden = !isStrike;
+    $("sustainWorkspace").hidden = !isSustain;
+    $("sustainChallenge").hidden = !isSustain;
+    $("sustainExplanation").hidden = !isSustain;
     $("motionWorkspace").hidden = !isMotion;
     $("motionChallenge").hidden = !isMotion;
     $("motionExplanation").hidden = !isMotion;
@@ -1806,13 +2029,13 @@
       button.classList.toggle("selected", selected);
       button.setAttribute("aria-pressed", String(selected));
     });
-    for (const [id, mode] of [["modePure", "pure"], ["modeStrike", "strike"],
+    for (const [id, mode] of [["modePure", "pure"], ["modeStrike", "strike"], ["modeSustain", "sustain"],
       ["modeMotion", "motion"], ["modeMix", "mix"]]) {
       const selected = state.mode === mode;
       $(id).classList.toggle("active", selected);
       $(id).setAttribute("aria-pressed", String(selected));
     }
-    $("pagePhase").textContent = text(isStrike ? "strikePhase" : isMotion ? "motionPhase" :
+    $("pagePhase").textContent = text(isStrike ? "strikePhase" : isSustain ? "sustainPhase" : isMotion ? "motionPhase" :
       isHarmonics ? "harmonicPhase" : isNoise ? "noisePhase" : isMix ? "mixPhase" : "phase");
   }
 
@@ -1851,6 +2074,13 @@
     $("strikePlotTools").setAttribute("aria-label", text("strikePlotToolsAria"));
     $("strikeDrumSizes").setAttribute("aria-label", text("strikeDrumSize"));
     $("strikeSpectrumChoices").setAttribute("aria-label", text("strikeSpectrumModesAria"));
+    $("sustainChoices").setAttribute("aria-label", text("sustainGroupAria"));
+    $("sustainGestures").setAttribute("aria-label", text("sustainGestureAria"));
+    $("sustainFrequencySlider").setAttribute("aria-label", text("sustainPitchSliderAria"));
+    $("sustainFrequencyInput").setAttribute("aria-label", text("sustainPitchInputAria"));
+    $("sustainEnvelopeCanvas").setAttribute("aria-label", text("sustainEnvelopeAria"));
+    $("sustainWaveCanvas").setAttribute("aria-label", text("sustainWaveAria"));
+    $("sustainSpectrumCanvas").setAttribute("aria-label", text("sustainSpectrumAria"));
     $("motionChoices").setAttribute("aria-label", text("motionGroupAria"));
     $("thereminTimbres").setAttribute("aria-label", text("thereminTimbresAria"));
     $("sirenPatterns").setAttribute("aria-label", text("sirenPatternAria"));
@@ -1883,12 +2113,14 @@
     document.querySelector(".lang-group").setAttribute("aria-label", text("langGroupAria"));
     setStatus(state.status, state.error);
     setStrikeStatus(state.strikeStatus, state.strikeError);
+    setSustainStatus(state.sustainStatus, state.sustainError);
     setMotionStatus(state.motionStatus, state.motionError);
     setMixStatus(state.mixStatus, state.mixError);
     setHarmonicStatus(state.harmonicStatus, state.harmonicError);
     setNoiseStatus(state.noiseStatus, state.noiseError);
     renderMode();
     renderStrikeControls();
+    renderSustainControls();
     renderMotionControls();
     renderMixControls();
     renderHarmonicControls();
@@ -1956,6 +2188,114 @@
     });
   }
 
+  function renderSustainControls() {
+    $("sustainFrequencySlider").value = String(Math.round(sustainModel.hzToSlider(state.sustainPitch)));
+    $("sustainFrequencyInput").value = String(Number(state.sustainPitch.toFixed(2)));
+    const note = model.nearestNote(state.sustainPitch);
+    const cents = 1200 * Math.log2(state.sustainPitch / note.frequency);
+    $("sustainNote").textContent = (!state.sustainSnap && Math.abs(cents) >= .5 ? "≈ " : "") +
+      note.english + " · " + note.mongolian;
+    $("sustainSnap").checked = state.sustainSnap;
+    $("sustainDescription").textContent = text("sustainDesc")[state.sustainKind];
+    $("sustainAttack").value = String(state.sustainAttack);
+    $("sustainAttackValue").textContent = secondsFixedText(state.sustainAttack);
+    $("sustainRelease").value = String(state.sustainRelease);
+    $("sustainReleaseValue").textContent = secondsFixedText(state.sustainRelease);
+    $("sustainVolume").value = String(state.sustainVolume);
+    $("sustainVolumeValue").textContent = state.sustainVolume + "%";
+    $("sustainEnvelopeBadge").textContent = secondsFixedText(state.sustainAttack) + " / " +
+      secondsFixedText(state.sustainRelease);
+    $("sustainDetailBadge").textContent = hzText(state.sustainPitch);
+    document.querySelectorAll("[data-sustain]").forEach(button => {
+      const selected = button.dataset.sustain === state.sustainKind;
+      button.classList.toggle("selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+    document.querySelectorAll("[data-sustain-gesture]").forEach(button => {
+      const selected = button.dataset.sustainGesture === state.sustainGesture;
+      button.classList.toggle("selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+    $("sustainButton").classList.toggle("playing", state.sustainPlaying);
+    $("sustainButton").setAttribute("aria-pressed", String(state.sustainPlaying));
+    $("sustainPlayIcon").textContent = state.sustainPlaying ? "■" : "▶";
+    $("sustainPlayLabel").textContent = text(state.sustainGesture === "hold" ?
+      (state.sustainPlaying ? "sustainPressing" : "sustainPress") :
+      (state.sustainPlaying ? "sustainToggleStop" : "sustainTogglePlay"));
+    $("sustainPlayCaption").textContent = text(state.sustainGesture === "hold" ?
+      "sustainPressCaption" : "sustainToggleCaption");
+  }
+
+  function stopSustainSound(immediate = false, status = "sustainStopped") {
+    sustainAudio.stop(immediate);
+    sustainPointerId = null;
+    sustainKeyboardHeld = false;
+    state.sustainPlaying = false;
+    setSustainStatus(status);
+    renderSustainControls();
+  }
+
+  function releaseSustainSound() {
+    sustainAudio.release();
+    state.sustainPlaying = false;
+    setSustainStatus("sustainReleased");
+    renderSustainControls();
+  }
+
+  async function startSustainSound() {
+    if (state.mode !== "sustain" || state.sustainPlaying) return;
+    setSustainStatus("sustainStarting");
+    try {
+      const info = await sustainAudio.start();
+      if (!info) return;
+      state.sustainPlaying = true;
+      setSustainStatus(state.sustainGesture === "hold" ? "sustainPlayingHold" : "sustainPlayingToggle");
+      renderSustainControls();
+    } catch (error) {
+      stopSustainSound(true, error.message === "unsupported" ? "sustainUnsupported" : "sustainBlocked");
+      setSustainStatus(error.message === "unsupported" ? "sustainUnsupported" : "sustainBlocked", true);
+    }
+  }
+
+  function selectSustainKind(kind) {
+    if (!sustainModel.KINDS.includes(kind) || state.sustainKind === kind) return;
+    stopSustainSound();
+    state.sustainKind = kind;
+    state.sustainAttack = sustainModel.defaults(kind).attack;
+    state.sustainRelease = sustainModel.defaults(kind).release;
+    setSustainStatus("sustainReady");
+    renderSustainControls();
+    drawPlots();
+  }
+
+  function setSustainPitch(value) {
+    const hz = Number(value);
+    if (!Number.isFinite(hz) || hz < sustainModel.MIN_HZ || hz > sustainModel.MAX_HZ) {
+      setSustainStatus("sustainInvalid", true);
+      renderSustainControls();
+      return;
+    }
+    state.sustainPitch = state.sustainSnap ? model.snapFrequency(hz) : hz;
+    sustainAudio.update();
+    if (state.sustainStatus === "sustainInvalid") setSustainStatus("sustainReady");
+    renderSustainControls();
+    drawPlots();
+  }
+
+  function resetSustain() {
+    stopSustainSound();
+    state.sustainKind = "flute";
+    state.sustainGesture = "hold";
+    state.sustainPitch = 440;
+    state.sustainSnap = false;
+    state.sustainAttack = sustainModel.defaults("flute").attack;
+    state.sustainRelease = sustainModel.defaults("flute").release;
+    state.sustainVolume = 40;
+    setSustainStatus("sustainReady");
+    renderSustainControls();
+    drawPlots();
+  }
+
   function setFrequency(input) {
     const value = Number(input);
     if (!Number.isFinite(value) || value < model.INPUT_MIN_HZ || value > model.INPUT_MAX_HZ) {
@@ -1980,6 +2320,7 @@
   function stopAllAudio(immediate = false, message = "stopped") {
     transientAudio.stop(immediate);
     stopStrikeFollow();
+    stopSustainSound(immediate, message === "hidden" ? "sustainHidden" : "sustainStopped");
     stopMotionSound(immediate, message === "hidden" ? "motionHidden" : "motionStopped");
     stopMixSound(immediate, message === "hidden" ? "mixHidden" : "mixStopped");
     stopHarmonicSound(immediate);
@@ -2018,9 +2359,10 @@
   }
 
   function selectMode(mode) {
-    if (mode === state.mode || !["pure", "strike", "motion", "mix"].includes(mode)) return;
+    if (mode === state.mode || !["pure", "strike", "sustain", "motion", "mix"].includes(mode)) return;
     stopAllAudio(false);
     state.mode = mode;
+    if (mode === "sustain") setSustainStatus("sustainReady");
     if (mode === "motion") setMotionStatus("motionReady");
     if (mode === "mix") setMixStatus("mixReady");
     renderTexts();
@@ -2377,6 +2719,103 @@
       ctx.fillText(hz >= 1000 ? kHzText(hz) : hzText(Math.round(hz)),
         left + i * w / 4, height - 12);
     }
+  }
+
+  function drawSustainEnvelope() {
+    const { ctx, width, height } = plotContext($("sustainEnvelopeCanvas"));
+    const left = 42, right = width - 16, top = 21, bottom = height - 31;
+    const w = right - left, h = bottom - top;
+    const span = sustainModel.EXAMPLE_HOLD + sustainModel.MAX_RELEASE + .2;
+    const xAt = time => left + (time / span) * w;
+    const yAt = level => bottom - level * h * .91;
+    drawFrame(ctx, width, height, left, right, top, bottom);
+    const count = 360;
+    ctx.fillStyle = "rgba(40, 150, 154, .12)";
+    ctx.beginPath();
+    ctx.moveTo(left, bottom);
+    for (let i = 0; i <= count; i++) {
+      const time = span * i / count;
+      ctx.lineTo(xAt(time), yAt(sustainModel.envelopeAt(time,
+        state.sustainAttack, state.sustainRelease)));
+    }
+    ctx.lineTo(right, bottom);
+    ctx.fill();
+    ctx.strokeStyle = "#218f9b";
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    for (let i = 0; i <= count; i++) {
+      const time = span * i / count;
+      if (!i) ctx.moveTo(left, yAt(0));
+      else ctx.lineTo(xAt(time), yAt(sustainModel.envelopeAt(time,
+        state.sustainAttack, state.sustainRelease)));
+    }
+    ctx.stroke();
+    const releaseX = xAt(sustainModel.EXAMPLE_HOLD);
+    ctx.strokeStyle = "#d58a3b";
+    ctx.lineWidth = 1.8;
+    ctx.beginPath(); ctx.moveTo(releaseX, top); ctx.lineTo(releaseX, bottom); ctx.stroke();
+    ctx.fillStyle = "#7489a1";
+    ctx.font = "11px system-ui, sans-serif";
+    ctx.textAlign = "right";
+    ctx.fillText("1", left - 6, yAt(1));
+    ctx.fillText("0", left - 6, bottom);
+    ctx.textAlign = "center";
+    for (let i = 0; i <= 4; i++) {
+      const seconds = span * i / 4;
+      ctx.fillText(secondsText(seconds), xAt(seconds), height - 12);
+    }
+  }
+
+  function drawSustainWave() {
+    const { ctx, width, height } = plotContext($("sustainWaveCanvas"));
+    const left = 38, right = width - 13, top = 24, bottom = height - 28;
+    const middle = (top + bottom) / 2, amp = (bottom - top) * .43;
+    const w = right - left, span = .02;
+    drawFrame(ctx, width, height, left, right, top, bottom);
+    const count = Math.max(700, Math.ceil(state.sustainPitch * 8 * span * 10));
+    ctx.strokeStyle = "#367bd1";
+    ctx.lineWidth = 2.1;
+    ctx.beginPath();
+    for (let i = 0; i <= count; i++) {
+      const t = span * i / count;
+      const value = sustainModel.waveAt(2 * Math.PI * state.sustainPitch * t, state.sustainKind);
+      if (!i) ctx.moveTo(left, middle - value * amp);
+      else ctx.lineTo(left + w * i / count, middle - value * amp);
+    }
+    ctx.stroke();
+    ctx.fillStyle = "#7489a1";
+    ctx.font = "10px system-ui, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("0", left, height - 10);
+    ctx.fillText(millisecondsText(20), right, height - 10);
+  }
+
+  function drawSustainSpectrum() {
+    const { ctx, width, height } = plotContext($("sustainSpectrumCanvas"));
+    const left = 36, right = width - 14, top = 21, bottom = height - 29;
+    const partials = sustainModel.partials(state.sustainKind);
+    const w = right - left, h = bottom - top, slot = w / partials.length;
+    drawFrame(ctx, width, height, left, right, top, bottom);
+    partials.forEach((strength, i) => {
+      const size = Math.min(19, slot * .55);
+      ctx.fillStyle = i === 0 ? "#367bd1" : "#159c91";
+      ctx.fillRect(left + (i + .5) * slot - size / 2, bottom - strength * h * .91,
+        size, strength * h * .91);
+    });
+    ctx.fillStyle = "#7489a1";
+    ctx.font = "10px system-ui, sans-serif";
+    ctx.textAlign = "right";
+    ctx.fillText("1", left - 5, top + 2);
+    ctx.textAlign = "center";
+    const labels = w < 315 ? [0, 2, 4, 7] : [0, 1, 2, 3, 4, 5, 6, 7];
+    for (const i of labels) ctx.fillText(i === 0 ? "f" : (i + 1) + "f",
+      left + (i + .5) * slot, height - 10);
+  }
+
+  function drawSustainPlots() {
+    drawSustainEnvelope();
+    drawSustainWave();
+    drawSustainSpectrum();
   }
 
   function drawMotionPitch() {
@@ -2768,6 +3207,8 @@
       renderStrikeTime();
       drawStrikeWave();
       drawStrikeSpectrum();
+    } else if (state.mode === "sustain") {
+      drawSustainPlots();
     } else if (state.mode === "motion") {
       drawMotionPlots();
     } else if (state.mode === "mix") {
@@ -2785,6 +3226,18 @@
   });
   document.querySelectorAll("[data-strike]").forEach(button => {
     button.addEventListener("click", () => selectStrikeKind(button.dataset.strike));
+  });
+  document.querySelectorAll("[data-sustain]").forEach(button => {
+    button.addEventListener("click", () => selectSustainKind(button.dataset.sustain));
+  });
+  document.querySelectorAll("[data-sustain-gesture]").forEach(button => {
+    button.addEventListener("click", () => {
+      if (state.sustainGesture === button.dataset.sustainGesture) return;
+      stopSustainSound();
+      state.sustainGesture = button.dataset.sustainGesture;
+      setSustainStatus("sustainReady");
+      renderSustainControls();
+    });
   });
   document.querySelectorAll("[data-drum-size]").forEach(button => {
     button.addEventListener("click", () => {
@@ -2937,8 +3390,84 @@
   $("motionReset").addEventListener("click", resetMotion);
   $("modePure").addEventListener("click", () => selectMode("pure"));
   $("modeStrike").addEventListener("click", () => selectMode("strike"));
+  $("modeSustain").addEventListener("click", () => selectMode("sustain"));
   $("modeMotion").addEventListener("click", () => selectMode("motion"));
   $("modeMix").addEventListener("click", () => selectMode("mix"));
+  const sustainPad = $("sustainButton");
+  sustainPad.addEventListener("pointerdown", event => {
+    if (state.mode !== "sustain" || state.sustainGesture !== "hold" || event.button > 0 ||
+        sustainPointerId !== null) return;
+    event.preventDefault();
+    sustainPointerId = event.pointerId;
+    if (sustainPad.setPointerCapture) sustainPad.setPointerCapture(event.pointerId);
+    return startSustainSound();
+  });
+  const endSustainPointer = event => {
+    if (sustainPointerId !== event.pointerId) return;
+    sustainPointerId = null;
+    if (sustainPad.releasePointerCapture) {
+      try { sustainPad.releasePointerCapture(event.pointerId); }
+      catch (_) { /* Already released on some touch browsers. */ }
+    }
+    releaseSustainSound();
+  };
+  sustainPad.addEventListener("pointerup", endSustainPointer);
+  sustainPad.addEventListener("pointercancel", endSustainPointer);
+  sustainPad.addEventListener("lostpointercapture", endSustainPointer);
+  sustainPad.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      stopSustainSound();
+    } else if (state.sustainGesture === "hold" && (event.key === " " || event.key === "Enter")) {
+      event.preventDefault();
+      if (!sustainKeyboardHeld) {
+        sustainKeyboardHeld = true;
+        return startSustainSound();
+      }
+    }
+  });
+  sustainPad.addEventListener("keyup", event => {
+    if (state.sustainGesture !== "hold" || (event.key !== " " && event.key !== "Enter")) return;
+    event.preventDefault();
+    if (sustainKeyboardHeld) { sustainKeyboardHeld = false; releaseSustainSound(); }
+  });
+  sustainPad.addEventListener("blur", () => {
+    if (sustainKeyboardHeld) { sustainKeyboardHeld = false; releaseSustainSound(); }
+  });
+  sustainPad.addEventListener("click", event => {
+    if (state.mode !== "sustain") return;
+    // Pointer actions are handled by pointerdown/up in hold mode. A click from
+    // assistive technology (detail = 0) can still toggle an accessible note.
+    if (state.sustainGesture !== "toggle" && event.detail !== 0) return;
+    if (state.sustainPlaying) releaseSustainSound();
+    else return startSustainSound();
+  });
+  $("sustainFrequencySlider").addEventListener("input", event =>
+    setSustainPitch(sustainModel.sliderToHz(Number(event.target.value))));
+  $("sustainFrequencyInput").addEventListener("change", event => setSustainPitch(event.target.value));
+  $("sustainSnap").addEventListener("change", event => {
+    state.sustainSnap = event.target.checked;
+    if (state.sustainSnap) setSustainPitch(state.sustainPitch);
+    else renderSustainControls();
+  });
+  $("sustainAttack").addEventListener("input", event => {
+    state.sustainAttack = Math.max(sustainModel.MIN_ATTACK,
+      Math.min(sustainModel.MAX_ATTACK, Number(event.target.value)));
+    renderSustainControls();
+    drawPlots();
+  });
+  $("sustainRelease").addEventListener("input", event => {
+    state.sustainRelease = Math.max(sustainModel.MIN_RELEASE,
+      Math.min(sustainModel.MAX_RELEASE, Number(event.target.value)));
+    renderSustainControls();
+    drawPlots();
+  });
+  $("sustainVolume").addEventListener("input", event => {
+    state.sustainVolume = Math.max(0, Math.min(100, Number(event.target.value)));
+    sustainAudio.update();
+    renderSustainControls();
+  });
+  $("sustainReset").addEventListener("click", resetSustain);
   $("strikeButton").addEventListener("click", triggerStrike);
   $("strikeFrequencySlider").addEventListener("input", event => {
     setStrikePitch(transientModel.sliderToHz(Number(event.target.value)));
@@ -3020,7 +3549,8 @@
   window.addEventListener("pagehide", () => { stopRecording(); stopAllAudio(true, "hidden"); });
   window.addEventListener("blur", () => {
     if (recorder.state === "recording") stopRecording();
-    if (state.motionPlaying || state.mixPlaying || state.harmonicPlaying || state.noisePlaying) {
+    if (state.sustainPlaying || sustainPointerId !== null || sustainKeyboardHeld ||
+        state.motionPlaying || state.mixPlaying || state.harmonicPlaying || state.noisePlaying) {
       stopAllAudio(true, "hidden");
     }
   });
@@ -3030,6 +3560,9 @@
     observer.observe($("spectrumCanvas"));
     observer.observe($("strikeWaveCanvas"));
     observer.observe($("strikeSpectrumCanvas"));
+    observer.observe($("sustainEnvelopeCanvas"));
+    observer.observe($("sustainWaveCanvas"));
+    observer.observe($("sustainSpectrumCanvas"));
     observer.observe($("motionPitchCanvas"));
     observer.observe($("motionWaveCanvas"));
     observer.observe($("motionSpectrumCanvas"));
