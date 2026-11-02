@@ -439,7 +439,7 @@
       <div class="visuals">
         <section class="panel chart-panel" aria-labelledby="mix-wave-title">
           <div class="chart-heading">
-            <div><h2 id="mix-wave-title" data-i18n="mixWaveTitle">Хоёр долгионы нийлбэр</h2><p data-i18n="mixWaveHint">Чанга, сул ээлжлэх дүрс. 20 мсек болгон томруулж хэлбэлзлийг хараарай.</p></div>
+            <div><h2 id="mix-wave-title" data-i18n="mixWaveTitle">Хоёр долгионы нийлбэр</h2><p data-i18n="mixWaveHint">Том цонхонд чанга, сулын хүрээг харуулна. 20 мсек болгон томруулбал жинхэнэ хэлбэлзэл харагдана.</p></div>
             <span class="chart-badge" id="mixWaveBadge">4 удаа/сек</span>
           </div>
           <div class="mix-plot-tools" id="mixPlotTools" role="group" aria-label="Хугацааны цонх">
@@ -455,11 +455,11 @@
         </section>
         <section class="panel chart-panel" aria-labelledby="mix-spectrum-title">
           <div class="chart-heading">
-            <div><h2 id="mix-spectrum-title" data-i18n="mixSpectrumTitle">Давтамжийн хоёр бүрэлдэхүүн</h2><p data-i18n="mixSpectrumHint">Чангарч, сулрах нь шинэ нам давтамж үүсгээгүй.</p></div>
+            <div><h2 id="mix-spectrum-title" data-i18n="mixSpectrumTitle">Давтамжийн бүрэлдэхүүнүүд</h2><p data-i18n="mixSpectrumHint">Чангарч, сулрах нь шинэ нам давтамж үүсгээгүй.</p></div>
             <span class="chart-badge" id="mixSpectrumBadge">440 + 444 Гц</span>
           </div>
           <canvas id="mixSpectrumCanvas" width="740" height="225" role="img" aria-label="Хоёр цэвэр авианы идеал давтамжийн найрлага"></canvas>
-          <div class="chart-foot"><span data-i18n="mixSpectrumFoot">Спектрт зөвхөн анхныхаа хоёр давтамж харагдана.</span><span data-i18n="frequencyAxis">давтамж →</span></div>
+          <div class="chart-foot"><span id="mixSpectrumFoot" data-i18n="mixSpectrumFoot">Спектрт зөвхөн анхныхаа хоёр давтамж харагдана.</span><span data-i18n="frequencyAxis">давтамж →</span></div>
         </section>
       </div>
     </div>
@@ -510,7 +510,7 @@
     </details>
     <details class="explanation" id="mixExplanation" hidden>
       <summary data-i18n="mixLearnMore">Хоёр авиа нийлээд яагаад чангарч, сулардаг вэ?</summary>
-      <p data-i18n="mixLessonOne">Ойролцоо давтамжтай хоёр синус долгион зарим үед давхцаж, зарим үед бие биеэ сулруулна. Үүнийг биение буюу цохилго гэж нэрлэдэг.</p>
+      <p data-i18n="mixLessonOne">Ойролцоо давтамжтай хоёр синус долгион зарим үед бие биеэ дэмжиж, зарим үед бие биеэ сулруулна. Дууны чанга, сул ээлжлэхийг биение буюу цохилт гэнэ.</p>
       <p data-i18n="mixLessonTwo">Чангарч, сулрах хурд нь хоёр давтамжийн зөрүү: Δf = |f₂ − f₁|. Жишээ нь, 440 ба 444 Гц-д секундэд 4 удаа чангарч сонсогдоно. Спектрт харин 4 Гц-ийн гурав дахь авиа шинээр үүсэхгүй.</p>
     </details>
   </main>

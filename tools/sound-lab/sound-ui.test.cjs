@@ -835,6 +835,7 @@ test("beating controls retune both voices; gap zero resynchronizes the pair with
   assert.ok(context.oscillators.slice(0, 2).every(oscillator => oscillator.stopped));
   assert.deepEqual(context.oscillators.slice(2).map(oscillator => oscillator.frequency.value), [500, 500]);
   assert.equal(app.elements.get("mixBeatValue").textContent, "0 удаа/сек");
+  assert.match(app.elements.get("mixSpectrumFoot").textContent, /нэг оргил/);
   assert.equal(app.mixGapButtons[0].getAttribute("aria-pressed"), "true");
   app.elements.get("mixVolume").value = "100";
   app.fire("mixVolume", "input");
@@ -844,6 +845,7 @@ test("beating controls retune both voices; gap zero resynchronizes the pair with
   assert.equal(app.elements.get("mixBaseInput").value, "500", "Invalid input restores last valid frequency");
   assert.equal(app.elements.get("mixStatus").classList.contains("error"), true);
   app.mixGapButtons[2].events.click();
+  assert.match(app.elements.get("mixSpectrumFoot").textContent, /хоёр давтамж/);
   assert.equal(context.oscillators.length, 4, "Leaving zero also reuses the synchronized pair");
   app.fire("mixReset", "click");
   assert.ok(context.oscillators.every(oscillator => oscillator.stopped));
@@ -873,6 +875,8 @@ test("beats waveform zoom, pan and spectrum remain bilingual and show nearby fre
   assert.equal(app.elements.get("mixBeatValue").textContent, "4 pulses/s");
   assert.equal(app.elements.get("mixWindowLabel").textContent, "10 ms – 210 ms · 4 pulses/s");
   assert.equal(app.elements.get("mixBaseInput").getAttribute("aria-label"), "First frequency in hertz");
+  app.mixGapButtons[0].events.click();
+  assert.match(app.elements.get("mixSpectrumFoot").textContent, /one spectral peak/);
   assert.match(browserCode, /recordSave: "Download WAV"/);
   assert.match(browserCode, /recordSave: "WAV татах"/);
   assert.doesNotMatch(browserCode, /Download WAV again|WAV дахин хадгалах/);
