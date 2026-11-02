@@ -142,14 +142,18 @@
       mixBlocked: "Could not start sound. Check browser audio permission and try again.",
       mixInvalid: "Enter a first frequency between 120 and 1,000 Hz.",
       strikePhase: "02 · Modeled sounds", strikeChoose: "Choose a modeled sound",
-      pluck: "Plucked string", kick: "Bass drum", piano: "Piano", strikeGroupAria: "Transient sound model",
+      pluck: "Guitar string", kick: "Drum", piano: "Piano", strikeGroupAria: "Transient sound model",
       strikeCaption: "Tap to sound; tap again to repeat",
-      strikePluckButton: "Pluck", strikeKickButton: "Strike", strikePianoButton: "Play note",
+      strikePluckButton: "Pluck", strikeStrumButton: "Strum", strikeKickButton: "Strike", strikePianoButton: "Play note",
+      strikeGuitarPlay: "Play guitar", strikeSingle: "One string", strikeStrum: "Several strings",
+      strikeChord: "Choose a chord", strikeChordHint: "The pick sweeps across the strings. Frets change each string's pitch; muted strings are skipped.",
+      strikePluckPosition: "Pluck position", strikePluckPositionHint: "Plucking nearer the end brings out more high harmonics.",
       strikePitch: "Note frequency", strikePitchSliderAria: "Note pitch slider",
       strikePitchInputAria: "Note frequency in hertz",
       strikeStrength: "Strength", strikeDecay: "Decay time",
       strikeDrumSize: "Drum size", strikeLarge: "Large", strikeMedium: "Medium", strikeSmall: "Small",
-      strikeDrumHint: "Stylized bass-drum presets: larger sounds lower; these are not physical membrane simulations.",
+      strikeDrumHint: "A larger membrane vibrates more slowly. Its natural modes are not integer harmonics.",
+      strikeDrumTension: "Membrane tension", strikeDrumTensionHint: "Tighten the membrane to raise all its natural frequencies.",
       strikeWaveTitle: "Waveform · zoom and explore",
       strikeWaveSubtitle: "See the full decay; zoom in to reveal individual vibrations.",
       strikeZoomOutAria: "Zoom out", strikeZoomInAria: "Zoom in",
@@ -162,7 +166,7 @@
       strikeLocalSpectrumSubtitle: "Fourier analysis of a 128 ms window around the selected time",
       strikeSpectrumHere: "At selected time", strikeSpectrumWhole: "Whole sound",
       strikeSpectrumModesAria: "Spectrum time range",
-      strikeSpectrumHint: "Higher string harmonics disappear earlier; a drum's pitch falls.",
+      strikeSpectrumHint: "String harmonics fade at different speeds. Drum modes do not follow integer frequency ratios.",
       strikeSpectrumWholeHint: "Average frequency content across the whole modeled hit.",
       strikeWaveAria: "Modeled waveform with a movable time cursor",
       strikeSpectrumAria: "Short-time Fourier magnitude spectrum of the modeled sound",
@@ -176,7 +180,7 @@
       strikeChallenge: "Change the decay time. What happens to the sound and its envelope?",
       strikeLearnMore: "Why do these sounds fade away?",
       strikeLessonOne: "A plucked string vibrates at several frequencies. Its higher harmonics fade faster than its fundamental.",
-      strikeLessonTwo: "The bass drum begins at a higher frequency, rapidly drops in pitch, and gradually fades. Their overall waveforms can look similar, but their frequency content is very different. Zoom to 20 ms or compare their spectra to see the difference.",
+      strikeLessonTwo: "A circular membrane has non-integer frequency ratios because its modes involve Bessel functions. Its size and tension change the frequencies, while a string produces nearly harmonic overtones. Compare their local spectra.",
       strikeReady: "Ready. Sound starts only when you tap the pad.",
       strikeStarting: "Preparing the sound…", strikeDone: "Sound triggered. Tap again to repeat.",
       strikeStopped: "Stopped. Tap the pad to try again.",
@@ -185,8 +189,8 @@
       strikeBlocked: "Sound could not start. Check browser audio permission and try again.",
       strikeInvalid: "Enter a string frequency between 110 and 880 Hz.",
       strikeDesc: {
-        pluck: "A string begins vibrating after a pluck, then gradually becomes quieter.",
-        kick: "A drum hit drops in pitch while its vibration fades.",
+        pluck: "A plucked string repeatedly reflects its vibration, losing some energy each cycle. Several strings can form a chord.",
+        kick: "A vibrating circular membrane has several natural modes, with frequencies set by its size and tension.",
         piano: "A hammer excites slightly detuned strings together, with a bright onset and stretched overtones."
       },
       sustainPhase: "03 · Held sounds", sustainChoose: "Choose a held sound",
@@ -406,14 +410,18 @@
       mixBlocked: "Авиа эхэлсэнгүй. Хөтчийн дууны зөвшөөрлийг шалгаад дахин оролдоно уу.",
       mixInvalid: "Эхний давтамжийг 120–1,000 Гц-ийн хооронд оруулна уу.",
       strikePhase: "02 · Загварчилсан дуу", strikeChoose: "Дууны загвар сонгох",
-      pluck: "Татсан чавхдас", kick: "Басс бөмбөр", piano: "Төгөлдөр хуур", strikeGroupAria: "Цохилтын дууны загвар",
+      pluck: "Гитарын чавхдас", kick: "Бөмбөр", piano: "Төгөлдөр хуур", strikeGroupAria: "Цохилтын дууны загвар",
       strikeCaption: "Дарж сонсоод, дахин дарж давтаарай",
-      strikePluckButton: "Татах", strikeKickButton: "Цохих", strikePianoButton: "Нот тоглуулах",
+      strikePluckButton: "Татах", strikeStrumButton: "Чавхдасуудыг татах", strikeKickButton: "Цохих", strikePianoButton: "Нот тоглуулах",
+      strikeGuitarPlay: "Гитар тоглуулах", strikeSingle: "Нэг чавхдас", strikeStrum: "Олон чавхдас",
+      strikeChord: "Аккорд сонгох", strikeChordHint: "Чавхдасууд ээлжлэн дуугарна. Аккордоос хамаарч дарсан нот нь өөр, зарим чавхдас дуугарахгүй.",
+      strikePluckPosition: "Татах байрлал", strikePluckPositionHint: "Үзүүрт нь ойр татахад дээд гармоникууд тодордог.",
       strikePitch: "Нотын давтамж", strikePitchSliderAria: "Нотын давтамжийн гулсуур",
       strikePitchInputAria: "Нотын давтамжийг герцээр оруулах",
       strikeStrength: "Цохилтын хүч", strikeDecay: "Намдах хугацаа",
       strikeDrumSize: "Бөмбөрийн хэмжээ", strikeLarge: "Том", strikeMedium: "Дунд", strikeSmall: "Жижиг",
-      strikeDrumHint: "Том бөмбөр нам, жижиг нь өндөр дуугарна. Энэ нь бодит мембраны бүрэн загвар биш.",
+      strikeDrumHint: "Том мембран нам хэлбэлзэнэ. Түүний давтамжууд үндсэн давтамжийн бүхэл тоон үржвэр биш.",
+      strikeDrumTension: "Мембраны таталт", strikeDrumTensionHint: "Мембраныг чангалахад бүх хэлбэлзлийн давтамж өснө.",
       strikeWaveTitle: "Дууны долгион · томруулж үзэх",
       strikeWaveSubtitle: "Бүхэлд нь намдлыг, томруулбал нэг нэг хэлбэлзлийг харна.",
       strikeZoomOutAria: "Томруулалтыг багасгах", strikeZoomInAria: "Томруулах",
@@ -426,7 +434,7 @@
       strikeLocalSpectrumSubtitle: "Сонгосон хугацааны орчмын 128 мсек долгионы Фурье шинжилгээ",
       strikeSpectrumHere: "Энэ мөчид", strikeSpectrumWhole: "Бүх дуу",
       strikeSpectrumModesAria: "Спектрийн хугацааны сонголт",
-      strikeSpectrumHint: "Чавхдасны дээд гармоник хурдан намдаж, бөмбөрийн давтамж буурна.",
+      strikeSpectrumHint: "Чавхдасны гармоникууд өөр өөр хурдтай намдана. Бөмбөрийн модын давтамжууд бүхэл тоон харьцаатай биш.",
       strikeSpectrumWholeHint: "Загварчилсан цохилтын турших хугацааны дундаж спектр.",
       strikeWaveAria: "Хугацаа сонгох тэмдэглэгээтэй загвар долгион",
       strikeSpectrumAria: "Загварчилсан дууны хугацааны хэсгийн Фурье спектр",
@@ -440,7 +448,7 @@
       strikeChallenge: "Намдах хугацааг өөрчил. Дуу болон график хэрхэн өөрчлөгдөж байна вэ?",
       strikeLearnMore: "Яагаад эдгээр дуу намддаг вэ?",
       strikeLessonOne: "Чавхдас олон давтамжаар хэлбэлзэнэ. Өндөр гармоникууд нь үндсэн давтамжаас хурдан намдана.",
-      strikeLessonTwo: "Басс бөмбөрийн цохилтын давтамж эхлээд хурдан буурч, далайц нь аажмаар намдана. Эдгээрийн долгионы график ерөнхийдөө төстэй харагдах боловч давтамжийн найрлага нь тэс өөр. 20 мсек болгон томруулж эсвэл спектрийг нь харьцуулж ялгааг нь хараарай.",
+      strikeLessonTwo: "Дугуй мембраны хэлбэлзлийн давтамжууд Бесселийн функцийн тэгүүдээс хамаардаг тул бүхэл тоон харьцаатай биш. Хэмжээ ба таталтыг өөрчлөхөд давтамжууд хувирна. Харин чавхдасны дээд гармоникууд үндсэн давтамжийн ойролцоогоор бүхэл тоон үржвэр байдаг.",
       strikeReady: "Бэлэн. Дарахад л дуу гарна.",
       strikeStarting: "Дууг бэлтгэж байна…", strikeDone: "Дуугарлаа. Дахин дарж болно.",
       strikeStopped: "Зогслоо. Дахин дарж сонсоорой.",
@@ -449,8 +457,8 @@
       strikeBlocked: "Авиа эхэлсэнгүй. Хөтчийн дууны зөвшөөрлийг шалгаад дахин оролдоно уу.",
       strikeInvalid: "Нотын давтамжийг 110–880 Гц-ийн хооронд оруулна уу.",
       strikeDesc: {
-        pluck: "Татаж тавьсан чавхдас хэлбэлзээд аажмаар намдана.",
-        kick: "Бөмбөрийн цохилтын давтамж буурч, хэлбэлзэл нь намдана.",
+        pluck: "Чавхдасны хэлбэлзэл эргэж ойж, энергиэ бага багаар алддаг. Хэд хэдэн чавхдас аккорд үүсгэнэ.",
+        kick: "Дугуй мембран олон өөрийн модоор хэлбэлзэнэ. Давтамжууд нь хэмжээ ба таталтаас хамаарна.",
         piano: "Алх цохиход өчүүхэн зөрүүтэй хэдэн чавхдас зэрэг хэлбэлзэж, эхэндээ хурц авиа үүсгэнэ."
       },
       sustainPhase: "03 · Үргэлжлэх авиа", sustainChoose: "Үргэлжлэх дуу сонгох",
@@ -559,6 +567,10 @@
     strikePitch: 220,
     strikeSnap: false,
     strikeDrumSize: "medium",
+    strikeDrumTension: 1,
+    strikeGuitarPlay: "single",
+    strikeChord: "em",
+    strikePluckPosition: .22,
     strikeStrength: 55,
     strikeDecay: 0.65,
     strikeStatus: "strikeReady",
@@ -767,7 +779,8 @@
       const context = await this.contextOwner.readyContext();
       if (ticket !== this.generation || state.mode !== "strike") return false;
       const samples = transientModel.makeSamples(
-        state.strikeKind, state.strikePitch, state.strikeDecay, context.sampleRate, state.strikeDrumSize);
+        state.strikeKind, state.strikePitch, state.strikeDecay, context.sampleRate,
+        state.strikeDrumSize, strikeRecipe().options);
       const buffer = context.createBuffer(1, samples.length, context.sampleRate);
       buffer.getChannelData(0).set(samples);
       const source = context.createBufferSource();
@@ -1407,7 +1420,13 @@
 
   function strikeRecipe() {
     return { kind: state.strikeKind, pitchHz: state.strikePitch,
-      decaySec: state.strikeDecay, kickSize: state.strikeDrumSize };
+      decaySec: state.strikeDecay, kickSize: state.strikeDrumSize,
+      options: {
+        position: state.strikePluckPosition,
+        drumTension: state.strikeDrumTension,
+        ...(state.strikeKind === "pluck" && state.strikeGuitarPlay === "strum" ?
+          { strumChord: state.strikeChord } : {})
+      } };
   }
 
   function stopStrikeFollow() {
@@ -2164,18 +2183,36 @@
     const approx = !state.strikeSnap && Math.abs(differenceCents) >= 0.5 ? "≈ " : "";
     $("strikeNote").textContent = approx + note.english + " · " + note.mongolian;
     $("strikeSnap").checked = state.strikeSnap;
-    $("strikePitchGroup").hidden = state.strikeKind === "kick";
+    $("strikePitchGroup").hidden = state.strikeKind === "kick" ||
+      (state.strikeKind === "pluck" && state.strikeGuitarPlay === "strum");
+    $("strikeGuitarGroup").hidden = state.strikeKind !== "pluck";
+    $("strikeChordGroup").hidden = state.strikeKind !== "pluck" || state.strikeGuitarPlay !== "strum";
+    $("strikePluckPositionGroup").hidden = state.strikeKind !== "pluck";
+    $("strikePluckPosition").value = String(Math.round(100 * state.strikePluckPosition));
+    $("strikePluckPositionValue").textContent = Math.round(100 * state.strikePluckPosition) + "%";
     $("strikeDrumSizeGroup").hidden = state.strikeKind !== "kick";
-    $("strikeDrumFrequencies").textContent =
-      Math.round(transientModel.kickFrequency(0, state.strikeDrumSize)) + " → " +
-      hzText(Math.round(transientModel.kickFrequency(3, state.strikeDrumSize)));
+    $("strikeDrumTension").value = String(Math.round(state.strikeDrumTension * 100));
+    $("strikeDrumTensionValue").textContent = Math.round(state.strikeDrumTension * 100) + "%";
+    $("strikeDrumFrequencies").textContent = hzText(Math.round(
+      transientModel.kickFrequency(0, state.strikeDrumSize, state.strikeDrumTension)));
     $("strikeStrength").value = String(state.strikeStrength);
     $("strikeStrengthValue").textContent = state.strikeStrength + "%";
     $("strikeDecay").value = String(state.strikeDecay);
     $("strikeDecayValue").textContent = secondsText(state.strikeDecay);
     $("strikeDescription").textContent = text("strikeDesc")[state.strikeKind];
-    $("strikeButtonLabel").textContent = text(state.strikeKind === "pluck" ? "strikePluckButton" :
+    $("strikeButtonLabel").textContent = text(state.strikeKind === "pluck" ?
+      state.strikeGuitarPlay === "strum" ? "strikeStrumButton" : "strikePluckButton" :
       state.strikeKind === "piano" ? "strikePianoButton" : "strikeKickButton");
+    document.querySelectorAll("[data-guitar-play]").forEach(button => {
+      const selected = button.dataset.guitarPlay === state.strikeGuitarPlay;
+      button.classList.toggle("selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+    document.querySelectorAll("[data-guitar-chord]").forEach(button => {
+      const selected = button.dataset.guitarChord === state.strikeChord;
+      button.classList.toggle("selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
     document.querySelectorAll("[data-strike]").forEach(button => {
       const selected = button.dataset.strike === state.strikeKind;
       button.classList.toggle("selected", selected);
@@ -2429,6 +2466,10 @@
     state.strikePitch = 220;
     state.strikeSnap = false;
     state.strikeDrumSize = "medium";
+    state.strikeDrumTension = 1;
+    state.strikeGuitarPlay = "single";
+    state.strikeChord = "em";
+    state.strikePluckPosition = .22;
     state.strikeStrength = 55;
     state.strikeDecay = 0.65;
     state.strikeCursor = 0;
@@ -2608,14 +2649,17 @@
         (to - from) / span * plotWidth, bottom - top);
     }
 
+    const options = strikeRecipe().options;
     const sampleAt = time => transientModel.plottedSampleAt(state.strikeKind,
-      time, state.strikePitch, state.strikeDecay, state.strikeDrumSize);
+      time, state.strikePitch, state.strikeDecay, state.strikeDrumSize, options);
     ctx.strokeStyle = "#1a9b91";
     ctx.lineJoin = "round";
     if (span <= 0.12) {
       // At fine scales, every oscillation is drawn directly, with oversampling.
-      const topFrequency = state.strikeKind === "pluck" ? state.strikePitch * 8 :
-        transientModel.kickFrequency(0, state.strikeDrumSize);
+      const topFrequency = state.strikeKind === "pluck" ?
+        (state.strikeGuitarPlay === "strum" ? 4000 : state.strikePitch * 8) :
+        state.strikeKind === "piano" ? state.strikePitch * 8.5 :
+        transientModel.kickFrequency(0, state.strikeDrumSize, state.strikeDrumTension) * 3.6;
       const points = Math.min(16000, Math.max(700, Math.round(plotWidth * 2),
         Math.ceil(span * topFrequency * 10)));
       ctx.lineWidth = 2;
@@ -2683,7 +2727,10 @@
     });
     const maxHz = state.strikeKind === "piano" ?
       Math.min(8000, Math.max(3000, state.strikePitch * 8.5)) :
-      state.strikeKind === "pluck" ? Math.min(8000, Math.max(1200, state.strikePitch * 8.3)) : 600;
+      state.strikeKind === "pluck" ?
+        (state.strikeGuitarPlay === "strum" ? 4000 :
+          Math.min(8000, Math.max(1200, state.strikePitch * 8.3))) :
+        Math.max(600, transientModel.kickFrequency(0, state.strikeDrumSize, state.strikeDrumTension) * 4);
     ctx.strokeStyle = "#e8eff7";
     ctx.lineWidth = 1;
     for (let i = 0; i <= 4; i++) {
@@ -3227,6 +3274,24 @@
   document.querySelectorAll("[data-strike]").forEach(button => {
     button.addEventListener("click", () => selectStrikeKind(button.dataset.strike));
   });
+  document.querySelectorAll("[data-guitar-play]").forEach(button => {
+    button.addEventListener("click", () => {
+      if (state.strikeGuitarPlay === button.dataset.guitarPlay) return;
+      stopStrikeForEdit();
+      state.strikeGuitarPlay = button.dataset.guitarPlay;
+      renderStrikeControls();
+      drawPlots();
+    });
+  });
+  document.querySelectorAll("[data-guitar-chord]").forEach(button => {
+    button.addEventListener("click", () => {
+      if (state.strikeChord === button.dataset.guitarChord) return;
+      stopStrikeForEdit();
+      state.strikeChord = button.dataset.guitarChord;
+      renderStrikeControls();
+      drawPlots();
+    });
+  });
   document.querySelectorAll("[data-sustain]").forEach(button => {
     button.addEventListener("click", () => selectSustainKind(button.dataset.sustain));
   });
@@ -3477,6 +3542,18 @@
     state.strikeSnap = event.target.checked;
     if (state.strikeSnap) setStrikePitch(state.strikePitch);
     else renderStrikeControls();
+  });
+  $("strikePluckPosition").addEventListener("input", event => {
+    stopStrikeForEdit();
+    state.strikePluckPosition = Number(event.target.value) / 100;
+    renderStrikeControls();
+    drawPlots();
+  });
+  $("strikeDrumTension").addEventListener("input", event => {
+    stopStrikeForEdit();
+    state.strikeDrumTension = Number(event.target.value) / 100;
+    renderStrikeControls();
+    drawPlots();
   });
   $("strikeStrength").addEventListener("input", event => {
     stopStrikeForEdit();

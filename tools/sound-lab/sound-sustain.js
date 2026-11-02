@@ -19,14 +19,16 @@
   const MAX_RELEASE = 1.2;
   const EXAMPLE_HOLD = 1.2;
   const PARTIALS = Object.freeze({
-    flute: Object.freeze([1, .15, .045, .02, .01, 0, 0, 0]),
-    violin: Object.freeze([.83, .70, .56, .48, .36, .29, .20, .14]),
-    morin: Object.freeze([1, .27, .65, .18, .42, .15, .22, .12])
+    flute: Object.freeze([1, .12, .035, .012, .005, 0, 0, 0]),
+    violin: Object.freeze([.84, .72, .58, .47, .36, .27, .19, .12]),
+    // A dark bowed-string illustration, with a strong second partial instead
+    // of an unsupported assumption that a morin khuur stresses odd harmonics.
+    morin: Object.freeze([.88, .92, .58, .32, .21, .12, .075, .045])
   });
   const DEFAULTS = Object.freeze({
-    flute: Object.freeze({ attack: .14, release: .18, noise: .018, cutoff: 3600 }),
-    violin: Object.freeze({ attack: .32, release: .36, noise: .022, cutoff: 4600 }),
-    morin: Object.freeze({ attack: .24, release: .48, noise: .028, cutoff: 2600 })
+    flute: Object.freeze({ attack: .08, release: .16, noise: .016, cutoff: 3600 }),
+    violin: Object.freeze({ attack: .18, release: .29, noise: .024, cutoff: 4600 }),
+    morin: Object.freeze({ attack: .11, release: .32, noise: .028, cutoff: 2600 })
   });
   function validate(kind, hz, attack, release) {
     if (!KINDS.includes(kind)) throw new RangeError("Unknown held-sound model");

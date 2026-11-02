@@ -6,17 +6,18 @@
   <meta name="theme-color" content="#192d49">
   <meta name="description" content="Explore sound waves, plucked and held instrument models, harmonic synthesis, noise, a theremin and sirens with interactive plots and bilingual controls.">
   <title>Sound Lab · Sol</title>
-  <link rel="stylesheet" href="sound-lab.css?v=s016">
+  <link rel="stylesheet" href="sound-lab.css?v=s017">
   <script src="sound-model.js" defer></script>
-  <script src="sound-transient.js?v=s015" defer></script>
-  <script src="sound-sustain.js?v=s016" defer></script>
-  <script src="sound-spectrum.js" defer></script>
+  <script src="sound-string.js?v=s017" defer></script>
+  <script src="sound-transient.js?v=s017" defer></script>
+  <script src="sound-sustain.js?v=s017" defer></script>
+  <script src="sound-spectrum.js?v=s017" defer></script>
   <script src="sound-motion.js?v=s015" defer></script>
   <script src="sound-beats.js" defer></script>
   <script src="sound-harmonics.js" defer></script>
   <script src="sound-noise.js" defer></script>
   <script src="sound-recorder.js" defer></script>
-  <script src="sound-lab.js?v=s016" defer></script>
+  <script src="sound-lab.js?v=s017" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -211,6 +212,24 @@
         </button>
         <p id="strikeStatus" class="audio-status" role="status" aria-live="polite">Бэлэн. Дарахад л дуу гарна.</p>
 
+        <div class="field-group" id="strikeGuitarGroup">
+          <div class="field-title"><span data-i18n="strikeGuitarPlay">Гитар тоглуулах</span></div>
+          <div class="drum-sizes guitar-modes" role="group" aria-label="Гитарын чавхдасны сонголт" data-i18n-aria="strikeGuitarPlay">
+            <button type="button" class="selected" data-guitar-play="single" aria-pressed="true" data-i18n="strikeSingle">Нэг чавхдас</button>
+            <button type="button" data-guitar-play="strum" aria-pressed="false" data-i18n="strikeStrum">Олон чавхдас</button>
+          </div>
+        </div>
+
+        <div class="field-group" id="strikeChordGroup" hidden>
+          <div class="field-title"><span data-i18n="strikeChord">Аккорд сонгох</span></div>
+          <div class="drum-sizes" role="group" aria-label="Гитарын аккордууд" data-i18n-aria="strikeChord">
+            <button type="button" class="selected" data-guitar-chord="em" aria-pressed="true">Em</button>
+            <button type="button" data-guitar-chord="g" aria-pressed="false">G</button>
+            <button type="button" data-guitar-chord="c" aria-pressed="false">C</button>
+          </div>
+          <p class="field-help" data-i18n="strikeChordHint">Зургаан чавхдас ээлжлэн дуугарна. Аккорд бүрд зарим чавхдасыг дарж, заримыг нь алгасна.</p>
+        </div>
+
         <div class="field-group" id="strikePitchGroup">
           <div class="field-title">
             <label for="strikeFrequencySlider" data-i18n="strikePitch">Чавхдасны давтамж</label>
@@ -230,14 +249,23 @@
           </div>
         </div>
 
+        <div class="field-group" id="strikePluckPositionGroup">
+          <div class="field-title"><label for="strikePluckPosition" data-i18n="strikePluckPosition">Татах байрлал</label><output id="strikePluckPositionValue">22%</output></div>
+          <input id="strikePluckPosition" type="range" min="8" max="50" step="1" value="22">
+          <p class="field-help" data-i18n="strikePluckPositionHint">Чавхдасны үзүүрт ойр татвал дээд гармоникууд илүү тод сонсогдоно.</p>
+        </div>
+
         <div class="field-group" id="strikeDrumSizeGroup" hidden>
-          <div class="field-title"><span data-i18n="strikeDrumSize">Бөмбөрийн хэмжээ</span><output id="strikeDrumFrequencies">176 → 48 Гц</output></div>
+          <div class="field-title"><span data-i18n="strikeDrumSize">Бөмбөрийн хэмжээ</span><output id="strikeDrumFrequencies">112 Гц</output></div>
           <div class="drum-sizes" role="group" id="strikeDrumSizes" aria-label="Бөмбөрийн хэмжээ">
             <button type="button" data-drum-size="large" aria-pressed="false" data-i18n="strikeLarge">Том</button>
             <button type="button" class="selected" data-drum-size="medium" aria-pressed="true" data-i18n="strikeMedium">Дунд</button>
             <button type="button" data-drum-size="small" aria-pressed="false" data-i18n="strikeSmall">Жижиг</button>
           </div>
-          <p class="field-help" data-i18n="strikeDrumHint">Энэ нь бөмбөрийн дууны өндөр намыг өөрчилдөг хялбаршуулсан загвар.</p>
+          <p class="field-help" data-i18n="strikeDrumHint">Том бөмбөрийн үндсэн давтамж нам, жижиг бөмбөрийнх өндөр байна.</p>
+          <div class="field-title"><label for="strikeDrumTension" data-i18n="strikeDrumTension">Арьсны таталт</label><output id="strikeDrumTensionValue">100%</output></div>
+          <input id="strikeDrumTension" type="range" min="50" max="200" step="5" value="100">
+          <p class="field-help" data-i18n="strikeDrumTensionHint">Таталтыг чангалах тусам хэлбэлзлийн давтамж нэмэгдэнэ.</p>
         </div>
 
         <div class="field-group">

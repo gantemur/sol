@@ -119,6 +119,7 @@ h1, h2, p { margin-top: 0; }
 .siren-button { background: linear-gradient(130deg, #306cbd, #514eab); min-height: 112px; }
 .siren-button:hover { background: linear-gradient(130deg, #265eab, #44419d); }
 .drum-sizes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+.guitar-modes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .drum-sizes button { min-height: 44px; padding: 9px 5px; border: 1px solid #d2e2ef; border-radius: 9px; color: #3b698f; background: #f5f9ff; font-size: 12px; font-weight: 750; }
 .drum-sizes button.selected { border: 2px solid #248a91; padding: 8px 4px; background: #e4f6f2; color: #176b72; }
 .strike-glyph { font-size: 25px; flex: none; }

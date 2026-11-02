@@ -50,15 +50,15 @@
   }
 
   function spectrumAt(model, recipe, centerSeconds) {
-    const { kind, pitchHz, decaySec, kickSize = "medium" } = recipe;
-    model.validate(kind, pitchHz, decaySec, kickSize);
+    const { kind, pitchHz, decaySec, kickSize = "medium", options = {} } = recipe;
+    model.validate(kind, pitchHz, decaySec, kickSize, options);
     if (!Number.isFinite(centerSeconds) || centerSeconds < 0 || centerSeconds > 3) {
       throw new RangeError("Analysis time must be within 0–3 seconds");
     }
     const real = new Float64Array(FFT_SIZE), imag = new Float64Array(FFT_SIZE);
     for (let i = 0; i < FFT_SIZE; i++) {
       const time = centerSeconds + (i - FFT_SIZE / 2) / SAMPLE_RATE;
-      real[i] = hann[i] * model.plottedSampleAt(kind, time, pitchHz, decaySec, kickSize);
+      real[i] = hann[i] * model.plottedSampleAt(kind, time, pitchHz, decaySec, kickSize, options);
     }
     transform(real, imag);
     const magnitudes = new Float32Array(FFT_SIZE / 2 + 1);
