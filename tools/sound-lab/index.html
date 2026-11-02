@@ -4,18 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#192d49">
-  <meta name="description" content="Explore sound waves, modeled piano and drums, harmonic synthesis, noise, a theremin and sirens with interactive plots and bilingual controls.">
+  <meta name="description" content="Explore sound waves, plucked and held instrument models, harmonic synthesis, noise, a theremin and sirens with interactive plots and bilingual controls.">
   <title>Sound Lab · Sol</title>
-  <link rel="stylesheet" href="sound-lab.css?v=s015">
+  <link rel="stylesheet" href="sound-lab.css?v=s016">
   <script src="sound-model.js" defer></script>
   <script src="sound-transient.js?v=s015" defer></script>
+  <script src="sound-sustain.js?v=s016" defer></script>
   <script src="sound-spectrum.js" defer></script>
   <script src="sound-motion.js?v=s015" defer></script>
   <script src="sound-beats.js" defer></script>
   <script src="sound-harmonics.js" defer></script>
   <script src="sound-noise.js" defer></script>
   <script src="sound-recorder.js" defer></script>
-  <script src="sound-lab.js?v=s015" defer></script>
+  <script src="sound-lab.js?v=s016" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -58,6 +59,7 @@
       <nav class="mode-switch" aria-label="Дууны бүлэг" id="modeSwitch">
         <button type="button" id="modePure" class="mode-button active" aria-pressed="true" data-i18n="modePure">Цэвэр авиа</button>
         <button type="button" id="modeStrike" class="mode-button" aria-pressed="false" data-i18n="modeStrike">Цохих ба татах</button>
+        <button type="button" id="modeSustain" class="mode-button" aria-pressed="false" data-i18n="modeSustain">Үлээх ба нумдах</button>
         <button type="button" id="modeMotion" class="mode-button" aria-pressed="false" data-i18n="modeMotion">Хувирдаг давтамж</button>
         <button type="button" id="modeMix" class="mode-button" aria-pressed="false" data-i18n="modeMix">Долгион холих</button>
       </nav>
@@ -309,6 +311,76 @@
           <div class="chart-foot">
             <span id="strikeSpectrumHint" data-i18n="strikeSpectrumHint">Өндөр гармоникууд хэр хурдан намдаж байгааг ажигла.</span>
             <span data-i18n="frequencyAxis">давтамж →</span>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="workspace" id="sustainWorkspace" hidden>
+      <section class="panel controls" aria-labelledby="sustain-controls-title">
+        <div class="section-top">
+          <h2 id="sustain-controls-title" data-i18n="sustainChoose">Үргэлжлэх дуу сонгох</h2>
+          <p id="sustainDescription" class="description">Үлээх эсвэл нумдах үед дуу үргэлжилж, зогсооход намдана.</p>
+        </div>
+        <div class="strike-choices" id="sustainChoices" role="group" aria-label="Үргэлжлэх авианы загвар">
+          <button class="strike-choice selected" type="button" data-sustain="flute" aria-pressed="true"><span class="strike-glyph" aria-hidden="true">🪈</span><span data-i18n="sustainFlute">Лимбэ</span></button>
+          <button class="strike-choice" type="button" data-sustain="violin" aria-pressed="false"><span class="strike-glyph" aria-hidden="true">🎻</span><span data-i18n="sustainViolin">Хийл</span></button>
+          <button class="strike-choice" type="button" data-sustain="morin" aria-pressed="false"><span class="strike-glyph" aria-hidden="true">♬</span><span data-i18n="sustainMorin">Морин хуур</span></button>
+        </div>
+        <div class="field-group">
+          <div class="field-title"><span data-i18n="sustainGestureTitle">Дуугаргах арга</span></div>
+          <div class="motion-choices" id="sustainGestures" role="group" aria-label="Дуугаргах арга">
+            <button type="button" class="motion-choice selected" data-sustain-gesture="hold" aria-pressed="true" data-i18n="sustainHold">Дарж барих</button>
+            <button type="button" class="motion-choice" data-sustain-gesture="toggle" aria-pressed="false" data-i18n="sustainToggle">Товшиж асаах</button>
+          </div>
+        </div>
+        <button id="sustainButton" type="button" class="play-button sustain-button" aria-pressed="false">
+          <span id="sustainPlayIcon" class="play-icon" aria-hidden="true">▶</span>
+          <span id="sustainPlayLabel">Дарж дуугаргах</span>
+          <span id="sustainPlayCaption" class="play-caption">Дараад барина, тавихад аажмаар намдана.</span>
+        </button>
+        <p id="sustainStatus" class="audio-status" role="status" aria-live="polite">Бэлэн. Хуруу эсвэл товчлуур дээр дарж дуугаргана.</p>
+
+        <div class="field-group">
+          <div class="field-title"><label for="sustainFrequencySlider" data-i18n="sustainPitch">Нотын давтамж</label><output id="sustainNote" class="note-badge">A4 · Ля4</output></div>
+          <div class="frequency-controls">
+            <input id="sustainFrequencySlider" type="range" min="0" max="1000" step="1" value="667" aria-label="Нотын давтамжийн гулсуур">
+            <div class="number-wrap"><input id="sustainFrequencyInput" type="number" min="110" max="880" step="any" inputmode="decimal" value="440" aria-label="Давтамжийг герцээр оруулах"><span data-i18n="unitHz">Гц</span></div>
+          </div>
+          <div class="scale-row"><span data-unit-hz="110">110 Гц</span><label class="check-label"><input id="sustainSnap" type="checkbox"> <span data-i18n="snap">Нотод тааруулах</span></label><span data-unit-hz="880">880 Гц</span></div>
+        </div>
+        <div class="field-group">
+          <div class="field-title"><label for="sustainAttack" data-i18n="sustainAttack">Эхлэх хугацаа</label><output id="sustainAttackValue">0.14 сек</output></div>
+          <input id="sustainAttack" type="range" min="0.02" max="0.6" step="0.01" value="0.14">
+        </div>
+        <div class="field-group">
+          <div class="field-title"><label for="sustainRelease" data-i18n="sustainRelease">Намдах хугацаа</label><output id="sustainReleaseValue">0.18 сек</output></div>
+          <input id="sustainRelease" type="range" min="0.04" max="1.2" step="0.01" value="0.18">
+          <p class="field-help" data-i18n="sustainEnvelopeHelp">Эхлэх хугацаа дараагийн нотод, намдах хугацаа тавихад үйлчилнэ.</p>
+        </div>
+        <div class="field-group volume-field">
+          <div class="field-title"><label for="sustainVolume" data-i18n="volume">Дууны хэмжээ</label><output id="sustainVolumeValue">40%</output></div>
+          <input id="sustainVolume" type="range" min="0" max="100" step="1" value="40">
+          <p class="field-help" data-i18n="safeVolume">Эхэндээ аяархан дуугарна. Ялангуяа чихэвч хэрэглэвэл болгоомжтой нэмээрэй.</p>
+        </div>
+      </section>
+      <div class="visuals">
+        <section class="panel chart-panel" aria-labelledby="sustain-envelope-title">
+          <div class="chart-heading">
+            <div><h2 id="sustain-envelope-title" data-i18n="sustainEnvelopeTitle">Дууны хүч хугацаанд</h2><p data-i18n="sustainEnvelopeHint">1.2 сек дараад тавьсан жишээ. Эхлэл, үргэлжлэх үе, намдалт.</p></div>
+            <span class="chart-badge" id="sustainEnvelopeBadge">0.14 / 0.18 сек</span>
+          </div>
+          <canvas id="sustainEnvelopeCanvas" width="740" height="260" role="img" aria-label="Дарах, барих, тавих үеийн дууны хүчний загвар"></canvas>
+          <div class="chart-foot"><span data-i18n="sustainEnvelopeFoot">Босоо шугам нь тавих мөч (1.2 сек).</span><span data-i18n="timeAxis">хугацаа →</span></div>
+        </section>
+        <section class="panel chart-panel" aria-labelledby="sustain-detail-title">
+          <div class="chart-heading">
+            <div><h2 id="sustain-detail-title" data-i18n="sustainDetailTitle">Долгион ба гармоникууд</h2><p data-i18n="sustainDetailHint">20 мсек-ийн үелэх хэсэг. Амьсгаа, нумын зөөлөн шуугианыг энд зураагүй.</p></div>
+            <span class="chart-badge" id="sustainDetailBadge">440 Гц</span>
+          </div>
+          <div class="motion-mini-plots">
+            <div><h3 data-i18n="sustainWaveTitle">Долгион</h3><canvas id="sustainWaveCanvas" width="350" height="180" role="img" aria-label="20 мсек-ийн үелэх долгионы загвар"></canvas></div>
+            <div><h3 data-i18n="sustainSpectrumTitle">Гармоникууд</h3><canvas id="sustainSpectrumCanvas" width="350" height="180" role="img" aria-label="Үндсэн давтамж ба долоон дээд гармоникийн хүч"></canvas></div>
           </div>
         </section>
       </div>
@@ -632,6 +704,12 @@
       <button type="button" id="strikeReset" class="reset-button" data-i18n="reset">↺ Эхнээс нь</button>
     </section>
 
+    <section class="challenge" id="sustainChallenge" aria-labelledby="sustain-challenge-heading" hidden>
+      <div class="challenge-icon" aria-hidden="true">✧</div>
+      <div class="challenge-copy"><h2 id="sustain-challenge-heading" data-i18n="tryThis">ТУРШИЖ ҮЗ</h2><p data-i18n="sustainChallenge">Ижил нот дээр лимбэ, хийл, морин хуурыг сонсож, эхлэл ба гармоникуудыг харьцуул.</p></div>
+      <button type="button" id="sustainReset" class="reset-button" data-i18n="reset">↺ Эхнээс нь</button>
+    </section>
+
     <section class="challenge" id="motionChallenge" aria-labelledby="motion-challenge-heading" hidden>
       <div class="challenge-icon" aria-hidden="true">✧</div>
       <div class="challenge-copy"><h2 id="motion-challenge-heading" data-i18n="tryThis">ТУРШИЖ ҮЗ</h2><p id="motionChallengeText">Нэг өндөртэй авиа гаргах байрлалаа олоорой.</p></div>
@@ -662,6 +740,11 @@
       <summary data-i18n="strikeLearnMore">Яагаад эдгээр дуу намддаг вэ?</summary>
       <p data-i18n="strikeLessonOne">Чавхдас олон давтамжаар хэлбэлзэж, өндөр гармоникууд нь хурдан намдана.</p>
       <p data-i18n="strikeLessonTwo">Басс бөмбөрийн цохилтын давтамж эхлээд хурдан буурч, далайц нь аажмаар намдана. Эдгээрийн долгионы график ерөнхийдөө төстэй харагдах боловч давтамжийн найрлага нь тэс өөр. 20 мсек болгон томруулж эсвэл спектрийг нь харьцуулж ялгааг нь хараарай.</p>
+    </details>
+    <details class="explanation" id="sustainExplanation" hidden>
+      <summary data-i18n="sustainLearnMore">Эдгээр дуу яагаад үргэлжилдэг вэ?</summary>
+      <p data-i18n="sustainLessonOne">Лимбэ үлээх, хийл болон морин хуур нумдах үед энерги тасралтгүй өгөгдөнө. Энэ нь татаж тавьсан чавхдаснаас ялгаатай.</p>
+      <p data-i18n="sustainLessonTwo">Эдгээр нь гармоник, бага хэмжээний шуугианаар бүтээсэн хялбаршуулсан загвар. Жинхэнэ зэмсгийн их бие, нум болон амьсгалын нарийн хөдөлгөөнийг дуурайгаагүй.</p>
     </details>
     <details class="explanation" id="motionExplanation" hidden>
       <summary data-i18n="motionLearnMore">Давтамж өөрчлөгдөхөд яагаад авиа өөр сонсогддог вэ?</summary>

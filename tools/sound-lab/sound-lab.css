@@ -125,6 +125,8 @@ h1, h2, p { margin-top: 0; }
 .strike-button { background: linear-gradient(130deg, #18969b, #19727e); }
 .strike-button:hover { background: linear-gradient(130deg, #17878e, #126671); }
 .strike-button:active { transform: scale(.99); }
+.sustain-button { touch-action: none; user-select: none; }
+.sustain-button:active { transform: scale(.99); }
 
 .play-button { position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; min-height: 130px; border: 0; border-radius: 15px; background: linear-gradient(130deg, #3779d8, #285baf); color: #fff; font-size: 20px; font-weight: 850; overflow: hidden; }
 .play-button:hover { background: linear-gradient(130deg, #2e6cca, #1f519e); }
@@ -191,6 +193,7 @@ h1, h2, p { margin-top: 0; }
 .chart-panel canvas { display: block; width: 100%; height: 255px; margin: 12px 0 4px; background: #fbfdff; border-radius: 8px; }
 .chart-panel #spectrumCanvas { height: 184px; }
 .chart-panel #strikeSpectrumCanvas { height: 205px; }
+.chart-panel #sustainEnvelopeCanvas { height: 230px; }
 .motion-mini-plots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 12px; }
 .motion-mini-plots > div { min-width: 0; }
 .motion-mini-plots h3 { color: #526b86; font-size: 12px; font-weight: 800; margin: 0; }
@@ -241,7 +244,8 @@ h1, h2, p { margin-top: 0; }
   .controls { padding: 22px; }
   .description { min-height: 0; }
   .visuals { grid-template-columns: 1fr 1fr; }
-  #mixWorkspace .visuals, #harmonicWorkspace .visuals, #noiseWorkspace .visuals { grid-template-columns: 1fr; }
+  #mixWorkspace .visuals, #harmonicWorkspace .visuals, #noiseWorkspace .visuals,
+  #sustainWorkspace .visuals { grid-template-columns: 1fr; }
   .chart-panel canvas { height: 188px; }
   .chart-panel #spectrumCanvas { height: 188px; }
   .chart-panel #strikeSpectrumCanvas { height: 188px; }
