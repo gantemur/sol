@@ -49,8 +49,8 @@ h1, h2, p { margin-top: 0; }
 .mode-button { min-height: 44px; padding: 10px 17px; border: 1px solid #c7d8ed; border-radius: 11px; background: #fff; color: #466788; font-size: 13px; font-weight: 800; }
 .mode-button:hover { border-color: #78a9df; }
 .mode-button.active { background: #2769ba; color: white; border-color: #2769ba; box-shadow: 0 3px 10px #2769ba25; }
-.experiment-switch { display: flex; flex-wrap: wrap; gap: 8px; margin: -8px 0 20px; }
-.experiment-switch button { min-height: 44px; border: 1px solid #c7d8ed; border-radius: 10px; padding: 9px 14px; background: #fff; color: #486b88; font-size: 12px; font-weight: 800; }
+.experiment-switch { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+.experiment-switch button { min-height: 52px; border: 1px solid #c7d8ed; border-radius: 10px; padding: 8px 5px; background: #fff; color: #486b88; font-size: 12px; font-weight: 800; line-height: 1.25; }
 .experiment-switch button:hover { border-color: #74aaa8; }
 .experiment-switch button.selected { background: #e0f4ee; border-color: #298d84; color: #176e67; }
 
@@ -94,6 +94,12 @@ h1, h2, p { margin-top: 0; }
 .motion-choice > span:first-child { font-size: 24px; line-height: 1; }
 .motion-control-block { display: flex; flex-direction: column; gap: 13px; }
 .motion-instruction { font-size: 12px; color: #617b93; margin: 0; }
+.theremin-timbres { display: grid; gap: 7px; }
+.timbre-label { margin: 0; font-weight: 800; }
+.timbre-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+.timbre-choices button { min-height: 43px; padding: 8px 6px; border: 1px solid #d2e2ef; border-radius: 9px; background: #f5f9ff; color: #3b698f; font-size: 12px; font-weight: 800; }
+.timbre-choices button:hover { border-color: #74aaa8; }
+.timbre-choices button.selected { border: 2px solid #248a91; color: #176b72; background: #e4f6f2; padding: 7px 5px; }
 .theremin-pad { position: relative; min-height: 228px; border: 2px solid #3599b1; border-radius: 14px; cursor: crosshair; touch-action: none; user-select: none; overflow: hidden; background: linear-gradient(180deg, #5fb4db30, #3b80cb10), repeating-linear-gradient(90deg, transparent 0 calc(25% - 1px), #83b1d955 calc(25% - 1px) 25%), repeating-linear-gradient(0deg, transparent 0 calc(25% - 1px), #83b1d955 calc(25% - 1px) 25%), #ecf8ff; }
 .theremin-pad:hover { background-color: #e0f4ff; }
 .theremin-pad:focus-visible { outline: 3px solid #72a7fc; outline-offset: 4px; }
@@ -255,8 +261,7 @@ h1, h2, p { margin-top: 0; }
   .stop-all { padding: 8px 9px; min-height: 40px; font-size: 12px; }
   .container { padding: 16px 14px 36px; }
   .mode-bar { margin-bottom: 16px; }
-  .experiment-switch { margin: -5px 0 14px; }
-  .experiment-switch button { flex: 1 1 auto; padding: 9px 7px; }
+  .experiment-switch button { padding: 8px 4px; }
   .record-button { min-height: 40px; padding: 7px 9px; }
   .record-popover { right: -55px; }
   .mode-switch { width: 100%; }

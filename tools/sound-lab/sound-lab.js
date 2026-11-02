@@ -66,11 +66,11 @@
       modePure: "Pure tones", modeStrike: "Strike & Pluck", modeMotion: "Moving Pitch",
       modeMix: "Combine waves", modeSwitchAria: "Sound categories",
       mixExperimentsAria: "Explore combined and complex sounds",
-      mixExperimentBeats: "Two-tone beats", mixExperimentHarmonics: "Build harmonics",
-      mixExperimentNoise: "Explore noise",
+      mixExperimentBeats: "Two frequencies", mixExperimentHarmonics: "Build timbre",
+      mixExperimentNoise: "Noise",
       harmonicPhase: "04 · Build a sound", noisePhase: "04 · Explore noise",
       harmonicChoose: "Add harmonics", harmonicDescription: "Combine whole-number multiples of a frequency to build a new sound.",
-      harmonicPlay: "Play your sound", harmonicStop: "Stop your sound", harmonicBase: "Fundamental frequency",
+      harmonicPlay: "Play", harmonicStop: "Stop", harmonicBase: "Fundamental frequency",
       harmonicPresetsTitle: "Example mixtures", harmonicPure: "Pure", harmonicOdd: "Odd harmonics",
       harmonicRich: "Rich", harmonicStrengths: "Strength of each harmonic", harmonicNotation: "f, 2f, 3f…",
       harmonicWaveTitle: "Combined waveform", harmonicWaveHint: "Add harmonics and watch the wave change shape.",
@@ -89,7 +89,7 @@
       harmonicSpectrumAria: "Strengths and frequencies of eight harmonics",
       harmonicPresetsAria: "Example harmonic mixtures", harmonicSlidersAria: "Eight harmonic strengths",
       noiseChoose: "Choose a noise color", noiseDescription: "Listen to random vibrations with different frequency mixtures.",
-      noiseWhite: "White", noisePink: "Pink", noiseBrown: "Brown", noisePlay: "Play noise", noiseStop: "Stop noise",
+      noiseWhite: "White", noisePink: "Pink", noiseBrown: "Brown", noisePlay: "Play", noiseStop: "Stop",
       noiseColorDescription: {
         white: "Roughly equal power in each hertz-wide frequency band.",
         pink: "More power in low frequencies, with about equal power per octave.",
@@ -113,7 +113,7 @@
       noiseChoicesAria: "Noise color choices",
       mixPhase: "04 · Two-tone beats",
       mixChoose: "Combine two tones", mixDescription: "Two nearby frequencies reinforce and cancel, making the volume pulse.",
-      mixPlay: "Play both tones", mixStop: "Stop both tones",
+      mixPlay: "Play", mixStop: "Stop",
       mixBase: "First frequency", mixGap: "Frequency difference (Δf)",
       mixTryGap: "Try:", mixZeroGap: "0 Hz", mixTwoGap: "2 Hz", mixFourGap: "4 Hz", mixTenGap: "10 Hz",
       mixTwoFrequencies: "Two frequencies", mixBeatRate: "Volume pulses", mixBeatUnit: "pulses/s",
@@ -186,7 +186,7 @@
       strikeDesc: {
         pluck: "A string begins vibrating after a pluck, then gradually becomes quieter.",
         kick: "A drum hit drops in pitch while its vibration fades.",
-        piano: "A modeled hammer strike excites several slightly stretched string harmonics, which fade at different rates."
+        piano: "A hammer excites slightly detuned strings together, with a bright onset and stretched overtones."
       },
       motionPhase: "03 · Moving frequency", motionChoose: "Choose a moving sound",
       theremin: "Theremin", siren: "Fire-truck siren",
@@ -195,6 +195,8 @@
         siren: "Hear how different paths between the same two frequencies change the sound."
       },
       motionGroupAria: "Moving sound choices", thereminHelp: "Press and move: right makes the pitch higher; up makes it louder. Release to stop.",
+      thereminTimbreLabel: "Sound color", thereminTimbresAria: "Theremin timbre options",
+      timbrePure: "Pure", timbreRich: "Rich", timbreVoice: "Voice-like", timbreOvertones: "Overtones",
       padLoud: "Louder ↑", padStart: "Press and move", padHigh: "Higher pitch →",
       padAria: "Theremin touch pad", thereminKeyboardHelp: "Keyboard: use arrow keys to move; Space or Enter toggles the sound. Escape stops.",
       sirenPatternAria: "Frequency trajectory", sirenTwoTone: "Abrupt", sirenSineSweep: "Smooth",
@@ -213,15 +215,15 @@
       motionPitchSirenPitch: "Equal semitones per second: a straight path on the logarithmic frequency chart.",
       motionPitchSirenSine: "Sinusoidal in Hz: slow near the extremes and fastest in the middle.",
       motionPitchScale: "Logarithmic frequency · 120–1600 Hz", motionPitchAria: "Ideal pitch path over time",
-      motionDetailTitle: "At this moment", motionDetailHint: "The same sound as a waveform and its current ideal frequency component.",
-      motionWaveTitle: "20 ms waveform", motionComponentTitle: "Frequency component",
-      motionWaveAria: "Modeled 20 millisecond sine waveform at current pitch", motionComponentAria: "Current single ideal frequency component",
+      motionDetailTitle: "At this moment", motionDetailHint: "Different harmonic colors at the same fundamental pitch, shown as waves and components.",
+      motionWaveTitle: "20 ms waveform", motionComponentTitle: "Harmonics",
+      motionWaveAria: "Modeled 20 millisecond waveform at current pitch and timbre", motionComponentAria: "Harmonics of the current moving sound",
       motionChallenge: {
         theremin: "Move left and right without changing the loudness. What changes in the waveform?",
         siren: "Keep the low and high frequencies and speed fixed. How do the three trajectories sound different?"
       },
       motionLearnMore: "Why does moving the pitch change the sound?",
-      motionLessonOne: "Moving to the right makes the oscillator vibrate faster, so its pitch rises. Up and down changes the amplitude, making the sound louder or softer.",
+      motionLessonOne: "Moving right raises the pitch; moving up makes the sound louder. Theremin color choices change the harmonic mixture at the same fundamental frequency.",
       motionLessonTwo: "Three paths connect the same two frequencies. Abrupt switches directly between two tones. Smooth follows a sinusoidal curve, slowing near the extremes. Linear changes by equal musical-pitch intervals and looks straight on the logarithmic graph.",
       desc: {
         sine: "One smooth vibration, with a single frequency.",
@@ -296,11 +298,11 @@
       modePure: "Цэвэр авиа", modeStrike: "Цохих ба татах", modeMotion: "Хувирдаг давтамж",
       modeMix: "Долгион холих", modeSwitchAria: "Дууны бүлэг",
       mixExperimentsAria: "Холимог ба нийлмэл авианы туршилтууд",
-      mixExperimentBeats: "Хоёр авианы биение", mixExperimentHarmonics: "Гармоник бүтээх",
-      mixExperimentNoise: "Шуугиан судлах",
+      mixExperimentBeats: "Хоёр давтамж", mixExperimentHarmonics: "Өнгө бүтээх",
+      mixExperimentNoise: "Шуугиан",
       harmonicPhase: "04 · Авиа бүтээх", noisePhase: "04 · Шуугиан судлах",
       harmonicChoose: "Гармоникуудыг нэмэх", harmonicDescription: "Нэг давтамжийн бүхэл тоон үржвэрүүдийг нийлүүлж шинэ авиа бүтээнэ.",
-      harmonicPlay: "Авиа тоглуулах", harmonicStop: "Авиа зогсоох", harmonicBase: "Үндсэн давтамж",
+      harmonicPlay: "Тоглуулах", harmonicStop: "Зогсоох", harmonicBase: "Үндсэн давтамж",
       harmonicPresetsTitle: "Бэлэн найрлагууд", harmonicPure: "Цэвэр", harmonicOdd: "Сондгой",
       harmonicRich: "Олон гармоник", harmonicStrengths: "Гармоник бүрийн хүч", harmonicNotation: "f, 2f, 3f…",
       harmonicWaveTitle: "Нийлбэр долгион", harmonicWaveHint: "Гармоник нэмж, долгионы хэлбэр хэрхэн өөрчлөгдөхийг хараарай.",
@@ -319,7 +321,7 @@
       harmonicSpectrumAria: "Найман гармоникийн хүч болон давтамж",
       harmonicPresetsAria: "Гармоникийн бэлэн найрлага", harmonicSlidersAria: "Найман гармоникийн далайц",
       noiseChoose: "Шуугианы өнгө сонгох", noiseDescription: "Олон давтамжийн санамсаргүй хэлбэлзлийг сонсож, найрлагыг нь ажиглаарай.",
-      noiseWhite: "Цагаан", noisePink: "Ягаан", noiseBrown: "Бор", noisePlay: "Шуугиан сонсох", noiseStop: "Шуугиан зогсоох",
+      noiseWhite: "Цагаан", noisePink: "Ягаан", noiseBrown: "Бор", noisePlay: "Тоглуулах", noiseStop: "Зогсоох",
       noiseColorDescription: {
         white: "Давтамжийн нэг герцийн зурвас бүрд ойролцоогоор ижил чадалтай.",
         pink: "Нам давтамж илүү хүчтэй; октав бүрийн чадал ойролцоогоор ижил.",
@@ -343,7 +345,7 @@
       noiseChoicesAria: "Шуугианы өнгө сонгох",
       mixPhase: "04 · Хоёр авианы биение",
       mixChoose: "Хоёр авиа нийлүүлэх", mixDescription: "Ойролцоо хоёр давтамж нийлээд дууны чанга, сул нь ээлжлэн өөрчлөгдөнө.",
-      mixPlay: "Хоёр авиа тоглуулах", mixStop: "Хоёр авиа зогсоох",
+      mixPlay: "Тоглуулах", mixStop: "Зогсоох",
       mixBase: "Эхний давтамж", mixGap: "Давтамжийн зөрүү (Δf)",
       mixTryGap: "Туршиж үз:", mixZeroGap: "0 Гц", mixTwoGap: "2 Гц", mixFourGap: "4 Гц", mixTenGap: "10 Гц",
       mixTwoFrequencies: "Хоёр давтамж", mixBeatRate: "Чангарч, сулрах хурд", mixBeatUnit: "удаа/сек",
@@ -416,7 +418,7 @@
       strikeDesc: {
         pluck: "Татаж тавьсан чавхдас хэлбэлзээд аажмаар намдана.",
         kick: "Бөмбөрийн цохилтын давтамж буурч, хэлбэлзэл нь намдана.",
-        piano: "Загварчилсан алх цохиход ялимгүй зөрүүтэй дээд гармоникууд үүсэж, өөр өөр хурдтай намдана."
+        piano: "Алх цохиход өчүүхэн зөрүүтэй хэдэн чавхдас зэрэг хэлбэлзэж, эхэндээ хурц авиа үүсгэнэ."
       },
       motionPhase: "03 · Хувирдаг давтамж", motionChoose: "Хөдөлгөөнт дуу сонгох",
       theremin: "Теремин", siren: "Галын машины дохио",
@@ -425,6 +427,8 @@
         siren: "Ижил хоёр давтамжийн хооронд өөр өөр замаар шилжүүлж сонсоорой."
       },
       motionGroupAria: "Хөдөлгөөнт дууны төрөл", thereminHelp: "Талбар дээр дарж хөдөлгөнө: баруун тийш өндөр, дээш чанга дуугарна. Гараа авахад зогсоно.",
+      thereminTimbreLabel: "Дууны өнгө", thereminTimbresAria: "Тереминий дууны өнгө сонгох",
+      timbrePure: "Цэвэр", timbreRich: "Баян", timbreVoice: "Хоолой шиг", timbreOvertones: "Дээд авиа",
       padLoud: "Чанга ↑", padStart: "Дараад хөдөлгөөрэй", padHigh: "Өндөр авиа →",
       padAria: "Теремин тоглох талбар", thereminKeyboardHelp: "Гарын товчлуураар: сумаар хөдөлгөж, Space/Enter-ээр дууг асааж эсвэл зогсооно. Escape зогсооно.",
       sirenPatternAria: "Давтамжийн замнал", sirenTwoTone: "Огцом", sirenSineSweep: "Аажим",
@@ -443,15 +447,15 @@
       motionPitchSirenPitch: "Хагас тоноор жигд өөрчлөгдөнө. Логарифм графикт шулуун харагдана.",
       motionPitchSirenSine: "Синусоид замналын захад удаан, дунд хэсэгт хурдан өөрчлөгдөнө.",
       motionPitchScale: "Логарифм давтамж · 120–1600 Гц", motionPitchAria: "Хугацаанд өөрчлөгдөх давтамжийн загвар",
-      motionDetailTitle: "Энэ мөчийн дохио", motionDetailHint: "Ижил давтамжийг долгион болон нэг бүрэлдэхүүнээр харуулав.",
-      motionWaveTitle: "20 мсек-ийн долгион", motionComponentTitle: "Давтамжийн бүрэлдэхүүн",
-      motionWaveAria: "Тухайн мөчийн 20 миллисекундийн синус долгион", motionComponentAria: "Одоогийн нэг давтамжийн бүрэлдэхүүн",
+      motionDetailTitle: "Энэ мөчийн дохио", motionDetailHint: "Ижил үндсэн давтамжтай өөр өөр өнгийн долгион ба гармоникууд.",
+      motionWaveTitle: "20 мсек-ийн долгион", motionComponentTitle: "Гармоникууд",
+      motionWaveAria: "Тухайн мөчийн давтамж ба өнгийн 20 мсек долгион", motionComponentAria: "Энэ мөчийн гармоникийн бүрэлдэхүүн",
       motionChallenge: {
         theremin: "Дууны хэмжээг өөрчлөхгүйгээр зүүн, баруун тийш хөдөлгө. Долгионы үе хэрхэн өөрчлөгдөв?",
         siren: "Хоёр захын давтамж, хурдыг өөрчлөхгүйгээр гурван замналыг сонс. Ямар ялгаа байна вэ?"
       },
       motionLearnMore: "Давтамж өөрчлөгдөхөд яагаад авиа өөр сонсогддог вэ?",
-      motionLessonOne: "Баруун тийш хөдөлгөхөд хэлбэлзэл түргэсэж, авиа өндөрсөж сонсогдоно. Дээш, доош хөдөлгөхөд далайц буюу дууны чанга сул өөрчлөгдөнө.",
+      motionLessonOne: "Баруун тийш хөдөлгөхөд давтамж өсөж, дээш хөдөлгөхөд авиа чангарна. Тереминий дууны өнгийг солиход үндсэн давтамж хэвээр боловч гармоникуудын найрлага өөрчлөгдөнө.",
       motionLessonTwo: "Ижил хоёр давтамжийг гурван замаар холбож болно. Огцом замналд хоёр авиа шууд солигдоно. Аажим замнал нь синусоид хэлбэрээр өсөж буурч, захын цэгүүддээ удааширна. Шугаман замналд авиа хагас тоноор жигд өөрчлөгдөж, логарифм графикт шулуун харагдана.",
       desc: {
         sine: "Нэг үндсэн давтамжтай жигд хэлбэлзэл.",
@@ -500,6 +504,7 @@
     strikeSpectrumView: "local",
     strikeFollowing: false,
     motionKind: "theremin",
+    motionTimbre: "pure",
     motionX: motionModel.padFraction(440),
     motionY: 0.5,
     motionHz: 440,
@@ -751,6 +756,12 @@
       const oscillator = context.createOscillator();
       const gain = context.createGain();
       oscillator.type = "sine";
+      if (state.motionKind === "theremin" && state.motionTimbre !== "pure") {
+        const partials = motionModel.timbrePartials(state.motionTimbre);
+        const real = new Float32Array(partials.length + 1);
+        const imag = new Float32Array([0, ...partials]);
+        oscillator.setPeriodicWave(context.createPeriodicWave(real, imag));
+      }
       oscillator.frequency.setValueAtTime(state.motionHz, now);
       gain.gain.setValueAtTime(0, now);
       gain.gain.linearRampToValueAtTime(maxGain.motion * state.motionLevel, now + 0.035);
@@ -1625,6 +1636,11 @@
       button.classList.toggle("selected", active);
       button.setAttribute("aria-pressed", String(active));
     });
+    document.querySelectorAll("[data-theremin-timbre]").forEach(button => {
+      const active = button.dataset.thereminTimbre === state.motionTimbre;
+      button.classList.toggle("selected", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
     document.querySelectorAll("[data-siren-pattern]").forEach(button => {
       const active = button.dataset.sirenPattern === state.sirenPattern;
       button.classList.toggle("selected", active);
@@ -1661,6 +1677,17 @@
     setMotionStatus("motionReady");
     renderMotionControls();
     drawPlots();
+  }
+
+  function setMotionTimbre(timbre) {
+    if (!motionModel.TIMBRES.includes(timbre) || timbre === state.motionTimbre) return;
+    state.motionTimbre = timbre;
+    if (state.motionPlaying && state.motionKind === "theremin") {
+      // Crossfade one oscillator into the new harmonic color at the same pitch.
+      motionAudio.start().catch(() => stopMotionSound(true, "motionBlocked"));
+    }
+    renderMotionControls();
+    if (state.mode === "motion") drawMotionPlots();
   }
 
   function setPadPosition(x, y) {
@@ -1732,6 +1759,7 @@
   function resetMotion() {
     stopMotionSound();
     state.motionKind = "theremin";
+    state.motionTimbre = "pure";
     state.motionX = motionModel.padFraction(440);
     state.motionY = 0.5;
     state.motionHz = 440;
@@ -1764,7 +1792,6 @@
     $("motionWorkspace").hidden = !isMotion;
     $("motionChallenge").hidden = !isMotion;
     $("motionExplanation").hidden = !isMotion;
-    $("mixExperimentSwitch").hidden = !isMix;
     $("mixWorkspace").hidden = !isBeats;
     $("mixChallenge").hidden = !isBeats;
     $("mixExplanation").hidden = !isBeats;
@@ -1825,6 +1852,7 @@
     $("strikeDrumSizes").setAttribute("aria-label", text("strikeDrumSize"));
     $("strikeSpectrumChoices").setAttribute("aria-label", text("strikeSpectrumModesAria"));
     $("motionChoices").setAttribute("aria-label", text("motionGroupAria"));
+    $("thereminTimbres").setAttribute("aria-label", text("thereminTimbresAria"));
     $("sirenPatterns").setAttribute("aria-label", text("sirenPatternAria"));
     $("thereminPad").setAttribute("aria-label", text("padAria"));
     $("motionPitchCanvas").setAttribute("aria-label", text("motionPitchAria"));
@@ -1844,7 +1872,6 @@
     $("mixZoomValue").setAttribute("aria-label", text("mixZoomValueAria"));
     $("mixViewLeft").setAttribute("aria-label", text("mixLeftAria"));
     $("mixViewRight").setAttribute("aria-label", text("mixRightAria"));
-    $("mixExperimentSwitch").setAttribute("aria-label", text("mixExperimentsAria"));
     $("harmonicPresets").setAttribute("aria-label", text("harmonicPresetsAria"));
     $("harmonicSliders").setAttribute("aria-label", text("harmonicSlidersAria"));
     $("harmonicWaveCanvas").setAttribute("aria-label", text("harmonicWaveAria"));
@@ -2419,10 +2446,12 @@
     ctx.strokeStyle = "#367bd1";
     ctx.lineWidth = 2;
     ctx.beginPath();
+    const timbre = state.motionKind === "theremin" ? state.motionTimbre : "pure";
     for (let i = 0; i <= 350; i++) {
       const fraction = i / 350;
       const x = left + fraction * (right - left);
-      const y = middle - amplitude * Math.sin(2 * Math.PI * state.motionHz * fraction * 0.02);
+      const phase = 2 * Math.PI * state.motionHz * fraction * 0.02;
+      const y = middle - amplitude * motionModel.timbreWaveAt(phase, timbre);
       if (!i) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
     }
@@ -2437,7 +2466,10 @@
 
   function drawMotionComponent() {
     const { ctx, width, height } = plotContext($("motionSpectrumCanvas"));
-    const left = 30, right = width - 15, top = 19, bottom = height - 27;
+    const left = 20, right = width - 15, top = 24, bottom = height - 32;
+    const timbre = state.motionKind === "theremin" ? state.motionTimbre : "pure";
+    const partials = motionModel.timbrePartials(timbre);
+    const peak = Math.max(...partials);
     ctx.strokeStyle = "#e8eff7";
     ctx.lineWidth = 1;
     for (let i = 0; i <= 4; i++) {
@@ -2446,17 +2478,24 @@
     }
     ctx.strokeStyle = "#a9bdd3";
     ctx.beginPath(); ctx.moveTo(left, bottom); ctx.lineTo(right, bottom); ctx.stroke();
-    const x = left + (state.motionHz - motionModel.MIN_HZ) /
-      (motionModel.MAX_HZ - motionModel.MIN_HZ) * (right - left);
-    ctx.strokeStyle = "#278bb8";
-    ctx.lineWidth = 5;
-    ctx.beginPath(); ctx.moveTo(x, bottom); ctx.lineTo(x, bottom - (bottom - top) * state.motionLevel); ctx.stroke();
+    for (let i = 0; i < partials.length; i++) {
+      const x = left + (right - left) * (i + 1) / (partials.length + 1);
+      if (partials[i] > 0) {
+        ctx.strokeStyle = i === 0 ? "#278bb8" : "#16998f";
+        ctx.lineWidth = 9;
+        ctx.beginPath(); ctx.moveTo(x, bottom);
+        ctx.lineTo(x, bottom - (bottom - top) * partials[i] / peak * state.motionLevel);
+        ctx.stroke();
+      }
+      ctx.fillStyle = "#7489a1";
+      ctx.font = "10px system-ui, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(i === 0 ? "f" : (i + 1) + "f", x, height - 11);
+    }
     ctx.fillStyle = "#7489a1";
-    ctx.font = "11px system-ui, sans-serif";
+    ctx.font = "10px system-ui, sans-serif";
     ctx.textAlign = "left";
-    ctx.fillText(hzText(motionModel.MIN_HZ), left, height - 9);
-    ctx.textAlign = "right";
-    ctx.fillText(hzText(motionModel.MAX_HZ), right, height - 9);
+    ctx.fillText(hzText(state.motionHz) + " – " + hzText(8 * state.motionHz), left, 13);
   }
 
   function drawMotionPlots() {
@@ -2777,6 +2816,9 @@
   });
   document.querySelectorAll("[data-mix-kind]").forEach(button => {
     button.addEventListener("click", () => selectMixKind(button.dataset.mixKind));
+  });
+  document.querySelectorAll("[data-theremin-timbre]").forEach(button => {
+    button.addEventListener("click", () => setMotionTimbre(button.dataset.thereminTimbre));
   });
   document.querySelectorAll("[data-harmonic-preset]").forEach(button => {
     button.addEventListener("click", () => setHarmonicPreset(button.dataset.harmonicPreset));

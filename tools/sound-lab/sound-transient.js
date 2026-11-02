@@ -28,9 +28,13 @@
     return Math.sin(Math.PI * n * 0.22) / Math.pow(n, 1.15);
   });
   const pluckNormalization = pluckWeights.reduce((sum, weight) => sum + Math.abs(weight), 0);
-  const pianoWeights = Object.freeze([1, .52, .27, .18, .10, .075, .047, .03]);
-  const pianoNormalization = pianoWeights.reduce((sum, weight) => sum + Math.abs(weight), 0) + .10;
+  const pianoWeights = Object.freeze([1, .74, .48, .32, .21, .12, .07, .04]);
+  const PIANO_HAMMER_LEVEL = .16;
+  const pianoNormalization = pianoWeights.reduce((sum, weight) => sum + Math.abs(weight), 0) + PIANO_HAMMER_LEVEL;
   const PIANO_STIFFNESS = 0.00016; // Slightly sharp overtones of an idealized stiff string.
+  // A piano often has multiple strings for one note. Tiny unison offsets cause
+  // a changing overtone pattern as the struck strings ring together.
+  const pianoUnisonRatios = Object.freeze([-0.9, 0, 1.0].map(cents => Math.pow(2, cents / 1200)));
 
   function pianoPartialHz(fundamentalHz, number) {
     if (!Number.isFinite(fundamentalHz) || fundamentalHz <= 0 || number < 1) {
@@ -64,6 +68,11 @@
     return KICK_SIZES[size] * (KICK_LOW_HZ + KICK_SWEEP_HZ * Math.exp(-Math.max(0, time) / KICK_SWEEP_TIME));
   }
 
+  function pianoUnisonAt(frequency, time) {
+    return pianoUnisonRatios.reduce((sum, ratio) =>
+      sum + Math.sin(TAU * frequency * ratio * time), 0) / pianoUnisonRatios.length;
+  }
+
   function sampleAt(kind, time, pitchHz, decaySec, kickSize = "medium") {
     if (time <= 0) return 0;
     const level = envelope(kind, time, decaySec);
@@ -73,25 +82,22 @@
         KICK_SWEEP_HZ * KICK_SWEEP_TIME * (1 - Math.exp(-time / KICK_SWEEP_TIME)));
       return level * Math.sin(phase);
     }
-    if (kind === "piano") {
-      let value = 0;
-      for (let i = 0; i < pianoWeights.length; i++) {
-        const number = i + 1;
-        const highPartialDecay = Math.exp(-i * time / .16);
-        value += pianoWeights[i] * highPartialDecay *
-          Math.sin(TAU * pianoPartialHz(pitchHz, number) * time);
-      }
-      // A modeled hammer contact gives a short bright onset without a sample.
-      const hammer = .10 * Math.exp(-time / .004) * Math.sin(TAU * 2800 * time);
-      return level * (value + hammer) / pianoNormalization;
-    }
+    // Both piano and guitar belong to one damped-string model family: the
+    // excitation, partial frequencies and unison-string count are presets.
+    const isPiano = kind === "piano";
+    const weights = isPiano ? pianoWeights : pluckWeights;
     let value = 0;
-    for (let i = 0; i < pluckWeights.length; i++) {
+    for (let i = 0; i < weights.length; i++) {
       const n = i + 1;
-      const highPartialDecay = Math.exp(-i * time / 0.075);
-      value += pluckWeights[i] * highPartialDecay * Math.sin(TAU * n * pitchHz * time);
+      const highPartialDecay = Math.exp(-i * time / (isPiano ? 0.16 : 0.075));
+      const frequency = isPiano ? pianoPartialHz(pitchHz, n) : n * pitchHz;
+      const vibration = isPiano ? pianoUnisonAt(frequency, time) : Math.sin(TAU * frequency * time);
+      value += weights[i] * highPartialDecay * vibration;
     }
-    return level * value / pluckNormalization;
+    // Hammer felt has a bright, short contact sound; plucking does not.
+    const hammer = isPiano ? PIANO_HAMMER_LEVEL * Math.exp(-time / .008) *
+      Math.sin(TAU * 2800 * time) : 0;
+    return level * (value + hammer) / (isPiano ? pianoNormalization : pluckNormalization);
   }
 
   function duration(decaySec) {

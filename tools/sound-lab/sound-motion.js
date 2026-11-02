@@ -1,6 +1,6 @@
-/* Moving Pitch: small deterministic recipes shared by the UI and its plots.
- * Audio comes from a Web Audio oscillator; these helpers describe the ideal
- * instantaneous frequency rather than claiming to measure a microphone signal.
+/* Moving Pitch: small deterministic recipes shared by the audio and plots.
+ * A theremin can use idealized harmonic mixtures while the siren stays a sine.
+ * These are teaching timbres, not recordings or physical voice models.
  */
 (function (root, makeModel) {
   "use strict";
@@ -16,6 +16,37 @@
   const MAX_RATE = 2;
   // Two tones are the rectangular trajectory; the others glide continuously.
   const PATTERNS = Object.freeze(["two-tone", "sine-sweep", "pitch-sweep"]);
+  const TIMBRES = Object.freeze(["pure", "rich", "voice", "overtones"]);
+  // Eight sine harmonics, at integer multiples of the moving fundamental.
+  // Strong upper groups give a deliberately stylized voice/overtone color.
+  const TIMBRE_PARTIALS = Object.freeze({
+    pure: Object.freeze([1, 0, 0, 0, 0, 0, 0, 0]),
+    rich: Object.freeze([1, .60, .45, .30, .22, .17, .12, .09]),
+    voice: Object.freeze([.70, .22, .85, .62, .24, .05, 0, 0]),
+    overtones: Object.freeze([.80, .12, .10, .08, .10, .65, .52, .23])
+  });
+  function timbrePartials(timbre) {
+    if (!Object.hasOwn(TIMBRE_PARTIALS, timbre)) throw new RangeError("Unknown theremin timbre");
+    return TIMBRE_PARTIALS[timbre];
+  }
+  // PeriodicWave uses peak-normalized harmonics; match it for the plot.
+  const TIMBRE_PEAKS = Object.freeze(Object.fromEntries(TIMBRES.map(timbre => {
+    const partials = timbrePartials(timbre);
+    let peak = 0;
+    for (let sample = 0; sample < 2048; sample++) {
+      const phase = 2 * Math.PI * sample / 2048;
+      const value = partials.reduce((sum, strength, i) =>
+        sum + strength * Math.sin((i + 1) * phase), 0);
+      peak = Math.max(peak, Math.abs(value));
+    }
+    return [timbre, peak];
+  })));
+  function timbreWaveAt(phase, timbre) {
+    if (!Number.isFinite(phase)) throw new RangeError("Invalid wave phase");
+    const partials = timbrePartials(timbre);
+    return partials.reduce((sum, strength, i) =>
+      sum + strength * Math.sin((i + 1) * phase), 0) / TIMBRE_PEAKS[timbre];
+  }
 
   function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));
@@ -62,7 +93,8 @@
   }
 
   return Object.freeze({
-    MIN_HZ, MAX_HZ, MIN_RATE, MAX_RATE, PATTERNS,
+    MIN_HZ, MAX_HZ, MIN_RATE, MAX_RATE, PATTERNS, TIMBRES,
+    timbrePartials, timbreWaveAt,
     padHz, padFraction, padLevel, validateSiren, sirenHzAt
   });
 });
