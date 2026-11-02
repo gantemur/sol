@@ -4,12 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#192d49">
-  <meta name="description" content="Explore ideal sound waves, plucked strings and bass drums with interactive waveforms, time-dependent spectra and bilingual controls.">
+  <meta name="description" content="Explore ideal sound waves, plucked strings, drums, theremin gestures and sirens with interactive waveforms and bilingual controls.">
   <title>Sound Lab · Sol</title>
   <link rel="stylesheet" href="sound-lab.css">
   <script src="sound-model.js" defer></script>
   <script src="sound-transient.js" defer></script>
   <script src="sound-spectrum.js" defer></script>
+  <script src="sound-motion.js" defer></script>
   <script src="sound-lab.js" defer></script>
 </head>
 <body>
@@ -37,6 +38,7 @@
       <nav class="mode-switch" aria-label="Дууны бүлэг" id="modeSwitch">
         <button type="button" id="modePure" class="mode-button active" aria-pressed="true" data-i18n="modePure">Цэвэр авиа</button>
         <button type="button" id="modeStrike" class="mode-button" aria-pressed="false" data-i18n="modeStrike">Цохих ба татах</button>
+        <button type="button" id="modeMotion" class="mode-button" aria-pressed="false" data-i18n="modeMotion">Хувирдаг давтамж</button>
       </nav>
       <span class="pill" id="pagePhase" data-i18n="phase">01 · Энгийн дохионууд</span>
     </div>
@@ -288,6 +290,89 @@
       </div>
     </div>
 
+    <div class="workspace" id="motionWorkspace" hidden>
+      <section class="panel controls" aria-labelledby="motion-controls-title">
+        <div class="section-top">
+          <h2 id="motion-controls-title" data-i18n="motionChoose">Хөдөлгөөнт дуу сонгох</h2>
+          <p class="description" id="motionDescription">Гараа хөдөлгөж давтамж ба дууны хэмжээг өөрчил.</p>
+        </div>
+        <div class="motion-choices" id="motionChoices" role="group" aria-label="Хөдөлгөөнт дууны төрөл">
+          <button type="button" class="motion-choice selected" data-motion="theremin" aria-pressed="true"><span aria-hidden="true">〰</span><span data-i18n="theremin">Теремин</span></button>
+          <button type="button" class="motion-choice" data-motion="siren" aria-pressed="false"><span aria-hidden="true">♫</span><span data-i18n="siren">Дохио</span></button>
+        </div>
+
+        <div id="thereminControls" class="motion-control-block">
+          <p class="motion-instruction" id="thereminHelp" data-i18n="thereminHelp">Талбар дээр дарж хөдөлгөнө: баруун тийш өндөр, дээш чанга дуугарна. Гараа авахад зогсоно.</p>
+          <div class="theremin-pad" id="thereminPad" role="button" tabindex="0" aria-pressed="false" aria-describedby="thereminHelp thereminKeyboardHelp" aria-label="Теремин тоглох талбар">
+            <span class="theremin-cursor" id="thereminCursor" aria-hidden="true"></span>
+            <span class="pad-volume-label" data-i18n="padLoud">Чанга ↑</span>
+            <span class="pad-start-label" data-i18n="padStart">Дараад хөдөлгөөрэй</span>
+            <span class="pad-pitch-label" data-i18n="padHigh">Өндөр авиа →</span>
+          </div>
+          <div class="pad-range"><span>120 Hz</span><span>1,600 Hz</span></div>
+          <div class="pad-readout"><output id="motionCurrentHz">440 Hz</output><output id="motionCurrentLevel">50%</output></div>
+          <p id="thereminKeyboardHelp" class="field-help" data-i18n="thereminKeyboardHelp">Гарын товчлуураар: сумаар хөдөлгөж, Space/Enter-ээр дууг асааж эсвэл зогсооно. Escape зогсооно.</p>
+        </div>
+
+        <div id="sirenControls" class="motion-control-block" hidden>
+          <div class="siren-patterns" id="sirenPatterns" role="group" aria-label="Дохионы хээ">
+            <button type="button" class="selected" data-siren-pattern="two-tone" aria-pressed="true" data-i18n="sirenTwoTone">Хоёр авиа</button>
+            <button type="button" data-siren-pattern="sweep" aria-pressed="false" data-i18n="sirenSweep">Өсөх, буурах</button>
+          </div>
+          <button id="sirenButton" type="button" class="play-button siren-button" aria-pressed="false">
+            <span class="play-icon" id="sirenPlayIcon" aria-hidden="true">▶</span>
+            <span id="sirenPlayLabel" data-i18n="sirenPlay">Дохио тоглуулах</span>
+            <span class="play-caption" data-i18n="sirenCaption">Дахин дарж зогсооно</span>
+          </button>
+          <div class="field-group">
+            <div class="field-title"><label for="sirenLow" data-i18n="sirenLow">Нам давтамж</label><output id="sirenLowValue">440 Hz</output></div>
+            <input id="sirenLow" type="range" min="120" max="1580" step="10" value="440">
+          </div>
+          <div class="field-group">
+            <div class="field-title"><label for="sirenHigh" data-i18n="sirenHigh">Өндөр давтамж</label><output id="sirenHighValue">880 Hz</output></div>
+            <input id="sirenHigh" type="range" min="140" max="1600" step="10" value="880">
+          </div>
+          <div class="field-group">
+            <div class="field-title"><label for="sirenRate" data-i18n="sirenRate">Давтах хурд</label><output id="sirenRateValue">0.8 /s</output></div>
+            <input id="sirenRate" type="range" min="0.2" max="2" step="0.1" value="0.8">
+          </div>
+          <div class="field-group volume-field">
+            <div class="field-title"><label for="sirenVolume" data-i18n="volume">Дууны хэмжээ</label><output id="sirenVolumeValue">40%</output></div>
+            <input id="sirenVolume" type="range" min="0" max="100" step="1" value="40">
+          </div>
+        </div>
+        <p id="motionStatus" class="audio-status" role="status" aria-live="polite">Бэлэн. Дуу гаргахын тулд дарна уу.</p>
+        <p class="field-help" data-i18n="motionSafety">Эхэндээ аяархан сонсоорой. Хуудас солих эсвэл Зогсоох дээр дарвал дуу намдана.</p>
+      </section>
+
+      <div class="visuals">
+        <section class="panel chart-panel" aria-labelledby="motion-pitch-title">
+          <div class="chart-heading">
+            <div>
+              <h2 id="motion-pitch-title" data-i18n="motionPitchTitle">Давтамжийн өөрчлөлт</h2>
+              <p id="motionPitchSubtitle" data-i18n="motionPitchTheremin">Сүүлийн дөрвөн секундийн давтамжийг ажиглаарай.</p>
+            </div>
+            <span class="chart-badge" id="motionPitchBadge">440 Hz</span>
+          </div>
+          <canvas id="motionPitchCanvas" width="740" height="265" role="img" aria-label="Хугацаанд өөрчлөгдөх давтамжийн загвар"></canvas>
+          <div class="chart-foot"><span data-i18n="motionPitchScale">Логарифм давтамж · 120–1600 Hz</span><span data-i18n="timeAxis">хугацаа →</span></div>
+        </section>
+        <section class="panel chart-panel" aria-labelledby="motion-detail-title">
+          <div class="chart-heading">
+            <div>
+              <h2 id="motion-detail-title" data-i18n="motionDetailTitle">Энэ мөчийн дохио</h2>
+              <p data-i18n="motionDetailHint">Ижил давтамжийг долгион болон нэг бүрэлдэхүүнээр харуулав.</p>
+            </div>
+            <span class="chart-badge" id="motionDetailBadge">440 Hz</span>
+          </div>
+          <div class="motion-mini-plots">
+            <div><h3 data-i18n="motionWaveTitle">20 мс-ийн долгион</h3><canvas id="motionWaveCanvas" width="350" height="180" role="img" aria-label="Тухайн мөчийн 20 миллисекундийн синус долгион"></canvas></div>
+            <div><h3 data-i18n="motionComponentTitle">Давтамжийн бүрэлдэхүүн</h3><canvas id="motionSpectrumCanvas" width="350" height="180" role="img" aria-label="Одоогийн нэг давтамжийн бүрэлдэхүүн"></canvas></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
     <section class="challenge" id="pureChallenge" aria-labelledby="challenge-heading">
       <div class="challenge-icon" aria-hidden="true">✧</div>
       <div class="challenge-copy">
@@ -306,6 +391,12 @@
       <button type="button" id="strikeReset" class="reset-button" data-i18n="reset">↺ Эхнээс нь</button>
     </section>
 
+    <section class="challenge" id="motionChallenge" aria-labelledby="motion-challenge-heading" hidden>
+      <div class="challenge-icon" aria-hidden="true">✧</div>
+      <div class="challenge-copy"><h2 id="motion-challenge-heading" data-i18n="tryThis">ТУРШИЖ ҮЗ</h2><p id="motionChallengeText">Нэг өндөртэй авиа гаргах байрлалаа олоорой.</p></div>
+      <button type="button" id="motionReset" class="reset-button" data-i18n="reset">↺ Эхнээс нь</button>
+    </section>
+
     <details class="explanation" id="pureExplanation">
       <summary data-i18n="learnMore">Дууны долгион яагаад өөр өөр сонсогддог вэ?</summary>
       <p data-i18n="lessonOne">Үелэх долгионд хамгийн нам давтамж гэж байх ба үүнийг нь үндсэн давтамж гэдэг. Энэ нь дууны өндрийг тодорхойлно. Үүнээс өндөр давтамжууд буюу дээд гармоникууд нь үндсэн давтамжаасаа үргэлж бүхэл тоо дахин их: 2f, 3f, 4f гэх мэт.</p>
@@ -315,6 +406,11 @@
       <summary data-i18n="strikeLearnMore">Яагаад эдгээр дуу намддаг вэ?</summary>
       <p data-i18n="strikeLessonOne">Чавхдас олон давтамжаар хэлбэлзэж, өндөр гармоникууд нь хурдан намдана.</p>
       <p data-i18n="strikeLessonTwo">Басс бөмбөрийн цохилтын давтамж эхлээд хурдан буурч, далайц нь аажмаар намдана. Эдгээрийн долгионы график ерөнхийдөө төстэй харагдах боловч давтамжийн найрлага нь тэс өөр. 20 мс болгон томруулж эсвэл спектрийг нь харьцуулж ялгааг нь хараарай.</p>
+    </details>
+    <details class="explanation" id="motionExplanation" hidden>
+      <summary data-i18n="motionLearnMore">Давтамж өөрчлөгдөхөд яагаад авиа өөр сонсогддог вэ?</summary>
+      <p data-i18n="motionLessonOne">Давтамж өсөхөд авиа өндөр, буурахад нам сонсогдоно. Теремины талбар дээр хуруугаа хөдөлгөхөд энэ өөрчлөлтийг сонсоно.</p>
+      <p data-i18n="motionLessonTwo">Дохио нь хоёр давтамжийг ээлжлэн тоглуулах эсвэл давтамжийг аажмаар өсгөж бууруулдаг. Дээд график энэ замыг, доод графикууд тухайн агшны долгион ба давтамжийг харуулна.</p>
     </details>
   </main>
 

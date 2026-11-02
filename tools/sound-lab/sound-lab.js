@@ -4,6 +4,7 @@
   const model = window.SoundLabModel;
   const transientModel = window.SoundLabTransientModel;
   const spectrumModel = window.SoundLabSpectrum;
+  const motionModel = window.SoundLabMotionModel;
   const $ = id => document.getElementById(id);
 
   const messages = {
@@ -45,7 +46,7 @@
       unsupported: "This browser does not support Web Audio playback.",
       blocked: "The sound could not start. Check browser audio permission and try Play again.",
       invalid: "Enter a frequency between 20 and 12,000 Hz.",
-      modePure: "Pure tones", modeStrike: "Strike & Pluck", modeSwitchAria: "Sound categories",
+      modePure: "Pure tones", modeStrike: "Strike & Pluck", modeMotion: "Moving Pitch", modeSwitchAria: "Sound categories",
       strikePhase: "02 · Modeled sounds", strikeChoose: "Choose a modeled sound",
       pluck: "Plucked string", kick: "Bass drum", strikeGroupAria: "Transient sound model",
       strikeCaption: "Tap to sound; tap again to repeat",
@@ -93,6 +94,36 @@
         pluck: "A string begins vibrating after a pluck, then gradually becomes quieter.",
         kick: "A drum hit drops in pitch while its vibration fades."
       },
+      motionPhase: "03 · Moving frequency", motionChoose: "Choose a moving sound",
+      theremin: "Theremin", siren: "Fire-truck siren",
+      motionDesc: {
+        theremin: "Move your finger to change the pitch and loudness continuously.",
+        siren: "Hear a repeating high-and-low signal or a smooth rise and fall."
+      },
+      motionGroupAria: "Moving sound choices", thereminHelp: "Press and move: right makes the pitch higher; up makes it louder. Release to stop.",
+      padLoud: "Louder ↑", padStart: "Press and move", padHigh: "Higher pitch →",
+      padAria: "Theremin touch pad", thereminKeyboardHelp: "Keyboard: use arrow keys to move; Space or Enter toggles the sound. Escape stops.",
+      sirenPatternAria: "Siren pitch pattern", sirenTwoTone: "Two tones", sirenSweep: "Rise and fall",
+      sirenPlay: "Play siren", sirenStop: "Stop siren", sirenCaption: "Tap again to stop",
+      sirenLow: "Low frequency", sirenHigh: "High frequency", sirenRate: "Repetitions per second", sirenRateUnit: "/s",
+      motionReady: "Ready. Press the pad or Play to hear.", motionStarting: "Starting sound…",
+      motionPlaying: "Playing. Release the pad or press Stop.", motionStopped: "Stopped. Try another pitch pattern.",
+      motionHidden: "Sound stopped when you left the page.", motionUnsupported: "This browser does not support synthesized sound playback.",
+      motionBlocked: "Sound could not start. Check browser sound permission and try again.",
+      motionSafety: "Start quietly, especially with headphones. Changing category or pressing Stop ends playback.",
+      motionPitchTitle: "Pitch over time", motionPitchTheremin: "The last four seconds of your finger movement.",
+      motionPitchSiren: "The siren's frequency pattern across a four-second window.",
+      motionPitchScale: "Logarithmic frequency · 120–1600 Hz", motionPitchAria: "Ideal pitch path over time",
+      motionDetailTitle: "At this moment", motionDetailHint: "The same sound as a waveform and its current ideal frequency component.",
+      motionWaveTitle: "20 ms waveform", motionComponentTitle: "Frequency component",
+      motionWaveAria: "Modeled 20 millisecond sine waveform at current pitch", motionComponentAria: "Current single ideal frequency component",
+      motionChallenge: {
+        theremin: "Move left and right without changing the loudness. What changes in the waveform?",
+        siren: "Compare two tones with a smooth sweep at the same frequencies. Which one sounds more like a siren?"
+      },
+      motionLearnMore: "Why does moving the pitch change the sound?",
+      motionLessonOne: "Moving to the right makes the oscillator vibrate faster, so its pitch rises. Up and down changes the amplitude, making the sound louder or softer.",
+      motionLessonTwo: "A siren switches between two frequencies or smoothly moves between them. The top graph shows the changing pitch; the lower graphs show the modeled signal at one instant.",
       desc: {
         sine: "One smooth vibration, with a single frequency.",
         triangle: "Weak upper odd harmonics.",
@@ -150,7 +181,7 @@
       unsupported: "Энэ хөтөч Web Audio-гаар авиа тоглуулах боломжгүй байна.",
       blocked: "Авиа эхэлсэнгүй. Хөтчийн дууны зөвшөөрлийг шалгаад дахин оролдоно уу.",
       invalid: "20–12,000 Гц-ийн хооронд давтамж оруулна уу.",
-      modePure: "Цэвэр авиа", modeStrike: "Цохих ба татах", modeSwitchAria: "Дууны бүлэг",
+      modePure: "Цэвэр авиа", modeStrike: "Цохих ба татах", modeMotion: "Хувирдаг давтамж", modeSwitchAria: "Дууны бүлэг",
       strikePhase: "02 · Загварчилсан дуу", strikeChoose: "Дууны загвар сонгох",
       pluck: "Татсан чавхдас", kick: "Басс бөмбөр", strikeGroupAria: "Цохилтын дууны загвар",
       strikeCaption: "Дарж сонсоод, дахин дарж давтаарай",
@@ -198,6 +229,36 @@
         pluck: "Татаж тавьсан чавхдас хэлбэлзээд аажмаар намдана.",
         kick: "Бөмбөрийн цохилтын давтамж буурч, хэлбэлзэл нь намдана."
       },
+      motionPhase: "03 · Хувирдаг давтамж", motionChoose: "Хөдөлгөөнт дуу сонгох",
+      theremin: "Теремин", siren: "Галын машины дохио",
+      motionDesc: {
+        theremin: "Гараа хөдөлгөж давтамж ба дууны хэмжээг өөрчил.",
+        siren: "Хоёр авиаг ээлжлүүлэх эсвэл давтамжийг аажмаар өсгөж бууруулахыг сонсоорой."
+      },
+      motionGroupAria: "Хөдөлгөөнт дууны төрөл", thereminHelp: "Талбар дээр дарж хөдөлгөнө: баруун тийш өндөр, дээш чанга дуугарна. Гараа авахад зогсоно.",
+      padLoud: "Чанга ↑", padStart: "Дараад хөдөлгөөрэй", padHigh: "Өндөр авиа →",
+      padAria: "Теремин тоглох талбар", thereminKeyboardHelp: "Гарын товчлуураар: сумаар хөдөлгөж, Space/Enter-ээр дууг асааж эсвэл зогсооно. Escape зогсооно.",
+      sirenPatternAria: "Дохионы хээ", sirenTwoTone: "Хоёр авиа", sirenSweep: "Өсөх, буурах",
+      sirenPlay: "Дохио тоглуулах", sirenStop: "Дохио зогсоох", sirenCaption: "Дахин дарж зогсооно",
+      sirenLow: "Нам давтамж", sirenHigh: "Өндөр давтамж", sirenRate: "Давтах хурд", sirenRateUnit: "удаа/с",
+      motionReady: "Бэлэн. Талбар дээр дарж эсвэл дохиог тоглуулаарай.", motionStarting: "Дууг эхлүүлж байна…",
+      motionPlaying: "Дуугарч байна. Гараа авах эсвэл Зогсоох дээр дарна уу.", motionStopped: "Зогслоо. Өөр давтамж туршаарай.",
+      motionHidden: "Хуудсаас гарахад авиа зогслоо.", motionUnsupported: "Энэ хөтөч дуу үүсгэж тоглуулах боломжгүй байна.",
+      motionBlocked: "Авиа эхэлсэнгүй. Хөтчийн дууны зөвшөөрлийг шалгаад дахин оролдоно уу.",
+      motionSafety: "Ялангуяа чихэвчтэй бол эхэндээ аяархан сонсоорой. Өөр бүлэгт орох эсвэл Зогсоох дээр дарахад дуу зогсоно.",
+      motionPitchTitle: "Давтамжийн өөрчлөлт", motionPitchTheremin: "Сүүлийн дөрвөн секундийн давтамжийг ажиглаарай.",
+      motionPitchSiren: "Дохионы давтамжийн өөрчлөлтийг дөрвөн секундийн хугацаанд харуулна.",
+      motionPitchScale: "Логарифм давтамж · 120–1600 Hz", motionPitchAria: "Хугацаанд өөрчлөгдөх давтамжийн загвар",
+      motionDetailTitle: "Энэ мөчийн дохио", motionDetailHint: "Ижил давтамжийг долгион болон нэг бүрэлдэхүүнээр харуулав.",
+      motionWaveTitle: "20 мс-ийн долгион", motionComponentTitle: "Давтамжийн бүрэлдэхүүн",
+      motionWaveAria: "Тухайн мөчийн 20 миллисекундийн синус долгион", motionComponentAria: "Одоогийн нэг давтамжийн бүрэлдэхүүн",
+      motionChallenge: {
+        theremin: "Дууны хэмжээг өөрчлөхгүйгээр зүүн, баруун тийш хөдөлгө. Долгионы үе хэрхэн өөрчлөгдөв?",
+        siren: "Хоёр авиаг ээлжлүүлэх болон давтамжийг аажмаар өсгөж бууруулахыг харьцуул. Аль нь галын машины дохиотой төстэй вэ?"
+      },
+      motionLearnMore: "Давтамж өөрчлөгдөхөд яагаад авиа өөр сонсогддог вэ?",
+      motionLessonOne: "Баруун тийш хөдөлгөхөд хэлбэлзэл түргэсэж, авиа өндөрсөж сонсогдоно. Дээш, доош хөдөлгөхөд далайц буюу дууны чанга сул өөрчлөгдөнө.",
+      motionLessonTwo: "Дохио нь хоёр давтамжийг ээлжлэн тоглуулах эсвэл давтамжийг аажмаар өсгөж бууруулдаг. Дээд график энэ замыг, доод графикууд тухайн агшны долгион ба давтамжийг харуулна.",
       desc: {
         sine: "Нэг үндсэн давтамжтай жигд хэлбэлзэл.",
         triangle: "Дээд сондгой гармоникууд нь сул",
@@ -243,7 +304,22 @@
     strikeViewSpan: 3,
     strikeCursor: 0,
     strikeSpectrumView: "local",
-    strikeFollowing: false
+    strikeFollowing: false,
+    motionKind: "theremin",
+    motionX: motionModel.padFraction(440),
+    motionY: 0.5,
+    motionHz: 440,
+    motionLevel: 0.5,
+    motionElapsed: 0,
+    motionHistory: [],
+    motionPlaying: false,
+    motionStatus: "motionReady",
+    motionError: false,
+    sirenPattern: "two-tone",
+    sirenLow: 440,
+    sirenHigh: 880,
+    sirenRate: 0.8,
+    sirenVolume: 40
   };
   const text = key => messages[state.language][key];
   const frequencyText = hz => Number(hz.toFixed(2)).toLocaleString("en-US", { maximumFractionDigits: 2 });
@@ -407,8 +483,82 @@
     }
   }
 
+  class MotionEngine {
+    constructor(contextOwner) {
+      this.contextOwner = contextOwner;
+      this.voices = new Set();
+      this.currentVoice = null;
+      this.generation = 0;
+    }
+
+    fadeAndStop(voice, immediate) {
+      if (voice.stopping && !immediate) return;
+      const now = this.contextOwner.context.currentTime;
+      const gain = voice.gain.gain;
+      gain.cancelScheduledValues(now);
+      if (immediate) gain.setValueAtTime(0, now);
+      else gain.setTargetAtTime(0, now, 0.012);
+      if (voice.stopping) return;
+      voice.stopping = true;
+      try { voice.oscillator.stop(now + (immediate ? 0.002 : 0.09)); }
+      catch (_) { /* An earlier stop may already be scheduled. */ }
+    }
+
+    async start() {
+      const ticket = ++this.generation;
+      const context = await this.contextOwner.readyContext();
+      if (ticket !== this.generation || state.mode !== "motion") return false;
+      for (const voice of this.voices) this.fadeAndStop(voice, false);
+      while (this.voices.size >= 2) {
+        const oldest = this.voices.values().next().value;
+        this.fadeAndStop(oldest, true);
+        this.voices.delete(oldest);
+      }
+      const now = context.currentTime;
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(state.motionHz, now);
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(0.12 * state.motionLevel, now + 0.035);
+      oscillator.connect(gain);
+      gain.connect(context.destination);
+      const voice = { oscillator, gain, stopping: false };
+      this.voices.add(voice);
+      oscillator.onended = () => {
+        oscillator.disconnect();
+        gain.disconnect();
+        this.voices.delete(voice);
+        if (this.currentVoice === voice) this.currentVoice = null;
+      };
+      oscillator.start(now);
+      this.currentVoice = voice;
+      return { context, startedAt: now };
+    }
+
+    update() {
+      if (!this.currentVoice) return;
+      const now = this.contextOwner.context.currentTime;
+      this.currentVoice.oscillator.frequency.setTargetAtTime(state.motionHz, now, 0.018);
+      const gain = this.currentVoice.gain.gain;
+      gain.cancelScheduledValues(now);
+      gain.setTargetAtTime(0.12 * state.motionLevel, now, 0.012);
+    }
+
+    stop(immediate = false) {
+      this.generation++;
+      for (const voice of this.voices) this.fadeAndStop(voice, immediate);
+      this.currentVoice = null;
+    }
+  }
+
   const audio = new ToneEngine();
   const transientAudio = new TransientEngine(audio);
+  const motionAudio = new MotionEngine(audio);
+  let motionFrame = null;
+  let motionStartedAt = 0;
+  let motionLastDraw = -1;
+  let motionPointerId = null;
   let followFrame = null;
   let followInfo = null;
   let overallSpectrumCache = null;
@@ -520,20 +670,186 @@
     $("strikeStatus").classList.toggle("error", error);
   }
 
+  function setMotionStatus(status, error = false) {
+    state.motionStatus = status;
+    state.motionError = error;
+    $("motionStatus").textContent = text(status);
+    $("motionStatus").classList.toggle("error", error);
+  }
+
+  function sirenRecipe() {
+    return { pattern: state.sirenPattern, lowHz: state.sirenLow,
+      highHz: state.sirenHigh, rate: state.sirenRate };
+  }
+
+  function stopMotionFrame() {
+    if (motionFrame !== null) window.cancelAnimationFrame(motionFrame);
+    motionFrame = null;
+  }
+
+  function stopMotionSound(immediate = false, message = "motionStopped") {
+    motionAudio.stop(immediate);
+    stopMotionFrame();
+    motionPointerId = null;
+    state.motionPlaying = false;
+    setMotionStatus(message);
+    renderMotionControls();
+    if (state.mode === "motion") drawMotionPlots();
+  }
+
+  function renderMotionControls() {
+    const isTheremin = state.motionKind === "theremin";
+    $("thereminControls").hidden = !isTheremin;
+    $("sirenControls").hidden = isTheremin;
+    $("motionDescription").textContent = text("motionDesc")[state.motionKind];
+    $("motionPitchSubtitle").textContent = text(isTheremin ? "motionPitchTheremin" : "motionPitchSiren");
+    $("motionChallengeText").textContent = text("motionChallenge")[state.motionKind];
+    document.querySelectorAll("[data-motion]").forEach(button => {
+      const active = button.dataset.motion === state.motionKind;
+      button.classList.toggle("selected", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+    document.querySelectorAll("[data-siren-pattern]").forEach(button => {
+      const active = button.dataset.sirenPattern === state.sirenPattern;
+      button.classList.toggle("selected", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+    $("thereminCursor").style.left = (state.motionX * 100).toFixed(2) + "%";
+    $("thereminCursor").style.top = (state.motionY * 100).toFixed(2) + "%";
+    $("thereminPad").setAttribute("aria-pressed", String(isTheremin && state.motionPlaying));
+    $("motionCurrentHz").textContent = frequencyText(state.motionHz) + " Hz";
+    $("motionCurrentLevel").textContent = Math.round(state.motionLevel * 100) + "%";
+    $("sirenLow").value = String(state.sirenLow);
+    $("sirenHigh").value = String(state.sirenHigh);
+    $("sirenRate").value = String(state.sirenRate);
+    $("sirenVolume").value = String(state.sirenVolume);
+    $("sirenLowValue").textContent = state.sirenLow + " Hz";
+    $("sirenHighValue").textContent = state.sirenHigh + " Hz";
+    $("sirenRateValue").textContent = frequencyText(state.sirenRate) + " " + text("sirenRateUnit");
+    $("sirenVolumeValue").textContent = state.sirenVolume + "%";
+    $("sirenButton").classList.toggle("playing", !isTheremin && state.motionPlaying);
+    $("sirenButton").setAttribute("aria-pressed", String(!isTheremin && state.motionPlaying));
+    $("sirenPlayIcon").textContent = state.motionPlaying ? "■" : "▶";
+    $("sirenPlayLabel").textContent = text(state.motionPlaying ? "sirenStop" : "sirenPlay");
+  }
+
+  function setMotionKind(kind) {
+    if (!motionModel || !["theremin", "siren"].includes(kind) || kind === state.motionKind) return;
+    stopMotionSound();
+    state.motionKind = kind;
+    state.motionHistory = [];
+    state.motionElapsed = 0;
+    state.motionHz = kind === "theremin" ? motionModel.padHz(state.motionX) :
+      motionModel.sirenHzAt(0, sirenRecipe());
+    state.motionLevel = kind === "theremin" ? motionModel.padLevel(state.motionY) : state.sirenVolume / 100;
+    setMotionStatus("motionReady");
+    renderMotionControls();
+    drawPlots();
+  }
+
+  function setPadPosition(x, y) {
+    state.motionX = model.clamp(x, 0, 1);
+    state.motionY = model.clamp(y, 0, 1);
+    state.motionHz = motionModel.padHz(state.motionX);
+    state.motionLevel = motionModel.padLevel(state.motionY);
+    if (state.motionPlaying) motionAudio.update();
+    renderMotionControls();
+    if (state.mode === "motion") drawMotionPlots();
+  }
+
+  function readPadPointer(event) {
+    const rect = $("thereminPad").getBoundingClientRect();
+    setPadPosition((event.clientX - rect.left) / rect.width, (event.clientY - rect.top) / rect.height);
+  }
+
+  function updateSiren() {
+    state.motionLevel = state.sirenVolume / 100;
+    state.motionHz = motionModel.sirenHzAt(state.motionElapsed, sirenRecipe());
+    if (state.motionPlaying) motionAudio.update();
+    renderMotionControls();
+    if (state.mode === "motion") drawMotionPlots();
+  }
+
+  async function startMotionSound() {
+    if (state.motionPlaying || state.mode !== "motion") return;
+    setMotionStatus("motionStarting");
+    try {
+      const info = await motionAudio.start();
+      if (!info) return;
+      motionStartedAt = info.startedAt;
+      motionLastDraw = -1;
+      state.motionElapsed = 0;
+      state.motionHistory = [];
+      state.motionPlaying = true;
+      setMotionStatus("motionPlaying");
+      renderMotionControls();
+      drawMotionPlots();
+      const advance = () => {
+        if (!state.motionPlaying || state.mode !== "motion") return;
+        const elapsed = Math.max(0, info.context.currentTime - motionStartedAt);
+        state.motionElapsed = elapsed;
+        if (state.motionKind === "siren") {
+          state.motionHz = motionModel.sirenHzAt(elapsed, sirenRecipe());
+          state.motionLevel = state.sirenVolume / 100;
+        } else {
+          state.motionHistory.push({ time: elapsed, hz: state.motionHz });
+          while (state.motionHistory.length > 1 && state.motionHistory[1].time < elapsed - 4) {
+            state.motionHistory.shift();
+          }
+        }
+        motionAudio.update();
+        if (elapsed - motionLastDraw >= 0.035) {
+          renderMotionControls();
+          drawMotionPlots();
+          motionLastDraw = elapsed;
+        }
+        motionFrame = window.requestAnimationFrame(advance);
+      };
+      motionFrame = window.requestAnimationFrame(advance);
+    } catch (error) {
+      stopMotionSound(true, error.message === "unsupported" ? "motionUnsupported" : "motionBlocked");
+      $("motionStatus").classList.toggle("error", true);
+      state.motionError = true;
+    }
+  }
+
+  function resetMotion() {
+    stopMotionSound();
+    state.motionKind = "theremin";
+    state.motionX = motionModel.padFraction(440);
+    state.motionY = 0.5;
+    state.motionHz = 440;
+    state.motionLevel = 0.5;
+    state.motionElapsed = 0;
+    state.motionHistory = [];
+    state.sirenPattern = "two-tone";
+    state.sirenLow = 440;
+    state.sirenHigh = 880;
+    state.sirenRate = 0.8;
+    state.sirenVolume = 40;
+    setMotionStatus("motionReady");
+    renderMotionControls();
+    drawPlots();
+  }
+
   function renderMode() {
     const isStrike = state.mode === "strike";
-    $("pureWorkspace").hidden = isStrike;
-    $("pureChallenge").hidden = isStrike;
-    $("pureExplanation").hidden = isStrike;
+    const isMotion = state.mode === "motion";
+    $("pureWorkspace").hidden = isStrike || isMotion;
+    $("pureChallenge").hidden = isStrike || isMotion;
+    $("pureExplanation").hidden = isStrike || isMotion;
     $("strikeWorkspace").hidden = !isStrike;
     $("strikeChallenge").hidden = !isStrike;
     $("strikeExplanation").hidden = !isStrike;
-    for (const [id, mode] of [["modePure", "pure"], ["modeStrike", "strike"]]) {
+    $("motionWorkspace").hidden = !isMotion;
+    $("motionChallenge").hidden = !isMotion;
+    $("motionExplanation").hidden = !isMotion;
+    for (const [id, mode] of [["modePure", "pure"], ["modeStrike", "strike"], ["modeMotion", "motion"]]) {
       const selected = state.mode === mode;
       $(id).classList.toggle("active", selected);
       $(id).setAttribute("aria-pressed", String(selected));
     }
-    $("pagePhase").textContent = text(isStrike ? "strikePhase" : "phase");
+    $("pagePhase").textContent = text(isStrike ? "strikePhase" : isMotion ? "motionPhase" : "phase");
   }
 
   function renderTexts() {
@@ -568,12 +884,20 @@
     $("strikePlotTools").setAttribute("aria-label", text("strikePlotToolsAria"));
     $("strikeDrumSizes").setAttribute("aria-label", text("strikeDrumSize"));
     $("strikeSpectrumChoices").setAttribute("aria-label", text("strikeSpectrumModesAria"));
+    $("motionChoices").setAttribute("aria-label", text("motionGroupAria"));
+    $("sirenPatterns").setAttribute("aria-label", text("sirenPatternAria"));
+    $("thereminPad").setAttribute("aria-label", text("padAria"));
+    $("motionPitchCanvas").setAttribute("aria-label", text("motionPitchAria"));
+    $("motionWaveCanvas").setAttribute("aria-label", text("motionWaveAria"));
+    $("motionSpectrumCanvas").setAttribute("aria-label", text("motionComponentAria"));
     document.querySelector(".note-presets").setAttribute("aria-label", text("presetsAria"));
     document.querySelector(".lang-group").setAttribute("aria-label", text("langGroupAria"));
     setStatus(state.status, state.error);
     setStrikeStatus(state.strikeStatus, state.strikeError);
+    setMotionStatus(state.motionStatus, state.motionError);
     renderMode();
     renderStrikeControls();
+    renderMotionControls();
     renderStrikeTime();
   }
 
@@ -659,6 +983,7 @@
   function stopAllAudio(immediate = false, message = "stopped") {
     transientAudio.stop(immediate);
     stopStrikeFollow();
+    stopMotionSound(immediate, message === "hidden" ? "motionHidden" : "motionStopped");
     stopSound(immediate, message);
     setStrikeStatus(message === "hidden" ? "strikeHidden" : "strikeStopped");
   }
@@ -693,7 +1018,7 @@
   }
 
   function selectMode(mode) {
-    if (mode === state.mode || !["pure", "strike"].includes(mode)) return;
+    if (mode === state.mode || !["pure", "strike", "motion"].includes(mode)) return;
     stopAllAudio(false);
     state.mode = mode;
     renderTexts();
@@ -1040,11 +1365,126 @@
     }
   }
 
+  function drawMotionPitch() {
+    const { ctx, width, height } = plotContext($("motionPitchCanvas"));
+    const left = 47, right = width - 16, top = 19, bottom = height - 30;
+    const w = right - left, h = bottom - top;
+    const viewStart = Math.max(0, state.motionElapsed - 4);
+    const yAt = hz => bottom - Math.log(hz / motionModel.MIN_HZ) /
+      Math.log(motionModel.MAX_HZ / motionModel.MIN_HZ) * h;
+    ctx.strokeStyle = "#e8eff7";
+    ctx.lineWidth = 1;
+    for (const hz of [120, 240, 480, 960, 1600]) {
+      const y = yAt(hz);
+      ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(right, y); ctx.stroke();
+      ctx.fillStyle = "#7489a1";
+      ctx.font = "11px system-ui, sans-serif";
+      ctx.textAlign = "right";
+      ctx.fillText(String(hz), left - 6, y + 3);
+    }
+    ctx.textAlign = "center";
+    for (let i = 0; i <= 4; i++) {
+      const x = left + w * i / 4;
+      ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke();
+      ctx.fillText(frequencyText(viewStart + i) + " s", x, height - 12);
+    }
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = state.motionKind === "siren" ? "#7861bb" : "#168f9b";
+    ctx.beginPath();
+    // Both modes show the most recent four seconds after playback passes 4 s.
+    // A siren's audio phase must not appear to reset when its plot reaches the edge.
+    if (state.motionKind === "siren") {
+      const recipe = sirenRecipe();
+      for (let i = 0; i <= 400; i++) {
+        const t = i / 100;
+        const x = left + t / 4 * w, y = yAt(motionModel.sirenHzAt(viewStart + t, recipe));
+        if (!i) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    } else if (state.motionHistory.length) {
+      let started = false;
+      for (const point of state.motionHistory) {
+        const x = left + (point.time - viewStart) / 4 * w;
+        if (x < left || x > right) continue;
+        if (!started) { ctx.moveTo(x, yAt(point.hz)); started = true; }
+        else ctx.lineTo(x, yAt(point.hz));
+      }
+      if (started) ctx.stroke();
+    }
+    const x = left + Math.min(4, state.motionElapsed - viewStart) / 4 * w;
+    if (state.motionPlaying || state.motionKind === "theremin") {
+      ctx.fillStyle = "#df8738";
+      ctx.beginPath();
+      ctx.arc(x, yAt(state.motionHz), 5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    $("motionPitchBadge").textContent = frequencyText(state.motionHz) + " Hz";
+    $("motionDetailBadge").textContent = frequencyText(state.motionHz) + " Hz";
+  }
+
+  function drawMotionWave() {
+    const { ctx, width, height } = plotContext($("motionWaveCanvas"));
+    const left = 27, right = width - 12, top = 19, bottom = height - 27;
+    drawFrame(ctx, width, height, left, right, top, bottom);
+    const middle = (top + bottom) / 2;
+    const amplitude = (bottom - top) * 0.46 * state.motionLevel;
+    ctx.strokeStyle = "#367bd1";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let i = 0; i <= 350; i++) {
+      const fraction = i / 350;
+      const x = left + fraction * (right - left);
+      const y = middle - amplitude * Math.sin(2 * Math.PI * state.motionHz * fraction * 0.02);
+      if (!i) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.fillStyle = "#7489a1";
+    ctx.font = "11px system-ui, sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText("0", left, height - 9);
+    ctx.textAlign = "right";
+    ctx.fillText("20 ms", right, height - 9);
+  }
+
+  function drawMotionComponent() {
+    const { ctx, width, height } = plotContext($("motionSpectrumCanvas"));
+    const left = 30, right = width - 15, top = 19, bottom = height - 27;
+    ctx.strokeStyle = "#e8eff7";
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) {
+      const x = left + (right - left) * i / 4;
+      ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke();
+    }
+    ctx.strokeStyle = "#a9bdd3";
+    ctx.beginPath(); ctx.moveTo(left, bottom); ctx.lineTo(right, bottom); ctx.stroke();
+    const x = left + (state.motionHz - motionModel.MIN_HZ) /
+      (motionModel.MAX_HZ - motionModel.MIN_HZ) * (right - left);
+    ctx.strokeStyle = "#278bb8";
+    ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.moveTo(x, bottom); ctx.lineTo(x, bottom - (bottom - top) * state.motionLevel); ctx.stroke();
+    ctx.fillStyle = "#7489a1";
+    ctx.font = "11px system-ui, sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText("120 Hz", left, height - 9);
+    ctx.textAlign = "right";
+    ctx.fillText("1,600 Hz", right, height - 9);
+  }
+
+  function drawMotionPlots() {
+    drawMotionPitch();
+    drawMotionWave();
+    drawMotionComponent();
+  }
+
   function drawPlots() {
     if (state.mode === "strike") {
       renderStrikeTime();
       drawStrikeWave();
       drawStrikeSpectrum();
+    } else if (state.mode === "motion") {
+      drawMotionPlots();
     } else {
       drawWave();
       drawSpectrum();
@@ -1072,8 +1512,83 @@
       drawStrikeSpectrum();
     });
   });
+  document.querySelectorAll("[data-motion]").forEach(button => {
+    button.addEventListener("click", () => setMotionKind(button.dataset.motion));
+  });
+  document.querySelectorAll("[data-siren-pattern]").forEach(button => {
+    button.addEventListener("click", () => {
+      if (state.sirenPattern === button.dataset.sirenPattern) return;
+      state.sirenPattern = button.dataset.sirenPattern;
+      updateSiren();
+    });
+  });
+  const pad = $("thereminPad");
+  pad.addEventListener("pointerdown", event => {
+    if (state.mode !== "motion" || state.motionKind !== "theremin" || event.button > 0) return;
+    event.preventDefault();
+    motionPointerId = event.pointerId;
+    if (pad.setPointerCapture) pad.setPointerCapture(event.pointerId);
+    readPadPointer(event);
+    return startMotionSound();
+  });
+  pad.addEventListener("pointermove", event => {
+    if (motionPointerId !== event.pointerId || state.motionKind !== "theremin") return;
+    event.preventDefault();
+    readPadPointer(event);
+  });
+  const endPadTouch = event => {
+    if (motionPointerId !== event.pointerId) return;
+    if (pad.releasePointerCapture) {
+      try { pad.releasePointerCapture(event.pointerId); }
+      catch (_) { /* Capture may already have been released by the browser. */ }
+    }
+    stopMotionSound();
+  };
+  pad.addEventListener("pointerup", endPadTouch);
+  pad.addEventListener("pointercancel", endPadTouch);
+  pad.addEventListener("lostpointercapture", endPadTouch);
+  pad.addEventListener("keydown", event => {
+    const increments = {
+      ArrowLeft: [-0.035, 0], ArrowRight: [0.035, 0],
+      ArrowUp: [0, -0.05], ArrowDown: [0, 0.05]
+    };
+    if (event.key in increments) {
+      event.preventDefault();
+      const [dx, dy] = increments[event.key];
+      setPadPosition(state.motionX + dx, state.motionY + dy);
+    } else if (event.key === " " || event.key === "Enter") {
+      event.preventDefault();
+      if (state.motionPlaying) stopMotionSound();
+      else return startMotionSound();
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      stopMotionSound();
+    }
+  });
+  $("sirenButton").addEventListener("click", () => {
+    if (state.motionPlaying) stopMotionSound();
+    else return startMotionSound();
+  });
+  $("sirenLow").addEventListener("input", event => {
+    state.sirenLow = Math.min(state.sirenHigh - 20, Math.max(motionModel.MIN_HZ, Number(event.target.value)));
+    updateSiren();
+  });
+  $("sirenHigh").addEventListener("input", event => {
+    state.sirenHigh = Math.max(state.sirenLow + 20, Math.min(motionModel.MAX_HZ, Number(event.target.value)));
+    updateSiren();
+  });
+  $("sirenRate").addEventListener("input", event => {
+    state.sirenRate = Math.min(motionModel.MAX_RATE, Math.max(motionModel.MIN_RATE, Number(event.target.value)));
+    updateSiren();
+  });
+  $("sirenVolume").addEventListener("input", event => {
+    state.sirenVolume = Math.min(100, Math.max(0, Number(event.target.value)));
+    updateSiren();
+  });
+  $("motionReset").addEventListener("click", resetMotion);
   $("modePure").addEventListener("click", () => selectMode("pure"));
   $("modeStrike").addEventListener("click", () => selectMode("strike"));
+  $("modeMotion").addEventListener("click", () => selectMode("motion"));
   $("strikeButton").addEventListener("click", triggerStrike);
   $("strikeFrequencySlider").addEventListener("input", event => {
     setStrikePitch(transientModel.sliderToHz(Number(event.target.value)));
@@ -1148,12 +1663,18 @@
     if (document.hidden) stopAllAudio(true, "hidden");
   });
   window.addEventListener("pagehide", () => stopAllAudio(true, "hidden"));
+  window.addEventListener("blur", () => {
+    if (state.motionPlaying) stopAllAudio(true, "hidden");
+  });
   if (typeof ResizeObserver !== "undefined") {
     const observer = new ResizeObserver(() => drawPlots());
     observer.observe($("waveCanvas"));
     observer.observe($("spectrumCanvas"));
     observer.observe($("strikeWaveCanvas"));
     observer.observe($("strikeSpectrumCanvas"));
+    observer.observe($("motionPitchCanvas"));
+    observer.observe($("motionWaveCanvas"));
+    observer.observe($("motionSpectrumCanvas"));
   } else window.addEventListener("resize", drawPlots);
 
   renderTexts();

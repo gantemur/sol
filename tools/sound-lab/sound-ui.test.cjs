@@ -7,6 +7,7 @@ const path = require("node:path");
 const model = require("./sound-model.js");
 const transientModel = require("./sound-transient.js");
 const spectrumModel = require("./sound-spectrum.js");
+const motionModel = require("./sound-motion.js");
 
 const html = fs.readFileSync(path.join(__dirname, "index.html"), "utf8");
 const browserCode = fs.readFileSync(path.join(__dirname, "sound-lab.js"), "utf8");
@@ -23,7 +24,9 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /id="fixedTimeCheck" checked/);
   assert.match(html, /src="sound-transient\.js"/);
   assert.match(html, /src="sound-spectrum\.js"/);
+  assert.match(html, /src="sound-motion\.js"/);
   assert.match(html, /id="strikeWorkspace"[^>]*hidden/);
+  assert.match(html, /id="motionWorkspace"[^>]*hidden/);
   assert.match(browserCode, /Нотод тааруулах/);
   assert.doesNotMatch(browserCode, /ноот/i);
 });
@@ -60,16 +63,19 @@ function fakePage(search = "") {
       value: "",
       checked: false,
       textContent: "",
+      style: {},
       classList: classList(),
       setAttribute(name, value) { attributes[name] = String(value); },
       getAttribute(name) { return attributes[name]; },
       addEventListener(name, callback) { this.events[name] = callback; },
-      getBoundingClientRect() { return { width: 710, height: 210 }; },
+      getBoundingClientRect() { return { left: 0, top: 0, width: 710, height: 210 }; },
+      setPointerCapture() {}, releasePointerCapture() {},
       getContext() {
         const noop = () => {};
         return {
           setTransform: noop, clearRect: noop, fillRect: noop, beginPath: noop,
-          moveTo: noop, lineTo: noop, stroke: noop, fillText: noop
+          moveTo: noop, lineTo: noop, stroke: noop, fillText: noop,
+          arc: noop, fill: noop
         };
       }
     };
@@ -80,6 +86,8 @@ function fakePage(search = "") {
   const strikeButtons = transientModel.KINDS.map(strike => element({ strike }));
   const drumButtons = Object.keys(transientModel.KICK_SIZES).map(drumSize => element({ drumSize }));
   const spectrumButtons = ["local", "overall"].map(spectrumView => element({ spectrumView }));
+  const motionButtons = ["theremin", "siren"].map(motion => element({ motion }));
+  const sirenPatternButtons = motionModel.PATTERNS.map(sirenPattern => element({ sirenPattern }));
   const noteButtons = [60, 69, 72].map(note => element({ note: String(note) }));
   const noteGroup = element(), langGroup = element();
   const document = {
@@ -92,6 +100,8 @@ function fakePage(search = "") {
       if (selector === "[data-strike]") return strikeButtons;
       if (selector === "[data-drum-size]") return drumButtons;
       if (selector === "[data-spectrum-view]") return spectrumButtons;
+      if (selector === "[data-motion]") return motionButtons;
+      if (selector === "[data-siren-pattern]") return sirenPatternButtons;
       if (selector === "[data-note]") return noteButtons;
       return [];
     },
@@ -105,6 +115,7 @@ function fakePage(search = "") {
   const window = {
     SoundLabModel: model,
     SoundLabTransientModel: transientModel,
+    SoundLabMotionModel: motionModel,
     SoundLabSpectrum: {
       ...spectrumModel,
       spectrumAt(model, recipe, time) {
@@ -134,6 +145,7 @@ function fakePage(search = "") {
       this.sampleRate = 44100;
       this.buffers = [];
       this.sources = [];
+      this.gains = [];
       contexts.push(this);
     }
     async resume() { this.state = "running"; }
@@ -179,7 +191,7 @@ function fakePage(search = "") {
       return source;
     }
     createGain() {
-      return {
+      const gain = {
         gain: {
           value: 0,
           setValueAtTime(value) { this.value = value; },
@@ -190,6 +202,8 @@ function fakePage(search = "") {
         connect() {},
         disconnect() {}
       };
+      this.gains.push(gain);
+      return gain;
     }
   }
   window.AudioContext = FakeAudioContext;
@@ -197,6 +211,7 @@ function fakePage(search = "") {
   vm.runInNewContext(browserCode, sandbox, { filename: "sound-lab.js" });
   return {
     contexts, elements, document, window, waveButtons, strikeButtons, drumButtons, spectrumButtons,
+    motionButtons, sirenPatternButtons,
     analyzedAt,
     tick(seconds) {
       if (contexts[0]) contexts[0].currentTime += seconds;
@@ -206,7 +221,7 @@ function fakePage(search = "") {
     },
     fire(id, type, event) {
       const target = elements.get(id);
-      return target.events[type]({ target, ...(event || {}) });
+      return target.events[type]({ target, preventDefault() {}, button: 0, pointerId: 1, ...(event || {}) });
     }
   };
 }
@@ -424,4 +439,77 @@ test("Hit follows Web Audio playback time, then allows manual passive inspection
   const stoppedAt = app.elements.get("strikeTimeValue").textContent;
   app.tick(0.1);
   assert.equal(app.elements.get("strikeTimeValue").textContent, stoppedAt);
+});
+
+test("Moving Pitch theremin uses a pointer gesture, shared audio, live pitch and release-to-stop", async () => {
+  const app = fakePage();
+  app.fire("modeMotion", "click");
+  assert.equal(app.elements.get("pureWorkspace").hidden, true);
+  assert.equal(app.elements.get("motionWorkspace").hidden, false);
+  assert.equal(app.elements.get("pagePhase").textContent, "03 · Хувирдаг давтамж");
+  assert.equal(app.contexts.length, 0, "Mode switching remains silent");
+  await app.fire("thereminPad", "pointerdown", { clientX: 355, clientY: 105 });
+  const context = app.contexts[0];
+  assert.equal(context.oscillators.length, 1);
+  assert.equal(context.oscillators[0].started, true);
+  assert.equal(app.elements.get("thereminPad").getAttribute("aria-pressed"), "true");
+  const firstHz = context.oscillators[0].frequency.value;
+  app.fire("thereminPad", "pointermove", { clientX: 600, clientY: 15 });
+  assert.ok(context.oscillators[0].frequency.value > firstHz);
+  assert.ok(context.gains[0].gain.value > 0);
+  assert.ok(context.gains[0].gain.value <= 0.12);
+  app.tick(0.05);
+  assert.match(app.elements.get("motionPitchBadge").textContent, /Hz/);
+  app.fire("thereminPad", "pointerup", { clientX: 600, clientY: 15 });
+  assert.equal(context.oscillators[0].stopped, true);
+  assert.equal(app.elements.get("thereminPad").getAttribute("aria-pressed"), "false");
+});
+
+test("theremin keyboard arrows change pitch; Space toggles and Escape safely stops", async () => {
+  const app = fakePage();
+  app.fire("modeMotion", "click");
+  const before = parseFloat(app.elements.get("motionCurrentHz").textContent);
+  app.fire("thereminPad", "keydown", { key: "ArrowRight" });
+  assert.ok(parseFloat(app.elements.get("motionCurrentHz").textContent) > before);
+  await app.fire("thereminPad", "keydown", { key: " " });
+  assert.equal(app.contexts[0].oscillators[0].started, true);
+  app.fire("thereminPad", "keydown", { key: "Escape" });
+  assert.equal(app.contexts[0].oscillators[0].stopped, true);
+});
+
+test("siren changes two-tone/sweep pitch with its clock; Stop and mode switch cancel sound", async () => {
+  const app = fakePage();
+  app.fire("modeMotion", "click");
+  app.motionButtons[1].events.click();
+  assert.equal(app.elements.get("thereminControls").hidden, true);
+  assert.equal(app.elements.get("sirenControls").hidden, false);
+  app.elements.get("sirenHigh").value = "1000";
+  app.fire("sirenHigh", "input");
+  assert.equal(app.elements.get("sirenHighValue").textContent, "1000 Hz");
+  await app.fire("sirenButton", "click");
+  const context = app.contexts[0];
+  assert.equal(context.oscillators[0].frequency.value, 440);
+  app.tick(0.7); // 0.8 cycles/s: after half a cycle, the high tone sounds.
+  assert.equal(context.oscillators[0].frequency.value, 1000);
+  app.sirenPatternButtons[1].events.click();
+  app.tick(0.1);
+  assert.ok(context.oscillators[0].frequency.value > 440);
+  assert.ok(context.oscillators[0].frequency.value < 1000);
+  app.fire("stopAll", "click");
+  assert.equal(context.oscillators[0].stopped, true);
+  assert.equal(app.elements.get("sirenButton").getAttribute("aria-pressed"), "false");
+  await app.fire("sirenButton", "click");
+  app.fire("modePure", "click");
+  assert.equal(context.oscillators[1].stopped, true);
+  assert.equal(app.elements.get("motionWorkspace").hidden, true);
+});
+
+test("pending siren start does not produce an orphan voice after leaving Moving Pitch", async () => {
+  const app = fakePage();
+  app.fire("modeMotion", "click");
+  app.motionButtons[1].events.click();
+  const pending = app.fire("sirenButton", "click");
+  app.fire("modeStrike", "click");
+  await pending;
+  assert.equal(app.contexts[0].oscillators.length, 0);
 });

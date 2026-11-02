@@ -1,4 +1,4 @@
-# Sound Lab (P1 ideal signals + P2A modeled strikes and local spectra)
+# Sound Lab (P1 ideal signals + P2A strikes + P2B moving pitch)
 
 Standalone browser-based Sol tool. Open [index.html](index.html) from the site or serve the repository as a static website. No build, dependencies, recording, external API, microphone permission, uploads or server are required.
 
@@ -27,13 +27,22 @@ Standalone browser-based Sol tool. Open [index.html](index.html) from the site o
 - The bass drum has **Large / Medium / Small** presets that scale its frequency trajectory (a deliberately stylized kick model, not a physical circular-membrane simulation). It deliberately does not display a spurious stable musical note. Changing a recipe control stops the previous triggered buffer so the plotted model cannot silently disagree with an earlier hit.
 - [sound-spectrum.js](sound-spectrum.js) is a dependency-free analysis module. It and the updated [sound-transient.js](sound-transient.js) are testable without a browser. All graphics are modeled output or FFT of that model, not microphone measurements or the sound actually emitted by speakers.
 
+## Added in P2B: Moving Pitch
+
+- A third **Moving Pitch / Хувирдаг давтамж** mode illustrates changing frequency in two ways, without asking for microphone access or loading external sounds.
+- **Theremin:** drag or hold a pointer on the rectangular pad. Horizontal position changes frequency **logarithmically from 120 to 1,600 Hz**; vertical position changes volume (top is louder). Releasing or cancelling the pointer stops the sound. Keyboard users can focus the pad, use the arrow keys to change the sound, Space/Enter to start or stop it, and Escape to stop.
+- **Siren:** choose **Two-tone** (alternating low and high) or **Smooth sweep** (a continuous up-and-down triangle pitch path), then adjust low/high frequencies, repetitions per second (0.2–2), and volume. The Siren Play/Stop button is always a deliberate user action; nothing starts on page load or when a recipe changes.
+- A **pitch-versus-time** graph shows the siren's mathematical four-second pattern or the theremin's actual browser-interaction history. Once playback exceeds four seconds, the graph advances as a rolling window. The lower plots show a **20 ms ideal sine wave** at the instantaneous frequency and a **single ideal spectral component** at that frequency; these are not sound-card or microphone measurements. The tone generator uses an actual sine oscillator whose frequency and gain are smoothed as controls move.
+- Shares the existing browser AudioContext and master Stop. Audio has a 0.12 maximum linear amplitude, starts and ends with short gain ramps, is silent on mode changes or page hiding, and uses generation tokens to cancel pending starts safely. There is no autoplay, upload, export, recording or network transmission.
+- A separate dependency-free [motion model](sound-motion.js) and [motion model tests](sound-motion.test.cjs), plus simulated pointer, keyboard, siren and sound-lifecycle coverage in [UI tests](sound-ui.test.cjs).
+
 ## Future extension boundaries
 
 Keep three concepts separate:
 
 1. Pitch identity: symbolic note or explicitly entered Hz.
 2. Tuning context: P1 resolves symbolic notes through 12-TET only; later just/Pythagorean/alternative scales change how notes resolve into frequencies, not the written score.
-3. Sound recipe: waveform/timbre now; later envelopes, modeled drums and plucked strings, harmonic builder, siren and modulated sounds.
+3. Sound recipe: waveform/timbre, modeled drums and plucked strings, and moving-pitch oscillator now; later envelopes, harmonic builder, richer modulation and score-driven instruments.
 
 Later work will add Compose and Analyze **when usable**, rather than displaying disabled tabs now. Score-wide tunings belong in Compose; Explore tunings stay in Settings and only affect note snapping.
 
@@ -44,6 +53,7 @@ From repository root, with Node.js:
     node tools/sound-lab/sound-model.test.cjs
     node tools/sound-lab/sound-transient.test.cjs
     node tools/sound-lab/sound-spectrum.test.cjs
+    node tools/sound-lab/sound-motion.test.cjs
     node tools/sound-lab/sound-ui.test.cjs
     node scripts/check-static.js
     node scripts/test-static-check.js
@@ -58,6 +68,8 @@ Manual browser checklist (not covered by Node model tests):
 6. Enter Strike & Pluck. Confirm switching modes is silent until a tap; try the string at 220 and 440 Hz with Snap off/on and all three drum-size presets. Verify the sound changes and the drum pitch controls are replaced by size choices.
 7. Compare 0–3 s, 1 s, 200 ms and 20 ms waveform views. Zoom and pan across the decay, then Fit; use both the time slider and clicking the plot to inspect different moments. Confirm the local spectrum evolves and the Whole sound toggle stays constant.
 8. Tap several times: the time cursor should follow the **latest** hit, reaching its end without unintended replay. On Stop, the cursor stops and manual scrubbing still works. Change strike strength/decay, switch back to Pure Tones, and check that no hidden voice or loop continues. Test on phone speakers and headphones at low volume.
+9. Enter Moving Pitch. Without a click, confirm silence. Hold and move around all four corners of the Theremin pad: right is higher frequency and top is louder. Release outside the pad; the sound should stop. Tab to the pad, use arrows, Space/Enter and Escape; check the focus indicator and `aria-pressed` state.
+10. Switch to Siren. Play both Two-tone and Smooth sweep; vary its low/high limits and speed while playing, and verify the four-second pitch graph and instantaneous wave/component respond. Compare predicted pitch with the frequency readout. Check that Stop, language changes, Reset, mode switching, browser tab hiding and the global Stop do not leave hidden audio playing. Confirm the rolling graph is continuous past four seconds.
 
 ## Scientific/technical limits
 
@@ -67,3 +79,4 @@ Manual browser checklist (not covered by Node model tests):
 - The local FFT analyzes a mathematically generated signal, not live microphone or sound-card audio. A short-time spectrum necessarily trades time resolution for frequency resolution; this release fixes its window at 128 ms, especially relevant for very low drum frequencies.
 - This release has no audio export, recording, microphone analysis, tuning comparison, chords or melody playback.
 - The pluck is a damped harmonic sum, not a full physical string model. The drum is a decaying sinusoid with an idealized downward pitch sweep; neither is intended to sound like a professionally sampled instrument. A richer Karplus–Strong string model and noise-based snare may follow later.
+- Theremin and siren sounds are **modeled moving-frequency sine oscillators**, not actual theremin or emergency-vehicle recordings. The siren's graphical path is a mathematical prediction and the moving single-component diagram is intentionally idealized: a real, rapidly frequency-changing oscillator creates additional time-dependent spectral spread and device-specific output.
