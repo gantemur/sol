@@ -9,8 +9,8 @@
   <link rel="stylesheet" href="sound-lab.css?v=s017">
   <script src="sound-model.js" defer></script>
   <script src="sound-string.js?v=s017" defer></script>
-  <script src="sound-piano.js?v=s018" defer></script>
-  <script src="sound-transient.js?v=s018" defer></script>
+  <script src="sound-piano.js?v=s019" defer></script>
+  <script src="sound-transient.js?v=s019" defer></script>
   <script src="sound-sustain.js?v=s017" defer></script>
   <script src="sound-spectrum.js?v=s017" defer></script>
   <script src="sound-motion.js?v=s015" defer></script>
@@ -18,7 +18,7 @@
   <script src="sound-harmonics.js" defer></script>
   <script src="sound-noise.js" defer></script>
   <script src="sound-recorder.js" defer></script>
-  <script src="sound-lab.js?v=s018" defer></script>
+  <script src="sound-lab.js?v=s019" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -219,6 +219,15 @@
             <button type="button" class="selected" data-guitar-play="single" aria-pressed="true" data-i18n="strikeSingle">Нэг чавхдас</button>
             <button type="button" data-guitar-play="strum" aria-pressed="false" data-i18n="strikeStrum">Олон чавхдас</button>
           </div>
+        </div>
+
+        <div class="field-group" id="strikePianoTouchGroup" hidden>
+          <div class="field-title"><span data-i18n="strikePianoTouchTitle">Тоглох арга</span></div>
+          <div class="drum-sizes guitar-modes" role="group" data-i18n-aria="strikePianoTouchTitle" aria-label="Тоглох арга">
+            <button type="button" class="selected" data-piano-touch="press" aria-pressed="true" data-i18n="strikePianoPress">Дарах</button>
+            <button type="button" data-piano-touch="tap" aria-pressed="false" data-i18n="strikePianoTap">Товших</button>
+          </div>
+          <p class="field-help" data-i18n="strikePianoTouchHint">Дарах нь товчлуурыг барьсан үеийн чөлөөт намдлыг, товших нь зөөлөн богино даралт ба намжаагч эрт буцахыг загварчилна.</p>
         </div>
 
         <div class="field-group" id="strikeChordGroup" hidden>

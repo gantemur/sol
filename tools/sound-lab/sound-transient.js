@@ -48,14 +48,15 @@
         (options.strumChord !== undefined && !Object.hasOwn(strings.CHORDS, options.strumChord)))) {
       throw new RangeError("Unknown pluck position or guitar chord");
     }
-    if (kind === "piano" && !piano.validVelocity(options.velocity ?? .55)) {
-      throw new RangeError("Piano hammer velocity outside the supported range");
+    if (kind === "piano" && (!piano.validVelocity(options.velocity ?? .55) ||
+        !piano.validTouch(options.touch ?? "press"))) {
+      throw new RangeError("Piano hammer velocity or touch outside the supported range");
     }
   }
 
-  function envelope(kind, time, decaySec) {
+  function envelope(kind, time, decaySec, options = {}) {
     if (time <= 0) return 0;
-    if (kind === "piano") return piano.envelope(time, decaySec);
+    if (kind === "piano") return piano.envelope(time, decaySec, options.touch ?? "press");
     const attack = kind === "kick" ? 0.0015 : 0.0025;
     return (1 - Math.exp(-time / attack)) * Math.exp(-time / decaySec);
   }
@@ -94,17 +95,18 @@
         strings.strumAt(time, options.strumChord, decaySec, position) :
         strings.pluckAt(time, pitchHz, decaySec, position);
     }
-    return piano.sampleAt(time, pitchHz, decaySec, options.velocity ?? .55);
+    return piano.sampleAt(time, pitchHz, decaySec, options.velocity ?? .55,
+      options.touch ?? "press");
   }
 
   function duration(decaySec) {
     return Math.max(0.35, Math.min(3, decaySec * 4));
   }
 
-  function plottedEnvelope(kind, time, decaySec) {
+  function plottedEnvelope(kind, time, decaySec, options = {}) {
     const length = duration(decaySec);
     if (time >= length) return 0;
-    return envelope(kind, time, decaySec) * Math.min(1, (length - time) / 0.018);
+    return envelope(kind, time, decaySec, options) * Math.min(1, (length - time) / 0.018);
   }
 
   function plottedSampleAt(kind, time, pitchHz, decaySec, kickSize = "medium", options = {}) {
@@ -140,7 +142,8 @@
   return Object.freeze({
     KINDS, KICK_SIZES, DRUM_MIN_TENSION, DRUM_MAX_TENSION, STRUM_CHORDS: strings.CHORDS,
     MIN_PITCH_HZ, MAX_PITCH_HZ, MIN_DECAY, MAX_DECAY,
-    PIANO_STIFFNESS: piano.STIFFNESS, pianoPartialHz: piano.pianoPartialHz,
+    PIANO_STIFFNESS: piano.STIFFNESS, PIANO_TOUCHES: piano.TOUCHES,
+    pianoPartialHz: piano.pianoPartialHz,
     validate, envelope, plottedEnvelope, kickFrequency, drumModeFrequencies, sampleAt, plottedSampleAt,
     duration, makeSamples, sliderToHz, hzToSlider
   });

@@ -30,15 +30,15 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /id="modeSustain"[^>]*>Үлээх\/нумдах<\/button>/);
   assert.match(html, /id="fixedTimeCheck" checked/);
   assert.match(html, /src="sound-string\.js\?v=s017"/);
-  assert.match(html, /src="sound-piano\.js\?v=s018"/);
-  assert.match(html, /src="sound-transient\.js\?v=s018"/);
+  assert.match(html, /src="sound-piano\.js\?v=s019"/);
+  assert.match(html, /src="sound-transient\.js\?v=s019"/);
   assert.match(html, /src="sound-sustain\.js\?v=s017"/);
   assert.match(html, /src="sound-spectrum\.js\?v=s017"/);
   assert.match(html, /src="sound-motion\.js\?v=s015"/);
   assert.match(html, /src="sound-beats\.js"/);
   assert.match(html, /src="sound-harmonics\.js"/);
   assert.match(html, /src="sound-noise\.js"/);
-  assert.match(html, /src="sound-lab\.js\?v=s018"/);
+  assert.match(html, /src="sound-lab\.js\?v=s019"/);
   assert.match(html, /href="sound-lab\.css\?v=s017"/);
   assert.match(html, /src="sound-recorder\.js"/);
   assert.match(html, /id="recordPreview"[^>]*controls/);
@@ -69,6 +69,9 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   for (const kind of transientModel.KINDS) assert.match(html, new RegExp('data-strike="' + kind + '"'));
   for (const chord of Object.keys(transientModel.STRUM_CHORDS)) {
     assert.match(html, new RegExp('data-guitar-chord="' + chord + '"'));
+  }
+  for (const touch of transientModel.PIANO_TOUCHES) {
+    assert.match(html, new RegExp('data-piano-touch="' + touch + '"'));
   }
   assert.doesNotMatch(html, /id="pianoKeyboard"|class="piano-keys"/);
   for (const kind of sustainModel.KINDS) assert.match(html, new RegExp('data-sustain="' + kind + '"'));
@@ -159,6 +162,7 @@ function fakePage(search = "", supportWorklets = true) {
   const strikeButtons = transientModel.KINDS.map(strike => element({ strike }));
   const guitarPlayButtons = ["single", "strum"].map(guitarPlay => element({ guitarPlay }));
   const guitarChordButtons = Object.keys(transientModel.STRUM_CHORDS).map(guitarChord => element({ guitarChord }));
+  const pianoTouchButtons = transientModel.PIANO_TOUCHES.map(pianoTouch => element({ pianoTouch }));
   const sustainButtons = sustainModel.KINDS.map(sustain => element({ sustain }));
   const sustainGestureButtons = ["hold", "toggle"].map(sustainGesture => element({ sustainGesture }));
   const drumButtons = Object.keys(transientModel.KICK_SIZES).map(drumSize => element({ drumSize }));
@@ -186,6 +190,7 @@ function fakePage(search = "", supportWorklets = true) {
       if (selector === "[data-strike]") return strikeButtons;
       if (selector === "[data-guitar-play]") return guitarPlayButtons;
       if (selector === "[data-guitar-chord]") return guitarChordButtons;
+      if (selector === "[data-piano-touch]") return pianoTouchButtons;
       if (selector === "[data-sustain]") return sustainButtons;
       if (selector === "[data-sustain-gesture]") return sustainGestureButtons;
       if (selector === "[data-drum-size]") return drumButtons;
@@ -371,7 +376,8 @@ function fakePage(search = "", supportWorklets = true) {
   const sandbox = { document, window, URL: FakeURL, Blob, URLSearchParams, ResizeObserver: undefined };
   vm.runInNewContext(browserCode, sandbox, { filename: "sound-lab.js" });
   return {
-    contexts, elements, document, window, waveButtons, strikeButtons, guitarPlayButtons, guitarChordButtons, sustainButtons,
+    contexts, elements, document, window, waveButtons, strikeButtons,
+    guitarPlayButtons, guitarChordButtons, pianoTouchButtons, sustainButtons,
     sustainGestureButtons, drumButtons, spectrumButtons,
     motionButtons, sirenPatternButtons, timbreButtons, mixGapButtons, mixKindButtons,
     harmonicPresetButtons, harmonicLevelInputs, noiseColorButtons,
@@ -1247,7 +1253,7 @@ test("pending beat start is canceled when the tab changes or the page closes", a
   assert.equal(app.elements.get("mixButton").getAttribute("aria-pressed"), "false");
 });
 
-test("modeled piano is an instrument choice with frequency, decay and a single hit button", async () => {
+test("modeled piano has press and gentle tap gestures with matching audio and UI", async () => {
   const app = fakePage();
   app.fire("modeStrike", "click");
   const piano = app.strikeButtons.find(button => button.dataset.strike === "piano");
@@ -1255,7 +1261,9 @@ test("modeled piano is an instrument choice with frequency, decay and a single h
   assert.equal(app.contexts.length, 0, "Switching instrument must stay silent");
   assert.equal(app.elements.get("strikePitchGroup").hidden, false);
   assert.equal(app.elements.get("strikeDrumSizeGroup").hidden, true);
-  assert.equal(app.elements.get("strikeButtonLabel").textContent, "Нот тоглуулах");
+  assert.equal(app.elements.get("strikeButtonLabel").textContent, "Дарах");
+  assert.equal(app.elements.get("strikePianoTouchGroup").hidden, false);
+  assert.equal(app.pianoTouchButtons[0].getAttribute("aria-pressed"), "true");
   assert.match(app.elements.get("strikeDescription").textContent, /Алх цохиход/);
   assert.equal(app.elements.get("strikeDecayValue").textContent, "0.8 сек");
   await app.fire("strikeButton", "click");
@@ -1273,6 +1281,28 @@ test("modeled piano is an instrument choice with frequency, decay and a single h
   assert.ok(harderBuffer.some((sample, i) => i < 256 &&
     Math.abs(sample - softerBuffer[i]) > 0.001),
   "Hammer strength changes the underlying synthesized piano waveform");
+  app.pianoTouchButtons[1].events.click();
+  assert.equal(app.elements.get("strikeButtonLabel").textContent, "Товших");
+  assert.equal(app.pianoTouchButtons[1].getAttribute("aria-pressed"), "true");
+  assert.equal(context.buffers.length, 2, "Selecting touch should not autoplay");
+  await app.fire("strikeButton", "click");
+  const tapped = context.buffers[2].getChannelData();
+  const rms = (buffer, start, count = 1024) => {
+    const from = Math.round(start * context.sampleRate);
+    let energy = 0;
+    for (let i = from; i < from + count; i++) energy += buffer[i] * buffer[i];
+    return Math.sqrt(energy / count);
+  };
+  assert.ok(rms(tapped, .05) < rms(harderBuffer, .05), "Tap uses a softer hammer");
+  assert.ok(rms(tapped, .5) < .03 * rms(harderBuffer, .5),
+    "The early-returning damper shortens a tapped note");
+  app.fire("langEn", "click");
+  assert.equal(app.elements.get("strikeButtonLabel").textContent, "Tap");
+  app.pianoTouchButtons[0].events.click();
+  assert.equal(app.elements.get("strikeButtonLabel").textContent, "Press");
+  assert.equal(app.elements.get("strikePianoTouchGroup").hidden, false);
+  app.strikeButtons[1].events.click();
+  assert.equal(app.elements.get("strikePianoTouchGroup").hidden, true);
   app.fire("stopAll", "click");
   assert.equal(context.sources[0].stopped, true);
 });

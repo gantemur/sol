@@ -43,6 +43,7 @@ test("invalid or unbounded transient recipes are rejected", () => {
   assert.throws(() => sound.makeSamples("pluck", 220, .3, 44100, "medium", { strumChord: "other" }), RangeError);
   assert.throws(() => sound.makeSamples("piano", 440, .3, 44100, "medium", { velocity: 1.1 }), RangeError);
   assert.throws(() => sound.makeSamples("piano", 440, .3, 44100, "medium", { velocity: NaN }), RangeError);
+  assert.throws(() => sound.makeSamples("piano", 440, .3, 44100, "medium", { touch: "unknown" }), RangeError);
   assert.ok(sound.duration(sound.MAX_DECAY) <= 3);
 });
 
@@ -107,6 +108,56 @@ test("hammer strength changes piano timbre, not just loudness, and the note deca
         "Zoom, spectrum and audio must sample the same velocity-dependent note");
     }
     assert.ok(audio.every(value => Number.isFinite(value) && Math.abs(value) <= 1));
+  }
+});
+
+test("piano late decay retains its fundamental across notes and strike strengths", () => {
+  const partial = (result, pitch, number) => {
+    const index = Math.round(sound.pianoPartialHz(pitch, number) / result.binHz);
+    return Math.max(...result.magnitudes.slice(index - 1, index + 2));
+  };
+  for (const pitch of [110, 220, 284.5, 440, 660, 880]) {
+    for (const velocity of [.2, .55, 1]) {
+      for (const time of [.5, 1.5, 2, 2.5]) {
+        const result = spectrum.spectrumAt(sound,
+          { kind: "piano", pitchHz: pitch, decaySec: .8, options: { velocity } }, time);
+        const fundamental = partial(result, pitch, 1);
+        const loudestOvertone = Math.max(...[2, 3, 4, 5, 6]
+          .filter(n => sound.pianoPartialHz(pitch, n) < 7900)
+          .map(n => partial(result, pitch, n)));
+        assert.ok(loudestOvertone < .85 * fundamental,
+          `${pitch} Hz at ${time}s, velocity ${velocity}: fundamental must survive unison beating`);
+      }
+    }
+  }
+});
+
+test("tapping is a quieter, shorter piano touch with a continuous damper envelope", () => {
+  assert.deepEqual(sound.PIANO_TOUCHES, ["press", "tap"]);
+  const pitch = 284.5, decay = .8, velocity = .8, sampleRate = 16000;
+  const pressOptions = { velocity, touch: "press" };
+  const tapOptions = { velocity, touch: "tap" };
+  const press = sound.makeSamples("piano", pitch, decay, sampleRate, "medium", pressOptions);
+  const tap = sound.makeSamples("piano", pitch, decay, sampleRate, "medium", tapOptions);
+  const rms = (samples, start, length = 800) => {
+    const from = Math.round(start * sampleRate);
+    let energy = 0;
+    for (let i = from; i < from + length; i++) energy += samples[i] ** 2;
+    return Math.sqrt(energy / length);
+  };
+  assert.ok(rms(tap, .04) < rms(press, .04), "A tap strikes more softly");
+  assert.ok(rms(tap, .5) < .03 * rms(press, .5),
+    "Short key hold allows the damper to stop the string early");
+  assert.ok(Math.abs(sound.envelope("piano", .16 - 1e-7, decay, tapOptions) -
+    sound.envelope("piano", .16 + 1e-7, decay, tapOptions)) < 1e-5,
+  "Damper returns without an abrupt envelope jump");
+  for (const options of [pressOptions, tapOptions]) {
+    const samples = options.touch === "press" ? press : tap;
+    for (const i of [80, 800, 2400, 6400, 12000]) {
+      assert.ok(Math.abs(samples[i] - sound.plottedSampleAt("piano", i / sampleRate,
+        pitch, decay, "medium", options)) < 1e-6,
+      "Audio buffers and Fourier/wave plots must use the same piano touch");
+    }
   }
 });
 
