@@ -447,12 +447,15 @@ test("Moving Pitch theremin uses a pointer gesture, shared audio, live pitch and
   assert.equal(app.elements.get("pureWorkspace").hidden, true);
   assert.equal(app.elements.get("motionWorkspace").hidden, false);
   assert.equal(app.elements.get("pagePhase").textContent, "03 · Хувирдаг давтамж");
+  assert.match(app.elements.get("motionStatus").textContent, /^Бэлэн\./,
+    "A newly opened sound category must say Ready, not Stopped");
   assert.equal(app.contexts.length, 0, "Mode switching remains silent");
   await app.fire("thereminPad", "pointerdown", { clientX: 355, clientY: 105 });
   const context = app.contexts[0];
   assert.equal(context.oscillators.length, 1);
   assert.equal(context.oscillators[0].started, true);
   assert.equal(app.elements.get("thereminPad").getAttribute("aria-pressed"), "true");
+  assert.match(app.elements.get("motionStatus").textContent, /Гараа авах/);
   const firstHz = context.oscillators[0].frequency.value;
   app.fire("thereminPad", "pointermove", { clientX: 600, clientY: 15 });
   assert.ok(context.oscillators[0].frequency.value > firstHz);
@@ -488,6 +491,8 @@ test("siren changes two-tone/sweep pitch with its clock; Stop and mode switch ca
   assert.equal(app.elements.get("sirenHighValue").textContent, "1000 Hz");
   await app.fire("sirenButton", "click");
   const context = app.contexts[0];
+  assert.match(app.elements.get("motionStatus").textContent, /Дохио зогсоох/);
+  assert.doesNotMatch(app.elements.get("motionStatus").textContent, /Гараа авах/);
   assert.equal(context.oscillators[0].frequency.value, 440);
   app.tick(0.7); // 0.8 cycles/s: after half a cycle, the high tone sounds.
   assert.equal(context.oscillators[0].frequency.value, 1000);

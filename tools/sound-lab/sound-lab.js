@@ -107,7 +107,9 @@
       sirenPlay: "Play siren", sirenStop: "Stop siren", sirenCaption: "Tap again to stop",
       sirenLow: "Low frequency", sirenHigh: "High frequency", sirenRate: "Repetitions per second", sirenRateUnit: "/s",
       motionReady: "Ready. Press the pad or Play to hear.", motionStarting: "Starting sound…",
-      motionPlaying: "Playing. Release the pad or press Stop.", motionStopped: "Stopped. Try another pitch pattern.",
+      motionPlayingTheremin: "Playing. Release the pad or press Stop.",
+      motionPlayingSiren: "Siren playing. Press Stop siren or the red Stop button.",
+      motionStopped: "Stopped. Try another pitch pattern.",
       motionHidden: "Sound stopped when you left the page.", motionUnsupported: "This browser does not support synthesized sound playback.",
       motionBlocked: "Sound could not start. Check browser sound permission and try again.",
       motionSafety: "Start quietly, especially with headphones. Changing category or pressing Stop ends playback.",
@@ -242,7 +244,9 @@
       sirenPlay: "Дохио тоглуулах", sirenStop: "Дохио зогсоох", sirenCaption: "Дахин дарж зогсооно",
       sirenLow: "Нам давтамж", sirenHigh: "Өндөр давтамж", sirenRate: "Давтах хурд", sirenRateUnit: "удаа/с",
       motionReady: "Бэлэн. Талбар дээр дарж эсвэл дохиог тоглуулаарай.", motionStarting: "Дууг эхлүүлж байна…",
-      motionPlaying: "Дуугарч байна. Гараа авах эсвэл Зогсоох дээр дарна уу.", motionStopped: "Зогслоо. Өөр давтамж туршаарай.",
+      motionPlayingTheremin: "Дуугарч байна. Гараа авах эсвэл Зогсоох дээр дарна уу.",
+      motionPlayingSiren: "Дохио дуугарч байна. «Дохио зогсоох» эсвэл улаан «Зогсоох» товчийг дарна уу.",
+      motionStopped: "Зогслоо. Өөр давтамж туршаарай.",
       motionHidden: "Хуудсаас гарахад авиа зогслоо.", motionUnsupported: "Энэ хөтөч дуу үүсгэж тоглуулах боломжгүй байна.",
       motionBlocked: "Авиа эхэлсэнгүй. Хөтчийн дууны зөвшөөрлийг шалгаад дахин оролдоно уу.",
       motionSafety: "Ялангуяа чихэвчтэй бол эхэндээ аяархан сонсоорой. Өөр бүлэгт орох эсвэл Зогсоох дээр дарахад дуу зогсоно.",
@@ -781,7 +785,7 @@
       state.motionElapsed = 0;
       state.motionHistory = [];
       state.motionPlaying = true;
-      setMotionStatus("motionPlaying");
+      setMotionStatus(state.motionKind === "theremin" ? "motionPlayingTheremin" : "motionPlayingSiren");
       renderMotionControls();
       drawMotionPlots();
       const advance = () => {
@@ -1021,6 +1025,7 @@
     if (mode === state.mode || !["pure", "strike", "motion"].includes(mode)) return;
     stopAllAudio(false);
     state.mode = mode;
+    if (mode === "motion") setMotionStatus("motionReady");
     renderTexts();
     drawPlots();
   }
