@@ -11,6 +11,7 @@
   <script src="sound-transient.js" defer></script>
   <script src="sound-spectrum.js" defer></script>
   <script src="sound-motion.js" defer></script>
+  <script src="sound-recorder.js" defer></script>
   <script src="sound-lab.js" defer></script>
 </head>
 <body>
@@ -42,6 +43,24 @@
       </nav>
       <span class="pill" id="pagePhase" data-i18n="phase">01 · Энгийн дохионууд</span>
     </div>
+
+    <section class="record-panel" aria-labelledby="record-title">
+      <div class="record-heading">
+        <div>
+          <h2 id="record-title" data-i18n="recordTitle">Дуу бичих</h2>
+          <p data-i18n="recordHint">Энд үүсгэсэн дууг 15 сек хүртэл бичнэ. Микрофон ашиглахгүй, хаашаа ч илгээхгүй.</p>
+        </div>
+        <div class="record-actions">
+          <button id="recordButton" type="button" class="record-button" aria-pressed="false" data-i18n="recordStart">● Бичлэг эхлэх</button>
+          <output id="recordTimer" class="record-timer">0.0 / 15 сек</output>
+        </div>
+      </div>
+      <p id="recordStatus" class="record-status" role="status" aria-live="polite">Бичлэг эхлүүлээд авиа тоглуулж эсвэл цохиж үзээрэй.</p>
+      <div id="recordResult" class="record-result" hidden>
+        <audio id="recordPreview" controls preload="none" aria-label="Бичлэгийг сонсох" data-i18n-aria="recordPreviewAria"></audio>
+        <a id="recordDownload" class="record-download" href="#" download="sound-lab.wav" data-i18n="recordSave">WAV хадгалах</a>
+      </div>
+    </section>
 
     <div class="workspace" id="pureWorkspace">
       <section class="panel controls" aria-labelledby="controls-title">
@@ -317,10 +336,9 @@
         <div id="sirenControls" class="motion-control-block" hidden>
           <p class="field-help siren-trajectory-label" data-i18n="sirenPatternAria">Давтамжийн замнал</p>
           <div class="siren-patterns" id="sirenPatterns" role="group" aria-label="Давтамжийн замнал">
-            <button type="button" class="selected" data-siren-pattern="two-tone" aria-pressed="true" data-i18n="sirenTwoTone">Дөрвөлжин · хоёр авиа</button>
-            <button type="button" data-siren-pattern="sweep" aria-pressed="false" data-i18n="sirenSweep">Гц-ээр жигд</button>
-            <button type="button" data-siren-pattern="pitch-sweep" aria-pressed="false" data-i18n="sirenPitchSweep">Хагас тоноор жигд</button>
-            <button type="button" data-siren-pattern="sine-sweep" aria-pressed="false" data-i18n="sirenSineSweep">Синусоид</button>
+            <button type="button" class="selected" data-siren-pattern="two-tone" aria-pressed="true" data-i18n="sirenTwoTone">Огцом</button>
+            <button type="button" data-siren-pattern="sine-sweep" aria-pressed="false" data-i18n="sirenSineSweep">Аажим</button>
+            <button type="button" data-siren-pattern="pitch-sweep" aria-pressed="false" data-i18n="sirenPitchSweep">Шугаман</button>
           </div>
           <button id="sirenButton" type="button" class="play-button siren-button" aria-pressed="false">
             <span class="play-icon" id="sirenPlayIcon" aria-hidden="true">▶</span>
@@ -418,7 +436,7 @@
   </main>
 
   <footer class="footer">
-    <span data-i18n="footer">Sol Sound Lab · Sound is generated on your device; nothing is recorded or uploaded.</span>
+    <span data-i18n="footer">Sol Дууны лаборатори · Дуу, бичлэг зөвхөн таны төхөөрөмж дээр байна. Хаашаа ч илгээхгүй.</span>
     <span data-i18n="future">More sounds and music-making are planned.</span>
   </footer>
 </body>

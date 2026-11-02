@@ -8,6 +8,7 @@ const model = require("./sound-model.js");
 const transientModel = require("./sound-transient.js");
 const spectrumModel = require("./sound-spectrum.js");
 const motionModel = require("./sound-motion.js");
+const recorderModel = require("./sound-recorder.js");
 
 const html = fs.readFileSync(path.join(__dirname, "index.html"), "utf8");
 const browserCode = fs.readFileSync(path.join(__dirname, "sound-lab.js"), "utf8");
@@ -25,6 +26,9 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-transient\.js"/);
   assert.match(html, /src="sound-spectrum\.js"/);
   assert.match(html, /src="sound-motion\.js"/);
+  assert.match(html, /src="sound-recorder\.js"/);
+  assert.match(html, /id="recordPreview"[^>]*controls/);
+  assert.match(html, /id="recordDownload"[^>]*download="sound-lab\.wav"/);
   assert.match(html, /id="strikeWorkspace"[^>]*hidden/);
   assert.match(html, /id="motionWorkspace"[^>]*hidden/);
   assert.match(html, /data-i18n="unitHz">Гц<\/span>/);
@@ -32,7 +36,8 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   for (const pattern of motionModel.PATTERNS) {
     assert.match(html, new RegExp('data-siren-pattern="' + pattern + '"'));
   }
-  assert.equal([...html.matchAll(/data-siren-pattern="/g)].length, 4);
+  assert.equal([...html.matchAll(/data-siren-pattern="/g)].length, 3);
+  assert.doesNotMatch(html, /data-siren-pattern="sweep"/);
   assert.match(browserCode, /Нотод тааруулах/);
   assert.doesNotMatch(browserCode, /ноот/i);
 });
@@ -49,6 +54,8 @@ test("compact header removes the redundant mode introductions but keeps one page
 function fakePage(search = "") {
   const contexts = [];
   const analyzedAt = [];
+  const objectUrls = [];
+  const revokedUrls = [];
   const animationFrames = new Map();
   let nextFrameId = 0;
   const classList = () => {
@@ -78,6 +85,7 @@ function fakePage(search = "") {
       addEventListener(name, callback) { this.events[name] = callback; },
       getBoundingClientRect() { return { left: 0, top: 0, width: 710, height: 210 }; },
       setPointerCapture() {}, releasePointerCapture() {},
+      pause() { this.paused = true; },
       getContext() {
         const noop = () => {};
         return {
@@ -126,6 +134,7 @@ function fakePage(search = "") {
     SoundLabModel: model,
     SoundLabTransientModel: transientModel,
     SoundLabMotionModel: motionModel,
+    SoundLabRecorder: recorderModel,
     SoundLabSpectrum: {
       ...spectrumModel,
       spectrumAt(model, recipe, time) {
@@ -156,6 +165,12 @@ function fakePage(search = "") {
       this.buffers = [];
       this.sources = [];
       this.gains = [];
+      this.worklets = [];
+      this.constantSources = [];
+      this.addedModules = [];
+      this.audioWorklet = {
+        addModule: async url => { this.addedModules.push(url); }
+      };
       contexts.push(this);
     }
     async resume() { this.state = "running"; }
@@ -215,13 +230,46 @@ function fakePage(search = "") {
       this.gains.push(gain);
       return gain;
     }
+    createConstantSource() {
+      const source = {
+        offset: { value: 1 }, started: false, stopped: false,
+        connect() {}, disconnect() {},
+        start() { this.started = true; },
+        stop() { this.stopped = true; }
+      };
+      this.constantSources.push(source);
+      return source;
+    }
+  }
+  class FakeAudioWorkletNode {
+    constructor(context, processorName, options) {
+      this.processorName = processorName;
+      this.options = options;
+      this.port = {
+        onmessage: null, lastPosted: null,
+        postMessage(message) { this.lastPosted = message; },
+        close() { this.closed = true; }
+      };
+      context.worklets.push(this);
+    }
+    connect() {} disconnect() {}
+    send(message) { if (this.port.onmessage) this.port.onmessage({ data: message }); }
+  }
+  class FakeURL extends URL {
+    static createObjectURL(blob) {
+      const url = `blob:https://example.org/${objectUrls.length + 1}`;
+      objectUrls.push({ url, blob });
+      return url;
+    }
+    static revokeObjectURL(url) { revokedUrls.push(url); }
   }
   window.AudioContext = FakeAudioContext;
-  const sandbox = { document, window, URL, URLSearchParams, ResizeObserver: undefined };
+  window.AudioWorkletNode = FakeAudioWorkletNode;
+  const sandbox = { document, window, URL: FakeURL, Blob, URLSearchParams, ResizeObserver: undefined };
   vm.runInNewContext(browserCode, sandbox, { filename: "sound-lab.js" });
   return {
     contexts, elements, document, window, waveButtons, strikeButtons, drumButtons, spectrumButtons,
-    motionButtons, sirenPatternButtons, hzLabels,
+    motionButtons, sirenPatternButtons, hzLabels, objectUrls, revokedUrls,
     analyzedAt,
     tick(seconds) {
       if (contexts[0]) contexts[0].currentTime += seconds;
@@ -266,6 +314,95 @@ test("initialization is silent; Play, live Hz, note snap, shape and Stop work", 
   app.fire("stopAll", "click");
   assert.equal(app.elements.get("playButton").getAttribute("aria-pressed"), "false");
   assert.equal(context.oscillators[1].stopped, true);
+});
+
+test("Record starts silently, captures generated sound, previews and downloads a valid WAV", async () => {
+  const app = fakePage();
+  assert.equal(app.elements.get("recordResult").hidden, true);
+  assert.equal(app.elements.get("recordButton").getAttribute("aria-pressed"), "false");
+  assert.equal(app.contexts.length, 0);
+  await app.fire("recordButton", "click");
+  const context = app.contexts[0];
+  assert.equal(context.oscillators.length, 0, "Recording alone must not start a tone");
+  assert.deepEqual(context.addedModules, ["sound-recorder-worklet.js"]);
+  assert.equal(context.worklets.length, 1);
+  assert.equal(context.worklets[0].processorName, "sol-wav-capture");
+  assert.equal(context.constantSources[0].started, true);
+  assert.equal(app.elements.get("recordButton").getAttribute("aria-pressed"), "true");
+  assert.match(app.elements.get("recordStatus").textContent, /Дуу бичиж байна/);
+
+  await app.fire("playButton", "click");
+  assert.equal(context.oscillators.length, 1);
+  assert.equal(context.oscillators[0].started, true);
+  app.tick(0.12);
+  assert.equal(app.elements.get("recordTimer").textContent, "0.1 / 15 сек");
+  const capture = context.worklets[0];
+  capture.send({ type: "samples", samples: new Float32Array([0, 0.5, -0.5, 1]) });
+  await app.fire("recordButton", "click");
+  assert.deepEqual(capture.port.lastPosted, { type: "stop" });
+  assert.equal(app.elements.get("recordButton").disabled, true);
+  capture.send({ type: "done" });
+  assert.equal(context.constantSources[0].stopped, true);
+  assert.equal(capture.port.closed, true);
+  assert.equal(app.objectUrls.length, 1);
+  assert.equal(app.objectUrls[0].blob.type, "audio/wav");
+  const bytes = new Uint8Array(await app.objectUrls[0].blob.arrayBuffer());
+  assert.equal(new TextDecoder().decode(bytes.subarray(0, 4)), "RIFF");
+  assert.equal(new TextDecoder().decode(bytes.subarray(8, 12)), "WAVE");
+  assert.equal(new DataView(bytes.buffer).getUint32(24, true), 44100);
+  assert.equal(new DataView(bytes.buffer).getInt16(46, true), 16384);
+  assert.equal(app.elements.get("recordResult").hidden, false);
+  assert.equal(app.elements.get("recordPreview").src, app.objectUrls[0].url);
+  assert.equal(app.elements.get("recordDownload").href, app.objectUrls[0].url);
+  assert.match(app.elements.get("recordDownload").download, /^sound-lab-\d{4}-\d\d-\d\dT\d\d-\d\d-\d\d\.wav$/);
+  assert.equal(app.elements.get("recordButton").disabled, false);
+  assert.equal(app.elements.get("recordButton").getAttribute("aria-pressed"), "false");
+  app.fire("stopAll", "click");
+  assert.equal(context.oscillators[0].stopped, true);
+});
+
+test("recording continues across modes, Stop ends it, and new captures replace old URLs", async () => {
+  const app = fakePage();
+  await app.fire("recordButton", "click");
+  const context = app.contexts[0];
+  app.fire("modeStrike", "click");
+  await app.fire("strikeButton", "click");
+  assert.equal(context.sources.length, 1);
+  assert.equal(context.worklets.length, 1);
+  assert.equal(app.elements.get("recordButton").getAttribute("aria-pressed"), "true");
+  context.worklets[0].send({ type: "samples", samples: new Float32Array([0.2]) });
+  app.fire("stopAll", "click");
+  assert.equal(context.sources[0].stopped, true);
+  assert.deepEqual(context.worklets[0].port.lastPosted, { type: "stop" });
+  context.worklets[0].send({ type: "done" });
+  const previous = app.elements.get("recordDownload").href;
+
+  app.fire("modeMotion", "click");
+  app.motionButtons[1].events.click();
+  await app.fire("recordButton", "click");
+  assert.equal(context.addedModules.length, 1, "The worklet module loads only once");
+  await app.fire("sirenButton", "click");
+  assert.equal(context.oscillators.length, 1);
+  context.worklets[1].send({ type: "samples", samples: new Float32Array([0.3, -0.3]) });
+  app.window.events.pagehide();
+  assert.equal(context.oscillators[0].stopped, true);
+  context.worklets[1].send({ type: "done" });
+  assert.equal(app.objectUrls.length, 2);
+  assert.deepEqual(app.revokedUrls, [previous]);
+  assert.notEqual(app.elements.get("recordDownload").href, previous);
+  app.fire("langEn", "click");
+  assert.equal(app.elements.get("recordButton").textContent, "● Record");
+  assert.equal(app.elements.get("recordTimer").textContent, "0.0 / 15 s");
+});
+
+test("pagehide during recording preparation cancels before worklet installation", async () => {
+  const app = fakePage();
+  const pending = app.fire("recordButton", "click");
+  app.window.events.pagehide();
+  await pending;
+  assert.equal(app.contexts[0].worklets.length, 0);
+  assert.equal(app.elements.get("recordButton").getAttribute("aria-pressed"), "false");
+  assert.equal(app.elements.get("recordResult").hidden, true);
 });
 
 test("fixed time view shows changing cycle counts; four-period zoom is optional", () => {
@@ -330,17 +467,15 @@ test("Mongolian units cover static ranges, readouts and plotted axes; English re
   app.motionButtons[1].events.click();
   assert.equal(app.elements.get("sirenRateValue").textContent, "0.8 удаа/сек");
   app.sirenPatternButtons[1].events.click();
-  assert.match(app.elements.get("motionPitchSubtitle").textContent, /логарифм хуваарьт муруй/);
+  assert.match(app.elements.get("motionPitchSubtitle").textContent, /Синусоид замнал/);
   app.sirenPatternButtons[2].events.click();
   assert.match(app.elements.get("motionPitchSubtitle").textContent, /Логарифм графикт шулуун/);
-  app.sirenPatternButtons[3].events.click();
-  assert.match(app.elements.get("motionPitchSubtitle").textContent, /дунд хэсэгт хурдан/);
   app.fire("langEn", "click");
   assert.ok(app.hzLabels.every(label => label.textContent.endsWith(" Hz")));
   assert.equal(app.elements.get("sirenRateValue").textContent, "0.8 /s");
-  assert.match(app.elements.get("motionPitchSubtitle").textContent, /Sinusoidal in Hz/);
+  assert.match(app.elements.get("motionPitchSubtitle").textContent, /semitones per second/);
   app.sirenPatternButtons[1].events.click();
-  assert.match(app.elements.get("motionPitchSubtitle").textContent, /Linear in Hz/);
+  assert.match(app.elements.get("motionPitchSubtitle").textContent, /Sinusoidal in Hz/);
   assert.equal(app.elements.get("motionPitchBadge").textContent, "440 Hz");
   assert.equal(app.elements.get("strikeDecayValue").textContent, "0.65 s");
 });
@@ -350,12 +485,12 @@ test("revised Mongolian wave descriptions, examples and mode labels render corre
   assert.equal(app.elements.get("pagePhase").textContent, "01 · Энгийн дохионууд");
   assert.equal(app.elements.get("challengeText").textContent, "Давтамжийг хоёр дахин өсгө. Дууны өнгө болон үе хэрхэн өөрчлөгдөж байна вэ?");
   app.waveButtons[1].events.click();
-  assert.equal(app.elements.get("soundDescription").textContent, "Дээд сондгой гармоникууд нь сул");
+  assert.equal(app.elements.get("soundDescription").textContent, "Дээд сондгой гармоникууд нь сул.");
   assert.match(app.elements.get("challengeText").textContent, /дөрвөлжин/);
   app.waveButtons[2].events.click();
-  assert.equal(app.elements.get("soundDescription").textContent, "Сондгой гармоникууд нь хүчтэй");
+  assert.equal(app.elements.get("soundDescription").textContent, "Сондгой гармоникууд нь хүчтэй.");
   app.waveButtons[3].events.click();
-  assert.equal(app.elements.get("soundDescription").textContent, "Олон гармониктой, баялаг өнгөтэй");
+  assert.equal(app.elements.get("soundDescription").textContent, "Олон гармониктой, баялаг өнгөтэй.");
   app.fire("modeStrike", "click");
   assert.equal(app.elements.get("pagePhase").textContent, "02 · Загварчилсан дуу");
   app.fire("langEn", "click");
@@ -504,8 +639,8 @@ test("Moving Pitch theremin uses a pointer gesture, shared audio, live pitch and
   const firstHz = context.oscillators[0].frequency.value;
   app.fire("thereminPad", "pointermove", { clientX: 600, clientY: 15 });
   assert.ok(context.oscillators[0].frequency.value > firstHz);
-  assert.ok(context.gains[0].gain.value > 0);
-  assert.ok(context.gains[0].gain.value <= 0.12);
+  assert.ok(context.gains.at(-1).gain.value > 0);
+  assert.ok(context.gains.at(-1).gain.value <= 0.12);
   app.tick(0.05);
   assert.match(app.elements.get("motionPitchBadge").textContent, /Гц/);
   app.fire("thereminPad", "pointerup", { clientX: 600, clientY: 15 });
@@ -554,12 +689,12 @@ test("siren changes two-tone/sweep pitch with its clock; Stop and mode switch ca
   assert.equal(app.elements.get("motionWorkspace").hidden, true);
 });
 
-test("four siren trajectories change both the ideal readout and the playing oscillator without restarting audio", async () => {
+test("three siren trajectories change both the ideal readout and the playing oscillator without restarting audio", async () => {
   const app = fakePage();
   app.fire("modeMotion", "click");
   app.motionButtons[1].events.click();
   const patterns = motionModel.PATTERNS;
-  assert.equal(app.sirenPatternButtons.length, 4);
+  assert.equal(app.sirenPatternButtons.length, 3);
   for (let i = 0; i < patterns.length; i++) {
     app.sirenPatternButtons[i].events.click();
     assert.equal(app.sirenPatternButtons[i].getAttribute("aria-pressed"), "true");
@@ -585,7 +720,7 @@ test("four siren trajectories change both the ideal readout and the playing osci
     assert.equal(app.elements.get("motionPitchBadge").textContent, `${Number(expected.toFixed(2)).toLocaleString("en-US")} Гц`);
     observed.push(actual);
   }
-  assert.equal(new Set(observed.map(Math.round)).size, 4, "All four paths give distinct mid-sweep pitches");
+  assert.equal(new Set(observed.map(Math.round)).size, 3, "All three paths give distinct mid-sweep pitches");
   assert.equal(context.oscillators.length, 1, "Live switching reuses the same oscillator");
   app.fire("stopAll", "click");
   assert.equal(context.oscillators[0].stopped, true);
