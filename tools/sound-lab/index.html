@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#192d49">
   <meta name="description" content="Explore sound waves, plucked and held instrument models, harmonic synthesis, noise, a theremin and sirens with interactive plots and bilingual controls.">
   <title>Sound Lab · Sol</title>
-  <link rel="stylesheet" href="sound-lab.css?v=s020c">
+  <link rel="stylesheet" href="sound-lab.css?v=s021">
   <script src="sound-model.js" defer></script>
   <script src="sound-string.js?v=s017" defer></script>
   <script src="sound-piano.js?v=s019" defer></script>
@@ -15,10 +15,11 @@
   <script src="sound-spectrum.js?v=s017" defer></script>
   <script src="sound-motion.js?v=s020c" defer></script>
   <script src="sound-beats.js" defer></script>
+  <script src="sound-intervals.js?v=s021" defer></script>
   <script src="sound-harmonics.js" defer></script>
   <script src="sound-noise.js" defer></script>
   <script src="sound-recorder.js" defer></script>
-  <script src="sound-lab.js?v=s020c" defer></script>
+  <script src="sound-lab.js?v=s021" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -554,6 +555,7 @@
         <div class="experiment-switch" role="group" aria-label="Долгионы туршилт" data-i18n-aria="mixExperimentsAria">
           <button type="button" data-mix-kind="beats" class="selected" aria-pressed="true" data-i18n="mixExperimentBeats">Хоёр давтамж</button>
           <button type="button" data-mix-kind="harmonics" aria-pressed="false" data-i18n="mixExperimentHarmonics">Өнгө бүтээх</button>
+          <button type="button" data-mix-kind="intervals" aria-pressed="false" data-i18n="mixExperimentIntervals">Интервал</button>
           <button type="button" data-mix-kind="noise" aria-pressed="false" data-i18n="mixExperimentNoise">Шуугиан</button>
         </div>
         <button id="mixButton" type="button" class="play-button" aria-pressed="false">
@@ -625,6 +627,90 @@
       </div>
     </div>
 
+    <div class="workspace" id="intervalWorkspace" hidden>
+      <section class="panel controls" aria-labelledby="interval-controls-title">
+        <div class="section-top">
+          <h2 id="interval-controls-title" data-i18n="intervalChoose">Хоёр нотын харьцаа</h2>
+          <p class="description" data-i18n="intervalDescription">Хоёр тусдаа авианы давтамжийг энгийн харьцаагаар тохируулж, гармоникууд нь хаана давхцахыг харьцуул.</p>
+        </div>
+        <div class="experiment-switch" role="group" aria-label="Долгионы туршилт" data-i18n-aria="mixExperimentsAria">
+          <button type="button" data-mix-kind="beats" aria-pressed="false" data-i18n="mixExperimentBeats">Хоёр давтамж</button>
+          <button type="button" data-mix-kind="harmonics" aria-pressed="false" data-i18n="mixExperimentHarmonics">Өнгө бүтээх</button>
+          <button type="button" data-mix-kind="intervals" class="selected" aria-pressed="true" data-i18n="mixExperimentIntervals">Интервал</button>
+          <button type="button" data-mix-kind="noise" aria-pressed="false" data-i18n="mixExperimentNoise">Шуугиан</button>
+        </div>
+        <div class="field-group">
+          <div class="field-title"><span data-i18n="intervalPresetsTitle">Давтамжийн харьцаа (дээд:доод)</span><output id="intervalName">Квинт · 3:2</output></div>
+          <div class="interval-presets" id="intervalPresets" role="group" aria-label="Хоёр нотын энгийн харьцаа" data-i18n-aria="intervalPresetsAria">
+            <button type="button" data-interval-ratio="1:1" aria-pressed="false">1:1</button>
+            <button type="button" data-interval-ratio="2:1" aria-pressed="false">2:1</button>
+            <button type="button" data-interval-ratio="3:2" class="selected" aria-pressed="true">3:2</button>
+            <button type="button" data-interval-ratio="4:3" aria-pressed="false">4:3</button>
+            <button type="button" data-interval-ratio="5:4" aria-pressed="false">5:4</button>
+            <button type="button" data-interval-ratio="6:5" aria-pressed="false">6:5</button>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-title"><label for="intervalBaseInput" data-i18n="intervalBase">Доод нотын давтамж</label><output id="intervalBaseValue">220 Гц</output></div>
+          <div class="frequency-controls">
+            <input id="intervalBaseSlider" type="range" min="110" max="440" step="1" value="220">
+            <div class="number-wrap"><input id="intervalBaseInput" type="number" min="110" max="440" step="any" inputmode="decimal" value="220"><span data-i18n="unitHz">Гц</span></div>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-title"><span data-i18n="intervalTuningTitle">Хөг</span></div>
+          <div class="interval-toggles" id="intervalTunings" role="group" data-i18n-aria="intervalTuningAria" aria-label="Хоёр нотын хөг">
+            <button type="button" data-interval-tuning="just" class="selected" aria-pressed="true" data-i18n="intervalJust">Энгийн харьцаа</button>
+            <button type="button" data-interval-tuning="equal" aria-pressed="false" data-i18n="intervalEqual">12-TET</button>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-title"><span data-i18n="intervalColorTitle">Авианы найрлага</span></div>
+          <div class="interval-toggles" id="intervalColors" role="group" data-i18n-aria="intervalColorAria" aria-label="Авианы найрлага">
+            <button type="button" data-interval-color="pure" aria-pressed="false" data-i18n="intervalPure">Цэвэр</button>
+            <button type="button" data-interval-color="rich" class="selected" aria-pressed="true" data-i18n="intervalRich">Гармониктай</button>
+          </div>
+          <p class="field-help" data-i18n="intervalColorHint">Цэвэр авиа зөвхөн үндсэн давтамжтай; гармониктай авиа давхцах дээд давтамжуудыг сонсгоно.</p>
+        </div>
+        <button id="intervalButton" type="button" class="play-button" aria-pressed="false">
+          <span class="play-icon" id="intervalPlayIcon" aria-hidden="true">▶</span>
+          <span id="intervalPlayLabel" data-i18n="intervalPlay">Тоглуулах</span>
+          <span class="play-caption" id="intervalPlayCaption" data-i18n="playCaption">Сонсохын тулд товшино уу</span>
+        </button>
+        <p id="intervalStatus" class="audio-status" role="status" aria-live="polite">Бэлэн. Хоёр нотыг хамт сонсоорой.</p>
+        <div class="interval-facts" aria-live="off">
+          <div><span data-i18n="intervalNotes">Хоёр нот</span><strong id="intervalNotesValue">220 + 330 Гц</strong></div>
+          <div><span data-i18n="intervalActualRatio">Бодит харьцаа</span><strong id="intervalRatioValue">3:2 = 1.5</strong></div>
+          <div><span id="intervalPeriodLabel" data-i18n="intervalPeriod">Хамтын үе</span><strong id="intervalPeriodValue">9.09 мсек</strong></div>
+          <div><span data-i18n="intervalOverlap">Анхны давхцах гармоник</span><strong id="intervalOverlapValue">3f₁ = 2f₂ = 660 Гц</strong></div>
+        </div>
+        <p id="intervalCents" class="interval-micro-note" aria-live="polite">Яг тохирсон энгийн харьцаа</p>
+        <div class="field-group volume-field">
+          <div class="field-title"><label for="intervalVolume" data-i18n="volume">Дууны хэмжээ</label><output id="intervalVolumeValue">38%</output></div>
+          <input id="intervalVolume" type="range" min="0" max="100" step="1" value="38">
+          <p class="field-help" data-i18n="safeVolume">Эхэндээ аяархан дуугарна. Ялангуяа чихэвч хэрэглэвэл болгоомжтой нэмээрэй.</p>
+        </div>
+      </section>
+      <div class="visuals">
+        <section class="panel chart-panel" aria-labelledby="interval-wave-title">
+          <div class="chart-heading">
+            <div><h2 id="interval-wave-title" data-i18n="intervalWaveTitle">Хоёр нотын долгион</h2><p data-i18n="intervalWaveHint">Доод, дээд нот ба тэдгээрийн нийлбэр. Энгийн харьцаанд нийтлэг үе харагдана.</p></div>
+            <span class="chart-badge" id="intervalWaveBadge">T = 9.09 мсек</span>
+          </div>
+          <canvas id="intervalWaveCanvas" width="740" height="295" role="img" aria-label="Хоёр нотын тусдаа болон нийлбэр долгионы загвар"></canvas>
+          <div class="chart-foot"><span id="intervalWaveFoot">2 ба 3 бүтэн хэлбэлзэл</span><span data-i18n="timeAxis">хугацаа →</span></div>
+        </section>
+        <section class="panel chart-panel" aria-labelledby="interval-spectrum-title">
+          <div class="chart-heading">
+            <div><h2 id="interval-spectrum-title" data-i18n="intervalSpectrumTitle">Хоёр нотын гармоникууд</h2><p id="intervalSpectrumHint" data-i18n="intervalSpectrumHint">Цэнхэр нь доод, улбар нь дээд нот. Давхцсан шугамыг хүрээлэв.</p></div>
+            <span class="chart-badge" id="intervalSpectrumBadge">3f₁ ↔ 2f₂</span>
+          </div>
+          <canvas id="intervalSpectrumCanvas" width="740" height="240" role="img" aria-label="Хоёр нотын эхний найман гармоник"></canvas>
+          <div class="chart-foot"><span id="intervalSpectrumFoot">3 × 220 = 2 × 330 Гц</span><span data-i18n="frequencyAxis">давтамж →</span></div>
+        </section>
+      </div>
+    </div>
+
     <div class="workspace" id="harmonicWorkspace" hidden>
       <section class="panel controls" aria-labelledby="harmonic-controls-title">
         <div class="section-top">
@@ -634,6 +720,7 @@
         <div class="experiment-switch" role="group" aria-label="Долгионы туршилт" data-i18n-aria="mixExperimentsAria">
           <button type="button" data-mix-kind="beats" aria-pressed="false" data-i18n="mixExperimentBeats">Хоёр давтамж</button>
           <button type="button" data-mix-kind="harmonics" class="selected" aria-pressed="true" data-i18n="mixExperimentHarmonics">Өнгө бүтээх</button>
+          <button type="button" data-mix-kind="intervals" aria-pressed="false" data-i18n="mixExperimentIntervals">Интервал</button>
           <button type="button" data-mix-kind="noise" aria-pressed="false" data-i18n="mixExperimentNoise">Шуугиан</button>
         </div>
         <button id="harmonicButton" type="button" class="play-button" aria-pressed="false">
@@ -706,6 +793,7 @@
         <div class="experiment-switch" role="group" aria-label="Долгионы туршилт" data-i18n-aria="mixExperimentsAria">
           <button type="button" data-mix-kind="beats" aria-pressed="false" data-i18n="mixExperimentBeats">Хоёр давтамж</button>
           <button type="button" data-mix-kind="harmonics" aria-pressed="false" data-i18n="mixExperimentHarmonics">Өнгө бүтээх</button>
+          <button type="button" data-mix-kind="intervals" aria-pressed="false" data-i18n="mixExperimentIntervals">Интервал</button>
           <button type="button" data-mix-kind="noise" class="selected" aria-pressed="true" data-i18n="mixExperimentNoise">Шуугиан</button>
         </div>
         <div class="noise-choices" id="noiseChoices" role="group" aria-label="Шуугианы өнгө">
@@ -790,6 +878,11 @@
       <div class="challenge-copy"><h2 id="harmonic-challenge-heading" data-i18n="tryThis">ТУРШИЖ ҮЗ</h2><p data-i18n="harmonicChallenge">Үндсэн давтамжийг хэвээр үлдээгээд 3f, 5f гармоникуудыг нэм. Өнгө нь хэрхэн өөрчлөгдөв?</p></div>
       <button type="button" id="harmonicReset" class="reset-button" data-i18n="reset">↺ Эхнээс нь</button>
     </section>
+    <section class="challenge" id="intervalChallenge" aria-labelledby="interval-challenge-heading" hidden>
+      <div class="challenge-icon" aria-hidden="true">✧</div>
+      <div class="challenge-copy"><h2 id="interval-challenge-heading" data-i18n="tryThis">ТУРШИЖ ҮЗ</h2><p data-i18n="intervalChallenge">4:3 сонгоод хамтын үе, давхцах гармоникийг таа. Дараа нь 12-TET хөгтэй харьцуул.</p></div>
+      <button type="button" id="intervalReset" class="reset-button" data-i18n="reset">↺ Эхнээс нь</button>
+    </section>
     <section class="challenge" id="noiseChallenge" aria-labelledby="noise-challenge-heading" hidden>
       <div class="challenge-icon" aria-hidden="true">✧</div>
       <div class="challenge-copy"><h2 id="noise-challenge-heading" data-i18n="tryThis">ТУРШИЖ ҮЗ</h2><p data-i18n="noiseChallenge">Цагаан, ягаан, бор шуугианыг ижил дууны хэмжээгээр харьцуул.</p></div>
@@ -825,6 +918,11 @@
       <summary data-i18n="harmonicLearnMore">Гармоникууд дууны өнгийг хэрхэн бүтээдэг вэ?</summary>
       <p data-i18n="harmonicLessonOne">Үндсэн давтамж f дээр 2f, 3f, 4f… долгионуудыг нэмэхэд нийлбэр долгионы хэлбэр, дууны өнгө өөрчлөгдөнө.</p>
       <p data-i18n="harmonicLessonTwo">Гармоник тус бүрийн хүч өөр боловч тэдгээрийн давтамж нь үндсэн давтамжийн бүхэл тоон үржвэр байна. Хүүхэд өөрөө найрлагыг нь сонгож болно.</p>
+    </details>
+    <details class="explanation" id="intervalExplanation" hidden>
+      <summary data-i18n="intervalLearnMore">Хоёр нотын харьцаа ба гармоникууд юугаараа ялгаатай вэ?</summary>
+      <p data-i18n="intervalLessonOne">3:2 бол хоёр нотын үндсэн давтамжийн харьцаа. Харин нэг нотын гармоникууд нь өөрийн үндсэн давтамжийн 2, 3, 4… дахин их хэсгүүд юм.</p>
+      <p data-i18n="intervalLessonTwo">3:2 үед доод нотын 3 дахь, дээд нотын 2 дахь гармоник давхцана. 12-TET хөгтэй бол ойртож, бага зэрэг зөрнө; зөвхөн гармониктай авианд энэ зөрөөний биение илэрч болно.</p>
     </details>
     <details class="explanation" id="noiseExplanation" hidden>
       <summary data-i18n="noiseLearnMore">Шуугиан яагаад цэвэр авианаас өөр вэ?</summary>
