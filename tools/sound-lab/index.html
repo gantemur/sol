@@ -16,11 +16,11 @@
   <script src="sound-motion.js?v=s020c" defer></script>
   <script src="sound-beats.js" defer></script>
   <script src="sound-intervals.js?v=s021" defer></script>
-  <script src="sound-scales.js?v=s023" defer></script>
+  <script src="sound-scales.js?v=s024" defer></script>
   <script src="sound-harmonics.js" defer></script>
   <script src="sound-noise.js" defer></script>
   <script src="sound-recorder.js" defer></script>
-  <script src="sound-lab.js?v=s023" defer></script>
+  <script src="sound-lab.js?v=s024" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -785,20 +785,20 @@
       <div class="visuals">
         <section class="panel chart-panel" aria-labelledby="scale-spiral-title">
           <div class="chart-heading">
-            <div><h2 id="scale-spiral-title" data-i18n="scaleSpiralTitle">3:2 алхмын октавын спираль</h2><p data-i18n="scaleSpiralHint">0-ээс эхэлж, дээш алхвал гадагш, доош алхвал дотогш эргэнэ. Ногоон нь сонгосон үндсэн нот.</p></div>
+            <div><h2 id="scale-spiral-title" data-i18n="scaleSpiralTitle">3:2 алхмын октавын спираль</h2><p data-i18n="scaleSpiralHint">0-ээс эхэлж, дээш алхвал гадагш, доош алхвал дотогш эргэнэ. Бүдэг цацрагууд нэг октав дахь нотын эрэмбийг харуулна.</p></div>
             <span class="chart-badge" id="scaleSpiralBadge">5 нот</span>
           </div>
           <canvas id="scaleSpiralCanvas" width="400" height="400" role="img" aria-label="3:2 алхмуудаас үүсэх олон октавын спираль"></canvas>
-          <div class="chart-foot"><span data-i18n="scaleSpiralFoot">Алхмын тоо нь нот үүсэх дарааллыг заана; нэг чиглэлд буй цэгүүд октавын ялгаатай хувилбарууд.</span><span data-i18n="scaleSpiralAxis">3:2 ↻ 210.6°</span></div>
+          <div class="chart-foot"><span data-i18n="scaleSpiralFoot">Алхмын тоо квинтийн дарааллыг, төвөөс татсан цацрагууд нэг октав дахь давтамжийн эрэмбийг харуулна.</span><span data-i18n="scaleSpiralAxis">3:2 ↻ 210.6°</span></div>
           <p id="scaleNowValue" class="scale-now" aria-live="off">Нот тоглуулаагүй байна</p>
         </section>
         <section class="panel chart-panel" aria-labelledby="scale-fourier-title">
           <div class="chart-heading">
-            <div><h2 id="scale-fourier-title" data-i18n="scaleFourierTitle">Нот ба гармоникууд</h2><p data-i18n="scaleFourierHint">Мөр бүр өмнөхөөсөө 3:2-аар өндөр. Дугуй нь үндсэн давтамж, ромбо нь бодит гармоник; саарал нь харьцуулах октавын хийсвэр хуулбар.</p></div>
+            <div><h2 id="scale-fourier-title" data-i18n="scaleFourierTitle">Нот ба гармоникууд</h2><p data-i18n="scaleFourierHint">Дугуй нь үндсэн давтамж, ромбо нь үүсэж болох гармоник. Саарал нь октаваар шилжүүлсэн мөнөөх нот.</p></div>
             <span class="chart-badge" id="scaleFourierBadge">0 … +4</span>
           </div>
           <canvas id="scaleFourierCanvas" width="740" height="370" role="img" aria-label="Үндсэн давтамж, гармоникууд ба октавын хийсвэр хуулбар"></canvas>
-          <div class="chart-foot"><span data-i18n="scaleFourierFoot">Хөрш мөрийн 3-р ба 2-р гармоник давхцана: 3f₁ = 2f₂. Саарал цэг дуугарахгүй.</span><span data-i18n="scaleFourierAxis">log₂ f →</span></div>
+          <div class="chart-foot"><span data-i18n="scaleFourierFoot">Ногоон нэг октав дахь цэгүүдийг зүүнээс баруун уншихад нотын эрэмбэ гарна. Саарал хуулбарыг октаваар шилжүүлэн тоглож болно.</span><span data-i18n="scaleFourierAxis">log₂ f →</span></div>
         </section>
       </div>
     </div>
