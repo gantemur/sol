@@ -41,9 +41,11 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-intervals\.js\?v=s021"/);
   assert.match(html, /src="sound-harmonics\.js"/);
   assert.match(html, /src="sound-noise\.js"/);
-  assert.match(html, /src="sound-scales\.js\?v=s024"/);
-  assert.match(html, /src="sound-lab\.js\?v=s024"/);
-  assert.match(html, /href="sound-lab\.css\?v=s023"/);
+  assert.match(html, /src="sound-scales\.js\?v=s025"/);
+  assert.match(html, /src="sound-lab\.js\?v=s025"/);
+  assert.match(html, /href="sound-lab\.css\?v=s025"/);
+  assert.match(html, /id="scaleGapToggle" type="checkbox"/);
+  assert.match(html, /id="scaleGapPanel" hidden/);
   assert.match(html, /src="sound-recorder\.js"/);
   assert.match(html, /id="recordPreview"[^>]*controls/);
   assert.match(html, /id="recordDownload"[^>]*download="sound-lab\.wav"/);
@@ -185,7 +187,7 @@ function fakePage(search = "", supportWorklets = true) {
       getContext() {
         const noop = () => {};
         return {
-          setTransform: noop, clearRect: noop,
+          setTransform: noop, clearRect: noop, setLineDash: noop,
           fillRect(x, y, width, height) { drawnRects.push({ x, y, width, height, color: this.fillStyle }); },
           beginPath: noop,
           moveTo: noop, lineTo: noop, stroke: noop, fillText(value) { drawnText.push(String(value)); },
@@ -1596,6 +1598,100 @@ test("S024 five-down actually means four downward fifths, not three down and one
   assert.equal(app.elements.get("scaleRangeValue").textContent, "−4 … +0");
   assert.equal(app.elements.get("scaleCountValue").textContent, "5 нот");
   assert.equal(app.scaleTonicButtons.filter(button => !button.hidden).length, 5);
+});
+
+test("S025 comma demonstration is opt-in, distinguishes a five-note near-return from twelve-step comma", () => {
+  const app = fakePage();
+  app.fire("modeTuning", "click");
+  app.tuningKindButtons[1].events.click();
+  const toggle = app.elements.get("scaleGapToggle");
+  const panel = app.elements.get("scaleGapPanel");
+  const spiral = app.elements.get("scaleSpiralCanvas");
+  const zoom = app.elements.get("scaleGapCanvas");
+  assert.equal(toggle.checked, false);
+  assert.equal(panel.hidden, true);
+  assert.equal(app.elements.get("scaleClosureFact").hidden, true,
+    "The numeric return discrepancy stays out of sight until requested");
+  assert.equal(zoom.drawnArcs.length, 0, "Opted-out comparison never renders its extra graph");
+  assert.equal(spiral.drawnText.some(value => value.includes("?")), false,
+    "The sixth ghost note is absent from the ordinary five-note scale");
+  assert.equal(app.contexts.length, 0);
+
+  toggle.checked = true;
+  app.fire("scaleGapToggle", "change");
+  assert.equal(panel.hidden, false);
+  assert.equal(app.elements.get("scaleClosureFact").hidden, false);
+  assert.equal(app.elements.get("scaleGapInfo").hidden, false);
+  assert.match(app.elements.get("scaleGapInfo").textContent, /\+5/);
+  assert.match(app.elements.get("scaleGapSummary").textContent, /−90\.22 цент/);
+  assert.match(app.elements.get("scaleGapSummary").textContent, /−27\.07°/);
+  assert.ok(spiral.drawnText.includes("+5 ?"), "The ghost is a labeled extra step on the spiral");
+  assert.ok(zoom.drawnText.includes("хийсвэр буцах нот"));
+  assert.equal(zoom.drawnArcs.length, 2, "Two cents-comparison markers are drawn");
+
+  const beforeDown = spiral.drawnText.length;
+  app.scalePresetButtons[2].events.click();
+  const downLabels = spiral.drawnText.slice(beforeDown);
+  assert.match(app.elements.get("scaleGapInfo").textContent, /-5/);
+  assert.match(app.elements.get("scaleGapSummary").textContent, /\+90\.22 цент/);
+  assert.equal(downLabels.filter(label => label.endsWith(" ?")).at(-1), "-5 ?",
+    "The final rendered all-down chain continues to −5, not to a positive fifth");
+
+  app.scalePresetButtons[4].events.click();
+  assert.match(app.elements.get("scaleGapSummary").textContent, /Пифагорын комма/);
+  assert.match(app.elements.get("scaleGapSummary").textContent, /\+23\.46 цент/);
+  assert.match(app.elements.get("scaleGapSummary").textContent, /\+7\.04°/);
+  assert.ok(spiral.drawnText.includes("+7 ?"));
+  app.fire("langEn", "click");
+  assert.match(app.elements.get("scaleGapSummary").textContent, /Pythagorean comma/);
+  assert.match(app.elements.get("scaleGapInfo").textContent, /23\.46 cents/);
+  assert.equal(app.contexts.length, 0, "Toggling and editing overlays never trigger audio");
+
+  app.fire("scaleReset", "click");
+  assert.equal(toggle.checked, false);
+  assert.equal(panel.hidden, true);
+  assert.equal(app.elements.get("scaleClosureFact").hidden, true);
+  assert.equal(app.elements.get("scaleGapButton").getAttribute("aria-pressed"), "false");
+});
+
+test("S025 comparison is an explicit short audio gesture on the recorder bus and cleans up safely", async () => {
+  const app = fakePage();
+  app.fire("modeTuning", "click");
+  app.tuningKindButtons[1].events.click();
+  app.elements.get("scaleGapToggle").checked = true;
+  app.fire("scaleGapToggle", "change");
+  assert.equal(app.contexts.length, 0);
+  await app.fire("scaleGapButton", "click");
+  const context = app.contexts[0];
+  assert.equal(context.sources.length, 1);
+  assert.equal(context.buffers[0].length, Math.ceil(scaleModel.GAP_SECONDS * context.sampleRate));
+  assert.ok(context.sources[0].started);
+  assert.equal(app.elements.get("scaleGapButton").getAttribute("aria-pressed"), "true");
+  assert.equal(app.elements.get("scaleButton").getAttribute("aria-pressed"), "false");
+  context.sources[0].onended();
+  assert.equal(app.elements.get("scaleGapButton").getAttribute("aria-pressed"), "false");
+  assert.match(app.elements.get("scaleStatus").textContent, /Харьцуулалт дууслаа/);
+
+  await app.fire("recordButton", "click");
+  await app.fire("scaleGapButton", "click");
+  assert.equal(context.sources.length, 2);
+  assert.equal(context.worklets.length, 1);
+  const capture = context.worklets[0];
+  capture.send({ type: "samples", samples: new Float32Array([.12, -.12]) });
+  app.fire("stopAll", "click");
+  assert.ok(context.sources[1].stopped);
+  assert.equal(app.elements.get("scaleGapButton").getAttribute("aria-pressed"), "false");
+  assert.deepEqual(capture.port.lastPosted, { type: "stop" });
+  capture.send({ type: "done" });
+  assert.equal(app.elements.get("recordDownload").clickCount, 1);
+
+  await app.fire("scaleGapButton", "click");
+  assert.equal(context.sources.length, 3);
+  app.elements.get("scaleGapToggle").checked = false;
+  app.fire("scaleGapToggle", "change");
+  assert.ok(context.sources[2].stopped, "Disabling the overlay stops its comparison audio");
+  assert.equal(app.elements.get("scaleGapPanel").hidden, true);
+  assert.equal(app.elements.get("scaleGapButton").getAttribute("aria-pressed"), "false");
 });
 
 test("beating controls retune both voices; gap zero resynchronizes the pair without lingering voices", async () => {

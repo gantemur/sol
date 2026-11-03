@@ -77,6 +77,38 @@ test("twelve consecutive fifths miss seven octaves by one Pythagorean comma", ()
   assert.equal(new Set(scale.notes.map(n => n.k)).size, 12);
 });
 
+test("opt-in ghost returns continue the pentatonic in the selected direction", () => {
+  const up = scales.returnGap(scales.build({ down: 0, up: 4 }));
+  assert.deepEqual([up.startK, up.ghostK, up.octaveCount], [0, 5, 3]);
+  close(up.ratio, 243 / 256);
+  close(up.signedCents, -90.2249956730628, 1e-5);
+  close(up.angleDegrees, -27.06749870191884, 1e-4);
+  assert.equal(up.isPythagoreanComma, false);
+  const down = scales.returnGap(scales.build({ down: 4, up: 0 }));
+  assert.deepEqual([down.startK, down.ghostK, down.direction], [0, -5, -1]);
+  close(down.ratio, 256 / 243);
+  close(down.signedCents, -up.signedCents);
+  assert.equal(down.isPythagoreanComma, false);
+  const center = scales.returnGap(scales.build({ down: 2, up: 2 }));
+  assert.deepEqual([center.startK, center.ghostK], [-2, 3]);
+});
+
+test("twelve-step ghost closes within 7.04° and sounds a bounded beat pair", () => {
+  const scale = scales.build({ down: 5, up: 6 });
+  const gap = scales.returnGap(scale);
+  assert.deepEqual([gap.startK, gap.ghostK, gap.octaveCount], [-5, 7, 7]);
+  close(gap.ratio, 531441 / 524288, 1e-9);
+  close(gap.signedCents, 23.460010384649, 1e-5);
+  close(gap.angleDegrees, 7.03800311539, 1e-5);
+  assert.equal(gap.isPythagoreanComma, true);
+  const samples = scales.makeGapSamples(scale, 22050);
+  assert.equal(samples.length, Math.ceil(scales.GAP_SECONDS * 22050));
+  assert.equal(samples[0], 0);
+  assert.ok(samples.some(value => Math.abs(value) > .2));
+  assert.ok(samples.every(value => Math.abs(value) <= .8 + 1e-6));
+  assert.throws(() => scales.makeGapSamples(scale, 1000), RangeError);
+});
+
 test("scale melody starts and ends on the selected tonic and synthesizes bounded notes", () => {
   const scale = scales.build({ down: 1, up: 5, tonicK: -1 });
   const sequence = scales.melody(scale);

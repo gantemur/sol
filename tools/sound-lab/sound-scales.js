@@ -11,6 +11,7 @@
   const MAX_NOTES = 12;
   const STEP_SECONDS = 0.31;
   const NOTE_SECONDS = 0.275;
+  const GAP_SECONDS = 3.2;
   const FIFTH_CENTS = 1200 * Math.log2(3 / 2);
   const FIFTH_TURN_DEGREES = 360 * Math.log2(3 / 2);
   const PRESETS = Object.freeze([
@@ -78,6 +79,41 @@
     return melodySteps(scale).map(note => note.hz);
   }
 
+  // The first pitch and a ghost pitch reached after `count` additional fifths
+  // are compared in the nearest octave. This is the Pythagorean comma at 12
+  // steps; five and seven fifths give larger near-return gaps, not commas.
+  function returnGap(scale) {
+    if (!scale || !Number.isInteger(scale.count) || !Array.isArray(scale.chain)) {
+      throw new TypeError("A fifth-chain scale is required");
+    }
+    const direction = scale.up === 0 && scale.down > 0 ? -1 : 1;
+    const startK = direction > 0 ? (scale.down ? -scale.down : 0) : scale.up;
+    const ghostK = startK + direction * scale.count;
+    const octaveCount = Math.round(scale.count * Math.log2(3 / 2));
+    const signedCents = direction * (scale.count * FIFTH_CENTS - 1200 * octaveCount);
+    const start = scale.chain.find(note => note.k === startK);
+    const ratio = 2 ** (signedCents / 1200);
+    return { startK, ghostK, direction, octaveCount, signedCents,
+      angleDegrees: signedCents * 360 / 1200, ratio,
+      fromHz: start.hz, toHz: start.hz * ratio, isPythagoreanComma: scale.count === 12 };
+  }
+
+  function makeGapSamples(scale, sampleRate) {
+    if (!Number.isFinite(sampleRate) || sampleRate < 8000 || sampleRate > 192000) {
+      throw new RangeError("Unsupported sample rate");
+    }
+    const { fromHz, toHz } = returnGap(scale);
+    const length = Math.ceil(GAP_SECONDS * sampleRate);
+    const data = new Float32Array(length);
+    for (let i = 0; i < length; i++) {
+      const t = i / sampleRate;
+      const envelope = Math.min(1, t / .04, (GAP_SECONDS - t) / .12);
+      data[i] = .4 * envelope *
+        (Math.sin(2 * Math.PI * fromHz * t) + Math.sin(2 * Math.PI * toHz * t));
+    }
+    return data;
+  }
+
   function makeSamples(scale, sampleRate) {
     if (!Number.isFinite(sampleRate) || sampleRate < 8000 || sampleRate > 192000) {
       throw new RangeError("Unsupported sample rate");
@@ -99,6 +135,6 @@
   }
 
   return Object.freeze({ MIN_BASE_HZ, MAX_BASE_HZ, MAX_NOTES, PRESETS, FIFTH_CENTS,
-    FIFTH_TURN_DEGREES, STEP_SECONDS, NOTE_SECONDS, octaveFraction, build,
-    melodySteps, melody, makeSamples });
+    FIFTH_TURN_DEGREES, STEP_SECONDS, NOTE_SECONDS, GAP_SECONDS, octaveFraction, build,
+    returnGap, melodySteps, melody, makeSamples, makeGapSamples });
 });
