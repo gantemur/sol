@@ -29,7 +29,10 @@
   {
     "id": "rainbow-angle",
     "title": "Rainbow Angles",
-    "language": ["en", "mn"],
+    "language": [
+      "en",
+      "mn"
+    ],
     "category": "physics",
     "entry": "tools/rainbow-angle/",
     "description": "Interactive geometric-optics curves for primary and secondary rainbow angles.",
@@ -38,7 +41,10 @@
   {
     "id": "warm",
     "title": "Stellar Warmth",
-    "language": ["en", "mn"],
+    "language": [
+      "en",
+      "mn"
+    ],
     "category": "physics",
     "entry": "tools/warm/",
     "description": "A simplified stellar irradiance, planet temperature, and liquid-water zone explorer.",
@@ -47,7 +53,10 @@
   {
     "id": "sound-lab",
     "title": "Sound Lab · Дууны лаборатори",
-    "language": ["en", "mn"],
+    "language": [
+      "en",
+      "mn"
+    ],
     "category": "physics",
     "entry": "tools/sound-lab/",
     "description": "Hear ideal sine, triangle, square and sawtooth signals while exploring their waveforms and harmonics.",
@@ -65,10 +74,13 @@
   {
     "id": "armatur",
     "title": "Арматур",
-    "language": "mn",
+    "language": [
+      "mn",
+      "en"
+    ],
     "category": "engineering",
     "entry": "tools/armatur/",
-    "description": "Simple reinforcing-bar cutting calculator using the imported greedy algorithm.",
-    "migrationStatus": "initial static migration; algorithm intentionally preserved"
+    "description": "Bilingual 1D cutting-stock planner with optimized rod patterns and visual cutting lists.",
+    "migrationStatus": "native optimizer and interactive UI with corrected standalone legacy"
   }
 ]
