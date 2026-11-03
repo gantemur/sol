@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#192d49">
   <meta name="description" content="Explore sound waves, plucked and held instrument models, harmonic synthesis, noise, a theremin and sirens with interactive plots and bilingual controls.">
   <title>Sound Lab · Sol</title>
-  <link rel="stylesheet" href="sound-lab.css?v=s023">
+  <link rel="stylesheet" href="sound-lab.css?v=s025">
   <script src="sound-model.js" defer></script>
   <script src="sound-string.js?v=s017" defer></script>
   <script src="sound-piano.js?v=s019" defer></script>
@@ -16,11 +16,11 @@
   <script src="sound-motion.js?v=s020c" defer></script>
   <script src="sound-beats.js" defer></script>
   <script src="sound-intervals.js?v=s021" defer></script>
-  <script src="sound-scales.js?v=s024" defer></script>
+  <script src="sound-scales.js?v=s025" defer></script>
   <script src="sound-harmonics.js" defer></script>
   <script src="sound-noise.js" defer></script>
   <script src="sound-recorder.js" defer></script>
-  <script src="sound-lab.js?v=s024" defer></script>
+  <script src="sound-lab.js?v=s025" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -736,6 +736,11 @@
             <button type="button" data-scale-preset="seven" aria-pressed="false" data-i18n="scaleSeven">7 нот</button>
             <button type="button" data-scale-preset="twelve" aria-pressed="false" data-i18n="scaleTwelve">12 нот</button>
           </div>
+          <label class="check-label scale-gap-switch" for="scaleGapToggle">
+            <input id="scaleGapToggle" type="checkbox">
+            <span data-i18n="scaleGapToggle">Буцах зөрүүг харуулах</span>
+          </label>
+          <p id="scaleGapInfo" class="field-help scale-gap-info" hidden></p>
         </div>
         <div class="field-group">
           <div class="field-title"><span data-i18n="scaleGrowTitle">3:2 гинжийг сунгах</span><output id="scaleRangeValue">0 … +4</output></div>
@@ -772,7 +777,7 @@
         </div>
         <div class="scale-facts" aria-live="off">
           <div><span data-i18n="scaleTonicFact">Үндсэн нотын давтамж</span><strong id="scaleTonicValue">220 Гц</strong></div>
-          <div><span data-i18n="scaleReturnFact">Хамгийн ойр октаваас зөрөх зай</span><strong id="scaleClosureValue">−90.2 цент</strong></div>
+          <div id="scaleClosureFact" hidden><span data-i18n="scaleReturnFact">Хамгийн ойр октаваас зөрөх зай</span><strong id="scaleClosureValue">−90.2 цент</strong></div>
           <div><span data-i18n="scaleStepsFact">Зэргэлдээ нотын зай</span><strong id="scaleGapsValue">204, 294 цент</strong></div>
           <div><span data-i18n="scaleOctaveFact">3:2 алхам · октав</span><strong id="scaleOctaveValue">5 · 3</strong></div>
         </div>
@@ -799,6 +804,14 @@
           </div>
           <canvas id="scaleFourierCanvas" width="740" height="370" role="img" aria-label="Үндсэн давтамж, гармоникууд ба октавын хийсвэр хуулбар"></canvas>
           <div class="chart-foot"><span data-i18n="scaleFourierFoot">Ногоон нэг октав дахь цэгүүдийг зүүнээс баруун уншихад нотын эрэмбэ гарна. Саарал хуулбарыг октаваар шилжүүлэн тоглож болно.</span><span data-i18n="scaleFourierAxis">log₂ f →</span></div>
+          <div class="scale-gap-panel" id="scaleGapPanel" hidden>
+            <div class="scale-gap-header">
+              <div><h3 data-i18n="scaleGapTitle">Буцах нотын зөрүү</h3><p id="scaleGapSummary"></p></div>
+              <button type="button" id="scaleGapButton" aria-pressed="false" data-i18n="scaleGapPlay">Зөрүүг сонсох</button>
+            </div>
+            <canvas id="scaleGapCanvas" width="740" height="126" role="img" aria-label="Эхлэх нот ба октаваар буулгасан хийсвэр буцах нотын зай"></canvas>
+            <p class="field-help" data-i18n="scaleGapFoot">Энэ нь хоёр нотын зайг центээр томруулсан зураг. Товчлуур дээр дарахад хоёулаа 3.2 сек хамт дуугарна.</p>
+          </div>
         </section>
       </div>
     </div>

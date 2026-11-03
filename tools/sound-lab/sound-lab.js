@@ -79,6 +79,15 @@
       scalePresetsTitle: "Scale patterns", scalePresetsAria: "Fifth-chain patterns",
       scaleFiveUp: "5 · Up", scaleFiveCenter: "5 · Both", scaleFiveDown: "5 · Down",
       scaleSeven: "7 notes", scaleTwelve: "12 notes", scaleNotesUnit: "notes",
+      scaleGapToggle: "Show the return gap", scaleGapTitle: "How close is the ghost return?",
+      scaleGapPlay: "Hear both pitches", scaleGapStop: "Stop comparison",
+      scaleGapInfo: "After {count} fifths ({direction}), compare ghost step {ghost} with the starting pitch shifted by {octaves} octaves: {cents} cents ({angle}°) apart.",
+      scaleGapDirectionUp: "up", scaleGapDirectionDown: "down",
+      scaleGapPythagorean: "Pythagorean comma", scaleGapOther: "Return gap",
+      scaleGapSummary: "{name}: {cents} cents · {angle}° · {beats} Hz apart",
+      scaleGapFoot: "Magnified pitch comparison, not a spectrum. Play both octave-adjusted pitches together to hear their interference beats.",
+      scaleGapFrom: "starting pitch", scaleGapGhost: "ghost return", scaleGapUnit: "cents",
+      scaleGapCanvasAria: "Magnified cents comparison of the starting fifth-chain pitch with the octave-adjusted ghost return",
       scaleGrowTitle: "Grow the 3:2 chain", scaleDirectionsAria: "Add or remove fifth-chain steps",
       scaleAddDown: "← Down 3:2", scaleAddUp: "Up 3:2 →",
       scaleRemoveDownAria: "Remove the lowest fifth-chain step", scaleRemoveUpAria: "Remove the highest fifth-chain step",
@@ -105,6 +114,8 @@
       scaleLessonTwo: "The tonic is a choice of musical center, not a new frequency ratio. For example, C–D–E–G–A is C major pentatonic, while the same pitches starting and ending on A form A minor pentatonic. Twelve exact fifths miss seven octaves by about 23.46 cents: the Pythagorean comma.",
       scaleReady: "Ready. Play the scale, or change its notes.", scaleStarting: "Preparing the melody…",
       scalePlaying: "Playing up and down. Press the large button to stop.",
+      scaleGapPlaying: "Playing the starting pitch and ghost return together.",
+      scaleGapDone: "Comparison finished. Change the number of fifths to hear another gap.",
       scaleStopped: "Stopped. Try another tonic or direction.", scaleHidden: "Melody stopped when you left the page.",
       scaleUnsupported: "This browser cannot play the generated scale.",
       scaleBlocked: "The melody could not start. Check your browser audio settings.",
@@ -440,6 +451,15 @@
       scalePresetsTitle: "Шатлалын жишээ", scalePresetsAria: "3:2 гинжийн жишээнүүд",
       scaleFiveUp: "5 · Дээш", scaleFiveCenter: "5 · Дундаас", scaleFiveDown: "5 · Доош",
       scaleSeven: "7 нот", scaleTwelve: "12 нот", scaleNotesUnit: "нот",
+      scaleGapToggle: "Буцах зөрүүг харуулах", scaleGapTitle: "Буцах нот хэр ойр байна вэ?",
+      scaleGapPlay: "Хоёр нотыг сонсох", scaleGapStop: "Харьцуулалтыг зогсоох",
+      scaleGapInfo: "{count} квинтээр ({direction}) алхсан хийсвэр {ghost} нотыг эхлэх нотоос {octaves} октаваар шилжүүлсэн ноттой харьцуулбал: {cents} цент ({angle}°) зөрүүтэй.",
+      scaleGapDirectionUp: "дээш", scaleGapDirectionDown: "доош",
+      scaleGapPythagorean: "Пифагорын комма", scaleGapOther: "Буцах зөрүү",
+      scaleGapSummary: "{name}: {cents} цент · {angle}° · {beats} Гц зөрүү",
+      scaleGapFoot: "Центийн зайг томруулсан зураг, жинхэнэ спектр биш. Хоёр октаваар тохируулсан нотыг хамтад нь тоглуулж цохилтыг сонсоорой.",
+      scaleGapFrom: "эхлэх нот", scaleGapGhost: "хийсвэр буцах нот", scaleGapUnit: "цент",
+      scaleGapCanvasAria: "Эхлэх нот ба октаваар тохируулсан хийсвэр буцах нотын зайг центээр харьцуулсан зураг",
       scaleGrowTitle: "3:2 гинжийг сунгах", scaleDirectionsAria: "Гинжийн алхам нэмэх, хасах",
       scaleAddDown: "← Доош 3:2", scaleAddUp: "Дээш 3:2 →",
       scaleRemoveDownAria: "Доод захын алхмыг хасах", scaleRemoveUpAria: "Дээд захын алхмыг хасах",
@@ -466,6 +486,8 @@
       scaleLessonTwo: "Үндсэн нот бол шинэ давтамжийн харьцаа биш, аяны төвийг сонгож буй хэрэг. Жишээ нь C–D–E–G–A нотуудыг C-ээс тогловол мажор пентатоник, A-гаас тогловол минор пентатоник болно. Яг 3:2 харьцааг 12 удаа хэрэглэхэд 7 октаваас 23.46 центээр зөрнө: Пифагорын комма.",
       scaleReady: "Бэлэн. Шатлалыг сонсож, нотуудыг өөрчилж үзээрэй.", scaleStarting: "Аяыг бэлтгэж байна…",
       scalePlaying: "Өгсөж, уруудаж тоглож байна. Том товчоор зогсооно.",
+      scaleGapPlaying: "Эхлэх нот ба хийсвэр буцах нот хамт дуугарч байна.",
+      scaleGapDone: "Харьцуулалт дууслаа. Өөр тооны квинтээр туршаарай.",
       scaleStopped: "Зогслоо. Өөр үндсэн нот, чиглэл туршаарай.", scaleHidden: "Хуудсаас гарахад ая зогслоо.",
       scaleUnsupported: "Энэ хөтөч шатлалын авиаг тоглуулах боломжгүй байна.",
       scaleBlocked: "Ая эхэлсэнгүй. Хөтчийн дууны тохиргоог шалгана уу.",
@@ -822,7 +844,9 @@
     scaleTonicK: 0,
     scaleBase: 220,
     scaleVolume: 38,
+    scaleShowGap: false,
     scalePlaying: false,
+    scaleGapPlaying: false,
     scaleStatus: "scaleReady",
     scaleError: false,
     harmonicBase: 220,
@@ -1583,12 +1607,13 @@
       catch (_) { /* The buffer may already have finished. */ }
     }
 
-    async start(scale) {
+    async startSampled(scale, comparison = false) {
       const ticket = ++this.generation;
       const context = await this.contextOwner.readyContext();
       if (ticket !== this.generation || state.mode !== "tuning" || state.tuningKind !== "scales") return false;
       for (const voice of this.voices) this.fadeAndStop(voice, true);
-      const samples = scaleModel.makeSamples(scale, context.sampleRate);
+      const samples = comparison ? scaleModel.makeGapSamples(scale, context.sampleRate) :
+        scaleModel.makeSamples(scale, context.sampleRate);
       const buffer = context.createBuffer(1, samples.length, context.sampleRate);
       buffer.getChannelData(0).set(samples);
       const source = context.createBufferSource();
@@ -1600,16 +1625,21 @@
       source.connect(gain);
       gain.connect(this.contextOwner.output);
       const voice = { source, gain, stopping: false, startedAt: now,
-        steps: scaleModel.melodySteps(scale) };
+        steps: comparison ? [] : scaleModel.melodySteps(scale) };
       source.onended = () => {
         source.disconnect();
         gain.disconnect();
         this.voices.delete(voice);
         if (this.currentVoice === voice) {
           this.currentVoice = null;
-          state.scalePlaying = false;
-          stopScaleTracking();
-          setScaleStatus("scaleStopped");
+          if (comparison) {
+            state.scaleGapPlaying = false;
+            setScaleStatus("scaleGapDone");
+          } else {
+            state.scalePlaying = false;
+            stopScaleTracking();
+            setScaleStatus("scaleStopped");
+          }
           renderScaleControls();
         }
       };
@@ -1618,6 +1648,9 @@
       source.start(now);
       return true;
     }
+
+    async start(scale) { return this.startSampled(scale); }
+    async startGap(scale) { return this.startSampled(scale, true); }
 
     updateVolume() {
       if (!this.currentVoice) return;
@@ -2393,6 +2426,28 @@
     $("scaleGapsValue").textContent = scale.gaps.map(gap => Math.round(gap)).join(" · ") +
       " " + (state.language === "mn" ? "цент" : "cents");
     $("scaleOctaveValue").textContent = scale.count + " · " + scale.octaveCount;
+    $("scaleGapToggle").checked = state.scaleShowGap;
+    $("scaleClosureFact").hidden = !state.scaleShowGap;
+    $("scaleGapInfo").hidden = !state.scaleShowGap;
+    $("scaleGapPanel").hidden = !state.scaleShowGap;
+    if (state.scaleShowGap) {
+      const gap = scaleModel.returnGap(scale);
+      const signed = (value, decimals) => (value < 0 ? "−" : "+") + Math.abs(value).toFixed(decimals);
+      const cents = signed(gap.signedCents, 2);
+      const angle = signed(gap.angleDegrees, 2);
+      $("scaleGapInfo").textContent = intervalPhrase("scaleGapInfo", {
+        count: scale.count, direction: text(gap.direction < 0 ? "scaleGapDirectionDown" : "scaleGapDirectionUp"),
+        ghost: (gap.ghostK > 0 ? "+" : "") + gap.ghostK,
+        octaves: gap.octaveCount, cents, angle
+      });
+      $("scaleGapSummary").textContent = intervalPhrase("scaleGapSummary", {
+        name: text(gap.isPythagoreanComma ? "scaleGapPythagorean" : "scaleGapOther"),
+        cents, angle, beats: Math.abs(gap.toHz - gap.fromHz).toFixed(2)
+      });
+    }
+    $("scaleGapButton").textContent = text(state.scaleGapPlaying ? "scaleGapStop" : "scaleGapPlay");
+    $("scaleGapButton").classList.toggle("playing", state.scaleGapPlaying);
+    $("scaleGapButton").setAttribute("aria-pressed", String(state.scaleGapPlaying));
     renderScaleNow();
     $("scaleButton").classList.toggle("playing", state.scalePlaying);
     $("scaleButton").setAttribute("aria-pressed", String(state.scalePlaying));
@@ -2463,6 +2518,7 @@
   function stopScaleSound(immediate = false, message = "scaleStopped") {
     scaleAudio.stop(immediate);
     state.scalePlaying = false;
+    state.scaleGapPlaying = false;
     stopScaleTracking();
     setScaleStatus(message);
     renderScaleControls();
@@ -2471,6 +2527,7 @@
   async function toggleScaleSound() {
     if (state.scalePlaying) { stopScaleSound(); return; }
     if (state.mode !== "tuning" || state.tuningKind !== "scales") return;
+    if (state.scaleGapPlaying) stopScaleSound(true, "scaleReady");
     setScaleStatus("scaleStarting");
     try {
       if (await scaleAudio.start(scaleAnalysis())) {
@@ -2483,6 +2540,30 @@
       stopScaleSound(true, error.message === "unsupported" ? "scaleUnsupported" : "scaleBlocked");
       setScaleStatus(state.scaleStatus, true);
     }
+  }
+
+  async function toggleScaleGapSound() {
+    if (state.scaleGapPlaying) { stopScaleSound(); return; }
+    if (!state.scaleShowGap || state.mode !== "tuning" || state.tuningKind !== "scales") return;
+    if (state.scalePlaying) stopScaleSound(true, "scaleReady");
+    setScaleStatus("scaleStarting");
+    try {
+      if (await scaleAudio.startGap(scaleAnalysis())) {
+        state.scaleGapPlaying = true;
+        setScaleStatus("scaleGapPlaying");
+        renderScaleControls();
+      }
+    } catch (error) {
+      stopScaleSound(true, error.message === "unsupported" ? "scaleUnsupported" : "scaleBlocked");
+      setScaleStatus(state.scaleStatus, true);
+    }
+  }
+
+  function setScaleShowGap(checked) {
+    if (state.scaleGapPlaying && !checked) stopScaleSound(true, "scaleReady");
+    state.scaleShowGap = Boolean(checked);
+    renderScaleControls();
+    if (state.mode === "tuning" && state.tuningKind === "scales") drawScalePlots();
   }
 
   function setScaleBase(input) {
@@ -2542,6 +2623,7 @@
     state.scaleTonicK = 0;
     state.scaleBase = 220;
     state.scaleVolume = 38;
+    state.scaleShowGap = false;
     setScaleStatus("scaleReady");
     renderScaleControls();
     drawPlots();
@@ -3022,6 +3104,7 @@
     $("scaleBaseInput").setAttribute("aria-label", text("scaleBaseInputAria"));
     $("scaleSpiralCanvas").setAttribute("aria-label", text("scaleSpiralAria"));
     $("scaleFourierCanvas").setAttribute("aria-label", text("scaleFourierAria"));
+    $("scaleGapCanvas").setAttribute("aria-label", text("scaleGapCanvasAria"));
     $("harmonicPresets").setAttribute("aria-label", text("harmonicPresetsAria"));
     $("harmonicSliders").setAttribute("aria-label", text("harmonicSlidersAria"));
     $("harmonicWaveCanvas").setAttribute("aria-label", text("harmonicWaveAria"));
@@ -4193,15 +4276,18 @@
 
   function drawScaleSpiral() {
     const scale = scaleAnalysis();
+    const gap = state.scaleShowGap ? scaleModel.returnGap(scale) : null;
     const { ctx, width, height } = plotContext($("scaleSpiralCanvas"));
     const centerX = width / 2, centerY = height / 2;
     const octaveStep = Math.log2(3 / 2);
     const firstOctave = -scale.down * octaveStep;
     const lastOctave = scale.up * octaveStep;
-    const radialSpan = lastOctave - firstOctave;
+    const radialMin = gap ? Math.min(firstOctave, gap.ghostK * octaveStep) : firstOctave;
+    const radialMax = gap ? Math.max(lastOctave, gap.ghostK * octaveStep) : lastOctave;
+    const radialSpan = radialMax - radialMin;
     const inner = 25, outer = Math.max(62, Math.min(width, height) / 2 - 43);
     const radiusAt = octave => radialSpan > 0 ?
-      inner + (octave - firstOctave) / radialSpan * (outer - inner) : (inner + outer) / 2;
+      inner + (octave - radialMin) / radialSpan * (outer - inner) : (inner + outer) / 2;
     const positionAt = octave => {
       const angle = -Math.PI / 2 + 2 * Math.PI * octave;
       const radius = radiusAt(octave);
@@ -4212,7 +4298,7 @@
     // Each full turn is exactly one octave, but a fifth advances only 210.59°.
     ctx.strokeStyle = "#e5edf5";
     ctx.lineWidth = 1;
-    for (let octave = Math.ceil(firstOctave); octave <= Math.floor(lastOctave); octave++) {
+    for (let octave = Math.ceil(radialMin); octave <= Math.floor(radialMax); octave++) {
       ctx.beginPath();
       ctx.arc(centerX, centerY, radiusAt(octave), 0, 2 * Math.PI);
       ctx.stroke();
@@ -4234,14 +4320,67 @@
     ctx.strokeStyle = "#4b8bd0";
     ctx.lineWidth = 2.4;
     ctx.beginPath();
-    const samples = Math.max(40, Math.ceil(radialSpan * 125));
+    // Draw the solid spiral only through actual notes; the extra fifth is
+    // deliberately shown as a separate dashed continuation when enabled.
+    const chainSpan = lastOctave - firstOctave;
+    const samples = Math.max(40, Math.ceil(chainSpan * 125));
     for (let i = 0; i <= samples; i++) {
-      const octave = firstOctave + radialSpan * i / samples;
+      const octave = firstOctave + chainSpan * i / samples;
       const point = positionAt(octave);
       if (i === 0) ctx.moveTo(point.x, point.y);
       else ctx.lineTo(point.x, point.y);
     }
     ctx.stroke();
+
+    if (gap) {
+      // The extra point is NOT part of the playable scale. For the all-down
+      // preset it continues toward k=-5, never introduces a positive fifth.
+      const from = (gap.direction > 0 ? lastOctave : firstOctave);
+      const to = gap.ghostK * octaveStep;
+      ctx.strokeStyle = "#d2933a";
+      ctx.lineWidth = 2.3;
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      for (let i = 0; i <= 28; i++) {
+        const p = positionAt(from + (to - from) * i / 28);
+        if (!i) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+      const ghost = positionAt(to);
+      ctx.strokeStyle = "#be7d24";
+      ctx.lineWidth = 2.4;
+      ctx.beginPath();
+      ctx.arc(ghost.x, ghost.y, 7.5, 0, 2 * Math.PI);
+      ctx.stroke();
+      ctx.font = "bold 11px system-ui, sans-serif";
+      ctx.fillStyle = "#a56b24";
+      ctx.textAlign = "center";
+      const ghostLabel = (gap.ghostK > 0 ? "+" : "") + gap.ghostK + " ?";
+      ctx.fillText(ghostLabel, ghost.x + 17 * Math.cos(ghost.angle),
+        ghost.y + 17 * Math.sin(ghost.angle));
+
+      // Project the start and ghost onto ONE octave ring. Their small angular
+      // separation is the gap, irrespective of how many spiral turns intervene.
+      const startAngle = positionAt(gap.startK * octaveStep).angle;
+      const deltaAngle = gap.angleDegrees * Math.PI / 180;
+      const ring = outer + 13;
+      ctx.strokeStyle = "#d2933a";
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, ring, startAngle,
+        startAngle + deltaAngle, deltaAngle < 0);
+      ctx.stroke();
+      for (const [angle, fill] of [[startAngle, "#149588"],
+        [startAngle + deltaAngle, "#d2933a"]]) {
+        ctx.fillStyle = fill;
+        ctx.beginPath();
+        ctx.arc(centerX + ring * Math.cos(angle), centerY + ring * Math.sin(angle),
+          4, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+    }
 
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -4286,8 +4425,9 @@
     const { ctx, width, height } = plotContext(canvas);
     const left = width < 470 ? 60 : 86, right = width - 18;
     const top = 27, bottom = height - 37;
-    const largest = Math.pow(3 / 2, scale.count - 1) * 8;
-    const minLog = -1.15, maxLog = Math.log2(largest) + .22;
+    // Frame all original fundamentals and only their nearest two partials;
+    // later harmonics are intentionally allowed to extend beyond the canvas.
+    const minLog = -.55, maxLog = (scale.count - 1) * Math.log2(3 / 2) + 1.65;
     const xAt = frequency => left + (Math.log2(frequency) - minLog) /
       (maxLog - minLog) * (right - left);
     const yAt = index => bottom - (scale.count > 1 ? index / (scale.count - 1) : .5) * (bottom - top);
@@ -4368,6 +4508,7 @@
       // Physical harmonics (and the actual fundamental) lie to the right.
       for (let harmonic = 1; harmonic <= 8; harmonic++) {
         const x = xAt(fundamental * harmonic);
+        if (x > right + 8) break;
         const size = harmonic === 1 ? 6.5 : 4.2 - harmonic * .17;
         if (harmonic === 1) {
           ctx.fillStyle = color;
@@ -4425,9 +4566,65 @@
     }
   }
 
+  function drawScaleGap() {
+    if (!state.scaleShowGap) return;
+    const gap = scaleModel.returnGap(scaleAnalysis());
+    const { ctx, width, height } = plotContext($("scaleGapCanvas"));
+    const left = width < 470 ? 28 : 52, right = width - 24;
+    const paddingCents = Math.max(15, Math.abs(gap.signedCents) * .19);
+    const min = Math.min(0, gap.signedCents) - paddingCents;
+    const max = Math.max(0, gap.signedCents) + paddingCents;
+    const xAt = cents => left + (cents - min) / (max - min) * (right - left);
+    const center = Math.round(height * .49);
+    ctx.strokeStyle = "#ccdce9";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(left, center);
+    ctx.lineTo(right, center);
+    ctx.stroke();
+    ctx.font = "10px system-ui, sans-serif";
+    ctx.fillStyle = "#627d96";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    for (let i = 0; i <= 4; i++) {
+      const cents = min + (max - min) * i / 4;
+      const x = xAt(cents);
+      ctx.strokeStyle = "#e1eaf2";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x, center - 16);
+      ctx.lineTo(x, center + 17);
+      ctx.stroke();
+      ctx.fillText((cents < 0 ? "−" : "+") + Math.abs(cents).toFixed(0), x, height - 8);
+    }
+    ctx.strokeStyle = "#d29238";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(xAt(0), center);
+    ctx.lineTo(xAt(gap.signedCents), center);
+    ctx.stroke();
+    for (const [cents, fill, label, labelY] of [
+      [0, "#159586", text("scaleGapFrom"), center - 29],
+      [gap.signedCents, "#d2933a", text("scaleGapGhost"), center + 31]
+    ]) {
+      const x = xAt(cents);
+      ctx.fillStyle = fill;
+      ctx.beginPath();
+      ctx.arc(x, center, 6.5, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.font = "bold 11px system-ui, sans-serif";
+      ctx.fillText(label, x, labelY);
+    }
+    ctx.font = "10px system-ui, sans-serif";
+    ctx.textAlign = "right";
+    ctx.fillStyle = "#627d96";
+    ctx.fillText(text("scaleGapUnit"), right, height - 8);
+  }
+
   function drawScalePlots() {
     drawScaleSpiral();
     drawScaleFourier();
+    drawScaleGap();
   }
 
   function drawHarmonicWave() {
@@ -4692,6 +4889,8 @@
     button.addEventListener("click", () => selectIntervalColor(button.dataset.intervalColor));
   });
   $("scaleButton").addEventListener("click", toggleScaleSound);
+  $("scaleGapButton").addEventListener("click", toggleScaleGapSound);
+  $("scaleGapToggle").addEventListener("change", event => setScaleShowGap(event.target.checked));
   $("scaleBaseSlider").addEventListener("input", event => setScaleBase(event.target.value));
   $("scaleBaseInput").addEventListener("change", event => setScaleBase(event.target.value));
   $("scaleVolume").addEventListener("input", event => {
