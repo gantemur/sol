@@ -50,6 +50,8 @@ h1, h2, p { margin-top: 0; }
 .mode-button:hover { border-color: #78a9df; }
 .mode-button.active { background: #2769ba; color: white; border-color: #2769ba; box-shadow: 0 3px 10px #2769ba25; }
 .experiment-switch { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; }
+.mix-experiment-switch { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.tuning-experiment-switch { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .experiment-switch button { min-height: 52px; border: 1px solid #c7d8ed; border-radius: 10px; padding: 8px 5px; background: #fff; color: #486b88; font-size: 12px; font-weight: 800; line-height: 1.25; }
 .experiment-switch button:hover { border-color: #74aaa8; }
 .experiment-switch button.selected { background: #e0f4ee; border-color: #298d84; color: #176e67; }
@@ -174,6 +176,28 @@ h1, h2, p { margin-top: 0; }
 .interval-facts span { color: #658098; font-size: 11px; line-height: 1.35; }
 .interval-facts strong { color: #265c85; font-size: 13px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .interval-micro-note { font-size: 11px; color: #55748e; line-height: 1.55; }
+.scale-presets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+.scale-presets button, .scale-tonic-grid button, .scale-directions button {
+  border: 1px solid #cee0f1; border-radius: 9px; min-height: 40px; padding: 8px 5px;
+  font-weight: 750; font-size: 12px; background: #f3f8ff; color: #315b8c;
+}
+.scale-presets button:hover, .scale-tonic-grid button:hover, .scale-directions button:hover:enabled { background: #e5f0ff; }
+.scale-presets button.selected, .scale-tonic-grid button.selected { background: #e2f5f0; border-color: #2e9e93; color: #16716c; }
+.scale-directions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.scale-directions > div { display: flex; gap: 5px; min-width: 0; }
+.scale-directions button { flex: 1; min-width: 0; }
+.scale-directions button[id^="scaleRemove"] { flex: none; min-width: 38px; }
+.scale-directions button:disabled { cursor: default; opacity: .42; }
+.scale-tonic-hint { margin: -3px 0 10px; }
+.scale-tonic-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.scale-tonic-grid button { min-height: 42px; font-size: 11px; font-variant-numeric: tabular-nums; }
+.scale-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+.scale-facts > div { display: flex; flex-direction: column; gap: 5px; min-width: 0; padding: 10px;
+  border-radius: 10px; background: #eaf4fc; }
+.scale-facts span { color: #658098; font-size: 11px; }
+.scale-facts strong { color: #265c85; font-size: 13px; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+#scaleCircleCanvas { height: 290px; }
+#scaleChainCanvas { height: 220px; }
 .harmonic-presets, .noise-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .harmonic-presets button, .noise-choices button { min-height: 44px; padding: 8px 5px; border: 1px solid #cee0f1; border-radius: 9px; background: #f3f8ff; color: #315b8c; font-size: 12px; font-weight: 750; }
 .harmonic-presets button:hover, .noise-choices button:hover { background: #e5f0ff; }
@@ -261,10 +285,12 @@ h1, h2, p { margin-top: 0; }
   .description { min-height: 0; }
   .visuals { grid-template-columns: 1fr 1fr; }
   #mixWorkspace .visuals, #harmonicWorkspace .visuals, #noiseWorkspace .visuals,
-  #sustainWorkspace .visuals { grid-template-columns: 1fr; }
+  #sustainWorkspace .visuals, #scaleWorkspace .visuals { grid-template-columns: 1fr; }
   .chart-panel canvas { height: 188px; }
   .chart-panel #spectrumCanvas { height: 188px; }
   .chart-panel #strikeSpectrumCanvas { height: 188px; }
+  .chart-panel #scaleCircleCanvas { height: 265px; }
+  .chart-panel #scaleChainCanvas { height: 215px; }
   .chart-heading { display: block; }
   .chart-badge { display: inline-block; margin-top: 8px; }
   .motion-mini-plots { grid-template-columns: 1fr; }
@@ -291,6 +317,8 @@ h1, h2, p { margin-top: 0; }
   .chart-panel canvas { height: 198px; }
   .chart-panel #spectrumCanvas { height: 164px; }
   .chart-panel #strikeSpectrumCanvas { height: 170px; }
+  .chart-panel #scaleCircleCanvas { height: 225px; }
+  .chart-panel #scaleChainCanvas { height: 195px; }
   .plot-tools select { margin-left: 0; }
   .mix-plot-tools { gap: 8px 12px; }
   .mix-pan-group { margin-left: 0; }
@@ -324,7 +352,10 @@ h1, h2, p { margin-top: 0; }
   .number-wrap input { width: 124px; min-width: 124px; }
   .mix-comparison { grid-template-columns: 1fr; }
   .experiment-switch { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .interval-facts { grid-template-columns: 1fr; }
+  .mix-experiment-switch { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .interval-facts, .scale-facts { grid-template-columns: 1fr; }
+  .scale-presets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .scale-directions { grid-template-columns: 1fr; }
   .scale-row { font-size: 9px; }
   .chart-heading { display: block; }
   .chart-badge { margin-top: 8px; }

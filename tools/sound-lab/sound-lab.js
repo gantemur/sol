@@ -8,6 +8,7 @@
   const motionModel = window.SoundLabMotionModel;
   const beatsModel = window.SoundLabBeats;
   const intervalModel = window.SoundLabIntervals;
+  const scaleModel = window.SoundLabScales;
   const harmonicModel = window.SoundLabHarmonics;
   const noiseModel = window.SoundLabNoise;
   const recorderModel = window.SoundLabRecorder;
@@ -66,12 +67,44 @@
       blocked: "The sound could not start. Check browser audio permission and try Play again.",
       invalid: "Enter a frequency between 20 and 12,000 Hz.",
       modePure: "Pure tones", modeStrike: "Strike/Pluck", modeSustain: "Blow/Bow", modeMotion: "Moving Pitch",
-      modeMix: "Combine waves", modeSwitchAria: "Sound categories",
+      modeMix: "Combine waves", modeTuning: "Tuning", modeSwitchAria: "Sound categories",
       mixExperimentsAria: "Explore combined and complex sounds",
       mixExperimentBeats: "Two frequencies", mixExperimentHarmonics: "Build timbre",
       mixExperimentIntervals: "Interval", mixExperimentNoise: "Noise",
       harmonicPhase: "05 · Build a sound", noisePhase: "05 · Explore noise",
-      intervalPhase: "05 · Musical intervals",
+      intervalPhase: "06 · Musical intervals", scalePhase: "06 · Build scales",
+      tuningExperimentsAria: "Tuning experiments", scaleExperiment: "Build a scale",
+      scaleChoose: "Build a scale with 3:2", scaleDescription: "Walk upward or downward by exact 3:2 steps. Fold the notes into one octave, then choose which note acts as the tonic.",
+      scalePlay: "Hear the scale", scaleStop: "Stop", scalePlayCaption: "Play ascending and descending",
+      scalePresetsTitle: "Scale patterns", scalePresetsAria: "Fifth-chain patterns",
+      scaleFiveUp: "5 · Up", scaleFiveCenter: "5 · Both", scaleFiveDown: "5 · Down",
+      scaleSeven: "7 notes", scaleTwelve: "12 notes", scaleNotesUnit: "notes",
+      scaleGrowTitle: "Grow the 3:2 chain", scaleDirectionsAria: "Add or remove fifth-chain steps",
+      scaleAddDown: "← Down 3:2", scaleAddUp: "Up 3:2 →",
+      scaleRemoveDownAria: "Remove the lowest fifth-chain step", scaleRemoveUpAria: "Remove the highest fifth-chain step",
+      scaleGrowHint: "Each step is multiplied or divided by 3:2, then brought into one octave using powers of 2.",
+      scaleBase: "Starting frequency", scaleBaseSliderAria: "Starting note frequency slider",
+      scaleBaseInputAria: "Starting note frequency in hertz",
+      scaleTonicTitle: "Choose the tonic", scaleTonicHint: "The generated pitch collection stays the same; choosing a different tonic changes the order and character of the scale.",
+      scaleTonicAria: "Choose a scale tonic from the generated pitches",
+      scaleTonicFact: "Tonic frequency", scaleReturnFact: "Distance from nearest octave",
+      scaleStepsFact: "Adjacent pitch gaps", scaleOctaveFact: "Fifth steps · octaves",
+      scaleCircleTitle: "Pitches in one octave", scaleCircleHint: "Logarithmic pitch positions around the octave. The green note is the tonic.",
+      scaleCircleAria: "Octave circle showing the notes made by exact fifths",
+      scaleCircleFoot: "Positions use exact 3:2 steps, not rounded 12-tone equal temperament.", scaleCircleAxis: "octave ↻",
+      scaleChainTitle: "The 3:2 chain", scaleChainHint: "Each neighbor is one perfect fifth away before octave reduction.",
+      scaleChainAria: "Chain of notes created by successive three-to-two ratios", scaleChainAxis: "step number →",
+      scaleChainFoot: "{count} pitches from {down} steps down and {up} steps up.",
+      scaleChallenge: "Build five pitches, then add a step on either end to reach seven. Change the tonic: how does the melody sound?",
+      scaleLearnMore: "How can the same notes make different scales?",
+      scaleLessonOne: "Repeated exact 3:2 ratios create a chain of fifths. Dividing or multiplying by powers of two puts every generated pitch into one octave. A sequence of five consecutive fifths produces a pentatonic collection; seven produces a diatonic one.",
+      scaleLessonTwo: "The tonic is a choice of musical center, not a new frequency ratio. For example, C–D–E–G–A is C major pentatonic, while the same pitches starting and ending on A form A minor pentatonic. Twelve exact fifths miss seven octaves by about 23.46 cents: the Pythagorean comma.",
+      scaleReady: "Ready. Play the scale, or change its notes.", scaleStarting: "Preparing the melody…",
+      scalePlaying: "Playing up and down. Press the large button to stop.",
+      scaleStopped: "Stopped. Try another tonic or direction.", scaleHidden: "Melody stopped when you left the page.",
+      scaleUnsupported: "This browser cannot play the generated scale.",
+      scaleBlocked: "The melody could not start. Check your browser audio settings.",
+      scaleInvalid: "Enter a starting frequency from 110 to 330 Hz.",
       intervalChoose: "Two-note frequency ratios",
       intervalDescription: "Compare two independent notes in simple ratios and see where their harmonics overlap.",
       intervalPresetsTitle: "Ratio (upper : lower)", intervalPresetsAria: "Simple two-note frequency ratios",
@@ -391,12 +424,44 @@
       blocked: "Авиа эхэлсэнгүй. Хөтчийн дууны зөвшөөрлийг шалгаад дахин оролдоно уу.",
       invalid: "20–12,000 Гц-ийн хооронд давтамж оруулна уу.",
       modePure: "Цэвэр авиа", modeStrike: "Цохих/татах", modeSustain: "Үлээх/нумдах", modeMotion: "Хувирдаг давтамж",
-      modeMix: "Долгион холих", modeSwitchAria: "Дууны бүлэг",
+      modeMix: "Долгион холих", modeTuning: "Хөг", modeSwitchAria: "Дууны бүлэг",
       mixExperimentsAria: "Холимог ба нийлмэл авианы туршилтууд",
       mixExperimentBeats: "Хоёр давтамж", mixExperimentHarmonics: "Өнгө бүтээх",
       mixExperimentIntervals: "Интервал", mixExperimentNoise: "Шуугиан",
       harmonicPhase: "05 · Авиа бүтээх", noisePhase: "05 · Шуугиан судлах",
-      intervalPhase: "05 · Хөгжмийн интервал",
+      intervalPhase: "06 · Хөгжмийн интервал", scalePhase: "06 · Шатлал бүтээх",
+      tuningExperimentsAria: "Хөгийн туршилтууд", scaleExperiment: "Шатлал бүтээх",
+      scaleChoose: "3:2 харьцаагаар шатлал бүтээх", scaleDescription: "Эхлэх авианаас 3:2 алхмаар дээш, доош явж нот үүсгэ. Нэг октавт багтаагаад, дурын нотыг үндсэн нот болгон сонго.",
+      scalePlay: "Шатлалыг сонсох", scaleStop: "Зогсоох", scalePlayCaption: "Өгсөж, уруудаж тоглоно",
+      scalePresetsTitle: "Шатлалын жишээ", scalePresetsAria: "3:2 гинжийн жишээнүүд",
+      scaleFiveUp: "5 · Дээш", scaleFiveCenter: "5 · Дундаас", scaleFiveDown: "5 · Доош",
+      scaleSeven: "7 нот", scaleTwelve: "12 нот", scaleNotesUnit: "нот",
+      scaleGrowTitle: "3:2 гинжийг сунгах", scaleDirectionsAria: "Гинжийн алхам нэмэх, хасах",
+      scaleAddDown: "← Доош 3:2", scaleAddUp: "Дээш 3:2 →",
+      scaleRemoveDownAria: "Доод захын алхмыг хасах", scaleRemoveUpAria: "Дээд захын алхмыг хасах",
+      scaleGrowHint: "Алхам бүрийг 2-ын зэрэгт үржүүлж эсвэл хуваагаад нэг октавт оруулна.",
+      scaleBase: "Эхлэх давтамж", scaleBaseSliderAria: "Эхлэх давтамжийн гулсуур",
+      scaleBaseInputAria: "Эхлэх давтамжийг герцээр оруулах",
+      scaleTonicTitle: "Үндсэн нотыг сонгох", scaleTonicHint: "Нотуудын давтамж хэвээр; харин аль нотыг төв болгосноос шатлалын эхлэл ба ая өөрчлөгдөнө.",
+      scaleTonicAria: "Үүссэн нотоос үндсэн нот сонгох",
+      scaleTonicFact: "Үндсэн нотын давтамж", scaleReturnFact: "Хамгийн ойр октаваас зөрөх зай",
+      scaleStepsFact: "Зэргэлдээ нотын зай", scaleOctaveFact: "3:2 алхам · октав",
+      scaleCircleTitle: "Нэг октав дахь нотууд", scaleCircleHint: "Октав доторх давтамжийн логарифм байрлал. Ногоон нь сонгосон үндсэн нот.",
+      scaleCircleAria: "3:2 алхмаар үүссэн нотуудын октавын тойрог",
+      scaleCircleFoot: "Нотуудыг 12-TET-д тааруулаагүй, яг 3:2 харьцаагаар бодсон.", scaleCircleAxis: "октав ↻",
+      scaleChainTitle: "3:2 гинж", scaleChainHint: "Хөрш нот бүр октавт шилжүүлэхээс өмнө 3:2 интервалтай.",
+      scaleChainAria: "Гурав-хоёрын харьцаагаар үүссэн нотуудын гинж", scaleChainAxis: "алхмын дугаар →",
+      scaleChainFoot: "{count} нот: доош {down}, дээш {up} алхам.",
+      scaleChallenge: "Таван нот үүсгээд гинжийн хоёр захад тус бүр нэгийг нэмэн долоон нот болго. Үндсэн нотыг сольж сонсоход юу өөрчлөгдөх вэ?",
+      scaleLearnMore: "Ижил нотоор өөр шатлал яаж үүсэх вэ?",
+      scaleLessonOne: "3:2 харьцааг давтан хэрэглэвэл квинтийн гинж үүснэ. Нотуудыг 2-ын зэрэгт үржүүлж, хувааж нэг октавт оруулна. Дараалсан таван квинтээс таван нотын, долоон квинтээс долоон нотын шатлал үүснэ.",
+      scaleLessonTwo: "Үндсэн нот бол шинэ давтамжийн харьцаа биш, аяны төвийг сонгож буй хэрэг. Жишээ нь C–D–E–G–A нотуудыг C-ээс тогловол мажор пентатоник, A-гаас тогловол минор пентатоник болно. Яг 3:2 харьцааг 12 удаа хэрэглэхэд 7 октаваас 23.46 центээр зөрнө: Пифагорын комма.",
+      scaleReady: "Бэлэн. Шатлалыг сонсож, нотуудыг өөрчилж үзээрэй.", scaleStarting: "Аяыг бэлтгэж байна…",
+      scalePlaying: "Өгсөж, уруудаж тоглож байна. Том товчоор зогсооно.",
+      scaleStopped: "Зогслоо. Өөр үндсэн нот, чиглэл туршаарай.", scaleHidden: "Хуудсаас гарахад ая зогслоо.",
+      scaleUnsupported: "Энэ хөтөч шатлалын авиаг тоглуулах боломжгүй байна.",
+      scaleBlocked: "Ая эхэлсэнгүй. Хөтчийн дууны тохиргоог шалгана уу.",
+      scaleInvalid: "Эхлэх давтамж 110–330 Гц байх ёстой.",
       intervalChoose: "Хоёр нотын харьцаа",
       intervalDescription: "Хоёр тусдаа авианы давтамжийг энгийн харьцаагаар тохируулж, гармоникууд нь хаана давхцахыг харьцуул.",
       intervalPresetsTitle: "Давтамжийн харьцаа (дээд : доод)", intervalPresetsAria: "Хоёр нотын энгийн харьцаа",
@@ -735,6 +800,7 @@
     mixStatus: "mixReady",
     mixError: false,
     mixKind: "beats",
+    tuningKind: "intervals",
     intervalRatio: "3:2",
     intervalBase: 220,
     intervalTuning: "just",
@@ -743,6 +809,14 @@
     intervalPlaying: false,
     intervalStatus: "intervalReady",
     intervalError: false,
+    scaleDown: 0,
+    scaleUp: 4,
+    scaleTonicK: 0,
+    scaleBase: 220,
+    scaleVolume: 38,
+    scalePlaying: false,
+    scaleStatus: "scaleReady",
+    scaleError: false,
     harmonicBase: 220,
     harmonicPartials: harmonicModel.preset("pure"),
     harmonicPreset: "pure",
@@ -768,7 +842,7 @@
   // More headroom for small built-in speakers; still bounded below full-scale output.
   // Four simultaneous triggered voices have a total worst-case gain below 1.
   const maxGain = Object.freeze({ tone: 0.30, transient: 0.21, sustain: 0.22, motion: 0.24,
-    beatVoice: 0.12, intervalVoice: 0.12, harmonics: 0.24, noise: 0.20 });
+    beatVoice: 0.12, intervalVoice: 0.12, scaleVoice: 0.28, harmonics: 0.24, noise: 0.20 });
   const MIX_MIN_VIEW_SECONDS = 0.002;
   const MIX_MAX_VIEW_SECONDS = 4;
   const MIX_ZOOM_FACTOR = 4;
@@ -1445,7 +1519,7 @@
     async start() {
       const ticket = ++this.generation;
       const context = await this.contextOwner.readyContext();
-      if (ticket !== this.generation || state.mode !== "mix" || state.mixKind !== "intervals") return false;
+      if (ticket !== this.generation || state.mode !== "tuning" || state.tuningKind !== "intervals") return false;
       for (const pair of this.voices) this.fadeAndStop(pair);
       this.createPair(context);
       return true;
@@ -1479,6 +1553,74 @@
       this.generation++;
       for (const pair of this.voices) this.fadeAndStop(pair, immediate);
       this.currentPair = null;
+    }
+  }
+
+  class ScaleEngine {
+    constructor(contextOwner) {
+      this.contextOwner = contextOwner;
+      this.generation = 0;
+      this.voices = new Set();
+      this.currentVoice = null;
+    }
+
+    fadeAndStop(voice, immediate = false) {
+      const now = this.contextOwner.context.currentTime;
+      voice.gain.gain.cancelScheduledValues(now);
+      if (immediate) voice.gain.gain.setValueAtTime(0, now);
+      else voice.gain.gain.setTargetAtTime(0, now, .012);
+      if (voice.stopping) return;
+      voice.stopping = true;
+      try { voice.source.stop(now + (immediate ? .002 : .07)); }
+      catch (_) { /* The buffer may already have finished. */ }
+    }
+
+    async start(scale) {
+      const ticket = ++this.generation;
+      const context = await this.contextOwner.readyContext();
+      if (ticket !== this.generation || state.mode !== "tuning" || state.tuningKind !== "scales") return false;
+      for (const voice of this.voices) this.fadeAndStop(voice, true);
+      const samples = scaleModel.makeSamples(scale, context.sampleRate);
+      const buffer = context.createBuffer(1, samples.length, context.sampleRate);
+      buffer.getChannelData(0).set(samples);
+      const source = context.createBufferSource();
+      const gain = context.createGain();
+      const now = context.currentTime;
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(maxGain.scaleVoice * state.scaleVolume / 100, now + .016);
+      source.buffer = buffer;
+      source.connect(gain);
+      gain.connect(this.contextOwner.output);
+      const voice = { source, gain, stopping: false };
+      source.onended = () => {
+        source.disconnect();
+        gain.disconnect();
+        this.voices.delete(voice);
+        if (this.currentVoice === voice) {
+          this.currentVoice = null;
+          state.scalePlaying = false;
+          setScaleStatus("scaleStopped");
+          renderScaleControls();
+        }
+      };
+      this.voices.add(voice);
+      this.currentVoice = voice;
+      source.start(now);
+      return true;
+    }
+
+    updateVolume() {
+      if (!this.currentVoice) return;
+      const now = this.contextOwner.context.currentTime;
+      const gain = this.currentVoice.gain.gain;
+      gain.cancelScheduledValues(now);
+      gain.setTargetAtTime(maxGain.scaleVoice * state.scaleVolume / 100, now, .015);
+    }
+
+    stop(immediate = false) {
+      this.generation++;
+      this.currentVoice = null;
+      for (const voice of this.voices) this.fadeAndStop(voice, immediate);
     }
   }
 
@@ -1666,6 +1808,7 @@
   const motionAudio = new MotionEngine(audio);
   const mixAudio = new BeatsEngine(audio);
   const intervalAudio = new IntervalEngine(audio);
+  const scaleAudio = new ScaleEngine(audio);
   const harmonicAudio = new HarmonicEngine(audio);
   const noiseAudio = new NoiseEngine(audio);
   const recorder = new recorderModel.Recorder(audio, window.AudioWorkletNode);
@@ -1922,6 +2065,13 @@
     $("intervalStatus").classList.toggle("error", error);
   }
 
+  function setScaleStatus(status, error = false) {
+    state.scaleStatus = status;
+    state.scaleError = error;
+    $("scaleStatus").textContent = text(status);
+    $("scaleStatus").classList.toggle("error", error);
+  }
+
   function setHarmonicStatus(status, error = false) {
     state.harmonicStatus = status;
     state.harmonicError = error;
@@ -2143,7 +2293,7 @@
 
   async function toggleIntervalSound() {
     if (state.intervalPlaying) { stopIntervalSound(); return; }
-    if (state.mode !== "mix" || state.mixKind !== "intervals") return;
+    if (state.mode !== "tuning" || state.tuningKind !== "intervals") return;
     setIntervalStatus("intervalStarting");
     try {
       if (await intervalAudio.start()) {
@@ -2168,7 +2318,7 @@
     if (state.intervalError) setIntervalStatus(state.intervalPlaying ? "intervalPlaying" : "intervalReady");
     intervalAudio.update();
     renderIntervalControls();
-    if (state.mode === "mix" && state.mixKind === "intervals") drawIntervalPlots();
+    if (state.mode === "tuning" && state.tuningKind === "intervals") drawIntervalPlots();
   }
 
   function selectIntervalRatio(ratio) {
@@ -2176,7 +2326,7 @@
     state.intervalRatio = ratio;
     intervalAudio.update();
     renderIntervalControls();
-    if (state.mode === "mix" && state.mixKind === "intervals") drawIntervalPlots();
+    if (state.mode === "tuning" && state.tuningKind === "intervals") drawIntervalPlots();
   }
 
   function selectIntervalTuning(tuning) {
@@ -2184,7 +2334,7 @@
     state.intervalTuning = tuning;
     intervalAudio.update();
     renderIntervalControls();
-    if (state.mode === "mix" && state.mixKind === "intervals") drawIntervalPlots();
+    if (state.mode === "tuning" && state.tuningKind === "intervals") drawIntervalPlots();
   }
 
   function selectIntervalColor(color) {
@@ -2192,7 +2342,7 @@
     state.intervalColor = color;
     intervalAudio.changeColor();
     renderIntervalControls();
-    if (state.mode === "mix" && state.mixKind === "intervals") drawIntervalPlots();
+    if (state.mode === "tuning" && state.tuningKind === "intervals") drawIntervalPlots();
   }
 
   function resetInterval() {
@@ -2204,6 +2354,146 @@
     state.intervalVolume = 38;
     setIntervalStatus("intervalReady");
     renderIntervalControls();
+    drawPlots();
+  }
+
+  function scaleAnalysis() {
+    return scaleModel.build({ down: state.scaleDown, up: state.scaleUp,
+      tonicK: state.scaleTonicK, baseHz: state.scaleBase });
+  }
+
+  function renderScaleControls() {
+    const scale = scaleAnalysis();
+    $("scaleBaseSlider").value = String(state.scaleBase);
+    $("scaleBaseInput").value = String(state.scaleBase);
+    $("scaleBaseInput").setAttribute("aria-valuetext", hzText(state.scaleBase));
+    $("scaleBaseValue").textContent = hzText(state.scaleBase);
+    $("scaleVolume").value = String(state.scaleVolume);
+    $("scaleVolumeValue").textContent = state.scaleVolume + "%";
+    $("scaleCountValue").textContent = scale.count + " " + text("scaleNotesUnit");
+    $("scaleCircleBadge").textContent = $("scaleCountValue").textContent;
+    const range = "−" + scale.down + " … +" + scale.up;
+    $("scaleRangeValue").textContent = range;
+    $("scaleChainBadge").textContent = range;
+    $("scaleTonicValue").textContent = hzText(scale.tonicHz);
+    $("scaleClosureValue").textContent = (scale.closureCents < 0 ? "−" : "+") +
+      Math.abs(scale.closureCents).toFixed(2) + " " + (state.language === "mn" ? "цент" : "cents");
+    $("scaleGapsValue").textContent = scale.gaps.map(gap => Math.round(gap)).join(" · ") +
+      " " + (state.language === "mn" ? "цент" : "cents");
+    $("scaleOctaveValue").textContent = scale.count + " · " + scale.octaveCount;
+    $("scaleChainFoot").textContent = intervalPhrase("scaleChainFoot", {
+      count: scale.count, down: scale.down, up: scale.up
+    });
+    $("scaleButton").classList.toggle("playing", state.scalePlaying);
+    $("scaleButton").setAttribute("aria-pressed", String(state.scalePlaying));
+    $("scalePlayIcon").textContent = state.scalePlaying ? "■" : "▶";
+    $("scalePlayLabel").textContent = text(state.scalePlaying ? "scaleStop" : "scalePlay");
+    $("scalePlayCaption").textContent = text(state.scalePlaying ? "stopCaption" : "scalePlayCaption");
+    $("scaleRemoveDown").disabled = state.scaleDown === 0;
+    $("scaleRemoveUp").disabled = state.scaleUp === 0;
+    $("scaleAddDown").disabled = scale.count >= scaleModel.MAX_NOTES || state.scaleDown >= 11;
+    $("scaleAddUp").disabled = scale.count >= scaleModel.MAX_NOTES || state.scaleUp >= 11;
+    document.querySelectorAll("[data-scale-preset]").forEach(button => {
+      const preset = scaleModel.PRESETS.find(p => p.id === button.dataset.scalePreset);
+      const selected = preset.down === state.scaleDown && preset.up === state.scaleUp;
+      button.classList.toggle("selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+    document.querySelectorAll("[data-scale-tonic]").forEach(button => {
+      const index = Number(button.dataset.scaleTonic);
+      const note = scale.notes[index];
+      button.hidden = !note;
+      if (!note) return;
+      button.textContent = (index + 1) + " · " + note.numerator + "/" + note.denominator;
+      button.setAttribute("title", hzText(note.hz) + " · k=" + note.k);
+      const selected = note.k === scale.tonicK;
+      button.classList.toggle("selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+  }
+
+  function stopScaleSound(immediate = false, message = "scaleStopped") {
+    scaleAudio.stop(immediate);
+    state.scalePlaying = false;
+    setScaleStatus(message);
+    renderScaleControls();
+  }
+
+  async function toggleScaleSound() {
+    if (state.scalePlaying) { stopScaleSound(); return; }
+    if (state.mode !== "tuning" || state.tuningKind !== "scales") return;
+    setScaleStatus("scaleStarting");
+    try {
+      if (await scaleAudio.start(scaleAnalysis())) {
+        state.scalePlaying = true;
+        setScaleStatus("scalePlaying");
+        renderScaleControls();
+      }
+    } catch (error) {
+      stopScaleSound(true, error.message === "unsupported" ? "scaleUnsupported" : "scaleBlocked");
+      setScaleStatus(state.scaleStatus, true);
+    }
+  }
+
+  function setScaleBase(input) {
+    const value = Number(input);
+    if (!Number.isFinite(value) || value < scaleModel.MIN_BASE_HZ || value > scaleModel.MAX_BASE_HZ) {
+      setScaleStatus("scaleInvalid", true);
+      renderScaleControls();
+      return;
+    }
+    if (state.scaleBase === value) return;
+    stopScaleSound();
+    state.scaleBase = value;
+    setScaleStatus("scaleReady");
+    renderScaleControls();
+    drawPlots();
+  }
+
+  function selectScalePreset(id) {
+    const preset = scaleModel.PRESETS.find(item => item.id === id);
+    if (!preset) return;
+    stopScaleSound();
+    state.scaleDown = preset.down;
+    state.scaleUp = preset.up;
+    if (state.scaleTonicK < -preset.down || state.scaleTonicK > preset.up) state.scaleTonicK = 0;
+    setScaleStatus("scaleReady");
+    renderScaleControls();
+    drawPlots();
+  }
+
+  function changeScaleBoundary(direction, delta) {
+    const field = direction === "down" ? "scaleDown" : "scaleUp";
+    const next = state[field] + delta;
+    if (!Number.isInteger(next) || next < 0 || next > 11 ||
+        next + (direction === "down" ? state.scaleUp : state.scaleDown) + 1 > scaleModel.MAX_NOTES) return;
+    stopScaleSound();
+    state[field] = next;
+    if (state.scaleTonicK < -state.scaleDown || state.scaleTonicK > state.scaleUp) state.scaleTonicK = 0;
+    setScaleStatus("scaleReady");
+    renderScaleControls();
+    drawPlots();
+  }
+
+  function selectScaleTonic(index) {
+    const note = scaleAnalysis().notes[index];
+    if (!note || note.k === state.scaleTonicK) return;
+    stopScaleSound();
+    state.scaleTonicK = note.k;
+    setScaleStatus("scaleReady");
+    renderScaleControls();
+    drawPlots();
+  }
+
+  function resetScale() {
+    stopScaleSound();
+    state.scaleDown = 0;
+    state.scaleUp = 4;
+    state.scaleTonicK = 0;
+    state.scaleBase = 220;
+    state.scaleVolume = 38;
+    setScaleStatus("scaleReady");
+    renderScaleControls();
     drawPlots();
   }
 
@@ -2551,13 +2841,15 @@
     const isSustain = state.mode === "sustain";
     const isMotion = state.mode === "motion";
     const isMix = state.mode === "mix";
+    const isTuning = state.mode === "tuning";
     const isBeats = isMix && state.mixKind === "beats";
     const isHarmonics = isMix && state.mixKind === "harmonics";
-    const isIntervals = isMix && state.mixKind === "intervals";
+    const isIntervals = isTuning && state.tuningKind === "intervals";
+    const isScales = isTuning && state.tuningKind === "scales";
     const isNoise = isMix && state.mixKind === "noise";
-    $("pureWorkspace").hidden = isStrike || isSustain || isMotion || isMix;
-    $("pureChallenge").hidden = isStrike || isSustain || isMotion || isMix;
-    $("pureExplanation").hidden = isStrike || isSustain || isMotion || isMix;
+    $("pureWorkspace").hidden = isStrike || isSustain || isMotion || isMix || isTuning;
+    $("pureChallenge").hidden = isStrike || isSustain || isMotion || isMix || isTuning;
+    $("pureExplanation").hidden = isStrike || isSustain || isMotion || isMix || isTuning;
     $("strikeWorkspace").hidden = !isStrike;
     $("strikeChallenge").hidden = !isStrike;
     $("strikeExplanation").hidden = !isStrike;
@@ -2576,6 +2868,9 @@
     $("intervalWorkspace").hidden = !isIntervals;
     $("intervalChallenge").hidden = !isIntervals;
     $("intervalExplanation").hidden = !isIntervals;
+    $("scaleWorkspace").hidden = !isScales;
+    $("scaleChallenge").hidden = !isScales;
+    $("scaleExplanation").hidden = !isScales;
     $("noiseWorkspace").hidden = !isNoise;
     $("noiseChallenge").hidden = !isNoise;
     $("noiseExplanation").hidden = !isNoise;
@@ -2584,14 +2879,19 @@
       button.classList.toggle("selected", selected);
       button.setAttribute("aria-pressed", String(selected));
     });
+    document.querySelectorAll("[data-tuning-kind]").forEach(button => {
+      const selected = button.dataset.tuningKind === state.tuningKind;
+      button.classList.toggle("selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
     for (const [id, mode] of [["modePure", "pure"], ["modeStrike", "strike"], ["modeSustain", "sustain"],
-      ["modeMotion", "motion"], ["modeMix", "mix"]]) {
+      ["modeMotion", "motion"], ["modeMix", "mix"], ["modeTuning", "tuning"]]) {
       const selected = state.mode === mode;
       $(id).classList.toggle("active", selected);
       $(id).setAttribute("aria-pressed", String(selected));
     }
     $("pagePhase").textContent = text(isStrike ? "strikePhase" : isSustain ? "sustainPhase" : isMotion ? "motionPhase" :
-      isHarmonics ? "harmonicPhase" : isIntervals ? "intervalPhase" :
+      isHarmonics ? "harmonicPhase" : isIntervals ? "intervalPhase" : isScales ? "scalePhase" :
         isNoise ? "noisePhase" : isMix ? "mixPhase" : "phase");
   }
 
@@ -2666,6 +2966,12 @@
     $("intervalBaseInput").setAttribute("aria-label", text("intervalBaseInputAria"));
     $("intervalWaveCanvas").setAttribute("aria-label", text("intervalWaveAria"));
     $("intervalSpectrumCanvas").setAttribute("aria-label", text("intervalSpectrumAria"));
+    $("scalePresets").setAttribute("aria-label", text("scalePresetsAria"));
+    $("scaleTonicChoices").setAttribute("aria-label", text("scaleTonicAria"));
+    $("scaleBaseSlider").setAttribute("aria-label", text("scaleBaseSliderAria"));
+    $("scaleBaseInput").setAttribute("aria-label", text("scaleBaseInputAria"));
+    $("scaleCircleCanvas").setAttribute("aria-label", text("scaleCircleAria"));
+    $("scaleChainCanvas").setAttribute("aria-label", text("scaleChainAria"));
     $("harmonicPresets").setAttribute("aria-label", text("harmonicPresetsAria"));
     $("harmonicSliders").setAttribute("aria-label", text("harmonicSlidersAria"));
     $("harmonicWaveCanvas").setAttribute("aria-label", text("harmonicWaveAria"));
@@ -2681,6 +2987,7 @@
     setMotionStatus(state.motionStatus, state.motionError);
     setMixStatus(state.mixStatus, state.mixError);
     setIntervalStatus(state.intervalStatus, state.intervalError);
+    setScaleStatus(state.scaleStatus, state.scaleError);
     setHarmonicStatus(state.harmonicStatus, state.harmonicError);
     setNoiseStatus(state.noiseStatus, state.noiseError);
     renderMode();
@@ -2689,6 +2996,7 @@
     renderMotionControls();
     renderMixControls();
     renderIntervalControls();
+    renderScaleControls();
     renderHarmonicControls();
     renderNoiseControls();
     renderStrikeTime();
@@ -2928,6 +3236,7 @@
     stopMotionSound(immediate, message === "hidden" ? "motionHidden" : "motionStopped");
     stopMixSound(immediate, message === "hidden" ? "mixHidden" : "mixStopped");
     stopIntervalSound(immediate, message === "hidden" ? "intervalHidden" : "intervalStopped");
+    stopScaleSound(immediate, message === "hidden" ? "scaleHidden" : "scaleStopped");
     stopHarmonicSound(immediate);
     stopNoiseSound(immediate);
     stopSound(immediate, message);
@@ -2964,24 +3273,37 @@
   }
 
   function selectMode(mode) {
-    if (mode === state.mode || !["pure", "strike", "sustain", "motion", "mix"].includes(mode)) return;
+    if (mode === state.mode || !["pure", "strike", "sustain", "motion", "mix", "tuning"].includes(mode)) return;
     stopAllAudio(false);
     state.mode = mode;
     if (mode === "sustain") setSustainStatus("sustainReady");
     if (mode === "motion") setMotionStatus("motionReady");
     if (mode === "mix") setMixStatus("mixReady");
+    if (mode === "tuning") {
+      if (state.tuningKind === "intervals") setIntervalStatus("intervalReady");
+      else setScaleStatus("scaleReady");
+    }
     renderTexts();
     drawPlots();
   }
 
   function selectMixKind(kind) {
-    if (!["beats", "harmonics", "intervals", "noise"].includes(kind) || kind === state.mixKind) return;
+    if (!["beats", "harmonics", "noise"].includes(kind) || kind === state.mixKind) return;
     stopAllAudio();
     state.mixKind = kind;
     if (kind === "beats") setMixStatus("mixReady");
     if (kind === "harmonics") setHarmonicStatus("harmonicReady");
-    if (kind === "intervals") setIntervalStatus("intervalReady");
     if (kind === "noise") setNoiseStatus("noiseReady");
+    renderTexts();
+    drawPlots();
+  }
+
+  function selectTuningKind(kind) {
+    if (!["intervals", "scales"].includes(kind) || kind === state.tuningKind) return;
+    stopAllAudio();
+    state.tuningKind = kind;
+    if (kind === "intervals") setIntervalStatus("intervalReady");
+    else setScaleStatus("scaleReady");
     renderTexts();
     drawPlots();
   }
@@ -3819,6 +4141,87 @@
     drawIntervalSpectrum();
   }
 
+  function drawScaleCircle() {
+    const scale = scaleAnalysis();
+    const { ctx, width, height } = plotContext($("scaleCircleCanvas"));
+    const centerX = width / 2, centerY = height / 2;
+    const radius = Math.max(48, Math.min(width * .29, height * .31));
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = "#c8d8e8";
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.font = "12px system-ui, sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#7a8da2";
+    ctx.fillText("1:1 / 2:1", centerX, centerY);
+    for (const note of scale.notes) {
+      const angle = -Math.PI / 2 + 2 * Math.PI * note.cents / 1200;
+      const x = centerX + radius * Math.cos(angle);
+      const y = centerY + radius * Math.sin(angle);
+      ctx.strokeStyle = "#dce7f3";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      ctx.fillStyle = note.k === scale.tonicK ? "#189786" : "#2f7dc4";
+      ctx.beginPath();
+      ctx.arc(x, y, note.k === scale.tonicK ? 8 : 5.5, 0, 2 * Math.PI);
+      ctx.fill();
+      const labelRadius = radius + (scale.count >= 10 ? 22 : 28);
+      const lx = centerX + labelRadius * Math.cos(angle);
+      const ly = centerY + labelRadius * Math.sin(angle);
+      ctx.fillStyle = note.k === scale.tonicK ? "#148575" : "#365e82";
+      ctx.font = scale.count >= 10 ? "bold 11px system-ui, sans-serif" : "bold 12px system-ui, sans-serif";
+      const label = scale.count >= 10 ? String(note.k) : note.numerator + "/" + note.denominator;
+      ctx.fillText(label, lx, ly);
+    }
+  }
+
+  function drawScaleChain() {
+    const scale = scaleAnalysis();
+    const { ctx, width, height } = plotContext($("scaleChainCanvas"));
+    const left = 43, right = width - 36, centerY = height * .45;
+    const step = scale.count > 1 ? (right - left) / (scale.count - 1) : 0;
+    ctx.strokeStyle = "#afc7db";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(left, centerY);
+    ctx.lineTo(right, centerY);
+    ctx.stroke();
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    for (const [index, note] of scale.chain.entries()) {
+      const x = scale.count > 1 ? left + index * step : (left + right) / 2;
+      const isTonic = note.k === scale.tonicK;
+      ctx.fillStyle = isTonic ? "#179789" : note.k === 0 ? "#e49b46" : "#357ec9";
+      ctx.beginPath();
+      ctx.arc(x, centerY, isTonic ? 9 : 7, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.fillStyle = isTonic ? "#188777" : "#416782";
+      ctx.font = "bold 12px system-ui, sans-serif";
+      ctx.fillText((note.k > 0 ? "+" : "") + note.k, x, centerY - 25);
+      if (scale.count < 9 || index % 2 === 0 || isTonic) {
+        ctx.font = "11px system-ui, sans-serif";
+        ctx.fillText(note.numerator + "/" + note.denominator, x, centerY + 25 +
+          (scale.count >= 9 && index % 2 ? 15 : 0));
+      }
+    }
+    ctx.font = "11px system-ui, sans-serif";
+    ctx.fillStyle = "#728ca2";
+    ctx.textAlign = "left";
+    ctx.fillText("÷ 3:2", 12, height - 12);
+    ctx.textAlign = "right";
+    ctx.fillText("× 3:2", width - 12, height - 12);
+  }
+
+  function drawScalePlots() {
+    drawScaleCircle();
+    drawScaleChain();
+  }
+
   function drawHarmonicWave() {
     const { ctx, width, height } = plotContext($("harmonicWaveCanvas"));
     const left = 43, right = width - 16, top = 26, bottom = height - 32;
@@ -3975,9 +4378,11 @@
       drawMotionPlots();
     } else if (state.mode === "mix") {
       if (state.mixKind === "harmonics") drawHarmonicPlots();
-      else if (state.mixKind === "intervals") drawIntervalPlots();
       else if (state.mixKind === "noise") drawNoisePlots();
       else drawMixPlots();
+    } else if (state.mode === "tuning") {
+      if (state.tuningKind === "intervals") drawIntervalPlots();
+      else drawScalePlots();
     } else {
       drawWave();
       drawSpectrum();
@@ -4060,6 +4465,15 @@
   document.querySelectorAll("[data-mix-kind]").forEach(button => {
     button.addEventListener("click", () => selectMixKind(button.dataset.mixKind));
   });
+  document.querySelectorAll("[data-tuning-kind]").forEach(button => {
+    button.addEventListener("click", () => selectTuningKind(button.dataset.tuningKind));
+  });
+  document.querySelectorAll("[data-scale-preset]").forEach(button => {
+    button.addEventListener("click", () => selectScalePreset(button.dataset.scalePreset));
+  });
+  document.querySelectorAll("[data-scale-tonic]").forEach(button => {
+    button.addEventListener("click", () => selectScaleTonic(Number(button.dataset.scaleTonic)));
+  });
   document.querySelectorAll("[data-interval-ratio]").forEach(button => {
     button.addEventListener("click", () => selectIntervalRatio(button.dataset.intervalRatio));
   });
@@ -4069,6 +4483,19 @@
   document.querySelectorAll("[data-interval-color]").forEach(button => {
     button.addEventListener("click", () => selectIntervalColor(button.dataset.intervalColor));
   });
+  $("scaleButton").addEventListener("click", toggleScaleSound);
+  $("scaleBaseSlider").addEventListener("input", event => setScaleBase(event.target.value));
+  $("scaleBaseInput").addEventListener("change", event => setScaleBase(event.target.value));
+  $("scaleVolume").addEventListener("input", event => {
+    state.scaleVolume = Math.min(100, Math.max(0, Number(event.target.value)));
+    scaleAudio.updateVolume();
+    renderScaleControls();
+  });
+  $("scaleAddDown").addEventListener("click", () => changeScaleBoundary("down", 1));
+  $("scaleAddUp").addEventListener("click", () => changeScaleBoundary("up", 1));
+  $("scaleRemoveDown").addEventListener("click", () => changeScaleBoundary("down", -1));
+  $("scaleRemoveUp").addEventListener("click", () => changeScaleBoundary("up", -1));
+  $("scaleReset").addEventListener("click", resetScale);
   document.querySelectorAll("[data-theremin-timbre]").forEach(button => {
     button.addEventListener("click", () => setMotionTimbre(button.dataset.thereminTimbre));
   });
@@ -4207,6 +4634,7 @@
   $("modeSustain").addEventListener("click", () => selectMode("sustain"));
   $("modeMotion").addEventListener("click", () => selectMode("motion"));
   $("modeMix").addEventListener("click", () => selectMode("mix"));
+  $("modeTuning").addEventListener("click", () => selectMode("tuning"));
   const sustainPad = $("sustainButton");
   sustainPad.addEventListener("pointerdown", event => {
     if (state.mode !== "sustain" || state.sustainGesture !== "hold" || event.button > 0 ||
@@ -4388,7 +4816,7 @@
   window.addEventListener("blur", () => {
     if (recorder.state === "recording") stopRecording();
     if (state.sustainPlaying || sustainPointerId !== null || sustainKeyboardHeld ||
-        state.motionPlaying || state.mixPlaying || state.intervalPlaying ||
+        state.motionPlaying || state.mixPlaying || state.intervalPlaying || state.scalePlaying ||
         state.harmonicPlaying || state.noisePlaying) {
       stopAllAudio(true, "hidden");
     }
@@ -4409,6 +4837,8 @@
     observer.observe($("mixSpectrumCanvas"));
     observer.observe($("intervalWaveCanvas"));
     observer.observe($("intervalSpectrumCanvas"));
+    observer.observe($("scaleCircleCanvas"));
+    observer.observe($("scaleChainCanvas"));
     observer.observe($("harmonicWaveCanvas"));
     observer.observe($("harmonicSpectrumCanvas"));
     observer.observe($("noiseWaveCanvas"));
