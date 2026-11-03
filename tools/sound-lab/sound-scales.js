@@ -16,7 +16,7 @@
   const PRESETS = Object.freeze([
     Object.freeze({ id: "five-up", down: 0, up: 4 }),
     Object.freeze({ id: "five-center", down: 2, up: 2 }),
-    Object.freeze({ id: "five-down", down: 3, up: 1 }),
+    Object.freeze({ id: "five-down", down: 4, up: 0 }),
     Object.freeze({ id: "seven", down: 1, up: 5 }),
     Object.freeze({ id: "twelve", down: 5, up: 6 })
   ]);

@@ -46,6 +46,29 @@ test("up/down windows give five distinct modes relative to one fixed reference",
   }
 });
 
+test("the five-down preset contains only downward fifth steps", () => {
+  const preset = scales.PRESETS.find(item => item.id === "five-down");
+  assert.equal(preset.down, 4);
+  assert.equal(preset.up, 0);
+  assert.deepEqual(scales.build(preset).chain.map(note => note.k), [-4, -3, -2, -1, 0]);
+});
+
+test("each tonic defines a full octave window containing all pitches in playback order", () => {
+  for (const down of [0, 2, 4]) {
+    const up = 4 - down;
+    for (let tonicK = -down; tonicK <= up; tonicK++) {
+      const scale = scales.build({ down, up, tonicK });
+      const anchor = (3 / 2) ** (tonicK + down);
+      const positions = scale.ordered.map(note => anchor * note.relativeRatio);
+      assert.ok(positions.every(f => f >= anchor * (1 - 1e-9) && f < 2 * anchor),
+        "Every original or octave-copied note has exactly one place in the tonic octave");
+      assert.ok(positions.every((f, i) => !i || f > positions[i - 1]));
+      assert.deepEqual(scale.ordered.map(note => note.k),
+        scales.melodySteps(scale).slice(0, scale.count).map(note => note.k));
+    }
+  }
+});
+
 test("twelve consecutive fifths miss seven octaves by one Pythagorean comma", () => {
   const scale = scales.build({ down: 5, up: 6 });
   close(scale.closureCents, 23.460010384649, 1e-4);

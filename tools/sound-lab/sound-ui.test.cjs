@@ -41,8 +41,8 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-intervals\.js\?v=s021"/);
   assert.match(html, /src="sound-harmonics\.js"/);
   assert.match(html, /src="sound-noise\.js"/);
-  assert.match(html, /src="sound-scales\.js\?v=s023"/);
-  assert.match(html, /src="sound-lab\.js\?v=s023"/);
+  assert.match(html, /src="sound-scales\.js\?v=s024"/);
+  assert.match(html, /src="sound-lab\.js\?v=s024"/);
   assert.match(html, /href="sound-lab\.css\?v=s023"/);
   assert.match(html, /src="sound-recorder\.js"/);
   assert.match(html, /id="recordPreview"[^>]*controls/);
@@ -162,9 +162,13 @@ function fakePage(search = "", supportWorklets = true) {
   function element(dataset = {}) {
     const attributes = {};
     const drawnText = [];
+    const drawnRects = [];
+    const drawnArcs = [];
     return {
       dataset,
       drawnText,
+      drawnRects,
+      drawnArcs,
       events: {},
       value: "",
       checked: false,
@@ -181,9 +185,12 @@ function fakePage(search = "", supportWorklets = true) {
       getContext() {
         const noop = () => {};
         return {
-          setTransform: noop, clearRect: noop, fillRect: noop, beginPath: noop,
+          setTransform: noop, clearRect: noop,
+          fillRect(x, y, width, height) { drawnRects.push({ x, y, width, height, color: this.fillStyle }); },
+          beginPath: noop,
           moveTo: noop, lineTo: noop, stroke: noop, fillText(value) { drawnText.push(String(value)); },
-          arc: noop, fill: noop
+          arc(x, y, radius) { drawnArcs.push({ x, y, radius, fillStyle: this.fillStyle }); },
+          fill: noop
         };
       }
     };
@@ -1550,21 +1557,45 @@ test("S023 spiral and harmonic rows follow the audible pitch order, then clear o
   const fourier = app.elements.get("scaleFourierCanvas");
   assert.ok(spiral.drawnText.includes("+1"), "Spiral labels fifth-chain steps");
   assert.ok(fourier.drawnText.includes("2^" + 2 + " f₀"), "Harmonic rows use a logarithmic octave axis");
+  assert.ok(fourier.drawnText.includes("нэг октав"), "The highlighted octave is labeled");
+  const oneOctave = () => fourier.drawnRects.filter(rect => rect.color === "#eaf7f0").at(-1);
+  assert.ok(oneOctave().width > 0, "A shaded octave selection exists");
   assert.equal(fourier.style.height, "260px", "Five rows fit the compact cartoon");
+  const activeMarks = () => fourier.drawnArcs.filter(arc =>
+    arc.fillStyle === "#e3a33b" && arc.radius === 6.7);
   await app.fire("scaleButton", "click");
   assert.match(app.elements.get("scaleNowValue").textContent, /алхам 0 · 1\/1/);
   assert.equal(app.elements.get("scaleNowValue").classList.contains("active"), true);
+  assert.equal(activeMarks().length, 1, "Only the sounding octave marker is filled gold");
+  const firstX = activeMarks().at(-1).x;
   app.tick(.33);
   assert.match(app.elements.get("scaleNowValue").textContent, /алхам \+2 · 9\/8/,
     "Second played note is k=2, not the next generated fifth k=1");
+  assert.ok(activeMarks().at(-1).x > firstX, "The highlighted marker moves right within the octave");
   app.tick(.32);
   assert.match(app.elements.get("scaleNowValue").textContent, /алхам \+4 · 81\/64/);
+  const thirdX = activeMarks().at(-1).x;
   app.tick(1.0);
   assert.match(app.elements.get("scaleNowValue").textContent, /алхам 0 · 1\/1 · дээд октав/);
+  assert.ok(activeMarks().at(-1).x > thirdX);
+  assert.ok(Math.abs(activeMarks().at(-1).x - (oneOctave().x + oneOctave().width)) < 1e-6,
+    "Upper tonic highlights the right boundary, not the tonic at the left");
+  const beforeStop = activeMarks().length;
   app.fire("stopAll", "click");
+  assert.equal(activeMarks().length, beforeStop, "Stop clears active marker without another gold highlight");
   assert.equal(app.elements.get("scaleNowValue").classList.contains("active"), false);
   assert.match(app.elements.get("scaleNowValue").textContent, /өсөх, буурах/);
   assert.equal(app.elements.get("scalePlayLabel").textContent, "Шатлалыг сонсох");
+});
+
+test("S024 five-down actually means four downward fifths, not three down and one up", () => {
+  const app = fakePage();
+  app.fire("modeTuning", "click");
+  app.tuningKindButtons[1].events.click();
+  app.scalePresetButtons[2].events.click();
+  assert.equal(app.elements.get("scaleRangeValue").textContent, "−4 … +0");
+  assert.equal(app.elements.get("scaleCountValue").textContent, "5 нот");
+  assert.equal(app.scaleTonicButtons.filter(button => !button.hidden).length, 5);
 });
 
 test("beating controls retune both voices; gap zero resynchronizes the pair without lingering voices", async () => {

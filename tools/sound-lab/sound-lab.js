@@ -89,13 +89,14 @@
       scaleTonicAria: "Choose a scale tonic from the generated pitches",
       scaleTonicFact: "Tonic frequency", scaleReturnFact: "Distance from nearest octave",
       scaleStepsFact: "Adjacent pitch gaps", scaleOctaveFact: "Fifth steps · octaves",
-      scaleSpiralTitle: "Octave spiral of 3:2 steps", scaleSpiralHint: "Start at step 0. Upward fifths spiral out; downward fifths spiral in. Green marks the chosen tonic.",
+      scaleSpiralTitle: "Octave spiral of 3:2 steps", scaleSpiralHint: "Start at step 0. Fifths spiral outward or inward; faint spokes show pitch order in an octave. Green marks the tonic; gold follows playback.",
       scaleSpiralAria: "Octave spiral: numbered 3:2 fifth steps across several octaves",
-      scaleSpiralFoot: "Step numbers show fifth-chain order, not ascending pitch order. Points on the same ray are an octave apart.",
+      scaleSpiralFoot: "Spiral steps show generation order; faint rays show the different ascending pitch order around one octave.",
       scaleSpiralAxis: "3:2 ↻ 210.6°",
-      scaleFourierTitle: "Notes and harmonics", scaleFourierHint: "Each higher row is 3:2 above the row below. Circles are fundamentals, diamonds possible harmonic positions; gray dots are virtual octave copies.",
+      scaleFourierTitle: "Notes and harmonics", scaleFourierHint: "Each higher row is 3:2 above the one below. Circles: original fundamentals; diamonds: possible harmonics; gray dots: the same notes moved by octaves.",
       scaleFourierAria: "Log-frequency harmonic rows of the fifth chain with virtual octave references",
-      scaleFourierAxis: "log₂ f →", scaleFourierFoot: "Adjacent notes share possible 3rd/2nd harmonics: 3f₁ = 2f₂. Schematic, not the audio spectrum; gray copies never sound.",
+      scaleFourierAxis: "log₂ f →", scaleFourierFoot: "Read note pitches left to right inside the green one-octave window. Gray copies can be played after transposition; they are not extra simultaneous overtones. 3f₁ = 2f₂.",
+      scaleWindowLabel: "one octave",
       scaleNowIdle: "Play to hear the notes in rising and falling pitch order.",
       scaleNowPlaying: "Playing: step {step} · {ratio}{octave}", scaleNowUpperOctave: " · upper octave",
       scaleChallenge: "Build five pitches, then add a step on either end to reach seven. Change the tonic: how does the melody sound?",
@@ -449,13 +450,14 @@
       scaleTonicAria: "Үүссэн нотоос үндсэн нот сонгох",
       scaleTonicFact: "Үндсэн нотын давтамж", scaleReturnFact: "Хамгийн ойр октаваас зөрөх зай",
       scaleStepsFact: "Зэргэлдээ нотын зай", scaleOctaveFact: "3:2 алхам · октав",
-      scaleSpiralTitle: "3:2 алхмын октавын спираль", scaleSpiralHint: "0-ээс эхэлнэ. Дээш квинтээр алхвал гадагш, доош алхвал дотогш эргэнэ. Ногоон нь сонгосон үндсэн нот.",
+      scaleSpiralTitle: "3:2 алхмын октавын спираль", scaleSpiralHint: "0-ээс эхэлнэ. Квинтээр дээш, доош алхахад спираль гадагш, дотогш эргэнэ. Бүдэг цацрагууд нэг октав дахь нотын эрэмбийг харуулна.",
       scaleSpiralAria: "Олон октавын спираль дээр дугаарласан 3:2 квинтийн алхмууд",
-      scaleSpiralFoot: "Алхмын тоо квинтийн дарааллыг заана, давтамжаар өсөх дарааллыг биш. Нэг цацраг дээрх цэгүүд октаваар ялгаатай.",
+      scaleSpiralFoot: "Спиралийн алхмууд үүсгэх дарааллыг, төвөөс татсан цацрагууд нэг октав дахь давтамжаар эрэмбэлэх дарааллыг заана.",
       scaleSpiralAxis: "3:2 ↻ 210.6°",
-      scaleFourierTitle: "Нот ба гармоникууд", scaleFourierHint: "Дээд мөр нь доод мөрөөсөө 3:2 дахин өндөр. Дугуй нь үндсэн давтамж, ромбо нь үүсэж болох гармоник; саарал нь октавын хийсвэр хуулбар.",
+      scaleFourierTitle: "Нот ба гармоникууд", scaleFourierHint: "Дээд мөр нь доод мөрөөсөө 3:2 дахин өндөр. Дугуй нь анхны давтамж, ромбо нь үүсэж болох гармоник; саарал нь октаваар шилжүүлсэн мөнөөх нот.",
       scaleFourierAria: "Квинтийн гинжийн үндсэн давтамж, гармоник, октавын хийсвэр хуулбарууд",
-      scaleFourierAxis: "log₂ f →", scaleFourierFoot: "Хөрш хоёр нотын 3 ба 2-р гармоник давхцана: 3f₁ = 2f₂. Энэ нь дууны жинхэнэ спектр биш, схем зураг; саарал цэг дуугарахгүй.",
+      scaleFourierAxis: "log₂ f →", scaleFourierFoot: "Ногоон нэг октав доторх цэгүүдийг зүүнээс баруун тийш уншихад нотын эрэмбэ гарна. Саарал хуулбарыг октаваар шилжүүлж тоглож болно; нэмэлт зэрэг дуугарах гармоник биш. 3f₁ = 2f₂.",
+      scaleWindowLabel: "нэг октав",
       scaleNowIdle: "Давтамжаар өсөх, буурах нотуудыг сонсохын тулд тоглуулна уу.",
       scaleNowPlaying: "Одоо: алхам {step} · {ratio}{octave}", scaleNowUpperOctave: " · дээд октав",
       scaleChallenge: "Таван нот үүсгээд гинжийн хоёр захад тус бүр нэгийг нэмэн долоон нот болго. Үндсэн нотыг сольж сонсоход юу өөрчлөгдөх вэ?",
@@ -4215,12 +4217,20 @@
       ctx.arc(centerX, centerY, radiusAt(octave), 0, 2 * Math.PI);
       ctx.stroke();
     }
-    const reference = positionAt(0);
-    ctx.strokeStyle = "#cadbea";
-    ctx.beginPath();
-    ctx.moveTo(centerX, centerY);
-    ctx.lineTo(centerX, reference.y > centerY ? centerY + outer : centerY - outer);
-    ctx.stroke();
+    // Rays represent the octave-reduced angle: different fifth-chain steps
+    // are encountered in pitch order by sweeping clockwise around the center.
+    for (const note of scale.chain) {
+      const angle = positionAt(note.k * octaveStep).angle;
+      const tonic = note.k === scale.tonicK;
+      const active = scaleActive && scaleActive.k === note.k;
+      ctx.strokeStyle = active ? "#e8a23b" : tonic ? "#a0d9cc" : "#d7e2ec";
+      ctx.lineWidth = active ? 2.7 : tonic ? 1.5 : .85;
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.lineTo(centerX + (outer + 7) * Math.cos(angle),
+        centerY + (outer + 7) * Math.sin(angle));
+      ctx.stroke();
+    }
     ctx.strokeStyle = "#4b8bd0";
     ctx.lineWidth = 2.4;
     ctx.beginPath();
@@ -4281,9 +4291,26 @@
     const xAt = frequency => left + (Math.log2(frequency) - minLog) /
       (maxLog - minLog) * (right - left);
     const yAt = index => bottom - (scale.count > 1 ? index / (scale.count - 1) : .5) * (bottom - top);
+    // The lower chain endpoint is the logarithmic frequency reference (f₀).
+    // One highlighted octave is anchored to the chosen tonic, so the sounding
+    // melody moves left to right within this window (then back).
+    const windowStart = Math.pow(3 / 2, scale.tonicK + scale.down);
+    const windowLeft = xAt(windowStart), windowRight = xAt(2 * windowStart);
+    ctx.fillStyle = "#eaf7f0";
+    ctx.fillRect(windowLeft, top - 12, windowRight - windowLeft, bottom - top + 21);
+    ctx.strokeStyle = "#8bc8aa";
+    ctx.lineWidth = 1.2;
+    for (const edge of [windowLeft, windowRight]) {
+      ctx.beginPath();
+      ctx.moveTo(edge, top - 12);
+      ctx.lineTo(edge, bottom + 9);
+      ctx.stroke();
+    }
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.font = "10px system-ui, sans-serif";
+    ctx.fillStyle = "#3f917b";
+    ctx.fillText(text("scaleWindowLabel"), (windowLeft + windowRight) / 2, 10);
     const every = Math.max(1, Math.ceil((maxLog - minLog) / (width < 470 ? 4 : 7)));
     for (let power = 0; power <= Math.floor(maxLog); power += every) {
       const x = xAt(2 ** power);
@@ -4314,8 +4341,8 @@
       const isTonic = note.k === scale.tonicK;
       const isActive = scaleActive && scaleActive.k === note.k;
       const color = isTonic ? "#149588" : note.k === 0 ? "#dc963f" : "#3381c7";
-      ctx.strokeStyle = isActive ? "#e8a63b" : "#d4e0ec";
-      ctx.lineWidth = isActive ? 3 : 1.3;
+      ctx.strokeStyle = "#d4e0ec";
+      ctx.lineWidth = 1.3;
       ctx.beginPath();
       ctx.moveTo(left, y);
       ctx.lineTo(right, y);
@@ -4328,7 +4355,8 @@
         ctx.font = "9px system-ui, sans-serif";
         ctx.fillText(note.numerator + "/" + note.denominator, left - 10, y + 8);
       }
-      // Ghosts are octave-reduced references, NOT subharmonics in the sound.
+      // Pale octave copies are playable transpositions of this fundamental,
+      // but are not simultaneous extra components in its spectrum.
       for (let copy = 1; copy <= Math.ceil(Math.log2(fundamental)) + 1; copy++) {
         const ghost = fundamental / 2 ** copy;
         if (Math.log2(ghost) < minLog) continue;
@@ -4340,15 +4368,8 @@
       // Physical harmonics (and the actual fundamental) lie to the right.
       for (let harmonic = 1; harmonic <= 8; harmonic++) {
         const x = xAt(fundamental * harmonic);
-        const size = harmonic === 1 ? (isActive ? 8 : 6.5) : 4.2 - harmonic * .17;
+        const size = harmonic === 1 ? 6.5 : 4.2 - harmonic * .17;
         if (harmonic === 1) {
-          if (isActive) {
-            ctx.strokeStyle = "#e6a331";
-            ctx.lineWidth = 2.8;
-            ctx.beginPath();
-            ctx.arc(x, y, size + 4, 0, 2 * Math.PI);
-            ctx.stroke();
-          }
           ctx.fillStyle = color;
           ctx.beginPath();
           ctx.arc(x, y, size, 0, 2 * Math.PI);
@@ -4363,6 +4384,43 @@
           ctx.lineTo(x, y - size);
           ctx.fill();
         }
+      }
+      const folded = windowStart * scale.ordered.find(item => item.k === note.k).relativeRatio;
+      const foldedX = xAt(folded);
+      const isUnshifted = Math.abs(folded - fundamental) < fundamental * 1e-9;
+      // Every row contributes exactly one pitch to the chosen octave,
+      // whether its marker is the original fundamental or a gray octave copy.
+      if (!isUnshifted) {
+        ctx.fillStyle = "#a7b4c2";
+        ctx.beginPath();
+        ctx.arc(foldedX, y, 5, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+      ctx.strokeStyle = isTonic ? "#148575" : "#729f96";
+      ctx.lineWidth = 1.3;
+      ctx.beginPath();
+      ctx.arc(foldedX, y, 7.3, 0, 2 * Math.PI);
+      ctx.stroke();
+      // The top tonic is represented by its octave-up copy at the right edge.
+      if (isTonic) {
+        ctx.fillStyle = "#a7b4c2";
+        ctx.beginPath();
+        ctx.arc(windowRight, y, 4.2, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+      // Only the sounding pitch marker inside the selected octave glows.
+      // The original fundamental and the entire row never change color.
+      if (isActive) {
+        const activeX = scaleActive.octaveUp ? windowRight : foldedX;
+        ctx.fillStyle = "#e3a33b";
+        ctx.beginPath();
+        ctx.arc(activeX, y, 6.7, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.strokeStyle = "#bd7917";
+        ctx.lineWidth = 2.8;
+        ctx.beginPath();
+        ctx.arc(activeX, y, 11.5, 0, 2 * Math.PI);
+        ctx.stroke();
       }
     }
   }
