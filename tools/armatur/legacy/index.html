@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="mn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Арматур — хуучин арга (засварласан)</title>
+  <style>
+    body { font: 16px/1.5 system-ui, sans-serif; max-width: 760px; margin: 1.5rem auto; padding: 0 1rem; color: #253343; }
+    label { display: block; margin: .65rem 0; }
+    input, select, button { font: inherit; padding: .35rem; max-width: 100%; }
+    input { width: 9rem; }
+    .row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin: .4rem 0; }
+    .row input { width: 7rem; }
+    button { margin: .6rem 0; cursor: pointer; }
+    .note { background: #f3f6fb; border-left: 3px solid #5279a5; padding: .8rem; }
+    .error { color: #ae2424; }
+    .result { margin-top: 1.2rem; }
+  </style>
+</head>
+<body>
+  <p><a href="../">← Шинэ хувилбар</a></p>
+  <h1>Арматур — хуучин арга</h1>
+  <p class="note">Анхны уртаас нь эхэлж дүүргэдэг энгийн аргыг хадгалсан, тооцооны алдааг зассан хувилбар. Энэ арга хамгийн бага хаягдалтай төлөвлөгөөг <strong>баталгаажуулахгүй</strong>. Хөрөөний ирний өргөнийг тооцохгүй.</p>
+  <form id="form">
+    <label>Стандарт арматурын урт <input id="stock" type="number" step="any" min="0" value="6000" required></label>
+    <label>Уртын нэгж
+      <select id="unit"><option value="mm">мм</option><option value="cm">см</option><option value="m">м</option></select>
+    </label>
+    <label>Арматурын диаметр (мм) <input id="diameter" type="number" step="any" min="0" value="12" required></label>
+    <label>Хэдэн янзын урттай таслах вэ? <input id="types" type="number" step="1" min="1" max="60" value="3" required></label>
+    <div id="fields"></div>
+    <button type="submit">Тооцоо</button>
+  </form>
+  <div id="result" class="result" role="status" aria-live="polite"></div>
+  <script src="armatur.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      var fields = document.getElementById("fields"), types = document.getElementById("types");
+      function buildFields() {
+        var old = Array.from(fields.querySelectorAll(".row")).map(function (row) {
+          return { length: row.querySelector(".length").value, quantity: row.querySelector(".quantity").value };
+        });
+        fields.replaceChildren();
+        var number = Math.min(60, Math.max(0, Number(types.value) || 0));
+        for (var i = 0; i < number; i++) {
+          var row = document.createElement("div"); row.className = "row";
+          var title = document.createElement("span"); title.textContent = (i + 1) + ".";
+          var length = document.createElement("input");
+          length.type = "number"; length.step = "any"; length.min = "0"; length.required = true;
+          length.className = "length"; length.placeholder = "Урт";
+          length.setAttribute("aria-label", (i + 1) + "-р урт");
+          var quantity = document.createElement("input");
+          quantity.type = "number"; quantity.step = "1"; quantity.min = "1"; quantity.required = true;
+          quantity.className = "quantity"; quantity.placeholder = "Тоо ширхэг";
+          quantity.setAttribute("aria-label", (i + 1) + "-р тоо ширхэг");
+          if (old[i]) { length.value = old[i].length; quantity.value = old[i].quantity; }
+          row.append(title, length, quantity); fields.append(row);
+        }
+      }
+      types.addEventListener("change", buildFields);
+      buildFields();
+      document.getElementById("form").addEventListener("submit", function (event) {
+        event.preventDefault();
+        var out = document.getElementById("result");
+        try {
+          var rows = Array.from(fields.querySelectorAll(".row"));
+          var plan = LegacyArmatur.compute({
+            stockLength: document.getElementById("stock").value,
+            unit: document.getElementById("unit").value,
+            diameter: document.getElementById("diameter").value,
+            items: rows.map(function (row) {
+              return { length: row.querySelector(".length").value, quantity: row.querySelector(".quantity").value };
+            })
+          });
+          var lines = plan.patterns.map(function (pattern) {
+            var pieces = pattern.cuts.map(function (piece) {
+              return (piece.length / plan.factor) + " × " + piece.count;
+            }).join(", ");
+            return pattern.repeats + " ш саваа: " + pieces +
+              "; үлдэгдэл " + (pattern.offcut / plan.factor);
+          });
+          lines.push("Нийт " + plan.stockCount + " ш саваа; хаягдал " +
+            (plan.waste / plan.factor).toFixed(2) + " " + plan.unit +
+            " (" + plan.wastePercent.toFixed(2) + "%).");
+          lines.push("Нийт жин ойролцоогоор " + plan.massKg.toFixed(2) + " кг.");
+          out.className = "result"; out.replaceChildren();
+          lines.forEach(function (line) { var p = document.createElement("p"); p.textContent = line; out.appendChild(p); });
+        } catch (error) {
+          out.className = "result error"; out.textContent = error.message;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
