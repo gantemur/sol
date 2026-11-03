@@ -89,12 +89,15 @@
       scaleTonicAria: "Choose a scale tonic from the generated pitches",
       scaleTonicFact: "Tonic frequency", scaleReturnFact: "Distance from nearest octave",
       scaleStepsFact: "Adjacent pitch gaps", scaleOctaveFact: "Fifth steps · octaves",
-      scaleCircleTitle: "Pitches in one octave", scaleCircleHint: "Logarithmic pitch positions around the octave. The green note is the tonic.",
-      scaleCircleAria: "Octave circle showing the notes made by exact fifths",
-      scaleCircleFoot: "Positions use exact 3:2 steps, not rounded 12-tone equal temperament.", scaleCircleAxis: "octave ↻",
-      scaleChainTitle: "The 3:2 chain", scaleChainHint: "Each neighbor is one perfect fifth away before octave reduction.",
-      scaleChainAria: "Chain of notes created by successive three-to-two ratios", scaleChainAxis: "step number →",
-      scaleChainFoot: "{count} pitches from {down} steps down and {up} steps up.",
+      scaleSpiralTitle: "Octave spiral of 3:2 steps", scaleSpiralHint: "Start at step 0. Upward fifths spiral out; downward fifths spiral in. Green marks the chosen tonic.",
+      scaleSpiralAria: "Octave spiral: numbered 3:2 fifth steps across several octaves",
+      scaleSpiralFoot: "Step numbers show fifth-chain order, not ascending pitch order. Points on the same ray are an octave apart.",
+      scaleSpiralAxis: "3:2 ↻ 210.6°",
+      scaleFourierTitle: "Notes and harmonics", scaleFourierHint: "Each higher row is 3:2 above the row below. Circles are fundamentals, diamonds possible harmonic positions; gray dots are virtual octave copies.",
+      scaleFourierAria: "Log-frequency harmonic rows of the fifth chain with virtual octave references",
+      scaleFourierAxis: "log₂ f →", scaleFourierFoot: "Adjacent notes share possible 3rd/2nd harmonics: 3f₁ = 2f₂. Schematic, not the audio spectrum; gray copies never sound.",
+      scaleNowIdle: "Play to hear the notes in rising and falling pitch order.",
+      scaleNowPlaying: "Playing: step {step} · {ratio}{octave}", scaleNowUpperOctave: " · upper octave",
       scaleChallenge: "Build five pitches, then add a step on either end to reach seven. Change the tonic: how does the melody sound?",
       scaleLearnMore: "How can the same notes make different scales?",
       scaleLessonOne: "Repeated exact 3:2 ratios create a chain of fifths. Dividing or multiplying by powers of two puts every generated pitch into one octave. A sequence of five consecutive fifths produces a pentatonic collection; seven produces a diatonic one.",
@@ -446,12 +449,15 @@
       scaleTonicAria: "Үүссэн нотоос үндсэн нот сонгох",
       scaleTonicFact: "Үндсэн нотын давтамж", scaleReturnFact: "Хамгийн ойр октаваас зөрөх зай",
       scaleStepsFact: "Зэргэлдээ нотын зай", scaleOctaveFact: "3:2 алхам · октав",
-      scaleCircleTitle: "Нэг октав дахь нотууд", scaleCircleHint: "Октав доторх давтамжийн логарифм байрлал. Ногоон нь сонгосон үндсэн нот.",
-      scaleCircleAria: "3:2 алхмаар үүссэн нотуудын октавын тойрог",
-      scaleCircleFoot: "Нотуудыг 12-TET-д тааруулаагүй, яг 3:2 харьцаагаар бодсон.", scaleCircleAxis: "октав ↻",
-      scaleChainTitle: "3:2 гинж", scaleChainHint: "Хөрш нот бүр октавт шилжүүлэхээс өмнө 3:2 интервалтай.",
-      scaleChainAria: "Гурав-хоёрын харьцаагаар үүссэн нотуудын гинж", scaleChainAxis: "алхмын дугаар →",
-      scaleChainFoot: "{count} нот: доош {down}, дээш {up} алхам.",
+      scaleSpiralTitle: "3:2 алхмын октавын спираль", scaleSpiralHint: "0-ээс эхэлнэ. Дээш квинтээр алхвал гадагш, доош алхвал дотогш эргэнэ. Ногоон нь сонгосон үндсэн нот.",
+      scaleSpiralAria: "Олон октавын спираль дээр дугаарласан 3:2 квинтийн алхмууд",
+      scaleSpiralFoot: "Алхмын тоо квинтийн дарааллыг заана, давтамжаар өсөх дарааллыг биш. Нэг цацраг дээрх цэгүүд октаваар ялгаатай.",
+      scaleSpiralAxis: "3:2 ↻ 210.6°",
+      scaleFourierTitle: "Нот ба гармоникууд", scaleFourierHint: "Дээд мөр нь доод мөрөөсөө 3:2 дахин өндөр. Дугуй нь үндсэн давтамж, ромбо нь үүсэж болох гармоник; саарал нь октавын хийсвэр хуулбар.",
+      scaleFourierAria: "Квинтийн гинжийн үндсэн давтамж, гармоник, октавын хийсвэр хуулбарууд",
+      scaleFourierAxis: "log₂ f →", scaleFourierFoot: "Хөрш хоёр нотын 3 ба 2-р гармоник давхцана: 3f₁ = 2f₂. Энэ нь дууны жинхэнэ спектр биш, схем зураг; саарал цэг дуугарахгүй.",
+      scaleNowIdle: "Давтамжаар өсөх, буурах нотуудыг сонсохын тулд тоглуулна уу.",
+      scaleNowPlaying: "Одоо: алхам {step} · {ratio}{octave}", scaleNowUpperOctave: " · дээд октав",
       scaleChallenge: "Таван нот үүсгээд гинжийн хоёр захад тус бүр нэгийг нэмэн долоон нот болго. Үндсэн нотыг сольж сонсоход юу өөрчлөгдөх вэ?",
       scaleLearnMore: "Ижил нотоор өөр шатлал яаж үүсэх вэ?",
       scaleLessonOne: "3:2 харьцааг давтан хэрэглэвэл квинтийн гинж үүснэ. Нотуудыг 2-ын зэрэгт үржүүлж, хувааж нэг октавт оруулна. Дараалсан таван квинтээс таван нотын, долоон квинтээс долоон нотын шатлал үүснэ.",
@@ -1591,7 +1597,8 @@
       source.buffer = buffer;
       source.connect(gain);
       gain.connect(this.contextOwner.output);
-      const voice = { source, gain, stopping: false };
+      const voice = { source, gain, stopping: false, startedAt: now,
+        steps: scaleModel.melodySteps(scale) };
       source.onended = () => {
         source.disconnect();
         gain.disconnect();
@@ -1599,6 +1606,7 @@
         if (this.currentVoice === voice) {
           this.currentVoice = null;
           state.scalePlaying = false;
+          stopScaleTracking();
           setScaleStatus("scaleStopped");
           renderScaleControls();
         }
@@ -1809,6 +1817,8 @@
   const mixAudio = new BeatsEngine(audio);
   const intervalAudio = new IntervalEngine(audio);
   const scaleAudio = new ScaleEngine(audio);
+  let scaleFrame = null;
+  let scaleActive = null;
   const harmonicAudio = new HarmonicEngine(audio);
   const noiseAudio = new NoiseEngine(audio);
   const recorder = new recorderModel.Recorder(audio, window.AudioWorkletNode);
@@ -2371,19 +2381,17 @@
     $("scaleVolume").value = String(state.scaleVolume);
     $("scaleVolumeValue").textContent = state.scaleVolume + "%";
     $("scaleCountValue").textContent = scale.count + " " + text("scaleNotesUnit");
-    $("scaleCircleBadge").textContent = $("scaleCountValue").textContent;
+    $("scaleSpiralBadge").textContent = $("scaleCountValue").textContent;
     const range = "−" + scale.down + " … +" + scale.up;
     $("scaleRangeValue").textContent = range;
-    $("scaleChainBadge").textContent = range;
+    $("scaleFourierBadge").textContent = range;
     $("scaleTonicValue").textContent = hzText(scale.tonicHz);
     $("scaleClosureValue").textContent = (scale.closureCents < 0 ? "−" : "+") +
       Math.abs(scale.closureCents).toFixed(2) + " " + (state.language === "mn" ? "цент" : "cents");
     $("scaleGapsValue").textContent = scale.gaps.map(gap => Math.round(gap)).join(" · ") +
       " " + (state.language === "mn" ? "цент" : "cents");
     $("scaleOctaveValue").textContent = scale.count + " · " + scale.octaveCount;
-    $("scaleChainFoot").textContent = intervalPhrase("scaleChainFoot", {
-      count: scale.count, down: scale.down, up: scale.up
-    });
+    renderScaleNow();
     $("scaleButton").classList.toggle("playing", state.scalePlaying);
     $("scaleButton").setAttribute("aria-pressed", String(state.scalePlaying));
     $("scalePlayIcon").textContent = state.scalePlaying ? "■" : "▶";
@@ -2412,9 +2420,48 @@
     });
   }
 
+  function renderScaleNow() {
+    const current = scaleActive;
+    const label = $("scaleNowValue");
+    if (state.scalePlaying && current) {
+      const note = scaleAnalysis().chain.find(item => item.k === current.k);
+      label.textContent = intervalPhrase("scaleNowPlaying", {
+        step: (current.k > 0 ? "+" : "") + current.k,
+        ratio: note.numerator + "/" + note.denominator,
+        octave: current.octaveUp ? text("scaleNowUpperOctave") : ""
+      });
+    } else label.textContent = text("scaleNowIdle");
+    label.classList.toggle("active", state.scalePlaying && Boolean(current));
+  }
+
+  function stopScaleTracking() {
+    if (scaleFrame !== null) window.cancelAnimationFrame(scaleFrame);
+    scaleFrame = null;
+    scaleActive = null;
+    renderScaleNow();
+    if (state.mode === "tuning" && state.tuningKind === "scales") drawScalePlots();
+  }
+
+  function followScalePlayback() {
+    scaleFrame = null;
+    const voice = scaleAudio.currentVoice;
+    if (!state.scalePlaying || !voice || state.mode !== "tuning" || state.tuningKind !== "scales") return;
+    const elapsed = Math.max(0, audio.context.currentTime - voice.startedAt);
+    const index = Math.floor(elapsed / scaleModel.STEP_SECONDS);
+    const current = elapsed - index * scaleModel.STEP_SECONDS < scaleModel.NOTE_SECONDS ?
+      voice.steps[index] || null : null;
+    if (current !== scaleActive) {
+      scaleActive = current;
+      renderScaleNow();
+      drawScalePlots();
+    }
+    if (index < voice.steps.length) scaleFrame = window.requestAnimationFrame(followScalePlayback);
+  }
+
   function stopScaleSound(immediate = false, message = "scaleStopped") {
     scaleAudio.stop(immediate);
     state.scalePlaying = false;
+    stopScaleTracking();
     setScaleStatus(message);
     renderScaleControls();
   }
@@ -2428,6 +2475,7 @@
         state.scalePlaying = true;
         setScaleStatus("scalePlaying");
         renderScaleControls();
+        followScalePlayback();
       }
     } catch (error) {
       stopScaleSound(true, error.message === "unsupported" ? "scaleUnsupported" : "scaleBlocked");
@@ -2970,8 +3018,8 @@
     $("scaleTonicChoices").setAttribute("aria-label", text("scaleTonicAria"));
     $("scaleBaseSlider").setAttribute("aria-label", text("scaleBaseSliderAria"));
     $("scaleBaseInput").setAttribute("aria-label", text("scaleBaseInputAria"));
-    $("scaleCircleCanvas").setAttribute("aria-label", text("scaleCircleAria"));
-    $("scaleChainCanvas").setAttribute("aria-label", text("scaleChainAria"));
+    $("scaleSpiralCanvas").setAttribute("aria-label", text("scaleSpiralAria"));
+    $("scaleFourierCanvas").setAttribute("aria-label", text("scaleFourierAria"));
     $("harmonicPresets").setAttribute("aria-label", text("harmonicPresetsAria"));
     $("harmonicSliders").setAttribute("aria-label", text("harmonicSlidersAria"));
     $("harmonicWaveCanvas").setAttribute("aria-label", text("harmonicWaveAria"));
@@ -4141,85 +4189,187 @@
     drawIntervalSpectrum();
   }
 
-  function drawScaleCircle() {
+  function drawScaleSpiral() {
     const scale = scaleAnalysis();
-    const { ctx, width, height } = plotContext($("scaleCircleCanvas"));
+    const { ctx, width, height } = plotContext($("scaleSpiralCanvas"));
     const centerX = width / 2, centerY = height / 2;
-    const radius = Math.max(48, Math.min(width * .29, height * .31));
-    ctx.lineWidth = 1.5;
-    ctx.strokeStyle = "#c8d8e8";
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-    ctx.stroke();
-    ctx.font = "12px system-ui, sans-serif";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillStyle = "#7a8da2";
-    ctx.fillText("1:1 / 2:1", centerX, centerY);
-    for (const note of scale.notes) {
-      const angle = -Math.PI / 2 + 2 * Math.PI * note.cents / 1200;
-      const x = centerX + radius * Math.cos(angle);
-      const y = centerY + radius * Math.sin(angle);
-      ctx.strokeStyle = "#dce7f3";
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(centerX, centerY);
-      ctx.lineTo(x, y);
-      ctx.stroke();
-      ctx.fillStyle = note.k === scale.tonicK ? "#189786" : "#2f7dc4";
-      ctx.beginPath();
-      ctx.arc(x, y, note.k === scale.tonicK ? 8 : 5.5, 0, 2 * Math.PI);
-      ctx.fill();
-      const labelRadius = radius + (scale.count >= 10 ? 22 : 28);
-      const lx = centerX + labelRadius * Math.cos(angle);
-      const ly = centerY + labelRadius * Math.sin(angle);
-      ctx.fillStyle = note.k === scale.tonicK ? "#148575" : "#365e82";
-      ctx.font = scale.count >= 10 ? "bold 11px system-ui, sans-serif" : "bold 12px system-ui, sans-serif";
-      const label = scale.count >= 10 ? String(note.k) : note.numerator + "/" + note.denominator;
-      ctx.fillText(label, lx, ly);
-    }
-  }
+    const octaveStep = Math.log2(3 / 2);
+    const firstOctave = -scale.down * octaveStep;
+    const lastOctave = scale.up * octaveStep;
+    const radialSpan = lastOctave - firstOctave;
+    const inner = 25, outer = Math.max(62, Math.min(width, height) / 2 - 43);
+    const radiusAt = octave => radialSpan > 0 ?
+      inner + (octave - firstOctave) / radialSpan * (outer - inner) : (inner + outer) / 2;
+    const positionAt = octave => {
+      const angle = -Math.PI / 2 + 2 * Math.PI * octave;
+      const radius = radiusAt(octave);
+      return { x: centerX + radius * Math.cos(angle),
+        y: centerY + radius * Math.sin(angle), angle };
+    };
 
-  function drawScaleChain() {
-    const scale = scaleAnalysis();
-    const { ctx, width, height } = plotContext($("scaleChainCanvas"));
-    const left = 43, right = width - 36, centerY = height * .45;
-    const step = scale.count > 1 ? (right - left) / (scale.count - 1) : 0;
-    ctx.strokeStyle = "#afc7db";
-    ctx.lineWidth = 3;
+    // Each full turn is exactly one octave, but a fifth advances only 210.59°.
+    ctx.strokeStyle = "#e5edf5";
+    ctx.lineWidth = 1;
+    for (let octave = Math.ceil(firstOctave); octave <= Math.floor(lastOctave); octave++) {
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radiusAt(octave), 0, 2 * Math.PI);
+      ctx.stroke();
+    }
+    const reference = positionAt(0);
+    ctx.strokeStyle = "#cadbea";
     ctx.beginPath();
-    ctx.moveTo(left, centerY);
-    ctx.lineTo(right, centerY);
+    ctx.moveTo(centerX, centerY);
+    ctx.lineTo(centerX, reference.y > centerY ? centerY + outer : centerY - outer);
     ctx.stroke();
+    ctx.strokeStyle = "#4b8bd0";
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    const samples = Math.max(40, Math.ceil(radialSpan * 125));
+    for (let i = 0; i <= samples; i++) {
+      const octave = firstOctave + radialSpan * i / samples;
+      const point = positionAt(octave);
+      if (i === 0) ctx.moveTo(point.x, point.y);
+      else ctx.lineTo(point.x, point.y);
+    }
+    ctx.stroke();
+
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    for (const [index, note] of scale.chain.entries()) {
-      const x = scale.count > 1 ? left + index * step : (left + right) / 2;
-      const isTonic = note.k === scale.tonicK;
-      ctx.fillStyle = isTonic ? "#179789" : note.k === 0 ? "#e49b46" : "#357ec9";
+    const compact = Math.min(width, height) < 300 || scale.count >= 9;
+    for (const note of scale.chain) {
+      const point = positionAt(note.k * octaveStep);
+      const active = scaleActive && scaleActive.k === note.k;
+      const tonic = note.k === scale.tonicK;
+      const color = tonic ? "#139786" : note.k === 0 ? "#df9b43" : "#2e7ec5";
+      if (active) {
+        ctx.strokeStyle = "#ecae35";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 13, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
+      ctx.fillStyle = color;
       ctx.beginPath();
-      ctx.arc(x, centerY, isTonic ? 9 : 7, 0, 2 * Math.PI);
+      ctx.arc(point.x, point.y, active ? 8 : tonic ? 7.5 : 6, 0, 2 * Math.PI);
       ctx.fill();
-      ctx.fillStyle = isTonic ? "#188777" : "#416782";
-      ctx.font = "bold 12px system-ui, sans-serif";
-      ctx.fillText((note.k > 0 ? "+" : "") + note.k, x, centerY - 25);
-      if (scale.count < 9 || index % 2 === 0 || isTonic) {
-        ctx.font = "11px system-ui, sans-serif";
-        ctx.fillText(note.numerator + "/" + note.denominator, x, centerY + 25 +
-          (scale.count >= 9 && index % 2 ? 15 : 0));
+      const labelDistance = compact ? 15 : 18;
+      const lx = point.x + labelDistance * Math.cos(point.angle);
+      const ly = point.y + labelDistance * Math.sin(point.angle);
+      const number = (note.k > 0 ? "+" : "") + note.k;
+      ctx.fillStyle = tonic ? "#148575" : "#3e6080";
+      ctx.font = "bold 11px system-ui, sans-serif";
+      ctx.fillText(number, lx, ly - (compact ? 0 : 6));
+      if (!compact) {
+        ctx.font = "10px system-ui, sans-serif";
+        ctx.fillText(note.numerator + "/" + note.denominator, lx, ly + 8);
       }
     }
     ctx.font = "11px system-ui, sans-serif";
-    ctx.fillStyle = "#728ca2";
-    ctx.textAlign = "left";
-    ctx.fillText("÷ 3:2", 12, height - 12);
-    ctx.textAlign = "right";
-    ctx.fillText("× 3:2", width - 12, height - 12);
+    ctx.fillStyle = "#7890a7";
+    ctx.fillText("×2", centerX, centerY);
+  }
+
+  function drawScaleFourier() {
+    const scale = scaleAnalysis();
+    const canvas = $("scaleFourierCanvas");
+    canvas.style.height = Math.max(260, 78 + scale.count * 34) + "px";
+    const { ctx, width, height } = plotContext(canvas);
+    const left = width < 470 ? 60 : 86, right = width - 18;
+    const top = 27, bottom = height - 37;
+    const largest = Math.pow(3 / 2, scale.count - 1) * 8;
+    const minLog = -1.15, maxLog = Math.log2(largest) + .22;
+    const xAt = frequency => left + (Math.log2(frequency) - minLog) /
+      (maxLog - minLog) * (right - left);
+    const yAt = index => bottom - (scale.count > 1 ? index / (scale.count - 1) : .5) * (bottom - top);
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = "10px system-ui, sans-serif";
+    const every = Math.max(1, Math.ceil((maxLog - minLog) / (width < 470 ? 4 : 7)));
+    for (let power = 0; power <= Math.floor(maxLog); power += every) {
+      const x = xAt(2 ** power);
+      ctx.strokeStyle = "#e7edf4";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x, top - 12);
+      ctx.lineTo(x, bottom + 7);
+      ctx.stroke();
+      ctx.fillStyle = "#6e849c";
+      ctx.fillText(power === 0 ? "f₀" : "2^" + power + " f₀", x, height - 17);
+    }
+
+    // The third partial of each lower row equals the second partial above it.
+    for (let i = 0; i < scale.count - 1; i++) {
+      const fundamental = Math.pow(3 / 2, i);
+      const sharedX = xAt(3 * fundamental);
+      ctx.strokeStyle = "#88c4b7";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(sharedX, yAt(i));
+      ctx.lineTo(sharedX, yAt(i + 1));
+      ctx.stroke();
+    }
+    for (const [index, note] of scale.chain.entries()) {
+      const fundamental = Math.pow(3 / 2, index);
+      const y = yAt(index);
+      const isTonic = note.k === scale.tonicK;
+      const isActive = scaleActive && scaleActive.k === note.k;
+      const color = isTonic ? "#149588" : note.k === 0 ? "#dc963f" : "#3381c7";
+      ctx.strokeStyle = isActive ? "#e8a63b" : "#d4e0ec";
+      ctx.lineWidth = isActive ? 3 : 1.3;
+      ctx.beginPath();
+      ctx.moveTo(left, y);
+      ctx.lineTo(right, y);
+      ctx.stroke();
+      ctx.font = "bold 11px system-ui, sans-serif";
+      ctx.fillStyle = isTonic ? "#148575" : "#456983";
+      ctx.textAlign = "right";
+      ctx.fillText((note.k > 0 ? "+" : "") + note.k, left - 10, y - (scale.count <= 7 ? 7 : 0));
+      if (scale.count <= 7) {
+        ctx.font = "9px system-ui, sans-serif";
+        ctx.fillText(note.numerator + "/" + note.denominator, left - 10, y + 8);
+      }
+      // Ghosts are octave-reduced references, NOT subharmonics in the sound.
+      for (let copy = 1; copy <= Math.ceil(Math.log2(fundamental)) + 1; copy++) {
+        const ghost = fundamental / 2 ** copy;
+        if (Math.log2(ghost) < minLog) continue;
+        ctx.fillStyle = "#b9c3cd";
+        ctx.beginPath();
+        ctx.arc(xAt(ghost), y, 3.2, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+      // Physical harmonics (and the actual fundamental) lie to the right.
+      for (let harmonic = 1; harmonic <= 8; harmonic++) {
+        const x = xAt(fundamental * harmonic);
+        const size = harmonic === 1 ? (isActive ? 8 : 6.5) : 4.2 - harmonic * .17;
+        if (harmonic === 1) {
+          if (isActive) {
+            ctx.strokeStyle = "#e6a331";
+            ctx.lineWidth = 2.8;
+            ctx.beginPath();
+            ctx.arc(x, y, size + 4, 0, 2 * Math.PI);
+            ctx.stroke();
+          }
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.arc(x, y, size, 0, 2 * Math.PI);
+          ctx.fill();
+        } else {
+          ctx.fillStyle = harmonic <= 3 ? "#3497b5" : "#82b7cf";
+          ctx.beginPath();
+          ctx.moveTo(x, y - size);
+          ctx.lineTo(x + size, y);
+          ctx.lineTo(x, y + size);
+          ctx.lineTo(x - size, y);
+          ctx.lineTo(x, y - size);
+          ctx.fill();
+        }
+      }
+    }
   }
 
   function drawScalePlots() {
-    drawScaleCircle();
-    drawScaleChain();
+    drawScaleSpiral();
+    drawScaleFourier();
   }
 
   function drawHarmonicWave() {
@@ -4837,8 +4987,8 @@
     observer.observe($("mixSpectrumCanvas"));
     observer.observe($("intervalWaveCanvas"));
     observer.observe($("intervalSpectrumCanvas"));
-    observer.observe($("scaleCircleCanvas"));
-    observer.observe($("scaleChainCanvas"));
+    observer.observe($("scaleSpiralCanvas"));
+    observer.observe($("scaleFourierCanvas"));
     observer.observe($("harmonicWaveCanvas"));
     observer.observe($("harmonicSpectrumCanvas"));
     observer.observe($("noiseWaveCanvas"));

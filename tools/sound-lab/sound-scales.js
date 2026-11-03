@@ -12,6 +12,7 @@
   const STEP_SECONDS = 0.31;
   const NOTE_SECONDS = 0.275;
   const FIFTH_CENTS = 1200 * Math.log2(3 / 2);
+  const FIFTH_TURN_DEGREES = 360 * Math.log2(3 / 2);
   const PRESETS = Object.freeze([
     Object.freeze({ id: "five-up", down: 0, up: 4 }),
     Object.freeze({ id: "five-center", down: 2, up: 2 }),
@@ -67,9 +68,14 @@
       closureCents: count * FIFTH_CENTS - octaveCount * 1200 };
   }
 
+  function melodySteps(scale) {
+    return [...scale.ordered.map(note => ({ k: note.k, hz: note.playingHz, octaveUp: false })),
+      { k: scale.tonicK, hz: scale.tonicHz * 2, octaveUp: true },
+      ...scale.ordered.slice().reverse().map(note => ({ k: note.k, hz: note.playingHz, octaveUp: false }))];
+  }
+
   function melody(scale) {
-    return [...scale.ordered.map(note => note.playingHz), scale.tonicHz * 2,
-      ...scale.ordered.slice().reverse().map(note => note.playingHz)];
+    return melodySteps(scale).map(note => note.hz);
   }
 
   function makeSamples(scale, sampleRate) {
@@ -93,5 +99,6 @@
   }
 
   return Object.freeze({ MIN_BASE_HZ, MAX_BASE_HZ, MAX_NOTES, PRESETS, FIFTH_CENTS,
-    STEP_SECONDS, NOTE_SECONDS, octaveFraction, build, melody, makeSamples });
+    FIFTH_TURN_DEGREES, STEP_SECONDS, NOTE_SECONDS, octaveFraction, build,
+    melodySteps, melody, makeSamples });
 });

@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#192d49">
   <meta name="description" content="Explore sound waves, plucked and held instrument models, harmonic synthesis, noise, a theremin and sirens with interactive plots and bilingual controls.">
   <title>Sound Lab · Sol</title>
-  <link rel="stylesheet" href="sound-lab.css?v=s022">
+  <link rel="stylesheet" href="sound-lab.css?v=s023">
   <script src="sound-model.js" defer></script>
   <script src="sound-string.js?v=s017" defer></script>
   <script src="sound-piano.js?v=s019" defer></script>
@@ -16,11 +16,11 @@
   <script src="sound-motion.js?v=s020c" defer></script>
   <script src="sound-beats.js" defer></script>
   <script src="sound-intervals.js?v=s021" defer></script>
-  <script src="sound-scales.js?v=s022" defer></script>
+  <script src="sound-scales.js?v=s023" defer></script>
   <script src="sound-harmonics.js" defer></script>
   <script src="sound-noise.js" defer></script>
   <script src="sound-recorder.js" defer></script>
-  <script src="sound-lab.js?v=s022" defer></script>
+  <script src="sound-lab.js?v=s023" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -783,21 +783,22 @@
         </div>
       </section>
       <div class="visuals">
-        <section class="panel chart-panel" aria-labelledby="scale-circle-title">
+        <section class="panel chart-panel" aria-labelledby="scale-spiral-title">
           <div class="chart-heading">
-            <div><h2 id="scale-circle-title" data-i18n="scaleCircleTitle">Нэг октав дахь нотууд</h2><p data-i18n="scaleCircleHint">Тойрогт давтамжийн логарифмаар байрлуулна. Ногоон нь сонгосон үндсэн нот.</p></div>
-            <span class="chart-badge" id="scaleCircleBadge">5 нот</span>
+            <div><h2 id="scale-spiral-title" data-i18n="scaleSpiralTitle">3:2 алхмын октавын спираль</h2><p data-i18n="scaleSpiralHint">0-ээс эхэлж, дээш алхвал гадагш, доош алхвал дотогш эргэнэ. Ногоон нь сонгосон үндсэн нот.</p></div>
+            <span class="chart-badge" id="scaleSpiralBadge">5 нот</span>
           </div>
-          <canvas id="scaleCircleCanvas" width="740" height="335" role="img" aria-label="Нэг октавт багтсан нотуудын тойрог"></canvas>
-          <div class="chart-foot"><span data-i18n="scaleCircleFoot">Байрлал нь 12-TET-д хүчээр тааруулаагүй, 3:2 харьцаагаар бодсон утга.</span><span data-i18n="scaleCircleAxis">октав ↻</span></div>
+          <canvas id="scaleSpiralCanvas" width="400" height="400" role="img" aria-label="3:2 алхмуудаас үүсэх олон октавын спираль"></canvas>
+          <div class="chart-foot"><span data-i18n="scaleSpiralFoot">Алхмын тоо нь нот үүсэх дарааллыг заана; нэг чиглэлд буй цэгүүд октавын ялгаатай хувилбарууд.</span><span data-i18n="scaleSpiralAxis">3:2 ↻ 210.6°</span></div>
+          <p id="scaleNowValue" class="scale-now" aria-live="off">Нот тоглуулаагүй байна</p>
         </section>
-        <section class="panel chart-panel" aria-labelledby="scale-chain-title">
+        <section class="panel chart-panel" aria-labelledby="scale-fourier-title">
           <div class="chart-heading">
-            <div><h2 id="scale-chain-title" data-i18n="scaleChainTitle">3:2 гинж ба интервалууд</h2><p data-i18n="scaleChainHint">Зүүн, баруун тийш алхах бүрт давтамж 3:2-аар хуваагдах эсвэл үржигдэнэ. Хоёрын зэрэгт тохируулна.</p></div>
-            <span class="chart-badge" id="scaleChainBadge">0 … +4</span>
+            <div><h2 id="scale-fourier-title" data-i18n="scaleFourierTitle">Нот ба гармоникууд</h2><p data-i18n="scaleFourierHint">Мөр бүр өмнөхөөсөө 3:2-аар өндөр. Дугуй нь үндсэн давтамж, ромбо нь бодит гармоник; саарал нь харьцуулах октавын хийсвэр хуулбар.</p></div>
+            <span class="chart-badge" id="scaleFourierBadge">0 … +4</span>
           </div>
-          <canvas id="scaleChainCanvas" width="740" height="235" role="img" aria-label="3:2 алхмаар үүсгэсэн нотуудын гинж"></canvas>
-          <div class="chart-foot"><span id="scaleChainFoot">Таван дараалсан алхмаас таван нот үүсгэнэ.</span><span data-i18n="scaleChainAxis">алхмын дугаар →</span></div>
+          <canvas id="scaleFourierCanvas" width="740" height="370" role="img" aria-label="Үндсэн давтамж, гармоникууд ба октавын хийсвэр хуулбар"></canvas>
+          <div class="chart-foot"><span data-i18n="scaleFourierFoot">Хөрш мөрийн 3-р ба 2-р гармоник давхцана: 3f₁ = 2f₂. Саарал цэг дуугарахгүй.</span><span data-i18n="scaleFourierAxis">log₂ f →</span></div>
         </section>
       </div>
     </div>
