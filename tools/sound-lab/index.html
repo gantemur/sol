@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#192d49">
   <meta name="description" content="Explore sound waves, plucked and held instrument models, harmonic synthesis, noise, a theremin and sirens with interactive plots and bilingual controls.">
   <title>Sound Lab · Sol</title>
-  <link rel="stylesheet" href="sound-lab.css?v=s025">
+  <link rel="stylesheet" href="sound-lab.css?v=s026">
   <script src="sound-model.js" defer></script>
   <script src="sound-string.js?v=s017" defer></script>
   <script src="sound-piano.js?v=s019" defer></script>
@@ -17,10 +17,11 @@
   <script src="sound-beats.js" defer></script>
   <script src="sound-intervals.js?v=s021" defer></script>
   <script src="sound-scales.js?v=s025" defer></script>
+  <script src="sound-limit5.js?v=s026" defer></script>
   <script src="sound-harmonics.js" defer></script>
   <script src="sound-noise.js" defer></script>
   <script src="sound-recorder.js" defer></script>
-  <script src="sound-lab.js?v=s025" defer></script>
+  <script src="sound-lab.js?v=s026" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -636,7 +637,8 @@
         </div>
         <div class="experiment-switch tuning-experiment-switch" role="group" aria-label="Хөгийн туршилтууд" data-i18n-aria="tuningExperimentsAria">
           <button type="button" data-tuning-kind="intervals" class="selected" aria-pressed="true" data-i18n="mixExperimentIntervals">Интервал</button>
-          <button type="button" data-tuning-kind="scales" aria-pressed="false" data-i18n="scaleExperiment">Шатлал бүтээх</button>
+          <button type="button" data-tuning-kind="scales" aria-pressed="false" data-i18n="scaleExperiment">3-хязгаар</button>
+          <button type="button" data-tuning-kind="limit5" aria-pressed="false" data-i18n="limit5Experiment">5-хязгаар</button>
         </div>
         <button id="intervalButton" type="button" class="play-button" aria-pressed="false">
           <span class="play-icon" id="intervalPlayIcon" aria-hidden="true">▶</span>
@@ -718,7 +720,8 @@
         </div>
         <div class="experiment-switch tuning-experiment-switch" role="group" aria-label="Хөгийн туршилтууд" data-i18n-aria="tuningExperimentsAria">
           <button type="button" data-tuning-kind="intervals" aria-pressed="false" data-i18n="mixExperimentIntervals">Интервал</button>
-          <button type="button" data-tuning-kind="scales" class="selected" aria-pressed="true" data-i18n="scaleExperiment">Шатлал бүтээх</button>
+          <button type="button" data-tuning-kind="scales" class="selected" aria-pressed="true" data-i18n="scaleExperiment">3-хязгаар</button>
+          <button type="button" data-tuning-kind="limit5" aria-pressed="false" data-i18n="limit5Experiment">5-хязгаар</button>
         </div>
         <button id="scaleButton" type="button" class="play-button" aria-pressed="false">
           <span class="play-icon" id="scalePlayIcon" aria-hidden="true">▶</span>
@@ -811,6 +814,99 @@
             </div>
             <canvas id="scaleGapCanvas" width="740" height="126" role="img" aria-label="Эхлэх нот ба октаваар буулгасан хийсвэр буцах нотын зай"></canvas>
             <p class="field-help" data-i18n="scaleGapFoot">Энэ нь хоёр нотын зайг центээр томруулсан зураг. Товчлуур дээр дарахад хоёулаа 3.2 сек хамт дуугарна.</p>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="workspace" id="limit5Workspace" hidden>
+      <section class="panel controls" aria-labelledby="limit5-controls-title">
+        <div class="section-top">
+          <h2 id="limit5-controls-title" data-i18n="limit5Choose">3:2 ба 5:4-өөр нот бүтээх</h2>
+          <p class="description" data-i18n="limit5Description">Хэвтээ алхам нь 3:2 квинт, ташуу алхам нь 5:4 их терц. Нэг октавт шилжүүлсэн цэгүүдээс өөрийн хөгийг сонго.</p>
+        </div>
+        <div class="experiment-switch tuning-experiment-switch" role="group" data-i18n-aria="tuningExperimentsAria" aria-label="Хөгийн туршилтууд">
+          <button type="button" data-tuning-kind="intervals" aria-pressed="false" data-i18n="mixExperimentIntervals">Интервал</button>
+          <button type="button" data-tuning-kind="scales" aria-pressed="false" data-i18n="scaleExperiment">3-хязгаар</button>
+          <button type="button" data-tuning-kind="limit5" class="selected" aria-pressed="true" data-i18n="limit5Experiment">5-хязгаар</button>
+        </div>
+        <button id="limit5Button" type="button" class="play-button" aria-pressed="false">
+          <span class="play-icon" id="limit5PlayIcon" aria-hidden="true">▶</span>
+          <span id="limit5PlayLabel" data-i18n="limit5Play">Нотуудыг сонсох</span>
+          <span class="play-caption" id="limit5PlayCaption" data-i18n="limit5PlayCaption">Ээлжлэн эсвэл хамтад нь</span>
+        </button>
+        <p id="limit5Status" class="audio-status" role="status" aria-live="polite">Бэлэн. Нотуудаа сонгоод тоглуулаарай.</p>
+        <div class="field-group">
+          <div class="field-title"><span data-i18n="limit5PresetsTitle">Харьцаагаар бүтээсэн жишээнүүд</span><output id="limit5Count">3 нот</output></div>
+          <div id="limit5Presets" class="limit5-presets" role="group" data-i18n-aria="limit5PresetsAria">
+            <button type="button" data-limit5-preset="major" data-i18n="limit5Major">До мажор</button>
+            <button type="button" data-limit5-preset="minor" data-i18n="limit5Minor">Ми минор</button>
+            <button type="button" data-limit5-preset="gmajor" data-i18n="limit5GMajor">Соль мажор</button>
+            <button type="button" data-limit5-preset="dminor" data-i18n="limit5DMinor">Ре минор</button>
+            <button type="button" data-limit5-preset="seven" data-i18n="limit5Seven">7 нот</button>
+            <button type="button" data-limit5-preset="fifths" data-i18n="limit5Fifths">Зөвхөн 3:2</button>
+          </div>
+          <p class="field-help" data-i18n="limit5PickHint">Тор дээрх дугуйг дарж нот нэмж, хасна (ихдээ 12). Ногоон нь До буюу эхлэх нот.</p>
+        </div>
+        <div class="field-group">
+          <div class="field-title"><span data-i18n="limit5PlaybackTitle">Яаж сонсох вэ?</span></div>
+          <div class="interval-toggles" role="group" id="limit5PlaybackModes" data-i18n-aria="limit5PlaybackAria">
+            <button type="button" data-limit5-mode="melody" class="selected" aria-pressed="true" data-i18n="limit5Melody">Ээлжлэн</button>
+            <button type="button" data-limit5-mode="chord" aria-pressed="false" data-i18n="limit5Chord">Хамт (аккорд)</button>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-title"><label for="limit5BaseInput" data-i18n="limit5BaseTitle">До (C) нотын давтамж</label><output id="limit5BaseValue">261.63 Гц</output></div>
+          <div class="frequency-controls">
+            <input id="limit5BaseSlider" type="range" min="110" max="330" step="0.01" value="261.63">
+            <div class="number-wrap"><input id="limit5BaseInput" type="number" min="110" max="330" step="any" inputmode="decimal" value="261.63"><span data-i18n="unitHz">Гц</span></div>
+          </div>
+          <p class="field-help" data-i18n="limit5BaseHint">261.63 Гц бол До4. Давтамжийг өөрчилбөл бүх шатлал хамт шилжинэ.</p>
+        </div>
+        <div class="field-group">
+          <label class="check-label scale-gap-switch" for="limit5TetGuides">
+            <input type="checkbox" id="limit5TetGuides">
+            <span data-i18n="limit5TetGuides">12-TET-д ижил нот болох цэгүүдийг холбох</span>
+          </label>
+          <p class="field-help" data-i18n="limit5TetHint">Тасархай шугамын хоёр үзүүр 12-TET-д нэг нэртэй боловч цэвэр харьцаагаар өөр давтамжтай байж болно.</p>
+        </div>
+        <div class="field-group">
+          <div class="field-title"><span data-i18n="limit5CommaTitle">Синтоник комма · 81:80</span></div>
+          <div class="interval-toggles" id="limit5Commas" role="group" data-i18n-aria="limit5CommaAria">
+            <button type="button" data-limit5-comma="e" class="selected" aria-pressed="true" data-i18n="limit5CommaE">Ми: 2 зам</button>
+            <button type="button" data-limit5-comma="d" aria-pressed="false" data-i18n="limit5CommaD">Ре: 2 зам</button>
+          </div>
+          <p class="field-help" id="limit5CommaFact">Ми · 5:4 ба 81:64 · 21.51 цент</p>
+          <button type="button" id="limit5CompareButton" class="limit5-compare" aria-pressed="false" data-i18n="limit5Compare">Хоёр давтамжийг хамт сонсох</button>
+          <p id="limit5BeatFact" class="field-help">327.04 ба 331.13 Гц · 4.09 Гц биение</p>
+        </div>
+        <div class="field-group volume-field">
+          <div class="field-title"><label for="limit5Volume" data-i18n="volume">Дууны хэмжээ</label><output id="limit5VolumeValue">38%</output></div>
+          <input id="limit5Volume" type="range" min="0" max="100" step="1" value="38">
+          <p class="field-help" data-i18n="safeVolume">Эхэндээ аяархан сонсоорой.</p>
+        </div>
+      </section>
+      <div class="visuals">
+        <section class="panel chart-panel" aria-labelledby="limit5-lattice-title">
+          <div class="chart-heading"><div>
+            <h2 id="limit5-lattice-title" data-i18n="limit5LatticeTitle">3 ба 5-ын тор</h2>
+            <p data-i18n="limit5LatticeHint">→ нь 3:2, ↗ нь 5:4, гурав дахь тал нь 6:5. Тэмдэглэсэн цэгүүд тоглоход оролцоно.</p>
+          </div><span class="chart-badge" id="limit5LatticeBadge">3 нот</span></div>
+          <canvas id="limit5LatticeCanvas" width="760" height="440" role="button" tabindex="0" aria-label="3:2 ба 5:4 харьцааны цэгүүдтэй тор; дарж нот сонгоно"></canvas>
+          <div class="chart-foot"><span data-i18n="limit5LatticeFoot">Ижил 12-TET нэртэй цэгүүд үнэндээ өөр байж болно. Алтан холбоос синтоник коммаг харуулна.</span><span data-i18n="limit5GridAxis">→ 3:2 · ↗ 5:4</span></div>
+          <p class="scale-now" id="limit5Now">Нотуудын эгшиглэх ээлжийг тоглуулахад харна.</p>
+        </section>
+        <section class="panel chart-panel" aria-labelledby="limit5-octave-title">
+          <div class="chart-heading"><div>
+            <h2 id="limit5-octave-title" data-i18n="limit5OctaveTitle">Нэг октав дахь нотын эрэмбэ</h2>
+            <p data-i18n="limit5OctaveHint">Нэг октавт шилжүүлсэн нотууд зүүнээс баруун тийш өснө. 12-TET тэмдэглэгээ нь зөвхөн жишиг.</p>
+          </div><span class="chart-badge" id="limit5OctaveBadge">C · E · G</span></div>
+          <canvas id="limit5OctaveCanvas" width="760" height="220" role="img" aria-label="Октав доторх сонгосон нотын центийн байрлал"></canvas>
+          <div class="chart-foot"><span data-i18n="limit5OctaveFoot">Бүдүүн алтлаг хоёр цэг бол коммагийн хоёр өөр нот; жижиг зөрүүг доорх шугам дээр томруулав.</span><span data-i18n="scaleFourierAxis">log₂ f →</span></div>
+          <div id="limit5CommaRuler" class="limit5-comma-ruler">
+            <strong data-i18n="limit5RulerTitle">Коммаг томруулбал</strong>
+            <div class="limit5-ruler-line"><span id="limit5RulerJust">5:4</span><span id="limit5RulerPyth">81:64</span></div>
+            <p id="limit5RulerValue">81:80 ≈ 21.51 цент</p>
           </div>
         </section>
       </div>
@@ -991,6 +1087,11 @@
       <div class="challenge-copy"><h2 id="scale-challenge-heading" data-i18n="tryThis">ТУРШИЖ ҮЗ</h2><p data-i18n="scaleChallenge">Таван нотыг бүтээ. Дараа нь доош нэг, дээш нэг алхам нэмээд долоон нот болго. Үндсэн нотыг өөрчилж сонсоорой.</p></div>
       <button type="button" id="scaleReset" class="reset-button" data-i18n="reset">↺ Эхнээс нь</button>
     </section>
+    <section class="challenge" id="limit5Challenge" aria-labelledby="limit5-challenge-heading" hidden>
+      <div class="challenge-icon" aria-hidden="true">✧</div>
+      <div class="challenge-copy"><h2 id="limit5-challenge-heading" data-i18n="tryThis">ТУРШИЖ ҮЗ</h2><p data-i18n="limit5Challenge">До–Ми–Соль мажор аккордыг сонсоод, Ми нотын хоёр хувилбарыг хамт эгшиглүүл. Дараа нь Ре-ийн хоёр хувилбарыг харьцуул.</p></div>
+      <button type="button" id="limit5Reset" class="reset-button" data-i18n="reset">↺ Эхнээс нь</button>
+    </section>
     <section class="challenge" id="noiseChallenge" aria-labelledby="noise-challenge-heading" hidden>
       <div class="challenge-icon" aria-hidden="true">✧</div>
       <div class="challenge-copy"><h2 id="noise-challenge-heading" data-i18n="tryThis">ТУРШИЖ ҮЗ</h2><p data-i18n="noiseChallenge">Цагаан, ягаан, бор шуугианыг ижил дууны хэмжээгээр харьцуул.</p></div>
@@ -1036,6 +1137,11 @@
       <summary data-i18n="scaleLearnMore">Тав, долоо, арван хоёр нот яагаад үүсдэг вэ?</summary>
       <p data-i18n="scaleLessonOne">3:2 алхам бүрийг нэг октавт (1–2 дахин давтамж) буцааж оруулахад таван дараалсан алхам пентатоник шатлал үүсгэнэ. Нэг алхмыг доош, нөгөөг дээш нэмэхэд долоон ноттой диатоник шатлал гарна.</p>
       <p data-i18n="scaleLessonTwo">(3/2)^5 нь 2^3-аас ойролцоогоор 90 центээр, (3/2)^12 нь 2^7-оос 23.46 центээр зөрнө. Цэвэр 3:2 харьцааны гинж хэзээ ч яг тойрог болж хаагдахгүй. Үндсэн нотыг өөрчлөх нь шинэ давтамж үүсгэхгүй, харин нэг цуглуулгын өөр хэлбэрийг сонсгоно.</p>
+    </details>
+    <details class="explanation" id="limit5Explanation" hidden>
+      <summary data-i18n="limit5LearnMore">Яагаад нэг нотоос хоёр өөр давтамж үүсэв?</summary>
+      <p data-i18n="limit5LessonOne">3-хязгаарын хөгт 2 ба 3-ын зэрэг хангалттай. 5-хязгаарын хөгт 5:4 их терцийг нэмж, торын нөгөө чиглэлд алхана. Нотуудаа сонгох нь зөвхөн математикийн биш, хөгжмийн шийдвэр.</p>
+      <p data-i18n="limit5LessonTwo">Дөрвөн цэвэр квинтээс 81:64, нэг цэвэр их терцээс 5:4 гарна. Тэдний харьцаа 81:80 буюу 21.51 цент — синтоник комма. Үүнийг 12-TET тэнцүү нот болгож авдаг бол цэвэр харьцаанд хоёр өөр цэг хэвээр үлдэнэ.</p>
     </details>
     <details class="explanation" id="noiseExplanation" hidden>
       <summary data-i18n="noiseLearnMore">Шуугиан яагаад цэвэр авианаас өөр вэ?</summary>
