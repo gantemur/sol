@@ -9,6 +9,7 @@
   const beatsModel = window.SoundLabBeats;
   const intervalModel = window.SoundLabIntervals;
   const scaleModel = window.SoundLabScales;
+  const limit5Model = window.SoundLabLimit5;
   const harmonicModel = window.SoundLabHarmonics;
   const noiseModel = window.SoundLabNoise;
   const recorderModel = window.SoundLabRecorder;
@@ -72,8 +73,8 @@
       mixExperimentBeats: "Two frequencies", mixExperimentHarmonics: "Build timbre",
       mixExperimentIntervals: "Interval", mixExperimentNoise: "Noise",
       harmonicPhase: "05 · Build a sound", noisePhase: "05 · Explore noise",
-      intervalPhase: "06 · Musical intervals", scalePhase: "06 · Build scales",
-      tuningExperimentsAria: "Tuning experiments", scaleExperiment: "Build a scale",
+      intervalPhase: "06 · Musical intervals", scalePhase: "06 · 3-limit", limit5Phase: "06 · 5-limit",
+      tuningExperimentsAria: "Tuning experiments", scaleExperiment: "3-limit", limit5Experiment: "5-limit",
       scaleChoose: "Build a scale with 3:2", scaleDescription: "Walk upward or downward by exact 3:2 steps. Fold the notes into one octave, then choose which note acts as the tonic.",
       scalePlay: "Hear the scale", scaleStop: "Stop", scalePlayCaption: "Play ascending and descending",
       scalePresetsTitle: "Scale patterns", scalePresetsAria: "Fifth-chain patterns",
@@ -120,6 +121,33 @@
       scaleUnsupported: "This browser cannot play the generated scale.",
       scaleBlocked: "The melody could not start. Check your browser audio settings.",
       scaleInvalid: "Enter a starting frequency from 110 to 330 Hz.",
+      limit5Choose: "Build notes with 3:2 and 5:4", limit5Description: "Move horizontally by a pure fifth (3:2), diagonally by a major third (5:4). Fold the points into one octave and choose your own notes.",
+      limit5Play: "Hear the notes", limit5Stop: "Stop", limit5PlayCaption: "In sequence or together",
+      limit5PresetsTitle: "Ratio-built examples", limit5PresetsAria: "Five-limit musical examples",
+      limit5Major: "C major", limit5Minor: "E minor", limit5GMajor: "G major", limit5DMinor: "D minor", limit5Seven: "7 notes", limit5Fifths: "Only 3:2",
+      limit5PickHint: "Tap a dot on the lattice to add or remove a note (up to 12). Green is the starting note C.",
+      limit5BaseTitle: "Reference C frequency", limit5BaseHint: "261.63 Hz is middle C. Changing it transposes the entire tuning together.",
+      limit5PlaybackTitle: "How to listen", limit5PlaybackAria: "Sequence or chord playback", limit5Melody: "In sequence", limit5Chord: "Together (chord)",
+      limit5TetGuides: "Show sample 12-TET equivalent-pitch guides", limit5TetHint: "Ends of a dashed line have the same name in 12-TET, yet may have different exact frequencies.",
+      limit5CommaTitle: "Syntonic comma · 81:80", limit5CommaAria: "Choose a syntonic comma comparison",
+      limit5CommaE: "E: two paths", limit5CommaD: "D: two paths", limit5Compare: "Hear both pitches together", limit5CompareStop: "Stop comparison",
+      limit5CommaFact: "{name}: {just} versus {pyth} · {cents} cents", limit5BeatFact: "{low} and {high} Hz · {beats} Hz beats",
+      limit5LatticeTitle: "The 3–5 lattice", limit5LatticeHint: "→ is 3:2, ↗ is 5:4; the third edge is 6:5. Colored points form your selection.",
+      limit5LatticeFoot: "The same 12-TET note name can correspond to different ratios. The gold link locates the syntonic comma.", limit5GridAxis: "→ 3:2 · ↗ 5:4",
+      limit5LatticeAria: "3:2 and 5:4 lattice: tap a note; keyboard arrows move, Enter selects", limit5NowIdle: "Play to see the sounding notes.", limit5NowPlaying: "Playing {ratio} · {hz}",
+      limit5NowChord: "Playing all selected notes together.", limit5NowCompare: "Two versions of {name} sound together.",
+      limit5OctaveTitle: "Pitch order within one octave", limit5OctaveHint: "Octave-folded notes run from left to right. The 12-TET ticks are reference positions, not a requirement.",
+      limit5OctaveFoot: "The two gold markers are different versions of the same note. Their tiny offset is magnified below.",
+      limit5OctaveAria: "Selected pitches and a comma pair inside one octave, with reference semitones", limit5RulerTitle: "Magnified comma", limit5RulerValue: "81:80 ≈ {cents} cents",
+      limit5Challenge: "Listen to the pure C–E–G chord, then play both E versions together. Next compare the two versions of D.",
+      limit5LearnMore: "How can one note have two exact pitches?",
+      limit5LessonOne: "The 3-limit uses powers of 2 and 3. The 5-limit adds pure 5:4 major thirds, creating a second direction on the lattice. Choosing which pitches make a useful scale is also a musical decision, not only mathematics.",
+      limit5LessonTwo: "Four pure fifths produce 81:64, while one pure major third produces 5:4. Their ratio is 81:80, or about 21.51 cents: the syntonic comma. Equal temperament identifies these as one nominal note; pure ratios leave distinct lattice points.",
+      limit5Ready: "Ready. Choose notes and press Play.", limit5Starting: "Preparing the sound…", limit5Playing: "Playing. Tap the large button to stop.",
+      limit5Comparing: "Playing both comma pitches; listen for slow beats.", limit5Stopped: "Stopped. Try another chord or comma pair.",
+      limit5Hidden: "Sound stopped when you left the page.", limit5Invalid: "Enter a starting frequency from 110 to 330 Hz.",
+      limit5NoNotes: "Choose at least one note before playing.", limit5Blocked: "Cannot start playback. Check your browser sound settings.",
+      limit5Limit: "You can choose at most 12 notes.",
       intervalChoose: "Two-note frequency ratios",
       intervalDescription: "Compare two independent notes in simple ratios and see where their harmonics overlap.",
       intervalPresetsTitle: "Ratio (upper : lower)", intervalPresetsAria: "Simple two-note frequency ratios",
@@ -444,8 +472,8 @@
       mixExperimentBeats: "Хоёр давтамж", mixExperimentHarmonics: "Өнгө бүтээх",
       mixExperimentIntervals: "Интервал", mixExperimentNoise: "Шуугиан",
       harmonicPhase: "05 · Авиа бүтээх", noisePhase: "05 · Шуугиан судлах",
-      intervalPhase: "06 · Хөгжмийн интервал", scalePhase: "06 · Шатлал бүтээх",
-      tuningExperimentsAria: "Хөгийн туршилтууд", scaleExperiment: "Шатлал бүтээх",
+      intervalPhase: "06 · Хөгжмийн интервал", scalePhase: "06 · 3-хязгаар", limit5Phase: "06 · 5-хязгаар",
+      tuningExperimentsAria: "Хөгийн туршилтууд", scaleExperiment: "3-хязгаар", limit5Experiment: "5-хязгаар",
       scaleChoose: "3:2 харьцаагаар шатлал бүтээх", scaleDescription: "Эхлэх авианаас 3:2 алхмаар дээш, доош явж нот үүсгэ. Нэг октавт багтаагаад, дурын нотыг үндсэн нот болгон сонго.",
       scalePlay: "Шатлалыг сонсох", scaleStop: "Зогсоох", scalePlayCaption: "Өгсөж, уруудаж тоглоно",
       scalePresetsTitle: "Шатлалын жишээ", scalePresetsAria: "3:2 гинжийн жишээнүүд",
@@ -492,6 +520,33 @@
       scaleUnsupported: "Энэ хөтөч шатлалын авиаг тоглуулах боломжгүй байна.",
       scaleBlocked: "Ая эхэлсэнгүй. Хөтчийн дууны тохиргоог шалгана уу.",
       scaleInvalid: "Эхлэх давтамж 110–330 Гц байх ёстой.",
+      limit5Choose: "3:2 ба 5:4-өөр нот бүтээх", limit5Description: "Хэвтээ алхам нь 3:2 квинт, ташуу алхам нь 5:4 их терц. Нэг октавт шилжүүлсэн цэгүүдээс өөрийн хөгийг сонго.",
+      limit5Play: "Нотуудыг сонсох", limit5Stop: "Зогсоох", limit5PlayCaption: "Ээлжлэн эсвэл хамтад нь",
+      limit5PresetsTitle: "Харьцаагаар бүтээсэн жишээнүүд", limit5PresetsAria: "5-хязгаарын жишээнүүд",
+      limit5Major: "До мажор", limit5Minor: "Ми минор", limit5GMajor: "Соль мажор", limit5DMinor: "Ре минор", limit5Seven: "7 нот", limit5Fifths: "Зөвхөн 3:2",
+      limit5PickHint: "Тор дээрх дугуйг дарж нот нэмж, хасна (ихдээ 12). Ногоон нь До буюу эхлэх нот.",
+      limit5BaseTitle: "До (C) нотын давтамж", limit5BaseHint: "261.63 Гц бол До4. Давтамжийг өөрчилбөл бүх шатлал хамт шилжинэ.",
+      limit5PlaybackTitle: "Яаж сонсох вэ?", limit5PlaybackAria: "Ээлжлэх эсвэл хамт тоглох", limit5Melody: "Ээлжлэн", limit5Chord: "Хамт (аккорд)",
+      limit5TetGuides: "12-TET-д ижил нэртэй нотын жишээг холбох", limit5TetHint: "Тасархай шугамын хоёр үзүүр 12-TET-д нэг нэртэй боловч цэвэр харьцаагаар өөр давтамжтай байж болно.",
+      limit5CommaTitle: "Синтоник комма · 81:80", limit5CommaAria: "Синтоник коммагийн харьцуулалт",
+      limit5CommaE: "Ми: 2 зам", limit5CommaD: "Ре: 2 зам", limit5Compare: "Хоёр давтамжийг хамт сонсох", limit5CompareStop: "Харьцуулалтыг зогсоох",
+      limit5CommaFact: "{name}: {just} ба {pyth} · {cents} цент", limit5BeatFact: "{low} ба {high} Гц · {beats} Гц биение",
+      limit5LatticeTitle: "3 ба 5-ын тор", limit5LatticeHint: "→ нь 3:2, ↗ нь 5:4, гурав дахь тал нь 6:5. Тэмдэглэсэн цэгүүд тоглоход оролцоно.",
+      limit5LatticeFoot: "Ижил 12-TET нэртэй цэгүүд үнэндээ өөр байж болно. Алтан холбоос синтоник коммаг харуулна.", limit5GridAxis: "→ 3:2 · ↗ 5:4",
+      limit5LatticeAria: "3:2 ба 5:4-ийн тор: цэг дарж нот сонго; гарын сум ба Enter-ээр бас сонгоно", limit5NowIdle: "Нотуудын эгшиглэх ээлжийг тоглуулахад харна.", limit5NowPlaying: "Эгшиглэж байна: {ratio} · {hz}",
+      limit5NowChord: "Сонгосон бүх нот хамт эгшиглэж байна.", limit5NowCompare: "{name} нотын хоёр хувилбар хамт эгшиглэж байна.",
+      limit5OctaveTitle: "Нэг октав дахь нотын эрэмбэ", limit5OctaveHint: "Нэг октавт шилжүүлсэн нотууд зүүнээс баруун тийш өснө. 12-TET тэмдэглэгээ нь зөвхөн жишиг.",
+      limit5OctaveFoot: "Алтлаг хоёр цэг нь нэг нотын хоёр өөр хувилбар. Бяцхан зөрүүг доор томруулж харууллаа.",
+      limit5OctaveAria: "Нэг октав дахь сонгосон нот ба коммагийн хоёр цэг", limit5RulerTitle: "Коммаг томруулбал", limit5RulerValue: "81:80 ≈ {cents} цент",
+      limit5Challenge: "До–Ми–Соль мажор аккордыг сонсоод Ми нотын хоёр хувилбарыг хамт эгшиглүүл. Дараа нь Ре-ийн хоёр хувилбарыг харьцуул.",
+      limit5LearnMore: "Яагаад нэг нотоос хоёр өөр давтамж үүсэв?",
+      limit5LessonOne: "3-хязгаарын хөгт 2 ба 3-ын зэрэг хангалттай. 5-хязгаарын хөгт 5:4 их терцийг нэмж, торын нөгөө чиглэлд алхана. Нотуудаа сонгох нь зөвхөн математикийн биш, хөгжмийн шийдвэр.",
+      limit5LessonTwo: "Дөрвөн цэвэр квинтээс 81:64, нэг цэвэр их терцээс 5:4 гарна. Тэдний харьцаа 81:80 буюу 21.51 цент — синтоник комма. Үүнийг 12-TET тэнцүү нот болгож авдаг бол цэвэр харьцаанд хоёр өөр цэг хэвээр үлдэнэ.",
+      limit5Ready: "Бэлэн. Нотуудаа сонгоод тоглуулаарай.", limit5Starting: "Авиа бэлтгэж байна…", limit5Playing: "Тоглож байна. Зогсоохын тулд том товчийг дар.",
+      limit5Comparing: "Коммагийн хоёр нот хамт эгшиглэж байна. Биений хэмнэлийг сонсоорой.", limit5Stopped: "Зогслоо. Өөр аккорд эсвэл комма сонго.",
+      limit5Hidden: "Хуудсаас гарахад дуу зогслоо.", limit5Invalid: "Эхлэх давтамж 110–330 Гц байх ёстой.",
+      limit5NoNotes: "Тоглуулахын өмнө ядаж нэг нот сонго.", limit5Blocked: "Дуу эхэлсэнгүй. Хөтчийн дууны тохиргоог шалгаарай.",
+      limit5Limit: "Ихдээ 12 нот сонгож болно.",
       intervalChoose: "Хоёр нотын харьцаа",
       intervalDescription: "Хоёр тусдаа авианы давтамжийг энгийн харьцаагаар тохируулж, гармоникууд нь хаана давхцахыг харьцуул.",
       intervalPresetsTitle: "Давтамжийн харьцаа (дээд : доод)", intervalPresetsAria: "Хоёр нотын энгийн харьцаа",
@@ -849,6 +904,19 @@
     scaleGapPlaying: false,
     scaleStatus: "scaleReady",
     scaleError: false,
+    limit5Coords: limit5Model.PRESETS.major.map(pair => [...pair]),
+    limit5Preset: "major",
+    limit5Mode: "melody",
+    limit5Base: 261.63,
+    limit5Volume: 38,
+    limit5Comma: "e",
+    limit5TetGuides: false,
+    limit5Playing: false,
+    limit5Comparing: false,
+    limit5Status: "limit5Ready",
+    limit5Error: false,
+    limit5Cursor: [0, 0],
+    limit5GridFocused: false,
     harmonicBase: 220,
     harmonicPartials: harmonicModel.preset("pure"),
     harmonicPreset: "pure",
@@ -1667,6 +1735,72 @@
     }
   }
 
+  class Limit5Engine {
+    constructor(contextOwner) {
+      this.contextOwner = contextOwner;
+      this.generation = 0;
+      this.voices = new Set();
+      this.currentVoice = null;
+    }
+    fadeAndStop(voice, immediate = false) {
+      const now = this.contextOwner.context.currentTime;
+      voice.gain.gain.cancelScheduledValues(now);
+      if (immediate) voice.gain.gain.setValueAtTime(0, now);
+      else voice.gain.gain.setTargetAtTime(0, now, .012);
+      if (voice.stopping) return;
+      voice.stopping = true;
+      try { voice.source.stop(now + (immediate ? .002 : .08)); }
+      catch (_) { /* The source may already have ended. */ }
+    }
+    async start(notes, mode, comparison = false) {
+      const ticket = ++this.generation;
+      const context = await this.contextOwner.readyContext();
+      if (ticket !== this.generation || state.mode !== "tuning" || state.tuningKind !== "limit5") return false;
+      for (const voice of this.voices) this.fadeAndStop(voice, true);
+      const samples = comparison ? limit5Model.makeComparisonSamples(state.limit5Comma, state.limit5Base, context.sampleRate) :
+        limit5Model.makeSamples(notes, context.sampleRate, mode);
+      const buffer = context.createBuffer(1, samples.length, context.sampleRate);
+      buffer.getChannelData(0).set(samples);
+      const source = context.createBufferSource();
+      const gain = context.createGain();
+      const now = context.currentTime;
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(maxGain.scaleVoice * state.limit5Volume / 100, now + .02);
+      source.buffer = buffer;
+      source.connect(gain);
+      gain.connect(this.contextOwner.output);
+      const voice = { source, gain, notes, mode, comparison, startedAt: now, stopping: false };
+      source.onended = () => {
+        source.disconnect();
+        gain.disconnect();
+        this.voices.delete(voice);
+        if (this.currentVoice === voice) {
+          this.currentVoice = null;
+          state.limit5Playing = false;
+          state.limit5Comparing = false;
+          stopLimit5Tracking();
+          setLimit5Status("limit5Stopped");
+          renderLimit5Controls();
+        }
+      };
+      this.voices.add(voice);
+      this.currentVoice = voice;
+      source.start(now);
+      return true;
+    }
+    updateVolume() {
+      if (!this.currentVoice) return;
+      const now = this.contextOwner.context.currentTime;
+      this.currentVoice.gain.gain.cancelScheduledValues(now);
+      this.currentVoice.gain.gain.setTargetAtTime(maxGain.scaleVoice * state.limit5Volume / 100, now, .015);
+    }
+    stop(immediate = false) {
+      this.generation++;
+      this.currentVoice = null;
+      for (const voice of this.voices) this.fadeAndStop(voice, immediate);
+    }
+  }
+
   class HarmonicEngine {
     constructor(contextOwner) {
       this.contextOwner = contextOwner;
@@ -1854,6 +1988,9 @@
   const scaleAudio = new ScaleEngine(audio);
   let scaleFrame = null;
   let scaleActive = null;
+  const limit5Audio = new Limit5Engine(audio);
+  let limit5Frame = null;
+  let limit5Active = null;
   const harmonicAudio = new HarmonicEngine(audio);
   const noiseAudio = new NoiseEngine(audio);
   const recorder = new recorderModel.Recorder(audio, window.AudioWorkletNode);
@@ -2115,6 +2252,13 @@
     state.scaleError = error;
     $("scaleStatus").textContent = text(status);
     $("scaleStatus").classList.toggle("error", error);
+  }
+
+  function setLimit5Status(status, error = false) {
+    state.limit5Status = status;
+    state.limit5Error = error;
+    $("limit5Status").textContent = text(status);
+    $("limit5Status").classList.toggle("error", error);
   }
 
   function setHarmonicStatus(status, error = false) {
@@ -2629,6 +2773,200 @@
     drawPlots();
   }
 
+  function limit5Notes() {
+    return state.limit5Coords.length ? limit5Model.selected(state.limit5Coords, state.limit5Base) : [];
+  }
+
+  function limit5Name(note) {
+    return ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"][note.tetStep];
+  }
+
+  function limit5CommaName() {
+    return state.language === "mn" ? state.limit5Comma === "e" ? "Ми" : "Ре" :
+      state.limit5Comma.toUpperCase();
+  }
+
+  function renderLimit5Now() {
+    const label = $("limit5Now");
+    const active = limit5Active;
+    if (state.limit5Comparing) {
+      label.textContent = intervalPhrase("limit5NowCompare", { name: limit5CommaName() });
+    } else if (state.limit5Playing && active === "all") label.textContent = text("limit5NowChord");
+    else if (state.limit5Playing && active) {
+      label.textContent = intervalPhrase("limit5NowPlaying", {
+        ratio: active.numerator + "/" + active.denominator, hz: hzText(active.hz)
+      });
+    } else label.textContent = text("limit5NowIdle");
+    label.classList.toggle("active", (state.limit5Playing || state.limit5Comparing) && Boolean(active));
+  }
+
+  function renderLimit5Controls() {
+    const notes = limit5Notes();
+    const countText = notes.length + " " + text("scaleNotesUnit");
+    $("limit5Count").textContent = countText;
+    $("limit5LatticeBadge").textContent = countText;
+    $("limit5OctaveBadge").textContent = notes.map(limit5Name).join(" · ") || "—";
+    $("limit5BaseSlider").value = String(state.limit5Base);
+    $("limit5BaseInput").value = String(state.limit5Base);
+    $("limit5BaseInput").setAttribute("aria-valuetext", hzText(state.limit5Base));
+    $("limit5BaseValue").textContent = hzText(state.limit5Base);
+    $("limit5Volume").value = String(state.limit5Volume);
+    $("limit5VolumeValue").textContent = state.limit5Volume + "%";
+    $("limit5TetGuides").checked = state.limit5TetGuides;
+    $("limit5Button").classList.toggle("playing", state.limit5Playing);
+    $("limit5Button").setAttribute("aria-pressed", String(state.limit5Playing));
+    $("limit5PlayIcon").textContent = state.limit5Playing ? "■" : "▶";
+    $("limit5PlayLabel").textContent = text(state.limit5Playing ? "limit5Stop" : "limit5Play");
+    $("limit5PlayCaption").textContent = text(state.limit5Playing ? "stopCaption" : "limit5PlayCaption");
+    $("limit5CompareButton").textContent = text(state.limit5Comparing ? "limit5CompareStop" : "limit5Compare");
+    $("limit5CompareButton").setAttribute("aria-pressed", String(state.limit5Comparing));
+    $("limit5CompareButton").classList.toggle("playing", state.limit5Comparing);
+    document.querySelectorAll("[data-limit5-preset]").forEach(button => {
+      const selected = button.dataset.limit5Preset === state.limit5Preset;
+      button.classList.toggle("selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+    document.querySelectorAll("[data-limit5-mode]").forEach(button => {
+      const selected = button.dataset.limit5Mode === state.limit5Mode;
+      button.classList.toggle("selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+    document.querySelectorAll("[data-limit5-comma]").forEach(button => {
+      const selected = button.dataset.limit5Comma === state.limit5Comma;
+      button.classList.toggle("selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+    const gap = limit5Model.comparison(state.limit5Comma, state.limit5Base);
+    const fraction = note => note.numerator + "/" + note.denominator;
+    $("limit5CommaFact").textContent = intervalPhrase("limit5CommaFact", {
+      name: limit5CommaName(), just: fraction(gap.just), pyth: fraction(gap.pyth), cents: gap.cents.toFixed(2)
+    });
+    $("limit5BeatFact").textContent = intervalPhrase("limit5BeatFact", {
+      low: frequencyText(gap.just.hz), high: frequencyText(gap.pyth.hz), beats: gap.beatHz.toFixed(2)
+    });
+    $("limit5RulerJust").textContent = fraction(gap.just);
+    $("limit5RulerPyth").textContent = fraction(gap.pyth);
+    $("limit5RulerValue").textContent = intervalPhrase("limit5RulerValue", { cents: gap.cents.toFixed(2) });
+    renderLimit5Now();
+  }
+
+  function stopLimit5Tracking() {
+    if (limit5Frame !== null) window.cancelAnimationFrame(limit5Frame);
+    limit5Frame = null;
+    limit5Active = null;
+    renderLimit5Now();
+    if (state.mode === "tuning" && state.tuningKind === "limit5") drawLimit5Plots();
+  }
+
+  function followLimit5Playback() {
+    limit5Frame = null;
+    const voice = limit5Audio.currentVoice;
+    if (!state.limit5Playing || !voice || state.mode !== "tuning" || state.tuningKind !== "limit5") return;
+    const elapsed = Math.max(0, audio.context.currentTime - voice.startedAt);
+    const next = voice.mode === "chord" ? "all" :
+      elapsed % limit5Model.STEP_SECONDS < limit5Model.NOTE_SECONDS ?
+        voice.notes[Math.floor(elapsed / limit5Model.STEP_SECONDS)] || null : null;
+    if (next !== limit5Active) {
+      limit5Active = next;
+      renderLimit5Now();
+      drawLimit5Plots();
+    }
+    const duration = voice.mode === "chord" ? limit5Model.CHORD_SECONDS : voice.notes.length * limit5Model.STEP_SECONDS;
+    if (elapsed < duration) limit5Frame = window.requestAnimationFrame(followLimit5Playback);
+  }
+
+  function stopLimit5Sound(immediate = false, message = "limit5Stopped") {
+    limit5Audio.stop(immediate);
+    state.limit5Playing = false;
+    state.limit5Comparing = false;
+    stopLimit5Tracking();
+    setLimit5Status(message);
+    renderLimit5Controls();
+  }
+
+  async function toggleLimit5Sound() {
+    if (state.limit5Playing) { stopLimit5Sound(); return; }
+    if (state.mode !== "tuning" || state.tuningKind !== "limit5") return;
+    if (!state.limit5Coords.length) { setLimit5Status("limit5NoNotes", true); return; }
+    if (state.limit5Comparing) stopLimit5Sound(true);
+    setLimit5Status("limit5Starting");
+    try {
+      const notes = state.limit5Mode === "chord" ? limit5Model.chordVoicing(state.limit5Coords, state.limit5Base) : limit5Notes();
+      if (await limit5Audio.start(notes, state.limit5Mode)) {
+        state.limit5Playing = true;
+        setLimit5Status("limit5Playing");
+        renderLimit5Controls();
+        followLimit5Playback();
+      }
+    } catch (_) { stopLimit5Sound(true, "limit5Blocked"); setLimit5Status("limit5Blocked", true); }
+  }
+
+  async function toggleLimit5Compare() {
+    if (state.limit5Comparing) { stopLimit5Sound(); return; }
+    if (state.mode !== "tuning" || state.tuningKind !== "limit5") return;
+    if (state.limit5Playing) stopLimit5Sound(true);
+    setLimit5Status("limit5Starting");
+    try {
+      if (await limit5Audio.start([], "compare", true)) {
+        state.limit5Comparing = true;
+        limit5Active = "comma";
+        setLimit5Status("limit5Comparing");
+        renderLimit5Controls();
+        drawLimit5Plots();
+      }
+    } catch (_) { stopLimit5Sound(true, "limit5Blocked"); setLimit5Status("limit5Blocked", true); }
+  }
+
+  function selectLimit5Preset(preset) {
+    if (!limit5Model.PRESETS[preset]) return;
+    stopLimit5Sound();
+    state.limit5Coords = limit5Model.PRESETS[preset].map(pair => [...pair]);
+    state.limit5Preset = preset;
+    setLimit5Status("limit5Ready");
+    renderLimit5Controls();
+    drawPlots();
+  }
+
+  function toggleLimit5Point(m, n) {
+    if (!limit5Model.within(m, n)) return;
+    const index = state.limit5Coords.findIndex(pair => pair[0] === m && pair[1] === n);
+    if (index < 0 && state.limit5Coords.length >= 12) { setLimit5Status("limit5Limit", true); return; }
+    stopLimit5Sound();
+    if (index >= 0) state.limit5Coords.splice(index, 1);
+    else state.limit5Coords.push([m, n]);
+    state.limit5Preset = null;
+    setLimit5Status("limit5Ready");
+    renderLimit5Controls();
+    drawPlots();
+  }
+
+  function setLimit5Base(input) {
+    const value = Number(input);
+    if (!Number.isFinite(value) || value < 110 || value > 330) {
+      setLimit5Status("limit5Invalid", true); renderLimit5Controls(); return;
+    }
+    if (value === state.limit5Base) return;
+    stopLimit5Sound();
+    state.limit5Base = value;
+    renderLimit5Controls();
+    drawPlots();
+  }
+
+  function resetLimit5() {
+    stopLimit5Sound();
+    state.limit5Coords = limit5Model.PRESETS.major.map(pair => [...pair]);
+    state.limit5Preset = "major";
+    state.limit5Mode = "melody";
+    state.limit5Base = 261.63;
+    state.limit5Volume = 38;
+    state.limit5Comma = "e";
+    state.limit5TetGuides = false;
+    state.limit5Cursor = [0, 0];
+    setLimit5Status("limit5Ready");
+    renderLimit5Controls();
+    drawPlots();
+  }
+
   function mixRecipe() {
     return { baseHz: state.mixBase, gapHz: state.mixGap };
   }
@@ -2978,6 +3316,7 @@
     const isHarmonics = isMix && state.mixKind === "harmonics";
     const isIntervals = isTuning && state.tuningKind === "intervals";
     const isScales = isTuning && state.tuningKind === "scales";
+    const isLimit5 = isTuning && state.tuningKind === "limit5";
     const isNoise = isMix && state.mixKind === "noise";
     $("pureWorkspace").hidden = isStrike || isSustain || isMotion || isMix || isTuning;
     $("pureChallenge").hidden = isStrike || isSustain || isMotion || isMix || isTuning;
@@ -3003,6 +3342,9 @@
     $("scaleWorkspace").hidden = !isScales;
     $("scaleChallenge").hidden = !isScales;
     $("scaleExplanation").hidden = !isScales;
+    $("limit5Workspace").hidden = !isLimit5;
+    $("limit5Challenge").hidden = !isLimit5;
+    $("limit5Explanation").hidden = !isLimit5;
     $("noiseWorkspace").hidden = !isNoise;
     $("noiseChallenge").hidden = !isNoise;
     $("noiseExplanation").hidden = !isNoise;
@@ -3023,7 +3365,7 @@
       $(id).setAttribute("aria-pressed", String(selected));
     }
     $("pagePhase").textContent = text(isStrike ? "strikePhase" : isSustain ? "sustainPhase" : isMotion ? "motionPhase" :
-      isHarmonics ? "harmonicPhase" : isIntervals ? "intervalPhase" : isScales ? "scalePhase" :
+      isHarmonics ? "harmonicPhase" : isIntervals ? "intervalPhase" : isScales ? "scalePhase" : isLimit5 ? "limit5Phase" :
         isNoise ? "noisePhase" : isMix ? "mixPhase" : "phase");
   }
 
@@ -3105,6 +3447,11 @@
     $("scaleSpiralCanvas").setAttribute("aria-label", text("scaleSpiralAria"));
     $("scaleFourierCanvas").setAttribute("aria-label", text("scaleFourierAria"));
     $("scaleGapCanvas").setAttribute("aria-label", text("scaleGapCanvasAria"));
+    $("limit5Presets").setAttribute("aria-label", text("limit5PresetsAria"));
+    $("limit5PlaybackModes").setAttribute("aria-label", text("limit5PlaybackAria"));
+    $("limit5Commas").setAttribute("aria-label", text("limit5CommaAria"));
+    $("limit5LatticeCanvas").setAttribute("aria-label", text("limit5LatticeAria"));
+    $("limit5OctaveCanvas").setAttribute("aria-label", text("limit5OctaveAria"));
     $("harmonicPresets").setAttribute("aria-label", text("harmonicPresetsAria"));
     $("harmonicSliders").setAttribute("aria-label", text("harmonicSlidersAria"));
     $("harmonicWaveCanvas").setAttribute("aria-label", text("harmonicWaveAria"));
@@ -3121,6 +3468,7 @@
     setMixStatus(state.mixStatus, state.mixError);
     setIntervalStatus(state.intervalStatus, state.intervalError);
     setScaleStatus(state.scaleStatus, state.scaleError);
+    setLimit5Status(state.limit5Status, state.limit5Error);
     setHarmonicStatus(state.harmonicStatus, state.harmonicError);
     setNoiseStatus(state.noiseStatus, state.noiseError);
     renderMode();
@@ -3130,6 +3478,7 @@
     renderMixControls();
     renderIntervalControls();
     renderScaleControls();
+    renderLimit5Controls();
     renderHarmonicControls();
     renderNoiseControls();
     renderStrikeTime();
@@ -3370,6 +3719,7 @@
     stopMixSound(immediate, message === "hidden" ? "mixHidden" : "mixStopped");
     stopIntervalSound(immediate, message === "hidden" ? "intervalHidden" : "intervalStopped");
     stopScaleSound(immediate, message === "hidden" ? "scaleHidden" : "scaleStopped");
+    stopLimit5Sound(immediate, message === "hidden" ? "limit5Hidden" : "limit5Stopped");
     stopHarmonicSound(immediate);
     stopNoiseSound(immediate);
     stopSound(immediate, message);
@@ -3414,7 +3764,8 @@
     if (mode === "mix") setMixStatus("mixReady");
     if (mode === "tuning") {
       if (state.tuningKind === "intervals") setIntervalStatus("intervalReady");
-      else setScaleStatus("scaleReady");
+      else if (state.tuningKind === "scales") setScaleStatus("scaleReady");
+      else setLimit5Status("limit5Ready");
     }
     renderTexts();
     drawPlots();
@@ -3432,11 +3783,12 @@
   }
 
   function selectTuningKind(kind) {
-    if (!["intervals", "scales"].includes(kind) || kind === state.tuningKind) return;
+    if (!["intervals", "scales", "limit5"].includes(kind) || kind === state.tuningKind) return;
     stopAllAudio();
     state.tuningKind = kind;
     if (kind === "intervals") setIntervalStatus("intervalReady");
-    else setScaleStatus("scaleReady");
+    else if (kind === "scales") setScaleStatus("scaleReady");
+    else setLimit5Status("limit5Ready");
     renderTexts();
     drawPlots();
   }
@@ -4627,6 +4979,159 @@
     drawScaleGap();
   }
 
+  function limit5GridPoint(m, n, width, height) {
+    return { x: width * (.335 + .115 * (m + .5 * n)), y: height * (.55 - .17 * n) };
+  }
+
+  function drawLimit5Lattice() {
+    const { ctx, width, height } = plotContext($("limit5LatticeCanvas"));
+    const lattice = limit5Model.lattice(state.limit5Base);
+    const chosen = new Set(state.limit5Coords.map(([m, n]) => limit5Model.key(m, n)));
+    const xy = note => limit5GridPoint(note.m, note.n, width, height);
+    const line = (a, b, color, thickness = 1.2, dash = []) => {
+      const p = xy(a), q = xy(b);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = thickness;
+      ctx.setLineDash(dash);
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(q.x, q.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    };
+    // Oblique/triangular Tonnetz: each edge is a pure fifth, major third or minor third.
+    for (const note of lattice) {
+      for (const [dm, dn] of [[1, 0], [0, 1], [-1, 1]]) {
+        if (limit5Model.within(note.m + dm, note.n + dn)) {
+          line(note, { m: note.m + dm, n: note.n + dn }, "#d9e6f1", .9);
+        }
+      }
+    }
+    if (state.limit5TetGuides) {
+      // (+4,-1) changes the 12-TET semitone index by +24, hence the same pitch class.
+      for (const note of lattice) {
+        if (limit5Model.within(note.m + 4, note.n - 1)) {
+          line(note, { m: note.m + 4, n: note.n - 1 }, "#a0a9ba", 1.5, [4, 6]);
+        }
+      }
+    }
+    const gap = limit5Model.comparison(state.limit5Comma, state.limit5Base);
+    // Two routes to nominal E or D are drawn with contrasting colored paths.
+    const justPath = state.limit5Comma === "e" ? [[0, 0], [0, 1]] :
+      [[0, 0], [0, 1], [-1, 1], [-2, 1]];
+    const fifthPath = state.limit5Comma === "e" ?
+      [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0]] : [[0, 0], [1, 0], [2, 0]];
+    for (const [path, color] of [[justPath, "#128f81"], [fifthPath, "#d58b28"]]) {
+      for (let i = 1; i < path.length; i++) line({ m: path[i - 1][0], n: path[i - 1][1] },
+        { m: path[i][0], n: path[i][1] }, color, 3.4);
+    }
+    line(gap.just, gap.pyth, "#e7a343", 1.7, [6, 4]);
+    for (const note of lattice) {
+      const { x, y } = xy(note);
+      const active = state.limit5Playing && (limit5Active === "all" ||
+        (limit5Active && limit5Active.key === note.key));
+      const comparison = state.limit5Comparing && (note.key === gap.just.key || note.key === gap.pyth.key);
+      const endpoint = note.key === gap.just.key || note.key === gap.pyth.key;
+      const selected = chosen.has(note.key);
+      if (active || comparison) {
+        ctx.beginPath();
+        ctx.fillStyle = "#ffe0a1";
+        ctx.arc(x, y, 13, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+      ctx.beginPath();
+      ctx.arc(x, y, selected || endpoint ? 6.3 : 4.7, 0, 2 * Math.PI);
+      ctx.fillStyle = active || comparison ? "#e89b27" : selected ?
+        note.key === "0,0" ? "#159a88" : "#347ec6" : "#ffffff";
+      ctx.fill();
+      ctx.strokeStyle = endpoint ? "#d68c27" : selected ? "#347ec6" : "#a8bfd3";
+      ctx.lineWidth = endpoint ? 2 : 1.3;
+      ctx.stroke();
+      if (selected || endpoint) {
+        ctx.textAlign = "center";
+        ctx.fillStyle = active || comparison ? "#9f6310" : endpoint ? "#966722" : "#355a80";
+        ctx.font = "bold 11px system-ui, sans-serif";
+        ctx.fillText(limit5Name(note), x, y - 15);
+        ctx.font = "10px system-ui, sans-serif";
+        ctx.fillText(note.numerator + "/" + note.denominator, x, y + 20);
+      }
+      if (state.limit5GridFocused && note.m === state.limit5Cursor[0] && note.n === state.limit5Cursor[1]) {
+        ctx.strokeStyle = "#273d58";
+        ctx.lineWidth = 2;
+        ctx.setLineDash([3, 3]);
+        ctx.beginPath(); ctx.arc(x, y, 14, 0, 2 * Math.PI); ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    }
+    ctx.font = "bold 12px system-ui, sans-serif";
+    ctx.fillStyle = "#648099";
+    ctx.textAlign = "left";
+    ctx.fillText("→  3:2", 15, height - 24);
+    ctx.fillText("↗  5:4", 15, height - 8);
+    ctx.textAlign = "right";
+    ctx.fillText("81:80  ·  " + limit5Model.COMMA_CENTS.toFixed(2) + "¢", width - 16, height - 13);
+  }
+
+  function drawLimit5Octave() {
+    const { ctx, width, height } = plotContext($("limit5OctaveCanvas"));
+    const notes = limit5Notes();
+    const gap = limit5Model.comparison(state.limit5Comma, state.limit5Base);
+    const left = 38, right = width - 24, span = right - left;
+    const xAt = cents => left + Math.max(0, Math.min(1200, cents)) * span / 1200;
+    const trackY = height * .76;
+    ctx.textAlign = "center";
+    for (let i = 0; i <= 12; i++) {
+      const x = xAt(i * 100);
+      ctx.beginPath();
+      ctx.strokeStyle = "#e2eaf2";
+      ctx.lineWidth = 1;
+      ctx.moveTo(x, 16);
+      ctx.lineTo(x, height - 18);
+      ctx.stroke();
+      if (i % (width < 440 ? 3 : 2) === 0) {
+        ctx.fillStyle = "#7891a9";
+        ctx.font = "10px system-ui, sans-serif";
+        ctx.fillText(i * 100 + "¢", x, height - 4);
+      }
+    }
+    ctx.strokeStyle = "#97b6d1";
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(left, trackY); ctx.lineTo(right, trackY); ctx.stroke();
+    for (const note of notes) {
+      const x = xAt(note.cents);
+      const active = state.limit5Playing && (limit5Active === "all" ||
+        (limit5Active && limit5Active.key === note.key));
+      if (active) {
+        ctx.beginPath(); ctx.fillStyle = "#ffe0a1"; ctx.arc(x, trackY, 12, 0, 2 * Math.PI); ctx.fill();
+      }
+      ctx.fillStyle = active ? "#e3952f" : note.key === "0,0" ? "#159a88" : "#347ec6";
+      ctx.beginPath(); ctx.arc(x, trackY, 6.5, 0, 2 * Math.PI); ctx.fill();
+      ctx.fillStyle = "#355c83";
+      ctx.font = "bold 10px system-ui, sans-serif";
+      ctx.fillText(limit5Name(note), x, trackY - 17);
+    }
+    // Separate vertically because a 21.5-cent comma is only a few pixels wide on phones.
+    const markerY = [height * .20, height * .39];
+    for (const [index, note] of [gap.just, gap.pyth].entries()) {
+      const x = xAt(note.cents);
+      ctx.fillStyle = state.limit5Comparing ? "#e99b2c" : index === 0 ? "#188e82" : "#d18c30";
+      ctx.beginPath(); ctx.arc(x, markerY[index], 5.5, 0, 2 * Math.PI); ctx.fill();
+      ctx.strokeStyle = "#dab474";
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath(); ctx.moveTo(x, markerY[index] + 8); ctx.lineTo(x, trackY - 13); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.font = "11px system-ui, sans-serif";
+      ctx.fillStyle = "#78633e";
+      ctx.textAlign = x > width * .75 ? "right" : "left";
+      ctx.fillText((index === 0 ? "5:4 · " : "3:2 · ") + note.numerator + "/" + note.denominator, x + (x > width * .75 ? -10 : 10), markerY[index] + 4);
+    }
+  }
+
+  function drawLimit5Plots() {
+    drawLimit5Lattice();
+    drawLimit5Octave();
+  }
+
   function drawHarmonicWave() {
     const { ctx, width, height } = plotContext($("harmonicWaveCanvas"));
     const left = 43, right = width - 16, top = 26, bottom = height - 32;
@@ -4787,7 +5292,8 @@
       else drawMixPlots();
     } else if (state.mode === "tuning") {
       if (state.tuningKind === "intervals") drawIntervalPlots();
-      else drawScalePlots();
+      else if (state.tuningKind === "scales") drawScalePlots();
+      else drawLimit5Plots();
     } else {
       drawWave();
       drawSpectrum();
@@ -4879,6 +5385,26 @@
   document.querySelectorAll("[data-scale-tonic]").forEach(button => {
     button.addEventListener("click", () => selectScaleTonic(Number(button.dataset.scaleTonic)));
   });
+  document.querySelectorAll("[data-limit5-preset]").forEach(button => {
+    button.addEventListener("click", () => selectLimit5Preset(button.dataset.limit5Preset));
+  });
+  document.querySelectorAll("[data-limit5-mode]").forEach(button => {
+    button.addEventListener("click", () => {
+      if (state.limit5Mode === button.dataset.limit5Mode) return;
+      stopLimit5Sound();
+      state.limit5Mode = button.dataset.limit5Mode;
+      renderLimit5Controls();
+    });
+  });
+  document.querySelectorAll("[data-limit5-comma]").forEach(button => {
+    button.addEventListener("click", () => {
+      if (state.limit5Comma === button.dataset.limit5Comma) return;
+      stopLimit5Sound();
+      state.limit5Comma = button.dataset.limit5Comma;
+      renderLimit5Controls();
+      drawPlots();
+    });
+  });
   document.querySelectorAll("[data-interval-ratio]").forEach(button => {
     button.addEventListener("click", () => selectIntervalRatio(button.dataset.intervalRatio));
   });
@@ -4903,6 +5429,57 @@
   $("scaleRemoveDown").addEventListener("click", () => changeScaleBoundary("down", -1));
   $("scaleRemoveUp").addEventListener("click", () => changeScaleBoundary("up", -1));
   $("scaleReset").addEventListener("click", resetScale);
+  $("limit5Button").addEventListener("click", toggleLimit5Sound);
+  $("limit5CompareButton").addEventListener("click", toggleLimit5Compare);
+  $("limit5TetGuides").addEventListener("change", event => {
+    state.limit5TetGuides = event.target.checked;
+    drawPlots();
+  });
+  $("limit5BaseSlider").addEventListener("input", event => setLimit5Base(event.target.value));
+  $("limit5BaseInput").addEventListener("change", event => setLimit5Base(event.target.value));
+  $("limit5Volume").addEventListener("input", event => {
+    state.limit5Volume = Math.min(100, Math.max(0, Number(event.target.value)));
+    limit5Audio.updateVolume();
+    renderLimit5Controls();
+  });
+  $("limit5Reset").addEventListener("click", resetLimit5);
+  $("limit5LatticeCanvas").addEventListener("click", event => {
+    const canvas = $("limit5LatticeCanvas");
+    const rect = canvas.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width;
+    const y = (event.clientY - rect.top) / rect.height;
+    let closest = null;
+    let distance = Infinity;
+    for (const point of limit5Model.lattice(state.limit5Base)) {
+      const position = limit5GridPoint(point.m, point.n, 1, 1);
+      const d = Math.hypot((x - position.x) * rect.width, (y - position.y) * rect.height);
+      if (d < distance) { distance = d; closest = point; }
+    }
+    if (closest && distance <= Math.max(17, Math.min(rect.width, rect.height) * .06)) {
+      state.limit5Cursor = [closest.m, closest.n];
+      toggleLimit5Point(closest.m, closest.n);
+    }
+  });
+  $("limit5LatticeCanvas").addEventListener("focus", () => {
+    state.limit5GridFocused = true;
+    if (state.mode === "tuning" && state.tuningKind === "limit5") drawLimit5Lattice();
+  });
+  $("limit5LatticeCanvas").addEventListener("blur", () => {
+    state.limit5GridFocused = false;
+    if (state.mode === "tuning" && state.tuningKind === "limit5") drawLimit5Lattice();
+  });
+  $("limit5LatticeCanvas").addEventListener("keydown", event => {
+    const delta = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }[event.key];
+    if (delta) {
+      event.preventDefault();
+      const m = state.limit5Cursor[0] + delta[0], n = state.limit5Cursor[1] + delta[1];
+      if (limit5Model.within(m, n)) state.limit5Cursor = [m, n];
+      drawLimit5Lattice();
+    } else if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      toggleLimit5Point(...state.limit5Cursor);
+    }
+  });
   document.querySelectorAll("[data-theremin-timbre]").forEach(button => {
     button.addEventListener("click", () => setMotionTimbre(button.dataset.thereminTimbre));
   });
@@ -5223,7 +5800,7 @@
   window.addEventListener("blur", () => {
     if (recorder.state === "recording") stopRecording();
     if (state.sustainPlaying || sustainPointerId !== null || sustainKeyboardHeld ||
-        state.motionPlaying || state.mixPlaying || state.intervalPlaying || state.scalePlaying ||
+        state.motionPlaying || state.mixPlaying || state.intervalPlaying || state.scalePlaying || state.limit5Playing || state.limit5Comparing ||
         state.harmonicPlaying || state.noisePlaying) {
       stopAllAudio(true, "hidden");
     }
@@ -5246,6 +5823,8 @@
     observer.observe($("intervalSpectrumCanvas"));
     observer.observe($("scaleSpiralCanvas"));
     observer.observe($("scaleFourierCanvas"));
+    observer.observe($("limit5LatticeCanvas"));
+    observer.observe($("limit5OctaveCanvas"));
     observer.observe($("harmonicWaveCanvas"));
     observer.observe($("harmonicSpectrumCanvas"));
     observer.observe($("noiseWaveCanvas"));

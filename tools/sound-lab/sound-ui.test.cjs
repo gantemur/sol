@@ -12,6 +12,7 @@ const motionModel = require("./sound-motion.js");
 const beatsModel = require("./sound-beats.js");
 const intervalModel = require("./sound-intervals.js");
 const scaleModel = require("./sound-scales.js");
+const limit5Model = require("./sound-limit5.js");
 const harmonicModel = require("./sound-harmonics.js");
 const noiseModel = require("./sound-noise.js");
 const recorderModel = require("./sound-recorder.js");
@@ -42,8 +43,9 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-harmonics\.js"/);
   assert.match(html, /src="sound-noise\.js"/);
   assert.match(html, /src="sound-scales\.js\?v=s025"/);
-  assert.match(html, /src="sound-lab\.js\?v=s025"/);
-  assert.match(html, /href="sound-lab\.css\?v=s025"/);
+  assert.match(html, /src="sound-limit5\.js\?v=s026"/);
+  assert.match(html, /src="sound-lab\.js\?v=s026"/);
+  assert.match(html, /href="sound-lab\.css\?v=s026"/);
   assert.match(html, /id="scaleGapToggle" type="checkbox"/);
   assert.match(html, /id="scaleGapPanel" hidden/);
   assert.match(html, /src="sound-recorder\.js"/);
@@ -73,21 +75,29 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /id="scaleWorkspace"[^>]*hidden/);
   assert.match(html, /id="scaleChallenge"[^>]*hidden/);
   assert.match(html, /id="scaleExplanation"[^>]*hidden/);
+  assert.match(html, /id="limit5Workspace"[^>]*hidden/);
+  assert.match(html, /id="limit5Challenge"[^>]*hidden/);
+  assert.match(html, /id="limit5Explanation"[^>]*hidden/);
   const scaleMarkup = html.slice(html.indexOf('id="scaleWorkspace"'), html.indexOf('id="harmonicWorkspace"'));
   assert.ok(scaleMarkup.indexOf('id="scaleButton"') < scaleMarkup.indexOf('id="scalePresets"'),
     "Scale Play must be directly below its sub-tabs, before all settings");
+  const limit5Markup = html.slice(html.indexOf('id="limit5Workspace"'), html.indexOf('id="harmonicWorkspace"'));
+  assert.ok(limit5Markup.indexOf('id="limit5Button"') < limit5Markup.indexOf('id="limit5Presets"'),
+    "5-limit Play must be directly below its sub-tabs, before all settings");
+  assert.match(limit5Markup, /id="limit5LatticeCanvas"/);
+  assert.match(limit5Markup, /id="limit5OctaveCanvas"/);
   assert.match(html, /id="noiseWorkspace"[^>]*hidden/);
   assert.match(html, /id="harmonicChallenge"[^>]*hidden/);
   assert.match(html, /id="noiseChallenge"[^>]*hidden/);
   assert.doesNotMatch(html, /id="mixExperimentSwitch"/);
-  assert.equal([...html.matchAll(/class="experiment-switch /g)].length, 5);
+  assert.equal([...html.matchAll(/class="experiment-switch /g)].length, 6);
   assert.equal([...html.matchAll(/data-mix-kind="/g)].length, 9);
-  assert.equal([...html.matchAll(/data-tuning-kind="/g)].length, 4);
+  assert.equal([...html.matchAll(/data-tuning-kind="/g)].length, 9);
   for (const kind of ["beats", "harmonics", "noise"]) {
     assert.equal([...html.matchAll(new RegExp('data-mix-kind="' + kind + '"', 'g'))].length, 3);
   }
-  for (const kind of ["intervals", "scales"]) {
-    assert.equal([...html.matchAll(new RegExp('data-tuning-kind="' + kind + '"', 'g'))].length, 2);
+  for (const kind of ["intervals", "scales", "limit5"]) {
+    assert.equal([...html.matchAll(new RegExp('data-tuning-kind="' + kind + '"', 'g'))].length, 3);
   }
   assert.ok(html.indexOf('id="mixWorkspace"') < html.indexOf('class="experiment-switch mix-experiment-switch"'),
     "Experiment choices belong within left panels, not under the main tabs");
@@ -215,8 +225,11 @@ function fakePage(search = "", supportWorklets = true) {
   const mixGapButtons = [0, 2, 4, 10].map(mixGap => element({ mixGap: String(mixGap) }));
   const mixKindButtons = Array.from({ length: 3 }, () =>
     ["beats", "harmonics", "noise"].map(mixKind => element({ mixKind }))).flat();
-  const tuningKindButtons = Array.from({ length: 2 }, () =>
-    ["intervals", "scales"].map(tuningKind => element({ tuningKind }))).flat();
+  const tuningKindButtons = Array.from({ length: 3 }, () =>
+    ["intervals", "scales", "limit5"].map(tuningKind => element({ tuningKind }))).flat();
+  const limit5PresetButtons = Object.keys(limit5Model.PRESETS).map(limit5Preset => element({ limit5Preset }));
+  const limit5ModeButtons = ["melody", "chord"].map(limit5Mode => element({ limit5Mode }));
+  const limit5CommaButtons = ["e", "d"].map(limit5Comma => element({ limit5Comma }));
   const scalePresetButtons = scaleModel.PRESETS.map(preset => element({ scalePreset: preset.id }));
   const scaleTonicButtons = Array.from({ length: scaleModel.MAX_NOTES }, (_, scaleTonic) =>
     element({ scaleTonic: String(scaleTonic) }));
@@ -254,6 +267,9 @@ function fakePage(search = "", supportWorklets = true) {
       if (selector === "[data-tuning-kind]") return tuningKindButtons;
       if (selector === "[data-scale-preset]") return scalePresetButtons;
       if (selector === "[data-scale-tonic]") return scaleTonicButtons;
+      if (selector === "[data-limit5-preset]") return limit5PresetButtons;
+      if (selector === "[data-limit5-mode]") return limit5ModeButtons;
+      if (selector === "[data-limit5-comma]") return limit5CommaButtons;
       if (selector === "[data-interval-ratio]") return intervalRatioButtons;
       if (selector === "[data-interval-tuning]") return intervalTuningButtons;
       if (selector === "[data-interval-color]") return intervalColorButtons;
@@ -279,6 +295,7 @@ function fakePage(search = "", supportWorklets = true) {
     SoundLabBeats: beatsModel,
     SoundLabIntervals: intervalModel,
     SoundLabScales: scaleModel,
+    SoundLabLimit5: limit5Model,
     SoundLabHarmonics: harmonicModel,
     SoundLabNoise: noiseModel,
     SoundLabRecorder: recorderModel,
@@ -451,6 +468,7 @@ function fakePage(search = "", supportWorklets = true) {
     sustainGestureButtons, drumButtons, spectrumButtons,
     motionButtons, sirenPatternButtons, timbreButtons, vowelButtons, mixGapButtons, mixKindButtons,
     tuningKindButtons, scalePresetButtons, scaleTonicButtons,
+    limit5PresetButtons, limit5ModeButtons, limit5CommaButtons,
     intervalRatioButtons, intervalTuningButtons, intervalColorButtons,
     harmonicPresetButtons, harmonicLevelInputs, noiseColorButtons,
     hzLabels, objectUrls, revokedUrls,
@@ -1427,21 +1445,21 @@ test("S021 interval playback reaches the shared recorder and cancels a pending s
   assert.equal(app.elements.get("intervalPlayLabel").textContent, "Тоглуулах");
 });
 
-test("S022 Хөг keeps Interval and Build Scale in sync without autoplay", () => {
+test("S026 Хөг keeps Interval, 3-limit and 5-limit in sync without autoplay", () => {
   const app = fakePage();
   app.fire("modeTuning", "click");
   assert.equal(app.elements.get("intervalWorkspace").hidden, false);
   assert.equal(app.elements.get("scaleWorkspace").hidden, true);
   assert.equal(app.elements.get("pagePhase").textContent, "06 · Хөгжмийн интервал");
-  assert.equal(app.tuningKindButtons.length, 4);
-  for (const index of [0, 2]) assert.equal(app.tuningKindButtons[index].getAttribute("aria-pressed"), "true");
+  assert.equal(app.tuningKindButtons.length, 9);
+  for (const index of [0, 3, 6]) assert.equal(app.tuningKindButtons[index].getAttribute("aria-pressed"), "true");
 
   app.tuningKindButtons[1].events.click();
   assert.equal(app.elements.get("intervalWorkspace").hidden, true);
   assert.equal(app.elements.get("scaleWorkspace").hidden, false);
   assert.equal(app.elements.get("scaleChallenge").hidden, false);
   assert.equal(app.elements.get("scaleExplanation").hidden, false);
-  assert.equal(app.elements.get("pagePhase").textContent, "06 · Шатлал бүтээх");
+  assert.equal(app.elements.get("pagePhase").textContent, "06 · 3-хязгаар");
   assert.equal(app.elements.get("scaleCountValue").textContent, "5 нот");
   assert.equal(app.scaleTonicButtons.filter(button => !button.hidden).length, 5);
   assert.equal(app.elements.get("scaleTonicValue").textContent, "220 Гц");
@@ -1450,17 +1468,98 @@ test("S022 Хөг keeps Interval and Build Scale in sync without autoplay", () =
   assert.ok(app.elements.get("scaleFourierCanvas").drawnText.includes("1/1"));
   assert.ok(app.elements.get("scaleFourierCanvas").drawnText.includes("+4"));
   assert.match(app.elements.get("scaleNowValue").textContent, /өсөх, буурах/);
-  for (const index of [1, 3]) assert.equal(app.tuningKindButtons[index].getAttribute("aria-pressed"), "true");
+  for (const index of [1, 4, 7]) assert.equal(app.tuningKindButtons[index].getAttribute("aria-pressed"), "true");
   assert.equal(app.contexts.length, 0, "Selecting experiments and tonics never autoplays");
 
   app.fire("langEn", "click");
   assert.equal(app.elements.get("scalePlayLabel").textContent, "Hear the scale");
-  assert.equal(app.elements.get("pagePhase").textContent, "06 · Build scales");
+  assert.equal(app.elements.get("pagePhase").textContent, "06 · 3-limit");
   assert.equal(app.elements.get("scaleTonicValue").textContent, "220 Hz");
   app.tuningKindButtons[0].events.click();
   assert.equal(app.elements.get("intervalWorkspace").hidden, false);
   assert.equal(app.elements.get("intervalPlayLabel").textContent, "Play both");
   assert.equal(app.elements.get("scaleWorkspace").hidden, true);
+});
+
+test("S026 5-limit presets, lattice selection, bilingual labels and 12-TET guides never autoplay", () => {
+  const app = fakePage();
+  app.fire("modeTuning", "click");
+  app.tuningKindButtons[2].events.click();
+  assert.equal(app.elements.get("limit5Workspace").hidden, false);
+  assert.equal(app.elements.get("scaleWorkspace").hidden, true);
+  assert.equal(app.elements.get("limit5Challenge").hidden, false);
+  assert.equal(app.elements.get("limit5Explanation").hidden, false);
+  assert.equal(app.elements.get("pagePhase").textContent, "06 · 5-хязгаар");
+  assert.equal(app.elements.get("limit5Count").textContent, "3 нот");
+  assert.equal(app.elements.get("limit5CommaFact").textContent.includes("21.51"), true);
+  assert.ok(app.elements.get("limit5LatticeCanvas").drawnArcs.length >= 28);
+  assert.ok(app.elements.get("limit5OctaveCanvas").drawnArcs.length >= 5);
+  assert.equal(app.contexts.length, 0);
+  app.limit5PresetButtons[4].events.click();
+  assert.equal(app.elements.get("limit5Count").textContent, "7 нот");
+  app.limit5CommaButtons[1].events.click();
+  assert.match(app.elements.get("limit5CommaFact").textContent, /10\/9.*9\/8/);
+  app.fire("limit5TetGuides", "change", { target: { checked: true } });
+  app.fire("langEn", "click");
+  assert.equal(app.elements.get("limit5PlayLabel").textContent, "Hear the notes");
+  assert.equal(app.elements.get("limit5RulerValue").textContent.includes("cents"), true);
+  assert.equal(app.elements.get("pagePhase").textContent, "06 · 5-limit");
+  assert.equal(app.contexts.length, 0);
+  // Add an unselected point near the middle-left of the lattice.
+  app.fire("limit5LatticeCanvas", "click", { clientX: 710 * (.335 + .115 * (-2 + .5 * 0)), clientY: 210 * .55 });
+  assert.equal(app.elements.get("limit5Count").textContent, "8 notes");
+  app.fire("limit5Reset", "click");
+  assert.equal(app.elements.get("limit5Count").textContent, "3 notes");
+  assert.equal(app.elements.get("limit5TetGuides").checked, false);
+  app.fire("limit5LatticeCanvas", "focus");
+  app.fire("limit5LatticeCanvas", "keydown", { key: "ArrowRight" });
+  app.fire("limit5LatticeCanvas", "keydown", { key: "Enter" });
+  assert.equal(app.elements.get("limit5Count").textContent, "2 notes", "Keyboard selects the focused lattice dot");
+  app.fire("limit5LatticeCanvas", "blur");
+});
+
+test("S026 5-limit melody and chord use recorder bus and track highlighted note", async () => {
+  const app = fakePage();
+  app.fire("modeTuning", "click");
+  app.tuningKindButtons[2].events.click();
+  const start = app.fire("limit5Button", "click");
+  await start;
+  const context = app.contexts[0];
+  assert.equal(context.sources.length, 1);
+  assert.equal(context.sources[0].buffer.length, Math.ceil(3 * limit5Model.STEP_SECONDS * context.sampleRate));
+  assert.equal(app.elements.get("limit5PlayIcon").textContent, "■");
+  app.tick(.39);
+  assert.match(app.elements.get("limit5Now").textContent, /5\/4/);
+  assert.ok(app.elements.get("limit5OctaveCanvas").drawnArcs.some(arc => arc.fillStyle === "#ffe0a1"));
+  app.limit5ModeButtons[1].events.click();
+  assert.equal(app.elements.get("limit5PlayIcon").textContent, "▶");
+  await app.fire("limit5Button", "click");
+  assert.equal(context.sources.length, 2);
+  assert.equal(context.sources[1].buffer.length, Math.ceil(limit5Model.CHORD_SECONDS * context.sampleRate));
+  assert.match(app.elements.get("limit5Now").textContent, /хамт/);
+  app.fire("stopAll", "click");
+  assert.equal(app.elements.get("limit5PlayIcon").textContent, "▶");
+  assert.equal(context.sources[1].stopped, true);
+});
+
+test("S026 comma comparison beats are explicit, cancel on navigation, and end naturally", async () => {
+  const app = fakePage();
+  app.fire("modeTuning", "click");
+  app.tuningKindButtons[2].events.click();
+  await app.fire("limit5CompareButton", "click");
+  const context = app.contexts[0];
+  assert.equal(context.sources.length, 1);
+  assert.equal(context.sources[0].buffer.length, Math.ceil(limit5Model.COMPARE_SECONDS * context.sampleRate));
+  assert.equal(app.elements.get("limit5CompareButton").getAttribute("aria-pressed"), "true");
+  app.tuningKindButtons[0].events.click();
+  assert.equal(context.sources[0].stopped, true);
+  assert.equal(app.elements.get("limit5CompareButton").getAttribute("aria-pressed"), "false");
+  app.tuningKindButtons[2].events.click();
+  await app.fire("limit5CompareButton", "click");
+  context.sources[1].onended();
+  assert.equal(app.elements.get("limit5CompareButton").getAttribute("aria-pressed"), "false");
+  assert.equal(app.elements.get("limit5Now").textContent.includes("тоглуулахад"), true);
+  assert.equal(context.sources.length, 2);
 });
 
 test("S022 fifth chains grow in both directions and tonic choice changes mode, not pitch collection", () => {
