@@ -82,5 +82,17 @@
     "entry": "tools/armatur/",
     "description": "Bilingual 1D cutting-stock planner with optimized rod patterns and visual cutting lists.",
     "migrationStatus": "native optimizer and interactive UI with corrected standalone legacy"
+  },
+  {
+    "id": "sundial",
+    "title": "Нарны цаг · Sundial",
+    "language": [
+      "mn",
+      "en"
+    ],
+    "category": "astronomy",
+    "entry": "tools/sundial/",
+    "description": "Generate printable and engravable horizontal sundial patterns with optional gnomon dimensions.",
+    "migrationStatus": "native horizontal v1 review"
   }
 ]
