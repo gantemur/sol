@@ -41,9 +41,9 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-intervals\.js\?v=s021"/);
   assert.match(html, /src="sound-harmonics\.js"/);
   assert.match(html, /src="sound-noise\.js"/);
-  assert.match(html, /src="sound-scales\.js\?v=s022"/);
-  assert.match(html, /src="sound-lab\.js\?v=s022"/);
-  assert.match(html, /href="sound-lab\.css\?v=s022"/);
+  assert.match(html, /src="sound-scales\.js\?v=s023"/);
+  assert.match(html, /src="sound-lab\.js\?v=s023"/);
+  assert.match(html, /href="sound-lab\.css\?v=s023"/);
   assert.match(html, /src="sound-recorder\.js"/);
   assert.match(html, /id="recordPreview"[^>]*controls/);
   assert.match(html, /id="recordDownload"[^>]*download="sound-lab\.wav"/);
@@ -1437,8 +1437,10 @@ test("S022 Хөг keeps Interval and Build Scale in sync without autoplay", () =
   assert.equal(app.scaleTonicButtons.filter(button => !button.hidden).length, 5);
   assert.equal(app.elements.get("scaleTonicValue").textContent, "220 Гц");
   assert.match(app.elements.get("scaleGapsValue").textContent, /204/);
-  assert.ok(app.elements.get("scaleCircleCanvas").drawnText.includes("1/1"));
-  assert.ok(app.elements.get("scaleChainCanvas").drawnText.includes("+4"));
+  assert.ok(app.elements.get("scaleSpiralCanvas").drawnText.includes("+4"));
+  assert.ok(app.elements.get("scaleFourierCanvas").drawnText.includes("1/1"));
+  assert.ok(app.elements.get("scaleFourierCanvas").drawnText.includes("+4"));
+  assert.match(app.elements.get("scaleNowValue").textContent, /өсөх, буурах/);
   for (const index of [1, 3]) assert.equal(app.tuningKindButtons[index].getAttribute("aria-pressed"), "true");
   assert.equal(app.contexts.length, 0, "Selecting experiments and tonics never autoplays");
 
@@ -1464,7 +1466,7 @@ test("S022 fifth chains grow in both directions and tonic choice changes mode, n
   assert.equal(app.scaleTonicButtons[4].getAttribute("aria-pressed"), "true");
   assert.notEqual(app.elements.get("scaleGapsValue").textContent, firstGaps,
     "Rotating the tonic rotates the actual interval sequence");
-  assert.ok(app.elements.get("scaleCircleCanvas").drawnText.includes("27/16"));
+  assert.ok(app.elements.get("scaleFourierCanvas").drawnText.includes("27/16"));
 
   app.scalePresetButtons[1].events.click(); // two down, two up
   assert.equal(app.elements.get("scaleCountValue").textContent, "5 нот");
@@ -1538,6 +1540,31 @@ test("S022 scale melody records on the shared bus and returns to idle at natural
   assert.deepEqual(worklet.port.lastPosted, { type: "stop" });
   worklet.send({ type: "done" });
   assert.equal(app.elements.get("recordDownload").clickCount, 1);
+});
+
+test("S023 spiral and harmonic rows follow the audible pitch order, then clear on stop", async () => {
+  const app = fakePage();
+  app.fire("modeTuning", "click");
+  app.tuningKindButtons[1].events.click();
+  const spiral = app.elements.get("scaleSpiralCanvas");
+  const fourier = app.elements.get("scaleFourierCanvas");
+  assert.ok(spiral.drawnText.includes("+1"), "Spiral labels fifth-chain steps");
+  assert.ok(fourier.drawnText.includes("2^" + 2 + " f₀"), "Harmonic rows use a logarithmic octave axis");
+  assert.equal(fourier.style.height, "260px", "Five rows fit the compact cartoon");
+  await app.fire("scaleButton", "click");
+  assert.match(app.elements.get("scaleNowValue").textContent, /алхам 0 · 1\/1/);
+  assert.equal(app.elements.get("scaleNowValue").classList.contains("active"), true);
+  app.tick(.33);
+  assert.match(app.elements.get("scaleNowValue").textContent, /алхам \+2 · 9\/8/,
+    "Second played note is k=2, not the next generated fifth k=1");
+  app.tick(.32);
+  assert.match(app.elements.get("scaleNowValue").textContent, /алхам \+4 · 81\/64/);
+  app.tick(1.0);
+  assert.match(app.elements.get("scaleNowValue").textContent, /алхам 0 · 1\/1 · дээд октав/);
+  app.fire("stopAll", "click");
+  assert.equal(app.elements.get("scaleNowValue").classList.contains("active"), false);
+  assert.match(app.elements.get("scaleNowValue").textContent, /өсөх, буурах/);
+  assert.equal(app.elements.get("scalePlayLabel").textContent, "Шатлалыг сонсох");
 });
 
 test("beating controls retune both voices; gap zero resynchronizes the pair without lingering voices", async () => {

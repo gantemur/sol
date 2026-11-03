@@ -57,6 +57,11 @@ test("twelve consecutive fifths miss seven octaves by one Pythagorean comma", ()
 test("scale melody starts and ends on the selected tonic and synthesizes bounded notes", () => {
   const scale = scales.build({ down: 1, up: 5, tonicK: -1 });
   const sequence = scales.melody(scale);
+  const steps = scales.melodySteps(scale);
+  assert.deepEqual(steps.map(note => note.hz), sequence);
+  assert.equal(steps[0].k, scale.tonicK);
+  assert.equal(steps[7].octaveUp, true);
+  assert.equal(steps.at(-1).k, scale.tonicK);
   assert.equal(sequence.length, 15);
   close(sequence[0], scale.tonicHz);
   close(sequence[7], scale.tonicHz * 2);
@@ -66,6 +71,21 @@ test("scale melody starts and ends on the selected tonic and synthesizes bounded
   assert.equal(audio[0], 0);
   assert.ok(audio.every(sample => Math.abs(sample) <= 1));
   assert.ok(audio.some(sample => Math.abs(sample) > .5));
+});
+
+test("the spiral turn and adjacent Fourier partials come from exact fifths", () => {
+  close(scales.FIFTH_TURN_DEGREES, 210.586500259, 1e-6);
+  const scale = scales.build({ down: 3, up: 4 });
+  for (let index = 0; index + 1 < scale.chain.length; index++) {
+    // Unreduced frequencies ascend by a fifth; every adjacent pair shares 3f=2f'.
+    const lower = (3 / 2) ** scale.chain[index].k;
+    const higher = (3 / 2) ** scale.chain[index + 1].k;
+    close(3 * lower, 2 * higher);
+    const octavePosition = scale.chain[index].k * Math.log2(3 / 2);
+    const angle = 360 * octavePosition;
+    close((angle + scales.FIFTH_TURN_DEGREES) / 360,
+      (scale.chain[index + 1].k) * Math.log2(3 / 2));
+  }
 });
 
 test("invalid scale dimensions and pitches are rejected", () => {

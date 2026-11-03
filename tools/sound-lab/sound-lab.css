@@ -196,8 +196,10 @@ h1, h2, p { margin-top: 0; }
   border-radius: 10px; background: #eaf4fc; }
 .scale-facts span { color: #658098; font-size: 11px; }
 .scale-facts strong { color: #265c85; font-size: 13px; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
-#scaleCircleCanvas { height: 290px; }
-#scaleChainCanvas { height: 220px; }
+.chart-panel #scaleSpiralCanvas { width: min(100%, 410px); height: auto; aspect-ratio: 1 / 1; margin: 12px auto 4px; }
+.chart-panel #scaleFourierCanvas { height: 340px; }
+.scale-now { margin: 10px 0 0; min-height: 19px; font-size: 12px; font-weight: 750; color: #235d90; text-align: center; }
+.scale-now.active { color: #117c71; }
 .harmonic-presets, .noise-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .harmonic-presets button, .noise-choices button { min-height: 44px; padding: 8px 5px; border: 1px solid #cee0f1; border-radius: 9px; background: #f3f8ff; color: #315b8c; font-size: 12px; font-weight: 750; }
 .harmonic-presets button:hover, .noise-choices button:hover { background: #e5f0ff; }
@@ -289,8 +291,7 @@ h1, h2, p { margin-top: 0; }
   .chart-panel canvas { height: 188px; }
   .chart-panel #spectrumCanvas { height: 188px; }
   .chart-panel #strikeSpectrumCanvas { height: 188px; }
-  .chart-panel #scaleCircleCanvas { height: 265px; }
-  .chart-panel #scaleChainCanvas { height: 215px; }
+  .chart-panel #scaleSpiralCanvas { width: min(100%, 390px); height: auto; }
   .chart-heading { display: block; }
   .chart-badge { display: inline-block; margin-top: 8px; }
   .motion-mini-plots { grid-template-columns: 1fr; }
@@ -317,8 +318,7 @@ h1, h2, p { margin-top: 0; }
   .chart-panel canvas { height: 198px; }
   .chart-panel #spectrumCanvas { height: 164px; }
   .chart-panel #strikeSpectrumCanvas { height: 170px; }
-  .chart-panel #scaleCircleCanvas { height: 225px; }
-  .chart-panel #scaleChainCanvas { height: 195px; }
+  .chart-panel #scaleSpiralCanvas { width: min(100%, 340px); height: auto; }
   .plot-tools select { margin-left: 0; }
   .mix-plot-tools { gap: 8px 12px; }
   .mix-pan-group { margin-left: 0; }
