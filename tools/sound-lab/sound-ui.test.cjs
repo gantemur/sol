@@ -58,6 +58,11 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /id="mixChallenge"[^>]*hidden/);
   assert.match(html, /id="harmonicWorkspace"[^>]*hidden/);
   assert.match(html, /id="intervalWorkspace"[^>]*hidden/);
+  const intervalMarkup = html.slice(html.indexOf('id="intervalWorkspace"'), html.indexOf('id="harmonicWorkspace"'));
+  assert.ok(intervalMarkup.indexOf('id="intervalButton"') < intervalMarkup.indexOf('id="intervalPresets"'),
+    "Interval Play must appear immediately below the sub-tabs, before the settings");
+  assert.ok(intervalMarkup.indexOf('id="intervalStatus"') < intervalMarkup.indexOf('id="intervalPresets"'),
+    "Interval playback status belongs with its Play button above the settings");
   assert.match(html, /id="intervalChallenge"[^>]*hidden/);
   assert.match(html, /id="intervalExplanation"[^>]*hidden/);
   assert.match(html, /id="noiseWorkspace"[^>]*hidden/);
