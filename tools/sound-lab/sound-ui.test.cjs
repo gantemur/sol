@@ -41,13 +41,13 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-motion\.js\?v=s020c"/);
   assert.match(html, /src="sound-beats\.js"/);
   assert.match(html, /src="sound-intervals\.js\?v=s021"/);
-  assert.match(html, /src="sound-ear-tune\.js\?v=s027"/);
+  assert.match(html, /src="sound-ear-tune\.js\?v=s028"/);
   assert.match(html, /src="sound-harmonics\.js"/);
   assert.match(html, /src="sound-noise\.js"/);
   assert.match(html, /src="sound-scales\.js\?v=s025"/);
   assert.match(html, /src="sound-limit5\.js\?v=s026"/);
-  assert.match(html, /src="sound-lab\.js\?v=s027"/);
-  assert.match(html, /href="sound-lab\.css\?v=s027"/);
+  assert.match(html, /src="sound-lab\.js\?v=s028"/);
+  assert.match(html, /href="sound-lab\.css\?v=s028"/);
   assert.match(html, /id="scaleGapToggle" type="checkbox"/);
   assert.match(html, /id="scaleGapPanel" hidden/);
   assert.match(html, /src="sound-recorder\.js"/);
@@ -166,6 +166,8 @@ function fakePage(search = "", supportWorklets = true) {
   const revokedUrls = [];
   const animationFrames = new Map();
   let nextFrameId = 0;
+  const timers = new Map();
+  let nextTimerId = 0;
   const classList = () => {
     const values = new Set();
     return {
@@ -234,6 +236,8 @@ function fakePage(search = "", supportWorklets = true) {
     ["intervals", "ear", "scales", "limit5"].map(tuningKind => element({ tuningKind }))).flat();
   const earTaskButtons = Object.keys(earModel.TASKS).map(earTask => element({ earTask }));
   const earHelpButtons = ["guided", "blind"].map(earHelp => element({ earHelp }));
+  const earSoundButtons = earModel.SOUNDS.map(earSound => element({ earSound }));
+  const earPatternButtons = earModel.PATTERNS.map(earPattern => element({ earPattern }));
   const limit5PresetButtons = Object.keys(limit5Model.PRESETS).map(limit5Preset => element({ limit5Preset }));
   const limit5ModeButtons = ["melody", "chord"].map(limit5Mode => element({ limit5Mode }));
   const limit5CommaButtons = ["e", "d"].map(limit5Comma => element({ limit5Comma }));
@@ -274,6 +278,8 @@ function fakePage(search = "", supportWorklets = true) {
       if (selector === "[data-tuning-kind]") return tuningKindButtons;
       if (selector === "[data-ear-task]") return earTaskButtons;
       if (selector === "[data-ear-help]") return earHelpButtons;
+      if (selector === "[data-ear-sound]") return earSoundButtons;
+      if (selector === "[data-ear-pattern]") return earPatternButtons;
       if (selector === "[data-scale-preset]") return scalePresetButtons;
       if (selector === "[data-scale-tonic]") return scaleTonicButtons;
       if (selector === "[data-limit5-preset]") return limit5PresetButtons;
@@ -325,6 +331,12 @@ function fakePage(search = "", supportWorklets = true) {
       return id;
     },
     cancelAnimationFrame(id) { animationFrames.delete(id); },
+    setInterval(callback, delay) {
+      const id = ++nextTimerId;
+      timers.set(id, { callback, delay });
+      return id;
+    },
+    clearInterval(id) { timers.delete(id); },
     events: {},
     addEventListener(type, callback) { this.events[type] = callback; }
   };
@@ -478,7 +490,7 @@ function fakePage(search = "", supportWorklets = true) {
     sustainGestureButtons, drumButtons, spectrumButtons,
     motionButtons, sirenPatternButtons, timbreButtons, vowelButtons, mixGapButtons, mixKindButtons,
     tuningKindButtons, scalePresetButtons, scaleTonicButtons,
-    earTaskButtons, earHelpButtons,
+    earTaskButtons, earHelpButtons, earSoundButtons, earPatternButtons, timers, animationFrames,
     limit5PresetButtons, limit5ModeButtons, limit5CommaButtons,
     intervalRatioButtons, intervalTuningButtons, intervalColorButtons,
     harmonicPresetButtons, harmonicLevelInputs, noiseColorButtons,
@@ -1492,7 +1504,7 @@ test("S026 Хөг keeps Interval, 3-limit and 5-limit in sync without autoplay",
   assert.equal(app.elements.get("scaleWorkspace").hidden, true);
 });
 
-test("S027 Tune by ear starts silently, retunes rich harmonics live, checks and switches hints", async () => {
+test("S028 ear tuning: slider is next to exercises, no target dots, and live notes never build buffers", async () => {
   const app = fakePage();
   app.fire("modeTuning", "click");
   app.tuningKindButtons[1].events.click();
@@ -1501,79 +1513,81 @@ test("S027 Tune by ear starts silently, retunes rich harmonics live, checks and 
   assert.equal(app.elements.get("earExplanation").hidden, false);
   assert.equal(app.elements.get("intervalWorkspace").hidden, true);
   assert.equal(app.elements.get("pagePhase").textContent, "06 · Чихээр хөглөх");
-  assert.equal(app.elements.get("earProgress").textContent, "1 / 1");
   assert.equal(app.contexts.length, 0);
-  assert.ok(app.elements.get("earHarmonicsCanvas").drawnArcs.length >= 2);
+  assert.equal(app.elements.get("earHarmonicsCanvas").drawnArcs.length, 0,
+    "The matching harmonics are never singled out by moving circles");
+  assert.equal(app.elements.get("earOctaveBadge").textContent, "До4 → ?",
+    "No position is revealed before checking");
 
   await app.fire("earButton", "click");
   const ctx = app.contexts[0];
-  assert.equal(ctx.oscillators.length, 2);
-  assert.ok(ctx.oscillators.every(osc => osc.periodicWave), "Tuning uses rich overtones");
+  assert.equal(ctx.oscillators.length, 16, "Eight lightweight partials per note");
+  assert.equal(ctx.buffers.length, 0, "No heavy sample generation on start");
+  assert.equal(app.timers.size, 1);
   assert.equal(app.elements.get("earButton").getAttribute("aria-pressed"), "true");
-  const initial = ctx.oscillators[1].frequency.value;
+  const initial = ctx.oscillators[8].frequency.value;
   app.fire("earAdjust", "input", { target: { value: "-18" } });
-  assert.ok(ctx.oscillators[1].frequency.value < initial);
-  assert.ok(Math.abs(ctx.oscillators[1].frequency.value / ctx.oscillators[0].frequency.value - 1.5) < 1e-12);
+  assert.ok(ctx.oscillators[8].frequency.value < initial);
+  assert.ok(Math.abs(ctx.oscillators[8].frequency.value / ctx.oscillators[0].frequency.value - 1.5) < 1e-12);
+  for (let i = 0; i < 100; i++) app.fire("earAdjust", "input", { target: { value: "-18" } });
+  assert.equal(app.animationFrames.size, 1, "Repeated slider inputs draw at most once per frame");
+  app.tick(.016);
+  assert.equal(app.animationFrames.size, 0);
+  assert.equal(ctx.buffers.length, 0);
   app.fire("earCheck", "click");
   assert.equal(app.elements.get("earResult").hidden, false);
   assert.match(app.elements.get("earResult").textContent, /0\.00 цент/);
-  assert.equal(app.elements.get("earFold").hidden, true);
   app.earHelpButtons[1].events.click();
   assert.equal(app.elements.get("earHarmonicsBadge").textContent, "♪");
   app.earTaskButtons[1].events.click();
-  assert.equal(ctx.oscillators[0].stopped, true);
+  assert.equal(ctx.oscillators.every(osc => osc.stopped), true);
+  assert.equal(app.timers.size, 0, "Task changes release the repeating sound timer");
   assert.equal(app.elements.get("earResult").hidden, true);
   assert.match(app.elements.get("earInstruction").textContent, /5:4/);
   app.fire("langEn", "click");
   assert.equal(app.elements.get("earPlayLabel").textContent, "Hear the two notes");
-  assert.match(app.elements.get("earInstruction").textContent, /C → E/);
+  assert.match(app.elements.get("earInstruction").textContent, /C4 → E4/);
 });
 
-test("S027 three-fifth lesson explicitly folds D5 to D4, carries error and keeps playback controlled", async () => {
+test("S028 descending ratios show octave equivalence after checking; timbre and sequence switches are silent", async () => {
   const app = fakePage();
   app.fire("modeTuning", "click");
   app.tuningKindButtons[1].events.click();
-  app.earTaskButtons[3].events.click(); // 3 fifths: C–G–D–A
+  app.earTaskButtons[4].events.click(); // 3:4 downward: C4 -> G3
   assert.equal(app.contexts.length, 0);
-  const tune = (adjustment) => {
-    app.fire("earAdjust", "input", { target: { value: String(adjustment) } });
-    app.fire("earCheck", "click");
-  };
-  tune(-20); // exactly C4 → G4
-  assert.equal(app.elements.get("earNext").hidden, false);
-  app.fire("earNext", "click");
-  assert.equal(app.elements.get("earProgress").textContent, "2 / 3");
-  assert.match(app.elements.get("earInstruction").textContent, /Соль → Ре/);
+  assert.equal(app.elements.get("earOctaveBadge").textContent, "До4 → ?");
+  app.fire("earAdjust", "input", { target: { value: "23" } });
+  app.fire("earCheck", "click");
+  assert.equal(app.elements.get("earOctaveBadge").textContent, "До4 → Соль3");
+  assert.match(app.elements.get("earResult").textContent, /× 2/);
+  assert.match(app.elements.get("earResult").textContent, /Соль4/);
+  assert.ok(app.elements.get("earOctaveCanvas").drawnText.includes("×2"));
 
+  app.earSoundButtons[2].events.click(); // guitar
+  app.earPatternButtons[1].events.click(); // together
+  assert.equal(app.contexts.length, 0, "Choosing a sound or comparison never autoplays");
   await app.fire("earButton", "click");
   const ctx = app.contexts[0];
-  assert.ok(ctx.oscillators[1].frequency.value > 2 * earModel.START_HZ);
-  tune(17); // exactly G4 → D5 (outside the chosen octave)
-  assert.equal(app.elements.get("earFold").hidden, false);
-  assert.equal(app.elements.get("earNext").disabled, true);
-  app.fire("earNext", "click");
-  assert.equal(app.elements.get("earProgress").textContent, "2 / 3", "Must fold before proceeding");
-  app.fire("earFold", "click");
+  assert.equal(ctx.oscillators.length, 16);
+  assert.equal(ctx.buffers.length, 0);
+  assert.equal(app.timers.size, 1);
+  app.earSoundButtons[3].events.click(); // piano
+  assert.equal(app.timers.size, 0);
   assert.equal(ctx.oscillators.every(osc => osc.stopped), true);
-  assert.equal(app.elements.get("earFold").hidden, true);
-  assert.equal(app.elements.get("earNext").disabled, false);
-  assert.match(app.elements.get("earResult").textContent, /÷ 2/);
-  assert.match(app.elements.get("earHistory").innerHTML, /Ре · 294\.33 Гц/);
-  app.fire("earNext", "click");
-  assert.equal(app.elements.get("earProgress").textContent, "3 / 3");
-  assert.match(app.elements.get("earInstruction").textContent, /Ре → Ля/);
-  tune(-15); // D4 → A4, with all three ideal fifths
-  assert.match(app.elements.get("earResult").textContent, /нийт алдаа: 0\.00 цент/);
-  assert.equal(app.elements.get("earNext").hidden, true);
+  await app.fire("earButton", "click");
+  assert.equal(app.timers.size, 1);
+  assert.ok(ctx.oscillators.at(-3).frequency.value > 0);
+  app.fire("stopAll", "click");
+  assert.equal(app.timers.size, 0, "Master Stop releases the timer");
+  assert.equal(ctx.oscillators.every(osc => osc.stopped), true);
   app.fire("earReset", "click");
-  assert.equal(app.elements.get("earProgress").textContent, "1 / 1");
   assert.equal(app.elements.get("earResult").hidden, true);
-  assert.equal(app.elements.get("earAdjust").disabled, false);
+  assert.equal(app.elements.get("earAdjust").value, "0");
 
   const pending = app.fire("earButton", "click");
   app.tuningKindButtons[2].events.click(); // cancel a pending start
   await pending;
-  assert.equal(ctx.oscillators.length, 2, "No orphan pair when switching to 3-limit");
+  assert.equal(app.timers.size, 0, "No orphan repeating sound after switching to 3-limit");
   assert.equal(app.elements.get("earPlayIcon").textContent, "▶");
 });
 
