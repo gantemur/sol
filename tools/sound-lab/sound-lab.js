@@ -8,6 +8,7 @@
   const motionModel = window.SoundLabMotionModel;
   const beatsModel = window.SoundLabBeats;
   const intervalModel = window.SoundLabIntervals;
+  const earModel = window.SoundLabEarTune;
   const scaleModel = window.SoundLabScales;
   const limit5Model = window.SoundLabLimit5;
   const harmonicModel = window.SoundLabHarmonics;
@@ -72,9 +73,50 @@
       mixExperimentsAria: "Explore combined and complex sounds",
       mixExperimentBeats: "Two frequencies", mixExperimentHarmonics: "Build timbre",
       mixExperimentIntervals: "Interval", mixExperimentNoise: "Noise",
+      intervalExperiment: "Ratios", earExperiment: "Tune by ear",
       harmonicPhase: "05 · Build a sound", noisePhase: "05 · Explore noise",
-      intervalPhase: "06 · Musical intervals", scalePhase: "06 · 3-limit", limit5Phase: "06 · 5-limit",
+      intervalPhase: "06 · Musical intervals", earPhase: "06 · Tune by ear", scalePhase: "06 · 3-limit", limit5Phase: "06 · 5-limit",
       tuningExperimentsAria: "Tuning experiments", scaleExperiment: "3-limit", limit5Experiment: "5-limit",
+      earChoose: "Tune real intervals by ear",
+      earDescription: "Find pure fifths and thirds by listening. Then build a two- or three-fifth chain and bring high notes down an octave by dividing by two.",
+      earPlay: "Hear the two notes", earStop: "Stop listening",
+      earPlayCaption: "Hear both together while moving the tuning slider",
+      earTasksTitle: "Choose a challenge", earTasksAria: "Ear-tuning exercise choices",
+      earTaskFifth: "3:2 · Fifth", earTaskThird: "5:4 · Third",
+      earTaskChain2: "2 fifths · C–G–D", earTaskChain3: "3 fifths · C–G–D–A",
+      earHelpTitle: "Learning mode", earHelpAria: "Harmonic or ears-only tuning",
+      earGuided: "Show harmonics", earBlind: "Listen only",
+      earHelpHint: "Begin with matching overtones on the graph; then try tuning with the hints hidden.",
+      earAdjustTitle: "Adjust the upper note", earAdjustAria: "Raise or lower the note while listening",
+      earAdjustHint: "The opening pitch is deliberately mistuned. Slide left or right to slow the beats between overtones.",
+      earCheck: "Check my tuning", earFold: "÷2 · Bring down one octave", earNext: "Next fifth →",
+      earHarmonicsTitle: "Matching harmonics of two notes",
+      earHarmonicsHint: "For 3:2, the 3rd lower and 2nd upper partial approach each other; for 5:4, the 5th and 4th match.",
+      earOctaveTitle: "C4–C5: our octave", earOctaveHint: "The second fifth raises D into the octave above. Divide by two to return D5 to D4, then continue.",
+      earOctaveAxis: "C4 · C5 →", earChallenge: "Tune three fifths: C → G → D → A. At D5, use ÷2 to fold down an octave. What changes, and what stays the same?",
+      earLearnMore: "How can you tune by listening for beating?",
+      earLessonOne: "In a pure fifth, 3f of the lower note matches 2f of the upper. When slightly apart, these near harmonics beat; the beats slow as the interval improves. A pure major third matches 5f to 4f. How audible this is depends on the instrument's overtone strengths.",
+      earLessonTwo: "Each fifth multiplies frequency by 3/2. The second step produces D5 at 9/4 of the original C4, beyond the chosen octave. Divide by two to get D4 at 9/8. This is octave reduction, a musical version of modulo arithmetic. Small mistakes along the chain accumulate.",
+      earReady: "Ready. Press Play and adjust the upper note.", earStarting: "Preparing two tones…",
+      earPlaying: "Listen for beating between the harmonics as you adjust.",
+      earStopped: "Stopped. You can still adjust the note and check it.",
+      earHidden: "The two notes stopped when you left the page.",
+      earBlocked: "Could not start sound. Check the browser's audio settings.",
+      earInstruction: "Step {step}/{total}: tune {from} → {to} using {ratio}. Start by listening; the answer stays hidden until Check.",
+      earInstructionFinished: "Well done! Re-tune another example or try the ears-only mode.",
+      earSliderLabel: "← lower · higher →", earCheckExcellent: "Excellent: the overtones almost coincide!",
+      earCheckClose: "Close! Listen again and try for slower beating.",
+      earCheckRetry: "There is still audible beating. Adjust and check again.",
+      earCheckResult: "{rating}\nDifference from this interval: {error} cents · partial-beat rate: {beats} Hz.\nAccumulated error from C: {total} cents.",
+      earFoldPrompt: "Your tuned {note} is {hz} Hz, above C5. Bring it down by ÷2 before proceeding.",
+      earFoldDone: "Octave reduction: {from} ÷ 2 = {to} Hz. The pitch class stays the same, one octave lower.",
+      earCompleted: "Chain complete! Total error from the ideal chain: {total} cents. Try again with smaller errors.",
+      earHistoryStart: "C4 · {hz} Hz", earHistoryNote: "{note} · {hz} Hz · {error}¢",
+      earHistoryFold: "{note}5 ÷2 → {note}4",
+      earHarmonicsFoot: "Slide until the emphasized overtones align: {p}f₁ ≈ {q}f₂.",
+      earHarmonicsHiddenFoot: "The target matching line is hidden; use your ears.",
+      earOctaveFoot: "The octave runs from C4 to C5; any pitch an octave higher is divided by 2.",
+      earOctaveFoldFoot: "C4 → G4 → D5 ÷2 = D4; now the next fifth can start from D4.",
       scaleChoose: "Build a scale with 3:2", scaleDescription: "Walk upward or downward by exact 3:2 steps. Fold the notes into one octave, then choose which note acts as the tonic.",
       scalePlay: "Hear the scale", scaleStop: "Stop", scalePlayCaption: "Play ascending and descending",
       scalePresetsTitle: "Scale patterns", scalePresetsAria: "Fifth-chain patterns",
@@ -471,9 +513,50 @@
       mixExperimentsAria: "Холимог ба нийлмэл авианы туршилтууд",
       mixExperimentBeats: "Хоёр давтамж", mixExperimentHarmonics: "Өнгө бүтээх",
       mixExperimentIntervals: "Интервал", mixExperimentNoise: "Шуугиан",
+      intervalExperiment: "Харьцаа", earExperiment: "Чихээр тааруулах",
       harmonicPhase: "05 · Авиа бүтээх", noisePhase: "05 · Шуугиан судлах",
-      intervalPhase: "06 · Хөгжмийн интервал", scalePhase: "06 · 3-хязгаар", limit5Phase: "06 · 5-хязгаар",
+      intervalPhase: "06 · Хөгжмийн интервал", earPhase: "06 · Чихээр хөглөх", scalePhase: "06 · 3-хязгаар", limit5Phase: "06 · 5-хязгаар",
       tuningExperimentsAria: "Хөгийн туршилтууд", scaleExperiment: "3-хязгаар", limit5Experiment: "5-хязгаар",
+      earChoose: "Сонсож байгаад нот тааруулах",
+      earDescription: "Эхлээд 3:2 ба 5:4 харьцааг чихээрээ ол. Дараа нь квинтээр хэд алхаж, өндөр октавт гарсан нотыг ÷2-оор буцааж оруул.",
+      earPlay: "Хоёр нотыг сонсох", earStop: "Зогсоох",
+      earPlayCaption: "Хоёуланг нь сонсон тохируулагчаа хөдөлгө",
+      earTasksTitle: "Даалгавар", earTasksAria: "Чихээр тааруулах даалгаврууд",
+      earTaskFifth: "3:2 · Квинт", earTaskThird: "5:4 · Терц",
+      earTaskChain2: "2 квинт · До–Соль–Ре", earTaskChain3: "3 квинт · До–Соль–Ре–Ля",
+      earHelpTitle: "Тусламж", earHelpAria: "Гармоникаар харах эсвэл зөвхөн сонсох",
+      earGuided: "Гармоник харах", earBlind: "Зөвхөн сонсох",
+      earHelpHint: "Эхлээд гармоникууд давхцахыг хар, дараа нь зурагт тусламжгүйгээр оролд.",
+      earAdjustTitle: "Дээд нотыг тааруулах", earAdjustAria: "Сонсож байхдаа дээд нотын давтамжийг өөрчлөх",
+      earAdjustHint: "Эхний авиа зориуд жаахан зөрүүтэй. Гулсуурыг хоёр тийш хөдөлгөж, гармоникуудын биение багасахыг сонс.",
+      earCheck: "Шалгах", earFold: "÷2 · Нэг октав доош", earNext: "Дараагийн квинт →",
+      earHarmonicsTitle: "Хоёр нотын давхцах гармоник",
+      earHarmonicsHint: "3:2 квинтэд доод нотын 3-р, дээд нотын 2-р гармоник; 5:4 терцэд 5-р ба 4-р гармоник ойртоно.",
+      earOctaveTitle: "До4–До5: нэг октав", earOctaveHint: "Хоёр дахь квинтээр Ре5 нь октаваас гарна. ÷2 дарж Ре4 болгон буцаагаад, үргэлжлүүл.",
+      earOctaveAxis: "До4 · До5 →", earChallenge: "3 квинтээр До → Соль → Ре → Ля хөглөөрэй. Ре5-ыг ÷2-оор нэг октав буулгах үед юу өөрчлөгдөх, юу хэвээр үлдэхийг ажигла.",
+      earLearnMore: "Яагаад биениеийг сонсож тааруулж болдог вэ?",
+      earLessonOne: "3:2 үед доод авианы 3f ба дээд авианы 2f дээд гармоник давхцана. Зөрүүтэй бол ойр хоёр гармоник биение үүсгэж, тааруулах тусам удааширна. 5:4 үед 5f ба 4f-г харьцуулж болно. Харин жинхэнэ зэмсгийн гармоникийн хүчнээс сонсогдох байдал хамаарна.",
+      earLessonTwo: "Квинт бүр давтамжийг 3/2-оор үржүүлнэ. Хоёр дахь алхамд Ре5 нь эхлэх До4–До5 октаваас гарна: 9/4 давтамжийг 2-т хуваавал 9/8 буюу Ре4 болно. Энэ нь октавын модуль үйлдэл юм. Алхам бүрийн жижиг алдаа нийлж өсөж болдог.",
+      earReady: "Бэлэн. Тоглуулаад дээд нотыг тааруулна уу.", earStarting: "Хоёр авиаг эхлүүлж байна…",
+      earPlaying: "Тохируулахдаа дээд гармоникуудын биениеийг сонсоорой.",
+      earStopped: "Зогслоо. Тохируулах, шалгах боломжтой хэвээр.",
+      earHidden: "Хуудсаас гарахад хоёр авиа зогслоо.",
+      earBlocked: "Авиа эхэлсэнгүй. Хөтчийн дууны тохиргоог шалгаарай.",
+      earInstruction: "Алхам {step}/{total}: {from} → {to} ({ratio})-ыг чихээр тааруул. «Шалгах»-аас өмнө хариуг нуусан.",
+      earInstructionFinished: "Сайн байна! Өөр дасгал сонгох эсвэл зөвхөн чихээр дахин оролдоорой.",
+      earSliderLabel: "← нам · өндөр →", earCheckExcellent: "Маш сайн! Дээд гармоникууд бараг давхцлаа.",
+      earCheckClose: "Ойртлоо! Биениеийг улам удаашруулж үзээрэй.",
+      earCheckRetry: "Биение мэдэгдэнэ. Дахин тохируулаад шалгаарай.",
+      earCheckResult: "{rating}\nЭнэ харьцааны зөрүү: {error} цент · гармоникийн биение: {beats} Гц.\nЭхлэх До-оос хуримтлагдсан алдаа: {total} цент.",
+      earFoldPrompt: "Таны тааруулсан {note} нь {hz} Гц — До5-аас өндөр. Үргэлжлүүлэхээс өмнө ÷2 дарж буулгана уу.",
+      earFoldDone: "Октаваар буулгав: {from} ÷ 2 = {to} Гц. Нотын нэр хэвээр, авиа нэг октаваар намслаа.",
+      earCompleted: "Гинж дууслаа! Эхлэх До-оос нийт алдаа: {total} цент. Дахин оролдоод алдаагаа багасгаарай.",
+      earHistoryStart: "До4 · {hz} Гц", earHistoryNote: "{note} · {hz} Гц · {error}¢",
+      earHistoryFold: "{note}5 ÷2 → {note}4",
+      earHarmonicsFoot: "{p}f₁ ≈ {q}f₂ болох хүртэл тохируул.",
+      earHarmonicsHiddenFoot: "Давхцах тэмдэглэгээг нуусан; чихээрээ тааруулаарай.",
+      earOctaveFoot: "До4-өөс До5 хүртэл нэг октав; түүнээс өндөр нотыг 2-т хуваана.",
+      earOctaveFoldFoot: "До4 → Соль4 → Ре5 ÷2 = Ре4. Дараагийн квинтийг Ре4-өөс эхлүүлнэ.",
       scaleChoose: "3:2 харьцаагаар шатлал бүтээх", scaleDescription: "Эхлэх авианаас 3:2 алхмаар дээш, доош явж нот үүсгэ. Нэг октавт багтаагаад, дурын нотыг үндсэн нот болгон сонго.",
       scalePlay: "Шатлалыг сонсох", scaleStop: "Зогсоох", scalePlayCaption: "Өгсөж, уруудаж тоглоно",
       scalePresetsTitle: "Шатлалын жишээ", scalePresetsAria: "3:2 гинжийн жишээнүүд",
@@ -894,6 +977,18 @@
     intervalPlaying: false,
     intervalStatus: "intervalReady",
     intervalError: false,
+    earTask: "fifth",
+    earHelp: "guided",
+    earIndex: 0,
+    earLowHz: earModel.START_HZ,
+    earAdjustment: 0,
+    earHistory: [],
+    earChecked: false,
+    earFolded: false,
+    earVolume: 38,
+    earPlaying: false,
+    earStatus: "earReady",
+    earError: false,
     scaleDown: 0,
     scaleUp: 4,
     scaleTonicK: 0,
@@ -1569,6 +1664,15 @@
       return maxGain.intervalVoice * state.intervalVolume / 100;
     }
 
+    active() { return state.mode === "tuning" && state.tuningKind === "intervals"; }
+
+    frequencies() {
+      const { baseHz, highHz } = intervalModel.analyze(intervalRecipe());
+      return [baseHz, highHz];
+    }
+
+    color() { return state.intervalColor; }
+
     fadeAndStop(pair, immediate = false) {
       const now = this.contextOwner.context.currentTime;
       const gain = pair.gain.gain;
@@ -1585,16 +1689,15 @@
 
     createPair(context) {
       const now = context.currentTime;
-      const { baseHz, highHz } = intervalModel.analyze(intervalRecipe());
       const gain = context.createGain();
       gain.gain.setValueAtTime(0, now);
       gain.gain.linearRampToValueAtTime(this.gainForVolume(), now + 0.035);
       gain.connect(this.contextOwner.output);
       const pair = { gain, oscillators: [], ended: 0, stopping: false };
       const { real, imag } = intervalModel.coefficients("rich");
-      const wave = state.intervalColor === "rich" ?
+      const wave = this.color() === "rich" ?
         context.createPeriodicWave(real, imag, { disableNormalization: true }) : null;
-      for (const hz of [baseHz, highHz]) {
+      for (const hz of this.frequencies()) {
         const oscillator = context.createOscillator();
         if (wave) oscillator.setPeriodicWave(wave);
         else oscillator.type = "sine";
@@ -1619,7 +1722,7 @@
     async start() {
       const ticket = ++this.generation;
       const context = await this.contextOwner.readyContext();
-      if (ticket !== this.generation || state.mode !== "tuning" || state.tuningKind !== "intervals") return false;
+      if (ticket !== this.generation || !this.active()) return false;
       for (const pair of this.voices) this.fadeAndStop(pair);
       this.createPair(context);
       return true;
@@ -1628,9 +1731,9 @@
     update() {
       if (!this.currentPair) return;
       const now = this.contextOwner.context.currentTime;
-      const { baseHz, highHz } = intervalModel.analyze(intervalRecipe());
+      const frequencies = this.frequencies();
       this.currentPair.oscillators.forEach((oscillator, index) => {
-        oscillator.frequency.setTargetAtTime(index === 0 ? baseHz : highHz, now, 0.018);
+        oscillator.frequency.setTargetAtTime(frequencies[index], now, 0.018);
       });
       const gain = this.currentPair.gain.gain;
       gain.cancelScheduledValues(now);
@@ -1654,6 +1757,16 @@
       for (const pair of this.voices) this.fadeAndStop(pair, immediate);
       this.currentPair = null;
     }
+  }
+
+  class EarEngine extends IntervalEngine {
+    active() { return state.mode === "tuning" && state.tuningKind === "ear"; }
+    frequencies() {
+      const data = earStep();
+      return [data.lowHz, data.highHz];
+    }
+    color() { return "rich"; }
+    gainForVolume() { return maxGain.intervalVoice * state.earVolume / 100; }
   }
 
   class ScaleEngine {
@@ -1985,6 +2098,7 @@
   const motionAudio = new MotionEngine(audio);
   const mixAudio = new BeatsEngine(audio);
   const intervalAudio = new IntervalEngine(audio);
+  const earAudio = new EarEngine(audio);
   const scaleAudio = new ScaleEngine(audio);
   let scaleFrame = null;
   let scaleActive = null;
@@ -2543,6 +2657,185 @@
     state.intervalVolume = 38;
     setIntervalStatus("intervalReady");
     renderIntervalControls();
+    drawPlots();
+  }
+
+  function earStep() {
+    return earModel.step({ taskId: state.earTask, index: state.earIndex,
+      lowHz: state.earLowHz, adjustment: state.earAdjustment });
+  }
+
+  function earName(note, octave = "") {
+    const names = state.language === "mn" ? { C: "До", G: "Соль", D: "Ре", A: "Ля", E: "Ми" } :
+      { C: "C", G: "G", D: "D", A: "A", E: "E" };
+    return names[note] + octave;
+  }
+
+  function earPhrase(key, values = {}) { return intervalPhrase(key, values); }
+
+  function earSigned(value) { return (value > 0 ? "+" : "") + value.toFixed(2); }
+
+  function earFinished(data = earStep()) {
+    return state.earChecked && state.earIndex === earModel.TASKS[state.earTask].steps - 1 &&
+      (data.shifts === 0 || state.earFolded);
+  }
+
+  function setEarStatus(status, error = false) {
+    state.earStatus = status;
+    state.earError = error;
+    $("earStatus").textContent = text(status);
+    $("earStatus").classList.toggle("error", error);
+  }
+
+  function renderEarControls() {
+    const data = earStep(), task = earModel.TASKS[state.earTask];
+    const from = state.earIndex === 0 ? "C" : state.earHistory[state.earIndex - 1].note;
+    const previous = earModel.cumulativeCents(state.earHistory);
+    const cumulative = previous + data.errorCents;
+    const requiresFold = data.shifts !== 0;
+    $("earProgress").textContent = (state.earIndex + 1) + " / " + task.steps;
+    $("earInstruction").textContent = earFinished(data) ? text("earInstructionFinished") :
+      earPhrase("earInstruction", { step: state.earIndex + 1, total: task.steps,
+        from: earName(from), to: earName(state.earTask === "third" ? "E" : data.note),
+        ratio: data.p + ":" + data.q });
+    $("earAdjust").value = String(state.earAdjustment);
+    $("earAdjust").disabled = state.earFolded;
+    $("earAdjustLabel").textContent = text("earSliderLabel");
+    $("earCheck").disabled = state.earFolded;
+    $("earVolume").value = String(state.earVolume);
+    $("earVolumeValue").textContent = state.earVolume + "%";
+    $("earButton").disabled = state.earFolded;
+    $("earButton").classList.toggle("playing", state.earPlaying);
+    $("earButton").setAttribute("aria-pressed", String(state.earPlaying));
+    $("earPlayIcon").textContent = state.earPlaying ? "■" : "▶";
+    $("earPlayLabel").textContent = text(state.earPlaying ? "earStop" : "earPlay");
+    $("earPlayCaption").textContent = text("earPlayCaption");
+    for (const [selector, key, active] of [
+      ["[data-ear-task]", "earTask", state.earTask], ["[data-ear-help]", "earHelp", state.earHelp]
+    ]) {
+      document.querySelectorAll(selector).forEach(button => {
+        const selected = button.dataset[key] === active;
+        button.classList.toggle("selected", selected);
+        button.setAttribute("aria-pressed", String(selected));
+      });
+    }
+    const result = $("earResult");
+    result.hidden = !state.earChecked;
+    result.classList.toggle("good", state.earChecked && earModel.rating(data.errorCents) === "excellent");
+    if (state.earChecked) {
+      const rating = text({ excellent: "earCheckExcellent", close: "earCheckClose", retry: "earCheckRetry" }[
+        earModel.rating(data.errorCents)]);
+      const check = earPhrase("earCheckResult", { rating, error: earSigned(data.errorCents),
+        beats: frequencyText(data.nearBeatHz), total: earSigned(cumulative) });
+      const fold = requiresFold ? state.earFolded ? earPhrase("earFoldDone", {
+        from: frequencyText(data.highHz), to: frequencyText(data.foldedHz)
+      }) : earPhrase("earFoldPrompt", { note: earName(data.note), hz: frequencyText(data.highHz) }) : "";
+      result.textContent = check + (fold ? "\n" + fold : "") +
+        (earFinished(data) && task.steps > 1 ? "\n" + earPhrase("earCompleted", { total: earSigned(cumulative) }) : "");
+    }
+    $("earFold").hidden = !state.earChecked || !requiresFold || state.earFolded;
+    $("earNext").hidden = !state.earChecked || state.earIndex >= task.steps - 1;
+    $("earNext").disabled = requiresFold && !state.earFolded;
+    $("earHarmonicsBadge").textContent = state.earHelp === "blind" ? "♪" :
+      data.p + "f₁ ↔ " + data.q + "f₂";
+    const notes = [{ note: "C", hz: earModel.START_HZ, errorCents: 0 }, ...state.earHistory];
+    if (state.earChecked) notes.push({ ...data, note: state.earTask === "third" ? "E" : data.note,
+      appliedFold: state.earFolded });
+    $("earHistory").innerHTML = notes.map((entry, index) => {
+      const fold = entry.appliedFold && entry.shifts !== 0;
+      const hz = fold ? entry.foldedHz : (entry.hz || entry.highHz);
+      const label = index === 0 ? earPhrase("earHistoryStart", { hz: frequencyText(hz) }) :
+        earPhrase("earHistoryNote", { note: earName(entry.note), hz: frequencyText(hz),
+          error: earSigned(entry.errorCents) });
+      return '<span class="' + (fold ? "folded" : "") + '">' + label + "</span>";
+    }).join("");
+  }
+
+  function stopEarSound(immediate = false, message = "earStopped") {
+    earAudio.stop(immediate);
+    state.earPlaying = false;
+    setEarStatus(message);
+    renderEarControls();
+  }
+
+  async function toggleEarSound() {
+    if (state.earPlaying) { stopEarSound(); return; }
+    if (state.mode !== "tuning" || state.tuningKind !== "ear" || state.earFolded) return;
+    setEarStatus("earStarting");
+    try {
+      if (await earAudio.start()) {
+        state.earPlaying = true;
+        setEarStatus("earPlaying");
+        renderEarControls();
+      }
+    } catch (_) {
+      stopEarSound(true, "earBlocked");
+      setEarStatus("earBlocked", true);
+    }
+  }
+
+  function selectEarTask(task) {
+    if (!earModel.TASKS[task]) return;
+    stopEarSound();
+    state.earTask = task;
+    state.earIndex = 0;
+    state.earLowHz = earModel.START_HZ;
+    state.earAdjustment = 0;
+    state.earHistory = [];
+    state.earChecked = false;
+    state.earFolded = false;
+    setEarStatus("earReady");
+    renderEarControls();
+    drawPlots();
+  }
+
+  function setEarAdjustment(value) {
+    if (state.earFolded) return;
+    const number = Number(value);
+    if (!Number.isFinite(number)) return;
+    state.earAdjustment = Math.max(-60, Math.min(60, number));
+    state.earChecked = false;
+    earAudio.update();
+    renderEarControls();
+    drawPlots();
+  }
+
+  function checkEar() {
+    if (state.earFolded) return;
+    state.earChecked = true;
+    renderEarControls();
+    drawPlots();
+  }
+
+  function foldEarOctave() {
+    const data = earStep();
+    if (!state.earChecked || !data.shifts || state.earFolded) return;
+    stopEarSound(); // The old 3:2 reference pair must not keep sounding after octave reduction.
+    state.earFolded = true;
+    renderEarControls();
+    drawPlots();
+  }
+
+  function advanceEar() {
+    const data = earStep(), task = earModel.TASKS[state.earTask];
+    if (!state.earChecked || state.earIndex >= task.steps - 1 || (data.shifts && !state.earFolded)) return;
+    stopEarSound();
+    state.earHistory.push({ ...data, appliedFold: state.earFolded });
+    state.earLowHz = data.foldedHz;
+    state.earIndex++;
+    state.earAdjustment = 0;
+    state.earChecked = false;
+    state.earFolded = false;
+    setEarStatus("earReady");
+    renderEarControls();
+    drawPlots();
+  }
+
+  function resetEar() {
+    selectEarTask("fifth");
+    state.earHelp = "guided";
+    state.earVolume = 38;
+    renderEarControls();
     drawPlots();
   }
 
@@ -3315,6 +3608,7 @@
     const isBeats = isMix && state.mixKind === "beats";
     const isHarmonics = isMix && state.mixKind === "harmonics";
     const isIntervals = isTuning && state.tuningKind === "intervals";
+    const isEar = isTuning && state.tuningKind === "ear";
     const isScales = isTuning && state.tuningKind === "scales";
     const isLimit5 = isTuning && state.tuningKind === "limit5";
     const isNoise = isMix && state.mixKind === "noise";
@@ -3339,6 +3633,9 @@
     $("intervalWorkspace").hidden = !isIntervals;
     $("intervalChallenge").hidden = !isIntervals;
     $("intervalExplanation").hidden = !isIntervals;
+    $("earWorkspace").hidden = !isEar;
+    $("earChallenge").hidden = !isEar;
+    $("earExplanation").hidden = !isEar;
     $("scaleWorkspace").hidden = !isScales;
     $("scaleChallenge").hidden = !isScales;
     $("scaleExplanation").hidden = !isScales;
@@ -3365,7 +3662,7 @@
       $(id).setAttribute("aria-pressed", String(selected));
     }
     $("pagePhase").textContent = text(isStrike ? "strikePhase" : isSustain ? "sustainPhase" : isMotion ? "motionPhase" :
-      isHarmonics ? "harmonicPhase" : isIntervals ? "intervalPhase" : isScales ? "scalePhase" : isLimit5 ? "limit5Phase" :
+      isHarmonics ? "harmonicPhase" : isIntervals ? "intervalPhase" : isEar ? "earPhase" : isScales ? "scalePhase" : isLimit5 ? "limit5Phase" :
         isNoise ? "noisePhase" : isMix ? "mixPhase" : "phase");
   }
 
@@ -3440,6 +3737,9 @@
     $("intervalBaseInput").setAttribute("aria-label", text("intervalBaseInputAria"));
     $("intervalWaveCanvas").setAttribute("aria-label", text("intervalWaveAria"));
     $("intervalSpectrumCanvas").setAttribute("aria-label", text("intervalSpectrumAria"));
+    $("earAdjust").setAttribute("aria-label", text("earAdjustAria"));
+    $("earTasks").setAttribute("aria-label", text("earTasksAria"));
+    $("earHelpModes").setAttribute("aria-label", text("earHelpAria"));
     $("scalePresets").setAttribute("aria-label", text("scalePresetsAria"));
     $("scaleTonicChoices").setAttribute("aria-label", text("scaleTonicAria"));
     $("scaleBaseSlider").setAttribute("aria-label", text("scaleBaseSliderAria"));
@@ -3467,6 +3767,7 @@
     setMotionStatus(state.motionStatus, state.motionError);
     setMixStatus(state.mixStatus, state.mixError);
     setIntervalStatus(state.intervalStatus, state.intervalError);
+    setEarStatus(state.earStatus, state.earError);
     setScaleStatus(state.scaleStatus, state.scaleError);
     setLimit5Status(state.limit5Status, state.limit5Error);
     setHarmonicStatus(state.harmonicStatus, state.harmonicError);
@@ -3477,6 +3778,7 @@
     renderMotionControls();
     renderMixControls();
     renderIntervalControls();
+    renderEarControls();
     renderScaleControls();
     renderLimit5Controls();
     renderHarmonicControls();
@@ -3718,6 +4020,7 @@
     stopMotionSound(immediate, message === "hidden" ? "motionHidden" : "motionStopped");
     stopMixSound(immediate, message === "hidden" ? "mixHidden" : "mixStopped");
     stopIntervalSound(immediate, message === "hidden" ? "intervalHidden" : "intervalStopped");
+    stopEarSound(immediate, message === "hidden" ? "earHidden" : "earStopped");
     stopScaleSound(immediate, message === "hidden" ? "scaleHidden" : "scaleStopped");
     stopLimit5Sound(immediate, message === "hidden" ? "limit5Hidden" : "limit5Stopped");
     stopHarmonicSound(immediate);
@@ -3764,6 +4067,7 @@
     if (mode === "mix") setMixStatus("mixReady");
     if (mode === "tuning") {
       if (state.tuningKind === "intervals") setIntervalStatus("intervalReady");
+      else if (state.tuningKind === "ear") setEarStatus("earReady");
       else if (state.tuningKind === "scales") setScaleStatus("scaleReady");
       else setLimit5Status("limit5Ready");
     }
@@ -3783,10 +4087,11 @@
   }
 
   function selectTuningKind(kind) {
-    if (!["intervals", "scales", "limit5"].includes(kind) || kind === state.tuningKind) return;
+    if (!["intervals", "ear", "scales", "limit5"].includes(kind) || kind === state.tuningKind) return;
     stopAllAudio();
     state.tuningKind = kind;
     if (kind === "intervals") setIntervalStatus("intervalReady");
+    else if (kind === "ear") setEarStatus("earReady");
     else if (kind === "scales") setScaleStatus("scaleReady");
     else setLimit5Status("limit5Ready");
     renderTexts();
@@ -4626,6 +4931,127 @@
     drawIntervalSpectrum();
   }
 
+  function drawEarHarmonics() {
+    const { ctx, width, height } = plotContext($("earHarmonicsCanvas"));
+    const data = earStep();
+    const left = 46, right = width - 22, top = 28, bottom = height - 28;
+    const span = right - left, upper = Math.max(6 * data.highHz, 8 * data.lowHz) * 1.05;
+    const rows = [
+      { hz: data.lowHz, match: data.p, name: "f₁", color: "#337ec5", y: top + 40 },
+      { hz: data.highHz, match: data.q, name: "f₂", color: "#d58b36", y: top + 102 }
+    ];
+    ctx.font = "12px system-ui, sans-serif";
+    ctx.textAlign = "left";
+    for (const row of rows) {
+      ctx.strokeStyle = "#c6d6e6";
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(left, row.y); ctx.lineTo(right, row.y); ctx.stroke();
+      ctx.fillStyle = row.color; ctx.fillText(row.name, 8, row.y + 5);
+      const limit = state.earHelp === "blind" ? 1 : 8;
+      for (let n = 1; n <= limit; n++) {
+        const x = left + span * n * row.hz / upper;
+        if (x > right) break;
+        ctx.strokeStyle = row.color;
+        ctx.lineWidth = n === row.match ? 4 : 2;
+        ctx.beginPath(); ctx.moveTo(x, row.y); ctx.lineTo(x, row.y - 25 / Math.sqrt(n)); ctx.stroke();
+        if (n === row.match && state.earHelp === "guided") {
+          ctx.beginPath(); ctx.arc(x, row.y - 25 / Math.sqrt(n), 5, 0, 2 * Math.PI); ctx.fill();
+        }
+      }
+    }
+    const zoomTop = top + 152, zoomBottom = bottom - 7;
+    ctx.fillStyle = "#eef6fc";
+    ctx.fillRect(left - 5, zoomTop - 11, span + 10, Math.max(16, zoomBottom - zoomTop + 19));
+    if (state.earHelp === "guided") {
+      const center = (data.lowPartialHz + data.highPartialHz) / 2;
+      const range = Math.max(25, center * 0.025);
+      const xAt = hz => left + span * (0.5 + (hz - center) / (2 * range));
+      const x1 = xAt(data.lowPartialHz), x2 = xAt(data.highPartialHz);
+      ctx.strokeStyle = "#acc5db"; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(left, zoomTop + 14); ctx.lineTo(right, zoomTop + 14); ctx.stroke();
+      for (const [x, color, label, y] of [[x1, "#337ec5", data.p + "f₁", zoomTop],
+        [x2, "#d58b36", data.q + "f₂", zoomTop + 29]]) {
+        ctx.fillStyle = color;
+        ctx.beginPath(); ctx.arc(x, zoomTop + 14, 5, 0, 2 * Math.PI); ctx.fill();
+        ctx.textAlign = "center"; ctx.fillText(label, Math.min(right - 17, Math.max(left + 17, x)), y);
+      }
+      ctx.strokeStyle = "#128c80"; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.moveTo(x1, zoomTop + 14); ctx.lineTo(x2, zoomTop + 14); ctx.stroke();
+    } else {
+      ctx.textAlign = "center"; ctx.fillStyle = "#557c99";
+      ctx.fillText(text("earHarmonicsHiddenFoot"), width / 2, zoomTop + 16);
+    }
+    $("earHarmonicsFoot").textContent = text(state.earHelp === "guided" ? "earHarmonicsFoot" : "earHarmonicsHiddenFoot")
+      .replace("{p}", data.p).replace("{q}", data.q);
+  }
+
+  function drawEarOctave() {
+    const { ctx, width, height } = plotContext($("earOctaveCanvas"));
+    const current = earStep();
+    const left = 47, right = width - 111, y = height / 2 + 18;
+    const span = right - left;
+    const xFor = hz => left + span * Math.log2(hz / earModel.START_HZ);
+    ctx.strokeStyle = "#afc5dc"; ctx.lineWidth = 2.2;
+    ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(right, y); ctx.stroke();
+    ctx.font = "11px system-ui, sans-serif"; ctx.textAlign = "center";
+    for (let i = 0; i <= 12; i++) {
+      const x = left + span * i / 12;
+      ctx.strokeStyle = "#dce7f0"; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x, y - 75); ctx.lineTo(x, y + 23); ctx.stroke();
+      if (i % 3 === 0) {
+        ctx.fillStyle = "#8ca5bd";
+        ctx.fillText(i === 12 ? "1200¢" : i * 100 + "¢", x, y + 43);
+      }
+    }
+    const points = [
+      { note: "C", hz: earModel.START_HZ, color: "#189487", label: earName("C", "4") },
+      ...state.earHistory.map(entry => ({ note: entry.note,
+        hz: entry.appliedFold ? entry.foldedHz : entry.highHz,
+        color: "#2a8c9c", label: earName(entry.note, "4") }))
+    ];
+    const note = state.earTask === "third" ? "E" : current.note;
+    const needsFold = current.shifts !== 0;
+    points.push({ note, hz: state.earFolded ? current.foldedHz : current.highHz,
+      color: "#d5912e", label: earName(note, state.earFolded ? "4" : needsFold ? "5" : "4"),
+      present: true });
+    for (const entry of points) {
+      const inOctave = entry.hz >= earModel.START_HZ && entry.hz < 2 * earModel.START_HZ;
+      if (!inOctave) continue;
+      const x = xFor(entry.hz);
+      ctx.fillStyle = entry.color;
+      ctx.beginPath(); ctx.arc(x, y, entry.present ? 8 : 6, 0, 2 * Math.PI); ctx.fill();
+      ctx.textAlign = "center";
+      ctx.fillText(entry.label, Math.max(left + 15, Math.min(right - 14, x)), y - 17);
+    }
+    const ghostX = width - 54;
+    ctx.strokeStyle = "#b8cadc"; ctx.lineWidth = 1.2;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(right + 12, y); ctx.lineTo(ghostX, y); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#6585a3"; ctx.fillText(">C5", ghostX, y + 43);
+    if (needsFold) {
+      const foldedX = xFor(current.foldedHz);
+      ctx.strokeStyle = "#cf922d"; ctx.lineWidth = 2;
+      ctx.setLineDash([5, 4]);
+      ctx.beginPath(); ctx.moveTo(ghostX, y - 24); ctx.lineTo(foldedX, y - 56); ctx.lineTo(foldedX, y - 9); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = state.earFolded ? "#168b7c" : "#d5912e";
+      ctx.beginPath(); ctx.arc(ghostX, y, 7, 0, Math.PI * 2);
+      if (state.earFolded) ctx.stroke(); else ctx.fill();
+      ctx.textAlign = "center";
+      ctx.fillText(earName(note, "5"), ghostX, y - 17);
+      ctx.beginPath(); ctx.arc(foldedX, y, 8, 0, Math.PI * 2);
+      if (state.earFolded) ctx.fill(); else ctx.stroke();
+      ctx.fillText("÷2", foldedX, y - 70);
+    }
+    $("earOctaveBadge").textContent = earName("C", "4") + " → " +
+      earName(note, current.shifts && !state.earFolded ? "5" : "4");
+    $("earOctaveFoot").textContent = text(state.earFolded ? "earOctaveFoldFoot" : "earOctaveFoot");
+  }
+
+  function drawEarPlots() { drawEarHarmonics(); drawEarOctave(); }
+
   function drawScaleSpiral() {
     const scale = scaleAnalysis();
     const gap = state.scaleShowGap ? scaleModel.returnGap(scale) : null;
@@ -5292,6 +5718,7 @@
       else drawMixPlots();
     } else if (state.mode === "tuning") {
       if (state.tuningKind === "intervals") drawIntervalPlots();
+      else if (state.tuningKind === "ear") drawEarPlots();
       else if (state.tuningKind === "scales") drawScalePlots();
       else drawLimit5Plots();
     } else {
@@ -5379,6 +5806,27 @@
   document.querySelectorAll("[data-tuning-kind]").forEach(button => {
     button.addEventListener("click", () => selectTuningKind(button.dataset.tuningKind));
   });
+  document.querySelectorAll("[data-ear-task]").forEach(button => {
+    button.addEventListener("click", () => selectEarTask(button.dataset.earTask));
+  });
+  document.querySelectorAll("[data-ear-help]").forEach(button => {
+    button.addEventListener("click", () => {
+      state.earHelp = button.dataset.earHelp;
+      renderEarControls();
+      drawPlots();
+    });
+  });
+  $("earButton").addEventListener("click", toggleEarSound);
+  $("earAdjust").addEventListener("input", event => setEarAdjustment(event.target.value));
+  $("earVolume").addEventListener("input", event => {
+    state.earVolume = Math.max(0, Math.min(100, Number(event.target.value)));
+    earAudio.update();
+    renderEarControls();
+  });
+  $("earCheck").addEventListener("click", checkEar);
+  $("earFold").addEventListener("click", foldEarOctave);
+  $("earNext").addEventListener("click", advanceEar);
+  $("earReset").addEventListener("click", resetEar);
   document.querySelectorAll("[data-scale-preset]").forEach(button => {
     button.addEventListener("click", () => selectScalePreset(button.dataset.scalePreset));
   });
@@ -5800,7 +6248,7 @@
   window.addEventListener("blur", () => {
     if (recorder.state === "recording") stopRecording();
     if (state.sustainPlaying || sustainPointerId !== null || sustainKeyboardHeld ||
-        state.motionPlaying || state.mixPlaying || state.intervalPlaying || state.scalePlaying || state.limit5Playing || state.limit5Comparing ||
+        state.motionPlaying || state.mixPlaying || state.intervalPlaying || state.earPlaying || state.scalePlaying || state.limit5Playing || state.limit5Comparing ||
         state.harmonicPlaying || state.noisePlaying) {
       stopAllAudio(true, "hidden");
     }
@@ -5821,6 +6269,8 @@
     observer.observe($("mixSpectrumCanvas"));
     observer.observe($("intervalWaveCanvas"));
     observer.observe($("intervalSpectrumCanvas"));
+    observer.observe($("earHarmonicsCanvas"));
+    observer.observe($("earOctaveCanvas"));
     observer.observe($("scaleSpiralCanvas"));
     observer.observe($("scaleFourierCanvas"));
     observer.observe($("limit5LatticeCanvas"));
