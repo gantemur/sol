@@ -639,6 +639,12 @@
           <button type="button" data-mix-kind="intervals" class="selected" aria-pressed="true" data-i18n="mixExperimentIntervals">Интервал</button>
           <button type="button" data-mix-kind="noise" aria-pressed="false" data-i18n="mixExperimentNoise">Шуугиан</button>
         </div>
+        <button id="intervalButton" type="button" class="play-button" aria-pressed="false">
+          <span class="play-icon" id="intervalPlayIcon" aria-hidden="true">▶</span>
+          <span id="intervalPlayLabel" data-i18n="intervalPlay">Тоглуулах</span>
+          <span class="play-caption" id="intervalPlayCaption" data-i18n="playCaption">Сонсохын тулд товшино уу</span>
+        </button>
+        <p id="intervalStatus" class="audio-status" role="status" aria-live="polite">Бэлэн. Хоёр нотыг хамт сонсоорой.</p>
         <div class="field-group">
           <div class="field-title"><span data-i18n="intervalPresetsTitle">Давтамжийн харьцаа (дээд:доод)</span><output id="intervalName">Квинт · 3:2</output></div>
           <div class="interval-presets" id="intervalPresets" role="group" aria-label="Хоёр нотын энгийн харьцаа" data-i18n-aria="intervalPresetsAria">
@@ -672,12 +678,6 @@
           </div>
           <p class="field-help" data-i18n="intervalColorHint">Цэвэр авиа зөвхөн үндсэн давтамжтай; гармониктай авиа давхцах дээд давтамжуудыг сонсгоно.</p>
         </div>
-        <button id="intervalButton" type="button" class="play-button" aria-pressed="false">
-          <span class="play-icon" id="intervalPlayIcon" aria-hidden="true">▶</span>
-          <span id="intervalPlayLabel" data-i18n="intervalPlay">Тоглуулах</span>
-          <span class="play-caption" id="intervalPlayCaption" data-i18n="playCaption">Сонсохын тулд товшино уу</span>
-        </button>
-        <p id="intervalStatus" class="audio-status" role="status" aria-live="polite">Бэлэн. Хоёр нотыг хамт сонсоорой.</p>
         <div class="interval-facts" aria-live="off">
           <div><span data-i18n="intervalNotes">Хоёр нот</span><strong id="intervalNotesValue">220 + 330 Гц</strong></div>
           <div><span data-i18n="intervalActualRatio">Бодит харьцаа</span><strong id="intervalRatioValue">3:2 = 1.5</strong></div>
