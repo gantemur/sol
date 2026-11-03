@@ -7,6 +7,7 @@
   const spectrumModel = window.SoundLabSpectrum;
   const motionModel = window.SoundLabMotionModel;
   const beatsModel = window.SoundLabBeats;
+  const intervalModel = window.SoundLabIntervals;
   const harmonicModel = window.SoundLabHarmonics;
   const noiseModel = window.SoundLabNoise;
   const recorderModel = window.SoundLabRecorder;
@@ -68,8 +69,48 @@
       modeMix: "Combine waves", modeSwitchAria: "Sound categories",
       mixExperimentsAria: "Explore combined and complex sounds",
       mixExperimentBeats: "Two frequencies", mixExperimentHarmonics: "Build timbre",
-      mixExperimentNoise: "Noise",
+      mixExperimentIntervals: "Interval", mixExperimentNoise: "Noise",
       harmonicPhase: "05 · Build a sound", noisePhase: "05 · Explore noise",
+      intervalPhase: "05 · Musical intervals",
+      intervalChoose: "Two-note frequency ratios",
+      intervalDescription: "Compare two independent notes in simple ratios and see where their harmonics overlap.",
+      intervalPresetsTitle: "Ratio (upper : lower)", intervalPresetsAria: "Simple two-note frequency ratios",
+      intervalNames: { "1:1": "Unison", "2:1": "Octave", "3:2": "Perfect fifth", "4:3": "Perfect fourth", "5:4": "Major third", "6:5": "Minor third" },
+      intervalBase: "Lower-note pitch", intervalBaseSliderAria: "Lower note frequency slider",
+      intervalBaseInputAria: "Lower note frequency in hertz",
+      intervalTuningTitle: "Tuning", intervalTuningAria: "Two-note tuning system",
+      intervalJust: "Just ratio", intervalEqual: "12-TET",
+      intervalColorTitle: "Source color", intervalColorAria: "Pure or harmonic-rich tones",
+      intervalPure: "Pure", intervalRich: "Rich",
+      intervalColorHint: "Pure notes contain only their fundamentals. Rich notes contain upper harmonics, which can overlap or nearly overlap.",
+      intervalPlay: "Play both", intervalStop: "Stop both",
+      intervalNotes: "Two note pitches", intervalActualRatio: "Actual ratio",
+      intervalPeriod: "Shared period", intervalReferencePeriod: "Just-ratio reference period",
+      intervalOverlap: "First shared harmonics", intervalAlmost: "Near-shared partials",
+      intervalJustStatus: "The chosen ratio is exact; these harmonics coincide.",
+      intervalEqualStatus: "12-TET is {cents} cents from the just ratio. Near-shared partials differ by {hz}; in Rich mode they may beat.",
+      intervalWaveTitle: "Two-note waveforms",
+      intervalWaveHint: "Lower note, upper note, and their sum. An exact just interval repeats after a shared period.",
+      intervalWaveFootJust: "Lower {low} cycles · upper {high} cycles in one shared period",
+      intervalWaveFootEqual: "Window from just ratio: no exact joint repeat in 12-TET",
+      intervalSpectrumTitle: "Harmonics of the two notes",
+      intervalSpectrumHint: "Blue: lower note; orange: upper note. The first shared or near-shared partial pair is circled.",
+      intervalSpectrumHintPure: "Pure sound has only two fundamental frequencies. Choose Rich to reveal matching upper harmonics.",
+      intervalSpectrumJust: "{p} × {low} = {q} × {high} Hz",
+      intervalSpectrumEqual: "{p} × {low} versus {q} × {high} Hz · difference {delta}",
+      intervalSpectrumPure: "Only fundamentals are present in Pure mode; upper overlaps are hypothetical.",
+      intervalChallenge: "Choose 4:3. Predict the shared period and matching harmonics, then compare with 12-TET.",
+      intervalLearnMore: "How does a two-note ratio differ from one note's overtones?",
+      intervalLessonOne: "A ratio such as 3:2 compares the fundamental frequencies of two separate notes. The overtones of one note instead occur at 2, 3, 4… times its own fundamental.",
+      intervalLessonTwo: "At 3:2 the lower note's third harmonic equals the upper note's second harmonic. In 12-TET the frequencies differ slightly; with Rich tones the nearby harmonics may beat. Pleasantness is not determined by ratios alone.",
+      intervalReady: "Ready. Play the two notes together.", intervalStarting: "Starting two notes…",
+      intervalPlaying: "Playing. Compare ratios and tunings while the notes sound.",
+      intervalStopped: "Stopped. Try another ratio.", intervalHidden: "Sound stopped when you left the page.",
+      intervalUnsupported: "This browser cannot synthesize interval tones.",
+      intervalBlocked: "The tones could not start. Check your browser's audio settings.",
+      intervalInvalid: "Enter a lower-note frequency from 110 to 440 Hz.",
+      intervalWaveAria: "Modeled lower, upper and summed note waveforms over a just-ratio reference period",
+      intervalSpectrumAria: "Two harmonic ladders and their shared or near-shared partials",
       harmonicChoose: "Add harmonics", harmonicDescription: "Combine whole-number multiples of a frequency to build a new sound.",
       harmonicPlay: "Play", harmonicStop: "Stop", harmonicBase: "Fundamental frequency",
       harmonicPresetsTitle: "Example mixtures", harmonicPure: "Pure", harmonicOdd: "Odd harmonics",
@@ -353,8 +394,48 @@
       modeMix: "Долгион холих", modeSwitchAria: "Дууны бүлэг",
       mixExperimentsAria: "Холимог ба нийлмэл авианы туршилтууд",
       mixExperimentBeats: "Хоёр давтамж", mixExperimentHarmonics: "Өнгө бүтээх",
-      mixExperimentNoise: "Шуугиан",
+      mixExperimentIntervals: "Интервал", mixExperimentNoise: "Шуугиан",
       harmonicPhase: "05 · Авиа бүтээх", noisePhase: "05 · Шуугиан судлах",
+      intervalPhase: "05 · Хөгжмийн интервал",
+      intervalChoose: "Хоёр нотын харьцаа",
+      intervalDescription: "Хоёр тусдаа авианы давтамжийг энгийн харьцаагаар тохируулж, гармоникууд нь хаана давхцахыг харьцуул.",
+      intervalPresetsTitle: "Давтамжийн харьцаа (дээд : доод)", intervalPresetsAria: "Хоёр нотын энгийн харьцаа",
+      intervalNames: { "1:1": "Унисон", "2:1": "Октав", "3:2": "Цэвэр квинт", "4:3": "Цэвэр кварт", "5:4": "Их терц", "6:5": "Бага терц" },
+      intervalBase: "Доод нотын давтамж", intervalBaseSliderAria: "Доод нотын давтамжийн гулсуур",
+      intervalBaseInputAria: "Доод нотын давтамжийг герцээр оруулах",
+      intervalTuningTitle: "Хөг", intervalTuningAria: "Хоёр нотын хөг сонгох",
+      intervalJust: "Энгийн харьцаа", intervalEqual: "12-TET",
+      intervalColorTitle: "Авианы найрлага", intervalColorAria: "Цэвэр эсвэл гармониктай авиа",
+      intervalPure: "Цэвэр", intervalRich: "Гармониктай",
+      intervalColorHint: "Цэвэр авиа зөвхөн үндсэн давтамжтай. Гармониктай хоёр авианы дээд хэсгүүд давхцах эсвэл ойртох боломжтой.",
+      intervalPlay: "Тоглуулах", intervalStop: "Зогсоох",
+      intervalNotes: "Хоёр нот", intervalActualRatio: "Бодит харьцаа",
+      intervalPeriod: "Хамтын үе", intervalReferencePeriod: "Энгийн харьцааны жишиг үе",
+      intervalOverlap: "Анхны давхцах гармоник", intervalAlmost: "Ойролцоо гармоникууд",
+      intervalJustStatus: "Харьцаа яг таарсан тул эдгээр гармоник давхцана.",
+      intervalEqualStatus: "12-TET хөг нь энгийн харьцаанаас {cents} центээр зөрнө. Ойролцоо гармоникуудын зөрүү {hz}; «Гармониктай» үед биение сонсогдож болно.",
+      intervalWaveTitle: "Хоёр нотын долгион",
+      intervalWaveHint: "Доод, дээд нот ба нийлбэр долгион. Энгийн харьцаанд хамтын үеийн дараа давтагдана.",
+      intervalWaveFootJust: "Хамтын нэг үед доод нот {low}, дээд нот {high} бүтэн хэлбэлзэнэ",
+      intervalWaveFootEqual: "Энгийн харьцааны жишиг цонх; 12-TET-д яг ижил давталт үгүй",
+      intervalSpectrumTitle: "Хоёр нотын гармоникууд",
+      intervalSpectrumHint: "Цэнхэр нь доод, улбар нь дээд нот. Давхцсан эсвэл ойртсон хосыг хүрээлэв.",
+      intervalSpectrumHintPure: "«Цэвэр» авианд хоёр үндсэн давтамж л байна. Давхцах дээд гармоникийг «Гармониктай» үед харна.",
+      intervalSpectrumJust: "{p} × {low} = {q} × {high} Гц",
+      intervalSpectrumEqual: "{p} × {low} ба {q} × {high} Гц · зөрүү {delta}",
+      intervalSpectrumPure: "«Цэвэр» үед зөвхөн үндсэн давтамжууд байна; дээд гармоникууд үүсээгүй.",
+      intervalChallenge: "4:3 сонгоод хамтын үе, давхцах гармоникийг таа. Дараа нь 12-TET хөгтэй харьцуул.",
+      intervalLearnMore: "Хоёр нотын харьцаа ба нэг нотын гармоник юугаараа ялгаатай вэ?",
+      intervalLessonOne: "3:2 бол хоёр тусдаа нотын үндсэн давтамжийн харьцаа. Харин нэг нотын дээд гармоникууд нь өөрийн үндсэн давтамжаас 2, 3, 4… дахин их давтамжтай.",
+      intervalLessonTwo: "3:2 үед доод нотын 3 дахь, дээд нотын 2 дахь гармоник давхцана. 12-TET хөгтэй бол эдгээр нь ойртож, бага зэрэг зөрнө. «Гармониктай» үед биение үүсч болно. Таатай эсэхийг ганц харьцаагаар тодорхойлохгүй.",
+      intervalReady: "Бэлэн. Хоёр нотыг хамт сонсоорой.", intervalStarting: "Хоёр нот эхэлж байна…",
+      intervalPlaying: "Дуугарч байна. Харьцаа, хөг солиж сонсоорой.",
+      intervalStopped: "Зогслоо. Өөр харьцаа туршаарай.", intervalHidden: "Хуудсаас гарахад авиа зогслоо.",
+      intervalUnsupported: "Энэ хөтөч хоёр нотын авиа үүсгэж чадахгүй байна.",
+      intervalBlocked: "Авиа эхэлсэнгүй. Хөтчийн дууны тохиргоог шалгана уу.",
+      intervalInvalid: "Доод нотын давтамж 110–440 Гц байх ёстой.",
+      intervalWaveAria: "Доод, дээд болон нийлбэр нотын долгионы загвар",
+      intervalSpectrumAria: "Хоёр нотын гармоникуудын давхцал ба ойролцоох хос",
       harmonicChoose: "Гармоникуудыг нэмэх", harmonicDescription: "Нэг давтамжийн бүхэл тоон үржвэрүүдийг нийлүүлж шинэ авиа бүтээнэ.",
       harmonicPlay: "Тоглуулах", harmonicStop: "Зогсоох", harmonicBase: "Үндсэн давтамж",
       harmonicPresetsTitle: "Бэлэн найрлагууд", harmonicPure: "Цэвэр", harmonicOdd: "Сондгой",
@@ -654,6 +735,14 @@
     mixStatus: "mixReady",
     mixError: false,
     mixKind: "beats",
+    intervalRatio: "3:2",
+    intervalBase: 220,
+    intervalTuning: "just",
+    intervalColor: "rich",
+    intervalVolume: 38,
+    intervalPlaying: false,
+    intervalStatus: "intervalReady",
+    intervalError: false,
     harmonicBase: 220,
     harmonicPartials: harmonicModel.preset("pure"),
     harmonicPreset: "pure",
@@ -679,7 +768,7 @@
   // More headroom for small built-in speakers; still bounded below full-scale output.
   // Four simultaneous triggered voices have a total worst-case gain below 1.
   const maxGain = Object.freeze({ tone: 0.30, transient: 0.21, sustain: 0.22, motion: 0.24,
-    beatVoice: 0.12, harmonics: 0.24, noise: 0.20 });
+    beatVoice: 0.12, intervalVoice: 0.12, harmonics: 0.24, noise: 0.20 });
   const MIX_MIN_VIEW_SECONDS = 0.002;
   const MIX_MAX_VIEW_SECONDS = 4;
   const MIX_ZOOM_FACTOR = 4;
@@ -1292,6 +1381,107 @@
     }
   }
 
+  class IntervalEngine {
+    constructor(contextOwner) {
+      this.contextOwner = contextOwner;
+      this.voices = new Set();
+      this.currentPair = null;
+      this.generation = 0;
+    }
+
+    gainForVolume() {
+      // Each modeled waveform has absolute amplitude at most 1; both together
+      // therefore stay at or below 0.24 even at the maximum volume setting.
+      return maxGain.intervalVoice * state.intervalVolume / 100;
+    }
+
+    fadeAndStop(pair, immediate = false) {
+      const now = this.contextOwner.context.currentTime;
+      const gain = pair.gain.gain;
+      gain.cancelScheduledValues(now);
+      if (immediate) gain.setValueAtTime(0, now);
+      else gain.setTargetAtTime(0, now, 0.012);
+      if (pair.stopping) return;
+      pair.stopping = true;
+      for (const oscillator of pair.oscillators) {
+        try { oscillator.stop(now + (immediate ? 0.002 : 0.09)); }
+        catch (_) { /* The oscillator might have been stopped already. */ }
+      }
+    }
+
+    createPair(context) {
+      const now = context.currentTime;
+      const { baseHz, highHz } = intervalModel.analyze(intervalRecipe());
+      const gain = context.createGain();
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(this.gainForVolume(), now + 0.035);
+      gain.connect(this.contextOwner.output);
+      const pair = { gain, oscillators: [], ended: 0, stopping: false };
+      const { real, imag } = intervalModel.coefficients("rich");
+      const wave = state.intervalColor === "rich" ?
+        context.createPeriodicWave(real, imag, { disableNormalization: true }) : null;
+      for (const hz of [baseHz, highHz]) {
+        const oscillator = context.createOscillator();
+        if (wave) oscillator.setPeriodicWave(wave);
+        else oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(hz, now);
+        oscillator.connect(gain);
+        oscillator.onended = () => {
+          oscillator.disconnect();
+          pair.ended++;
+          if (pair.ended === pair.oscillators.length) {
+            gain.disconnect();
+            this.voices.delete(pair);
+            if (this.currentPair === pair) this.currentPair = null;
+          }
+        };
+        pair.oscillators.push(oscillator);
+      }
+      this.currentPair = pair;
+      this.voices.add(pair);
+      pair.oscillators.forEach(oscillator => oscillator.start(now));
+    }
+
+    async start() {
+      const ticket = ++this.generation;
+      const context = await this.contextOwner.readyContext();
+      if (ticket !== this.generation || state.mode !== "mix" || state.mixKind !== "intervals") return false;
+      for (const pair of this.voices) this.fadeAndStop(pair);
+      this.createPair(context);
+      return true;
+    }
+
+    update() {
+      if (!this.currentPair) return;
+      const now = this.contextOwner.context.currentTime;
+      const { baseHz, highHz } = intervalModel.analyze(intervalRecipe());
+      this.currentPair.oscillators.forEach((oscillator, index) => {
+        oscillator.frequency.setTargetAtTime(index === 0 ? baseHz : highHz, now, 0.018);
+      });
+      const gain = this.currentPair.gain.gain;
+      gain.cancelScheduledValues(now);
+      gain.setTargetAtTime(this.gainForVolume(), now, 0.012);
+    }
+
+    changeColor() {
+      if (!this.currentPair) return;
+      const previous = this.currentPair;
+      this.createPair(this.contextOwner.context);
+      this.fadeAndStop(previous);
+      while (this.voices.size > 3) {
+        const oldest = this.voices.values().next().value;
+        this.fadeAndStop(oldest, true);
+        this.voices.delete(oldest);
+      }
+    }
+
+    stop(immediate = false) {
+      this.generation++;
+      for (const pair of this.voices) this.fadeAndStop(pair, immediate);
+      this.currentPair = null;
+    }
+  }
+
   class HarmonicEngine {
     constructor(contextOwner) {
       this.contextOwner = contextOwner;
@@ -1475,6 +1665,7 @@
   const sustainAudio = new SustainEngine(audio);
   const motionAudio = new MotionEngine(audio);
   const mixAudio = new BeatsEngine(audio);
+  const intervalAudio = new IntervalEngine(audio);
   const harmonicAudio = new HarmonicEngine(audio);
   const noiseAudio = new NoiseEngine(audio);
   const recorder = new recorderModel.Recorder(audio, window.AudioWorkletNode);
@@ -1724,6 +1915,13 @@
     $("mixStatus").classList.toggle("error", error);
   }
 
+  function setIntervalStatus(status, error = false) {
+    state.intervalStatus = status;
+    state.intervalError = error;
+    $("intervalStatus").textContent = text(status);
+    $("intervalStatus").classList.toggle("error", error);
+  }
+
   function setHarmonicStatus(status, error = false) {
     state.harmonicStatus = status;
     state.harmonicError = error;
@@ -1882,6 +2080,130 @@
     state.noiseVolume = 25;
     setNoiseStatus("noiseReady");
     renderNoiseControls();
+    drawPlots();
+  }
+
+  function intervalRecipe() {
+    return { ratio: state.intervalRatio, baseHz: state.intervalBase, tuning: state.intervalTuning };
+  }
+
+  function intervalAnalysis() { return intervalModel.analyze(intervalRecipe()); }
+
+  function intervalPhrase(key, replacements) {
+    return Object.entries(replacements).reduce((message, [name, value]) =>
+      message.replaceAll("{" + name + "}", String(value)), text(key));
+  }
+
+  function renderIntervalControls() {
+    const data = intervalAnalysis();
+    $("intervalBaseSlider").value = String(state.intervalBase);
+    $("intervalBaseInput").value = String(state.intervalBase);
+    $("intervalBaseInput").setAttribute("aria-valuetext", hzText(state.intervalBase));
+    $("intervalBaseValue").textContent = hzText(state.intervalBase);
+    $("intervalName").textContent = text("intervalNames")[state.intervalRatio] + " · " + state.intervalRatio;
+    $("intervalNotesValue").textContent = frequencyText(data.baseHz) + " + " + hzText(data.highHz);
+    $("intervalRatioValue").textContent = state.intervalTuning === "just" ?
+      state.intervalRatio + " = " + frequencyText(data.actualRatio) :
+      "12-TET ≈ " + data.actualRatio.toFixed(5);
+    $("intervalPeriodLabel").textContent = text(data.exactOverlap ? "intervalPeriod" : "intervalReferencePeriod");
+    $("intervalPeriodValue").textContent = millisecondsText(data.referencePeriod * 1000);
+    $("intervalOverlapValue").textContent = data.p + "f₁ " + (data.exactOverlap ? "= " : "≈ ") +
+      data.q + "f₂" + (data.exactOverlap ? " = " + hzText(data.sharedLowHz) : "");
+    $("intervalWaveBadge").textContent = "T* = " + millisecondsText(data.referencePeriod * 1000);
+    $("intervalSpectrumBadge").textContent = data.p + "f₁ ↔ " + data.q + "f₂";
+    const cents = (data.cents > 0 ? "+" : "") + data.cents.toFixed(3);
+    $("intervalCents").textContent = data.exactOverlap ? text("intervalJustStatus") :
+      intervalPhrase("intervalEqualStatus", { cents, hz: hzText(data.discrepancyHz) });
+    $("intervalVolume").value = String(state.intervalVolume);
+    $("intervalVolumeValue").textContent = state.intervalVolume + "%";
+    $("intervalButton").classList.toggle("playing", state.intervalPlaying);
+    $("intervalButton").setAttribute("aria-pressed", String(state.intervalPlaying));
+    $("intervalPlayIcon").textContent = state.intervalPlaying ? "■" : "▶";
+    $("intervalPlayLabel").textContent = text(state.intervalPlaying ? "intervalStop" : "intervalPlay");
+    $("intervalPlayCaption").textContent = text(state.intervalPlaying ? "stopCaption" : "playCaption");
+    for (const [selector, attribute, active] of [
+      ["[data-interval-ratio]", "intervalRatio", state.intervalRatio],
+      ["[data-interval-tuning]", "intervalTuning", state.intervalTuning],
+      ["[data-interval-color]", "intervalColor", state.intervalColor]
+    ]) {
+      document.querySelectorAll(selector).forEach(button => {
+        const selected = button.dataset[attribute] === active;
+        button.classList.toggle("selected", selected);
+        button.setAttribute("aria-pressed", String(selected));
+      });
+    }
+  }
+
+  function stopIntervalSound(immediate = false, message = "intervalStopped") {
+    intervalAudio.stop(immediate);
+    state.intervalPlaying = false;
+    setIntervalStatus(message);
+    renderIntervalControls();
+  }
+
+  async function toggleIntervalSound() {
+    if (state.intervalPlaying) { stopIntervalSound(); return; }
+    if (state.mode !== "mix" || state.mixKind !== "intervals") return;
+    setIntervalStatus("intervalStarting");
+    try {
+      if (await intervalAudio.start()) {
+        state.intervalPlaying = true;
+        setIntervalStatus("intervalPlaying");
+        renderIntervalControls();
+      }
+    } catch (error) {
+      stopIntervalSound(true, error.message === "unsupported" ? "intervalUnsupported" : "intervalBlocked");
+      setIntervalStatus(state.intervalStatus, true);
+    }
+  }
+
+  function setIntervalBase(input) {
+    const value = Number(input);
+    if (!Number.isFinite(value) || value < intervalModel.MIN_BASE_HZ || value > intervalModel.MAX_BASE_HZ) {
+      setIntervalStatus("intervalInvalid", true);
+      renderIntervalControls();
+      return;
+    }
+    state.intervalBase = value;
+    if (state.intervalError) setIntervalStatus(state.intervalPlaying ? "intervalPlaying" : "intervalReady");
+    intervalAudio.update();
+    renderIntervalControls();
+    if (state.mode === "mix" && state.mixKind === "intervals") drawIntervalPlots();
+  }
+
+  function selectIntervalRatio(ratio) {
+    if (!intervalModel.PRESETS.some(preset => preset.ratio === ratio) || state.intervalRatio === ratio) return;
+    state.intervalRatio = ratio;
+    intervalAudio.update();
+    renderIntervalControls();
+    if (state.mode === "mix" && state.mixKind === "intervals") drawIntervalPlots();
+  }
+
+  function selectIntervalTuning(tuning) {
+    if (!["just", "equal"].includes(tuning) || state.intervalTuning === tuning) return;
+    state.intervalTuning = tuning;
+    intervalAudio.update();
+    renderIntervalControls();
+    if (state.mode === "mix" && state.mixKind === "intervals") drawIntervalPlots();
+  }
+
+  function selectIntervalColor(color) {
+    if (!["pure", "rich"].includes(color) || state.intervalColor === color) return;
+    state.intervalColor = color;
+    intervalAudio.changeColor();
+    renderIntervalControls();
+    if (state.mode === "mix" && state.mixKind === "intervals") drawIntervalPlots();
+  }
+
+  function resetInterval() {
+    stopIntervalSound();
+    state.intervalRatio = "3:2";
+    state.intervalBase = 220;
+    state.intervalTuning = "just";
+    state.intervalColor = "rich";
+    state.intervalVolume = 38;
+    setIntervalStatus("intervalReady");
+    renderIntervalControls();
     drawPlots();
   }
 
@@ -2231,6 +2553,7 @@
     const isMix = state.mode === "mix";
     const isBeats = isMix && state.mixKind === "beats";
     const isHarmonics = isMix && state.mixKind === "harmonics";
+    const isIntervals = isMix && state.mixKind === "intervals";
     const isNoise = isMix && state.mixKind === "noise";
     $("pureWorkspace").hidden = isStrike || isSustain || isMotion || isMix;
     $("pureChallenge").hidden = isStrike || isSustain || isMotion || isMix;
@@ -2250,6 +2573,9 @@
     $("harmonicWorkspace").hidden = !isHarmonics;
     $("harmonicChallenge").hidden = !isHarmonics;
     $("harmonicExplanation").hidden = !isHarmonics;
+    $("intervalWorkspace").hidden = !isIntervals;
+    $("intervalChallenge").hidden = !isIntervals;
+    $("intervalExplanation").hidden = !isIntervals;
     $("noiseWorkspace").hidden = !isNoise;
     $("noiseChallenge").hidden = !isNoise;
     $("noiseExplanation").hidden = !isNoise;
@@ -2265,7 +2591,8 @@
       $(id).setAttribute("aria-pressed", String(selected));
     }
     $("pagePhase").textContent = text(isStrike ? "strikePhase" : isSustain ? "sustainPhase" : isMotion ? "motionPhase" :
-      isHarmonics ? "harmonicPhase" : isNoise ? "noisePhase" : isMix ? "mixPhase" : "phase");
+      isHarmonics ? "harmonicPhase" : isIntervals ? "intervalPhase" :
+        isNoise ? "noisePhase" : isMix ? "mixPhase" : "phase");
   }
 
   function renderTexts() {
@@ -2332,6 +2659,13 @@
     $("mixZoomValue").setAttribute("aria-label", text("mixZoomValueAria"));
     $("mixViewLeft").setAttribute("aria-label", text("mixLeftAria"));
     $("mixViewRight").setAttribute("aria-label", text("mixRightAria"));
+    $("intervalPresets").setAttribute("aria-label", text("intervalPresetsAria"));
+    $("intervalTunings").setAttribute("aria-label", text("intervalTuningAria"));
+    $("intervalColors").setAttribute("aria-label", text("intervalColorAria"));
+    $("intervalBaseSlider").setAttribute("aria-label", text("intervalBaseSliderAria"));
+    $("intervalBaseInput").setAttribute("aria-label", text("intervalBaseInputAria"));
+    $("intervalWaveCanvas").setAttribute("aria-label", text("intervalWaveAria"));
+    $("intervalSpectrumCanvas").setAttribute("aria-label", text("intervalSpectrumAria"));
     $("harmonicPresets").setAttribute("aria-label", text("harmonicPresetsAria"));
     $("harmonicSliders").setAttribute("aria-label", text("harmonicSlidersAria"));
     $("harmonicWaveCanvas").setAttribute("aria-label", text("harmonicWaveAria"));
@@ -2346,6 +2680,7 @@
     setSustainStatus(state.sustainStatus, state.sustainError);
     setMotionStatus(state.motionStatus, state.motionError);
     setMixStatus(state.mixStatus, state.mixError);
+    setIntervalStatus(state.intervalStatus, state.intervalError);
     setHarmonicStatus(state.harmonicStatus, state.harmonicError);
     setNoiseStatus(state.noiseStatus, state.noiseError);
     renderMode();
@@ -2353,6 +2688,7 @@
     renderSustainControls();
     renderMotionControls();
     renderMixControls();
+    renderIntervalControls();
     renderHarmonicControls();
     renderNoiseControls();
     renderStrikeTime();
@@ -2591,6 +2927,7 @@
     stopSustainSound(immediate, message === "hidden" ? "sustainHidden" : "sustainStopped");
     stopMotionSound(immediate, message === "hidden" ? "motionHidden" : "motionStopped");
     stopMixSound(immediate, message === "hidden" ? "mixHidden" : "mixStopped");
+    stopIntervalSound(immediate, message === "hidden" ? "intervalHidden" : "intervalStopped");
     stopHarmonicSound(immediate);
     stopNoiseSound(immediate);
     stopSound(immediate, message);
@@ -2638,11 +2975,12 @@
   }
 
   function selectMixKind(kind) {
-    if (!["beats", "harmonics", "noise"].includes(kind) || kind === state.mixKind) return;
+    if (!["beats", "harmonics", "intervals", "noise"].includes(kind) || kind === state.mixKind) return;
     stopAllAudio();
     state.mixKind = kind;
     if (kind === "beats") setMixStatus("mixReady");
     if (kind === "harmonics") setHarmonicStatus("harmonicReady");
+    if (kind === "intervals") setIntervalStatus("intervalReady");
     if (kind === "noise") setNoiseStatus("noiseReady");
     renderTexts();
     drawPlots();
@@ -3353,6 +3691,134 @@
     drawMixSpectrum();
   }
 
+  function drawIntervalWave() {
+    const { ctx, width, height } = plotContext($("intervalWaveCanvas"));
+    const left = 61, right = width - 15, top = 25, bottom = height - 32;
+    const w = right - left, h = bottom - top;
+    const data = intervalAnalysis(), duration = data.referencePeriod;
+    drawFrame(ctx, width, height, left, right, top, bottom);
+    const rows = [
+      { label: "f₁", color: "#347cc9" },
+      { label: "f₂", color: "#e09145" },
+      { label: "f₁+f₂", color: "#19877d" }
+    ];
+    const count = Math.max(900, Math.ceil(data.highHz * intervalModel.PARTIAL_COUNT * duration * 14));
+    const partials = intervalModel.partialAmplitudes(state.intervalColor);
+    const samples = [new Float64Array(count + 1), new Float64Array(count + 1)];
+    for (let i = 0; i <= count; i++) {
+      const t = duration * i / count;
+      for (let n = 0; n < partials.length; n++) {
+        if (!partials[n]) continue;
+        samples[0][i] += partials[n] * Math.sin(2 * Math.PI * (n + 1) * data.baseHz * t);
+        samples[1][i] += partials[n] * Math.sin(2 * Math.PI * (n + 1) * data.highHz * t);
+      }
+    }
+    rows.forEach(({ label, color }, row) => {
+      const center = top + h * (row + 0.5) / 3;
+      const amplitude = h / 3 * 0.36;
+      ctx.strokeStyle = "#e2eaf1";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(left, center);
+      ctx.lineTo(right, center);
+      ctx.stroke();
+      ctx.fillStyle = color;
+      ctx.font = "11px system-ui, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText(label, 7, center);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = row === 2 ? 2.5 : 2;
+      ctx.lineJoin = "round";
+      ctx.beginPath();
+      for (let i = 0; i <= count; i++) {
+        const fraction = i / count;
+        const low = samples[0][i], high = samples[1][i];
+        const sample = row === 0 ? low : row === 1 ? high : (low + high) / 2;
+        const x = left + w * fraction, y = center - amplitude * sample;
+        if (!i) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    });
+    ctx.fillStyle = "#7489a1";
+    ctx.font = "11px system-ui, sans-serif";
+    ctx.textAlign = "center";
+    const ticks = width < 340 ? 2 : 4;
+    for (let i = 0; i <= ticks; i++) {
+      ctx.fillText(millisecondsText(duration * 1000 * i / ticks),
+        left + w * i / ticks, height - 11);
+    }
+    $("intervalWaveFoot").textContent = data.exactOverlap ?
+      intervalPhrase("intervalWaveFootJust", { low: data.lowerCycles, high: data.upperCycles }) :
+      text("intervalWaveFootEqual");
+  }
+
+  function drawIntervalSpectrum() {
+    const { ctx, width, height } = plotContext($("intervalSpectrumCanvas"));
+    const left = 59, right = width - 14, top = 22, bottom = height - 32;
+    const w = right - left, h = bottom - top;
+    const data = intervalAnalysis();
+    $("intervalSpectrumHint").textContent = text(state.intervalColor === "pure" ?
+      "intervalSpectrumHintPure" : "intervalSpectrumHint");
+    const maxHz = intervalModel.PARTIAL_COUNT * data.highHz * 1.06;
+    drawFrame(ctx, width, height, left, right, top, bottom);
+    const xFor = hz => left + hz / maxHz * w;
+    const rows = [
+      { label: "f₁", hz: data.baseHz, index: data.p, color: "#347cc9", y: top + h * 0.44 },
+      { label: "f₂", hz: data.highHz, index: data.q, color: "#e09145", y: top + h * 0.89 }
+    ];
+    rows.forEach(row => {
+      ctx.fillStyle = row.color;
+      ctx.font = "12px system-ui, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText(row.label, 8, row.y - 11);
+      ctx.strokeStyle = "#c7d5e3";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(left, row.y);
+      ctx.lineTo(right, row.y);
+      ctx.stroke();
+      const lines = intervalModel.spectrum(row.hz, state.intervalColor);
+      for (const line of lines) {
+        const x = xFor(line.hz);
+        const length = h * 0.33 * line.strength;
+        ctx.strokeStyle = row.color;
+        ctx.lineWidth = line.harmonic === row.index ? 4 : 2.3;
+        ctx.beginPath();
+        ctx.moveTo(x, row.y);
+        ctx.lineTo(x, row.y - length);
+        ctx.stroke();
+        if (line.harmonic === row.index) {
+          ctx.strokeStyle = "#147d72";
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.arc(x, row.y - length, 6, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+      }
+    });
+    ctx.fillStyle = "#788da2";
+    ctx.font = "11px system-ui, sans-serif";
+    ctx.textAlign = "center";
+    const ticks = width < 350 ? 2 : 4;
+    for (let i = 0; i <= ticks; i++) {
+      ctx.fillText(hzText(maxHz * i / ticks), left + w * i / ticks, height - 11);
+    }
+    $("intervalSpectrumFoot").textContent = state.intervalColor === "pure" &&
+      (data.p !== 1 || data.q !== 1) ? text("intervalSpectrumPure") :
+      data.exactOverlap ? intervalPhrase("intervalSpectrumJust", {
+        p: data.p, q: data.q, low: frequencyText(data.baseHz), high: frequencyText(data.highHz)
+      }) : intervalPhrase("intervalSpectrumEqual", {
+        p: data.p, q: data.q, low: frequencyText(data.baseHz), high: frequencyText(data.highHz),
+        delta: hzText(data.discrepancyHz)
+      });
+  }
+
+  function drawIntervalPlots() {
+    drawIntervalWave();
+    drawIntervalSpectrum();
+  }
+
   function drawHarmonicWave() {
     const { ctx, width, height } = plotContext($("harmonicWaveCanvas"));
     const left = 43, right = width - 16, top = 26, bottom = height - 32;
@@ -3509,6 +3975,7 @@
       drawMotionPlots();
     } else if (state.mode === "mix") {
       if (state.mixKind === "harmonics") drawHarmonicPlots();
+      else if (state.mixKind === "intervals") drawIntervalPlots();
       else if (state.mixKind === "noise") drawNoisePlots();
       else drawMixPlots();
     } else {
@@ -3593,6 +4060,15 @@
   document.querySelectorAll("[data-mix-kind]").forEach(button => {
     button.addEventListener("click", () => selectMixKind(button.dataset.mixKind));
   });
+  document.querySelectorAll("[data-interval-ratio]").forEach(button => {
+    button.addEventListener("click", () => selectIntervalRatio(button.dataset.intervalRatio));
+  });
+  document.querySelectorAll("[data-interval-tuning]").forEach(button => {
+    button.addEventListener("click", () => selectIntervalTuning(button.dataset.intervalTuning));
+  });
+  document.querySelectorAll("[data-interval-color]").forEach(button => {
+    button.addEventListener("click", () => selectIntervalColor(button.dataset.intervalColor));
+  });
   document.querySelectorAll("[data-theremin-timbre]").forEach(button => {
     button.addEventListener("click", () => setMotionTimbre(button.dataset.thereminTimbre));
   });
@@ -3639,6 +4115,15 @@
     renderNoiseControls();
   });
   $("noiseReset").addEventListener("click", resetNoise);
+  $("intervalButton").addEventListener("click", toggleIntervalSound);
+  $("intervalBaseSlider").addEventListener("input", event => setIntervalBase(event.target.value));
+  $("intervalBaseInput").addEventListener("change", event => setIntervalBase(event.target.value));
+  $("intervalVolume").addEventListener("input", event => {
+    state.intervalVolume = Math.max(0, Math.min(100, Number(event.target.value)));
+    intervalAudio.update();
+    renderIntervalControls();
+  });
+  $("intervalReset").addEventListener("click", resetInterval);
   $("mixZoomOut").addEventListener("click", () => zoomMix(-1));
   $("mixZoomIn").addEventListener("click", () => zoomMix(1));
   $("mixButton").addEventListener("click", toggleMixSound);
@@ -3903,7 +4388,8 @@
   window.addEventListener("blur", () => {
     if (recorder.state === "recording") stopRecording();
     if (state.sustainPlaying || sustainPointerId !== null || sustainKeyboardHeld ||
-        state.motionPlaying || state.mixPlaying || state.harmonicPlaying || state.noisePlaying) {
+        state.motionPlaying || state.mixPlaying || state.intervalPlaying ||
+        state.harmonicPlaying || state.noisePlaying) {
       stopAllAudio(true, "hidden");
     }
   });
@@ -3921,6 +4407,8 @@
     observer.observe($("motionSpectrumCanvas"));
     observer.observe($("mixWaveCanvas"));
     observer.observe($("mixSpectrumCanvas"));
+    observer.observe($("intervalWaveCanvas"));
+    observer.observe($("intervalSpectrumCanvas"));
     observer.observe($("harmonicWaveCanvas"));
     observer.observe($("harmonicSpectrumCanvas"));
     observer.observe($("noiseWaveCanvas"));

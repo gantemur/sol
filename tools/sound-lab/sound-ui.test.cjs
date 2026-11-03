@@ -10,6 +10,7 @@ const sustainModel = require("./sound-sustain.js");
 const spectrumModel = require("./sound-spectrum.js");
 const motionModel = require("./sound-motion.js");
 const beatsModel = require("./sound-beats.js");
+const intervalModel = require("./sound-intervals.js");
 const harmonicModel = require("./sound-harmonics.js");
 const noiseModel = require("./sound-noise.js");
 const recorderModel = require("./sound-recorder.js");
@@ -36,10 +37,11 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-spectrum\.js\?v=s017"/);
   assert.match(html, /src="sound-motion\.js\?v=s020c"/);
   assert.match(html, /src="sound-beats\.js"/);
+  assert.match(html, /src="sound-intervals\.js\?v=s021"/);
   assert.match(html, /src="sound-harmonics\.js"/);
   assert.match(html, /src="sound-noise\.js"/);
-  assert.match(html, /src="sound-lab\.js\?v=s020c"/);
-  assert.match(html, /href="sound-lab\.css\?v=s020c"/);
+  assert.match(html, /src="sound-lab\.js\?v=s021"/);
+  assert.match(html, /href="sound-lab\.css\?v=s021"/);
   assert.match(html, /src="sound-recorder\.js"/);
   assert.match(html, /id="recordPreview"[^>]*controls/);
   assert.match(html, /id="recordDownload"[^>]*download="sound-lab\.wav"/);
@@ -55,14 +57,17 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /id="mixExplanation"[^>]*hidden/);
   assert.match(html, /id="mixChallenge"[^>]*hidden/);
   assert.match(html, /id="harmonicWorkspace"[^>]*hidden/);
+  assert.match(html, /id="intervalWorkspace"[^>]*hidden/);
+  assert.match(html, /id="intervalChallenge"[^>]*hidden/);
+  assert.match(html, /id="intervalExplanation"[^>]*hidden/);
   assert.match(html, /id="noiseWorkspace"[^>]*hidden/);
   assert.match(html, /id="harmonicChallenge"[^>]*hidden/);
   assert.match(html, /id="noiseChallenge"[^>]*hidden/);
   assert.doesNotMatch(html, /id="mixExperimentSwitch"/);
-  assert.equal([...html.matchAll(/class="experiment-switch"/g)].length, 3);
-  assert.equal([...html.matchAll(/data-mix-kind="/g)].length, 9);
-  for (const kind of ["beats", "harmonics", "noise"]) {
-    assert.equal([...html.matchAll(new RegExp('data-mix-kind="' + kind + '"', 'g'))].length, 3);
+  assert.equal([...html.matchAll(/class="experiment-switch"/g)].length, 4);
+  assert.equal([...html.matchAll(/data-mix-kind="/g)].length, 16);
+  for (const kind of ["beats", "harmonics", "intervals", "noise"]) {
+    assert.equal([...html.matchAll(new RegExp('data-mix-kind="' + kind + '"', 'g'))].length, 4);
   }
   assert.ok(html.indexOf('id="mixWorkspace"') < html.indexOf('class="experiment-switch"'),
     "Experiment choices belong within left panels, not under the four main tabs");
@@ -98,6 +103,9 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.equal([...html.matchAll(/data-theremin-timbre="/g)].length, 4);
   assert.equal([...html.matchAll(/data-siren-pattern="/g)].length, 3);
   assert.equal([...html.matchAll(/data-mix-gap="/g)].length, 4);
+  assert.equal([...html.matchAll(/data-interval-ratio="/g)].length, 6);
+  assert.equal([...html.matchAll(/data-interval-tuning="/g)].length, 2);
+  assert.equal([...html.matchAll(/data-interval-color="/g)].length, 2);
   assert.match(html, /id="mixZoomIn"/);
   assert.match(html, /id="mixZoomOut"/);
   assert.match(html, /id="mixZoomValue"/);
@@ -178,8 +186,11 @@ function fakePage(search = "", supportWorklets = true) {
   const timbreButtons = motionModel.TIMBRES.map(thereminTimbre => element({ thereminTimbre }));
   const vowelButtons = motionModel.VOWELS.map(thereminVowel => element({ thereminVowel }));
   const mixGapButtons = [0, 2, 4, 10].map(mixGap => element({ mixGap: String(mixGap) }));
-  const mixKindButtons = Array.from({ length: 3 }, () =>
-    ["beats", "harmonics", "noise"].map(mixKind => element({ mixKind }))).flat();
+  const mixKindButtons = Array.from({ length: 4 }, () =>
+    ["beats", "harmonics", "intervals", "noise"].map(mixKind => element({ mixKind }))).flat();
+  const intervalRatioButtons = intervalModel.PRESETS.map(preset => element({ intervalRatio: preset.ratio }));
+  const intervalTuningButtons = ["just", "equal"].map(intervalTuning => element({ intervalTuning }));
+  const intervalColorButtons = ["pure", "rich"].map(intervalColor => element({ intervalColor }));
   const harmonicPresetButtons = ["pure", "odd", "rich"].map(harmonicPreset => element({ harmonicPreset }));
   const harmonicLevelInputs = Array.from({ length: harmonicModel.COUNT }, (_, i) =>
     element({ harmonicLevel: String(i + 1) }));
@@ -208,6 +219,9 @@ function fakePage(search = "", supportWorklets = true) {
       if (selector === "[data-theremin-vowel]") return vowelButtons;
       if (selector === "[data-mix-gap]") return mixGapButtons;
       if (selector === "[data-mix-kind]") return mixKindButtons;
+      if (selector === "[data-interval-ratio]") return intervalRatioButtons;
+      if (selector === "[data-interval-tuning]") return intervalTuningButtons;
+      if (selector === "[data-interval-color]") return intervalColorButtons;
       if (selector === "[data-harmonic-preset]") return harmonicPresetButtons;
       if (selector === "[data-harmonic-level]") return harmonicLevelInputs;
       if (selector === "[data-noise-color]") return noiseColorButtons;
@@ -228,6 +242,7 @@ function fakePage(search = "", supportWorklets = true) {
     SoundLabSustain: sustainModel,
     SoundLabMotionModel: motionModel,
     SoundLabBeats: beatsModel,
+    SoundLabIntervals: intervalModel,
     SoundLabHarmonics: harmonicModel,
     SoundLabNoise: noiseModel,
     SoundLabRecorder: recorderModel,
@@ -399,6 +414,7 @@ function fakePage(search = "", supportWorklets = true) {
     guitarPlayButtons, guitarChordButtons, pianoTouchButtons, sustainButtons,
     sustainGestureButtons, drumButtons, spectrumButtons,
     motionButtons, sirenPatternButtons, timbreButtons, vowelButtons, mixGapButtons, mixKindButtons,
+    intervalRatioButtons, intervalTuningButtons, intervalColorButtons,
     harmonicPresetButtons, harmonicLevelInputs, noiseColorButtons,
     hzLabels, objectUrls, revokedUrls,
     analyzedAt,
@@ -1274,21 +1290,27 @@ test("Combine Waves is silent until Play and begins with 440 + 444 Hz in one sha
   assert.equal(app.elements.get("mixButton").getAttribute("aria-pressed"), "false");
 });
 
-test("Combine Waves uses three synchronized left-panel choices and uniform Play/Stop labels", async () => {
+test("Combine Waves uses four synchronized left-panel choices and uniform Play/Stop labels", async () => {
   const app = fakePage();
   app.fire("modeMix", "click");
-  assert.equal(app.mixKindButtons.length, 9);
+  assert.equal(app.mixKindButtons.length, 16);
   assert.equal(app.elements.get("mixPlayLabel").textContent, "Тоглуулах");
   app.mixKindButtons[1].events.click();
   assert.equal(app.elements.get("harmonicWorkspace").hidden, false);
   assert.equal(app.elements.get("harmonicPlayLabel").textContent, "Тоглуулах");
-  for (const index of [1, 4, 7]) {
+  for (const index of [1, 5, 9, 13]) {
     assert.equal(app.mixKindButtons[index].getAttribute("aria-pressed"), "true");
   }
-  app.mixKindButtons[8].events.click();
+  app.mixKindButtons[2].events.click();
+  assert.equal(app.elements.get("intervalWorkspace").hidden, false);
+  assert.equal(app.elements.get("intervalPlayLabel").textContent, "Тоглуулах");
+  for (const index of [2, 6, 10, 14]) {
+    assert.equal(app.mixKindButtons[index].getAttribute("aria-pressed"), "true");
+  }
+  app.mixKindButtons[3].events.click();
   assert.equal(app.elements.get("noiseWorkspace").hidden, false);
   assert.equal(app.elements.get("noisePlayLabel").textContent, "Тоглуулах");
-  for (const index of [2, 5, 8]) {
+  for (const index of [3, 7, 11, 15]) {
     assert.equal(app.mixKindButtons[index].getAttribute("aria-pressed"), "true");
   }
   assert.equal(app.contexts.length, 0, "Changing sub-experiment does not autoplay");
@@ -1296,9 +1318,84 @@ test("Combine Waves uses three synchronized left-panel choices and uniform Play/
   assert.equal(app.elements.get("noisePlayLabel").textContent, "Зогсоох");
   app.fire("langEn", "click");
   assert.equal(app.elements.get("noisePlayLabel").textContent, "Stop");
-  app.mixKindButtons[6].events.click();
+  app.mixKindButtons[0].events.click();
   assert.equal(app.elements.get("mixPlayLabel").textContent, "Play");
   assert.ok(app.contexts[0].sources.every(source => source.stopped));
+});
+
+test("S021 intervals switch exact/12-TET tuning and Pure/Rich voices without autoplay or leaks", async () => {
+  const app = fakePage();
+  app.fire("modeMix", "click");
+  app.mixKindButtons[2].events.click();
+  assert.equal(app.contexts.length, 0, "Preset selection remains silent");
+  assert.equal(app.elements.get("intervalName").textContent, "Цэвэр квинт · 3:2");
+  assert.equal(app.elements.get("intervalNotesValue").textContent, "220 + 330 Гц");
+  assert.equal(app.elements.get("intervalOverlapValue").textContent, "3f₁ = 2f₂ = 660 Гц");
+  assert.match(app.elements.get("intervalWaveFoot").textContent, /доод нот 2, дээд нот 3/);
+  assert.match(app.elements.get("intervalSpectrumFoot").textContent, /3 × 220 = 2 × 330/);
+  assert.ok(app.elements.get("intervalWaveCanvas").drawnText.includes("f₁+f₂"));
+  assert.ok(app.elements.get("intervalSpectrumCanvas").drawnText.includes("f₂"));
+
+  app.intervalRatioButtons[4].events.click(); // 5:4
+  assert.equal(app.elements.get("intervalNotesValue").textContent, "220 + 275 Гц");
+  app.intervalTuningButtons[1].events.click(); // 12-TET
+  assert.match(app.elements.get("intervalNotesValue").textContent, /277\.18 Гц/);
+  assert.match(app.elements.get("intervalCents").textContent, /\+13\.686/);
+  assert.match(app.elements.get("intervalCents").textContent, /8\.73 Гц/);
+  assert.match(app.elements.get("intervalWaveFoot").textContent, /яг ижил давталт үгүй/);
+  app.intervalColorButtons[0].events.click(); // Pure, still silent
+  assert.equal(app.contexts.length, 0);
+  assert.match(app.elements.get("intervalSpectrumFoot").textContent, /зөвхөн үндсэн давтамж/);
+
+  await app.fire("intervalButton", "click");
+  const ctx = app.contexts[0];
+  assert.equal(ctx.oscillators.length, 2);
+  assert.ok(ctx.oscillators.every(osc => osc.type === "sine" && osc.started));
+  assert.ok(Math.abs(ctx.gains.at(-1).gain.value - 0.12 * 0.38) < 1e-12);
+  assert.equal(app.elements.get("intervalPlayLabel").textContent, "Зогсоох");
+  app.intervalRatioButtons[2].events.click(); // 3:2, retune without restart
+  app.intervalTuningButtons[0].events.click();
+  assert.equal(ctx.oscillators.length, 2);
+  assert.deepEqual(ctx.oscillators.map(osc => osc.frequency.value), [220, 330]);
+  app.intervalColorButtons[1].events.click(); // rich, crossfade
+  assert.equal(ctx.oscillators.length, 4);
+  assert.ok(ctx.oscillators.slice(0, 2).every(osc => osc.stopped));
+  assert.ok(ctx.oscillators.slice(2).every(osc => osc.periodicWave?.options?.disableNormalization));
+  app.elements.get("intervalBaseInput").value = "999";
+  app.fire("intervalBaseInput", "change");
+  assert.equal(app.elements.get("intervalBaseInput").value, "220");
+  assert.equal(app.elements.get("intervalStatus").classList.contains("error"), true);
+  app.fire("langEn", "click");
+  assert.equal(app.elements.get("intervalName").textContent, "Perfect fifth · 3:2");
+  assert.equal(app.elements.get("intervalPlayLabel").textContent, "Stop both");
+  app.fire("intervalReset", "click");
+  assert.ok(ctx.oscillators.every(osc => osc.stopped));
+  assert.equal(app.elements.get("intervalPlayLabel").textContent, "Play both");
+  assert.equal(app.elements.get("intervalVolumeValue").textContent, "38%");
+  assert.equal(app.elements.get("intervalRatioValue").textContent, "3:2 = 1.5");
+});
+
+test("S021 interval playback reaches the shared recorder and cancels a pending start", async () => {
+  const app = fakePage();
+  await app.fire("recordButton", "click");
+  app.fire("modeMix", "click");
+  app.mixKindButtons[2].events.click();
+  await app.fire("intervalButton", "click");
+  const context = app.contexts[0];
+  assert.equal(context.oscillators.length, 2);
+  const capture = context.worklets[0];
+  capture.send({ type: "samples", samples: new Float32Array([0.15, -0.15]) });
+  app.fire("stopAll", "click");
+  assert.ok(context.oscillators.every(oscillator => oscillator.stopped));
+  assert.deepEqual(capture.port.lastPosted, { type: "stop" });
+  capture.send({ type: "done" });
+  assert.equal(app.elements.get("recordDownload").clickCount, 1);
+
+  const pending = app.fire("intervalButton", "click");
+  app.mixKindButtons[0].events.click(); // switch to beats before context resolves
+  await pending;
+  assert.equal(context.oscillators.length, 2, "No extra interval voices created after leaving the experiment");
+  assert.equal(app.elements.get("intervalPlayLabel").textContent, "Тоглуулах");
 });
 
 test("beating controls retune both voices; gap zero resynchronizes the pair without lingering voices", async () => {
@@ -1520,7 +1617,7 @@ test("harmonic builder is an interactive eight-partial synthesis without autopla
 test("noise colors loop filtered model buffers safely; changing experiment silences them", async () => {
   const app = fakePage();
   app.fire("modeMix", "click");
-  app.mixKindButtons[2].events.click();
+  app.mixKindButtons[3].events.click();
   assert.equal(app.contexts.length, 0);
   assert.equal(app.elements.get("noiseWorkspace").hidden, false);
   assert.equal(app.elements.get("noiseChallenge").hidden, false);
@@ -1556,7 +1653,7 @@ test("harmonic and noise pending playback are canceled before any orphan sound s
   app.fire("modeMix", "click");
   app.mixKindButtons[1].events.click();
   const pendingHarmonics = app.fire("harmonicButton", "click");
-  app.mixKindButtons[2].events.click();
+  app.mixKindButtons[3].events.click();
   await pendingHarmonics;
   assert.equal(app.contexts[0].oscillators.length, 0);
   const pendingNoise = app.fire("noiseButton", "click");
