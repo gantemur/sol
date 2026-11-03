@@ -240,7 +240,17 @@
       },
       motionGroupAria: "Moving sound choices", thereminHelp: "Press and move: right makes the pitch higher; up makes it louder. Release to stop.",
       thereminTimbreLabel: "Sound color", thereminTimbresAria: "Theremin timbre options",
-      timbrePure: "Pure", timbreRich: "Rich", timbreVoice: "Voice-like", timbreOvertones: "Overtones",
+      timbrePure: "Pure", timbreRich: "Rich", timbreVoice: "Vowels", timbreOvertones: "Focus overtone",
+      timbreNotes: {
+        pure: "A sine wave contains only its fundamental frequency f₀.",
+        rich: "A harmonic-rich electronic tone contains f₀, 2f₀, 3f₀…",
+        voice: "One harmonic-rich source is filtered by vowel resonances (formants), which stay at roughly fixed frequencies as the pitch moves.",
+        overtones: "The same source contains many harmonics. A narrow resonance emphasizes one, as in a simplified overtone-singing demonstration."
+      },
+      thereminVowelLabel: "Choose vowel", thereminVowelsAria: "Vowel resonance selection",
+      vowelA: "A", vowelE: "E", vowelI: "I", vowelO: "O", vowelU: "U",
+      thereminVowelHint: "Vocal-tract resonances do not simply follow the sung pitch. Try 120–350 Hz for clearer vowels.",
+      thereminHarmonicLabel: "Emphasized harmonic", thereminOvertoneHint: "A single source supplies f₀, 2f₀, 3f₀…; a filter emphasizes one upper harmonic. This is not two independent voices.",
       padLoud: "Louder ↑", padStart: "Press and move", padHigh: "Higher pitch →",
       padAria: "Theremin touch pad", thereminKeyboardHelp: "Keyboard: use arrow keys to move; Space or Enter toggles the sound. Escape stops.",
       sirenPatternAria: "Frequency trajectory", sirenTwoTone: "Abrupt", sirenSineSweep: "Smooth",
@@ -263,11 +273,11 @@
       motionWaveTitle: "20 ms waveform", motionComponentTitle: "Harmonics",
       motionWaveAria: "Modeled 20 millisecond waveform at current pitch and timbre", motionComponentAria: "Harmonics of the current moving sound",
       motionChallenge: {
-        theremin: "Move left and right without changing the loudness. What changes in the waveform?",
+        theremin: "At a low pitch, compare vowels A and I; then select an upper harmonic. Is the high note a second oscillator?",
         siren: "Keep the low and high frequencies and speed fixed. How do the three trajectories sound different?"
       },
       motionLearnMore: "Why does moving the pitch change the sound?",
-      motionLessonOne: "Moving right raises the pitch; moving up makes the sound louder. Theremin color choices change the harmonic mixture at the same fundamental frequency.",
+      motionLessonOne: "Moving right raises pitch; moving up increases volume. Vowels have relatively fixed vocal-tract resonances (formants); overtone singing focuses one harmonic of a single voiced source.",
       motionLessonTwo: "Three paths connect the same two frequencies. Abrupt switches directly between two tones. Smooth follows a sinusoidal curve, slowing near the extremes. Linear changes by equal musical-pitch intervals and looks straight on the logarithmic graph.",
       desc: {
         sine: "One smooth vibration, with a single frequency.",
@@ -515,7 +525,17 @@
       },
       motionGroupAria: "Хөдөлгөөнт дууны төрөл", thereminHelp: "Талбар дээр дарж хөдөлгөнө: баруун тийш өндөр, дээш чанга дуугарна. Гараа авахад зогсоно.",
       thereminTimbreLabel: "Дууны өнгө", thereminTimbresAria: "Тереминий дууны өнгө сонгох",
-      timbrePure: "Цэвэр", timbreRich: "Баян", timbreVoice: "Хоолой шиг", timbreOvertones: "Дээд авиа",
+      timbrePure: "Цэвэр", timbreRich: "Баян", timbreVoice: "Эгшиг авиа", timbreOvertones: "Дээд гармоник",
+      timbreNotes: {
+        pure: "Синус долгион зөвхөн үндсэн давтамж f₀-той.",
+        rich: "Баян авиа нь f₀, 2f₀, 3f₀… гармоникуудтай.",
+        voice: "Нэг үелэх авиа амны хөндийн резонансаар (формант) шүүгдэж эгшиг шиг сонсогдоно. Резонанс нь нотын давтамжийг шууд дагахгүй.",
+        overtones: "Нэг эх үүсвэрийн олон гармоникаас нарийн резонансаар нэгийг онцолно. Хөөмийн зарчмыг хялбарчилсан загвар."
+      },
+      thereminVowelLabel: "Эгшиг сонгох", thereminVowelsAria: "Эгшиг авиа сонгох",
+      vowelA: "А", vowelE: "Э", vowelI: "И", vowelO: "О", vowelU: "У",
+      thereminVowelHint: "Эгшгийн өнгө нь нотын давтамжтай хамт шилждэггүй амны хөндийн резонансаас үүснэ. 120–350 Гц-д туршаарай.",
+      thereminHarmonicLabel: "Онцлох гармоник", thereminOvertoneHint: "Нэг эх үүсвэрийн f₀, 2f₀, 3f₀… гармоникуудаас нэгийг онцолно. Хоёр тусдаа хоолой биш.",
       padLoud: "Чанга ↑", padStart: "Дараад хөдөлгөөрэй", padHigh: "Өндөр авиа →",
       padAria: "Теремин тоглох талбар", thereminKeyboardHelp: "Гарын товчлуураар: сумаар хөдөлгөж, Space/Enter-ээр дууг асааж эсвэл зогсооно. Escape зогсооно.",
       sirenPatternAria: "Давтамжийн замнал", sirenTwoTone: "Огцом", sirenSineSweep: "Аажим",
@@ -538,11 +558,11 @@
       motionWaveTitle: "20 мсек-ийн долгион", motionComponentTitle: "Гармоникууд",
       motionWaveAria: "Тухайн мөчийн давтамж ба өнгийн 20 мсек долгион", motionComponentAria: "Энэ мөчийн гармоникийн бүрэлдэхүүн",
       motionChallenge: {
-        theremin: "Дууны хэмжээг өөрчлөхгүйгээр зүүн, баруун тийш хөдөлгө. Долгионы үе хэрхэн өөрчлөгдөв?",
+        theremin: "Нам нот дээр А ба И эгшгийн өнгийг харьцуулаад нэг дээд гармоник сонго. Өндөр авиа нь тусдаа эх үүсвэр үү?",
         siren: "Хоёр захын давтамж, хурдыг өөрчлөхгүйгээр гурван замналыг сонс. Ямар ялгаа байна вэ?"
       },
       motionLearnMore: "Давтамж өөрчлөгдөхөд яагаад авиа өөр сонсогддог вэ?",
-      motionLessonOne: "Баруун тийш хөдөлгөхөд давтамж өсөж, дээш хөдөлгөхөд авиа чангарна. Тереминий дууны өнгийг солиход үндсэн давтамж хэвээр боловч гармоникуудын найрлага өөрчлөгдөнө.",
+      motionLessonOne: "Баруун тийш шилжихэд нот өндөрсөж, дээш шилжихэд авиа чангарна. Эгшгийн формант нь амны хөндийн резонанс; хөөмийд нэг эх үүсвэрийн дээд гармоникийг нарийн резонансаар онцолж болно.",
       motionLessonTwo: "Ижил хоёр давтамжийг гурван замаар холбож болно. Огцом замналд хоёр авиа шууд солигдоно. Аажим замнал нь синусоид хэлбэрээр өсөж буурч, захын цэгүүддээ удааширна. Шугаман замналд авиа хагас тоноор жигд өөрчлөгдөж, логарифм графикт шулуун харагдана.",
       desc: {
         sine: "Нэг үндсэн давтамжтай жигд хэлбэлзэл.",
@@ -609,6 +629,8 @@
     sustainError: false,
     motionKind: "theremin",
     motionTimbre: "pure",
+    motionVowel: "a",
+    motionHarmonic: 6,
     motionX: motionModel.padFraction(440),
     motionY: 0.5,
     motionHz: 440,
@@ -1095,13 +1117,41 @@
       }
       oscillator.frequency.setValueAtTime(state.motionHz, now);
       gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(maxGain.motion * state.motionLevel, now + 0.035);
-      oscillator.connect(gain);
+      const color = state.motionKind === "theremin" ? state.motionTimbre : "pure";
+      // Resonant vocal colors can exceed the excitation peak; leave headroom.
+      const scale = color === "voice" ? .50 : color === "overtones" ? .48 : 1;
+      gain.gain.linearRampToValueAtTime(maxGain.motion * scale * state.motionLevel, now + 0.035);
+      const filters = [], formants = [];
+      let tail = oscillator;
+      const addFilter = (type, frequency, q, db = 0) => {
+        const filter = context.createBiquadFilter();
+        filter.type = type;
+        filter.frequency.setValueAtTime(frequency, now);
+        filter.Q.value = q;
+        if (type === "peaking") filter.gain.value = db;
+        tail.connect(filter);
+        tail = filter;
+        filters.push(filter);
+        return filter;
+      };
+      let focus = null;
+      if (color === "voice") {
+        for (const [frequency, q, db] of motionModel.vowelFormants(state.motionVowel)) {
+          formants.push(addFilter("peaking", frequency, q, db));
+        }
+        addFilter("lowpass", 4300, Math.SQRT1_2);
+      } else if (color === "overtones") {
+        const target = motionModel.overtoneFocus(state.motionHz, state.motionHarmonic);
+        focus = addFilter("peaking", target.frequency, target.q, target.gain);
+        addFilter("lowpass", 5800, Math.SQRT1_2);
+      }
+      tail.connect(gain);
       gain.connect(this.contextOwner.output);
-      const voice = { oscillator, gain, stopping: false };
+      const voice = { oscillator, gain, filters, formants, focus, scale, stopping: false };
       this.voices.add(voice);
       oscillator.onended = () => {
         oscillator.disconnect();
+        for (const filter of filters) filter.disconnect();
         gain.disconnect();
         this.voices.delete(voice);
         if (this.currentVoice === voice) this.currentVoice = null;
@@ -1115,9 +1165,22 @@
       if (!this.currentVoice) return;
       const now = this.contextOwner.context.currentTime;
       this.currentVoice.oscillator.frequency.setTargetAtTime(state.motionHz, now, 0.018);
+      if (this.currentVoice.formants.length) {
+        motionModel.vowelFormants(state.motionVowel).forEach(([frequency, q, db], index) => {
+          const filter = this.currentVoice.formants[index];
+          filter.frequency.setTargetAtTime(frequency, now, 0.035);
+          filter.Q.setTargetAtTime(q, now, 0.035);
+          filter.gain.setTargetAtTime(db, now, 0.035);
+        });
+      }
+      if (this.currentVoice.focus) {
+        const focus = motionModel.overtoneFocus(state.motionHz, state.motionHarmonic);
+        this.currentVoice.focus.frequency.setTargetAtTime(focus.frequency, now, 0.018);
+        this.currentVoice.focus.gain.setTargetAtTime(focus.gain, now, 0.035);
+      }
       const gain = this.currentVoice.gain.gain;
       gain.cancelScheduledValues(now);
-      gain.setTargetAtTime(maxGain.motion * state.motionLevel, now, 0.012);
+      gain.setTargetAtTime(maxGain.motion * this.currentVoice.scale * state.motionLevel, now, 0.012);
     }
 
     stop(immediate = false) {
@@ -1990,6 +2053,17 @@
       button.classList.toggle("selected", active);
       button.setAttribute("aria-pressed", String(active));
     });
+    $("thereminTimbreHint").textContent = text("timbreNotes")[state.motionTimbre];
+    $("thereminVowelGroup").hidden = !isTheremin || state.motionTimbre !== "voice";
+    $("thereminOvertoneGroup").hidden = !isTheremin || state.motionTimbre !== "overtones";
+    document.querySelectorAll("[data-theremin-vowel]").forEach(button => {
+      const active = button.dataset.thereminVowel === state.motionVowel;
+      button.classList.toggle("selected", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+    $("thereminHarmonic").value = String(state.motionHarmonic);
+    $("thereminHarmonicValue").textContent = state.motionHarmonic + "f₀ = " +
+      hzText(state.motionHarmonic * state.motionHz);
     document.querySelectorAll("[data-siren-pattern]").forEach(button => {
       const active = button.dataset.sirenPattern === state.sirenPattern;
       button.classList.toggle("selected", active);
@@ -2034,6 +2108,29 @@
     if (state.motionPlaying && state.motionKind === "theremin") {
       // Crossfade one oscillator into the new harmonic color at the same pitch.
       motionAudio.start().catch(() => stopMotionSound(true, "motionBlocked"));
+    }
+    renderMotionControls();
+    if (state.mode === "motion") drawMotionPlots();
+  }
+
+  function setMotionVowel(vowel) {
+    if (!motionModel.VOWELS.includes(vowel) || vowel === state.motionVowel) return;
+    state.motionVowel = vowel;
+    if (state.motionPlaying && state.motionKind === "theremin" && state.motionTimbre === "voice") {
+      // Change the vocal-tract filter smoothly without restarting the note.
+      motionAudio.update();
+    }
+    renderMotionControls();
+    if (state.mode === "motion") drawMotionPlots();
+  }
+
+  function setMotionHarmonic(harmonic) {
+    if (!Number.isInteger(harmonic) || harmonic < motionModel.MIN_OVERTONE ||
+        harmonic > motionModel.MAX_OVERTONE || harmonic === state.motionHarmonic) return;
+    state.motionHarmonic = harmonic;
+    if (state.motionPlaying && state.motionKind === "theremin" && state.motionTimbre === "overtones") {
+      // Move the focused formant to another existing harmonic, not a new voice.
+      motionAudio.update();
     }
     renderMotionControls();
     if (state.mode === "motion") drawMotionPlots();
@@ -2109,6 +2206,8 @@
     stopMotionSound();
     state.motionKind = "theremin";
     state.motionTimbre = "pure";
+    state.motionVowel = "a";
+    state.motionHarmonic = 6;
     state.motionX = motionModel.padFraction(440);
     state.motionY = 0.5;
     state.motionHz = 440;
@@ -2213,6 +2312,7 @@
     $("sustainSpectrumCanvas").setAttribute("aria-label", text("sustainSpectrumAria"));
     $("motionChoices").setAttribute("aria-label", text("motionGroupAria"));
     $("thereminTimbres").setAttribute("aria-label", text("thereminTimbresAria"));
+    $("thereminVowels").setAttribute("aria-label", text("thereminVowelsAria"));
     $("sirenPatterns").setAttribute("aria-label", text("sirenPatternAria"));
     $("thereminPad").setAttribute("aria-label", text("padAria"));
     $("motionPitchCanvas").setAttribute("aria-label", text("motionPitchAria"));
@@ -3073,11 +3173,14 @@
     ctx.lineWidth = 2;
     ctx.beginPath();
     const timbre = state.motionKind === "theremin" ? state.motionTimbre : "pure";
+    const sampleRate = motionAudio.contextOwner.context?.sampleRate || motionModel.PLOT_SAMPLE_RATE;
+    const spectrum = motionModel.timbreSpectrum(timbre, state.motionHz,
+      state.motionVowel, state.motionHarmonic, sampleRate);
     for (let i = 0; i <= 350; i++) {
       const fraction = i / 350;
       const x = left + fraction * (right - left);
       const phase = 2 * Math.PI * state.motionHz * fraction * 0.02;
-      const y = middle - amplitude * motionModel.timbreWaveAt(phase, timbre);
+      const y = middle - amplitude * motionModel.timbreWaveAt(phase, timbre, spectrum);
       if (!i) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
     }
@@ -3094,8 +3197,10 @@
     const { ctx, width, height } = plotContext($("motionSpectrumCanvas"));
     const left = 20, right = width - 15, top = 24, bottom = height - 32;
     const timbre = state.motionKind === "theremin" ? state.motionTimbre : "pure";
-    const partials = motionModel.timbrePartials(timbre);
-    const peak = Math.max(...partials);
+    const sampleRate = motionAudio.contextOwner.context?.sampleRate || motionModel.PLOT_SAMPLE_RATE;
+    const partials = motionModel.timbreComponents(timbre, state.motionHz,
+      state.motionVowel, state.motionHarmonic, sampleRate).slice(0, 16);
+    const peak = Math.max(1e-9, ...partials.map(c => c.magnitude));
     ctx.strokeStyle = "#e8eff7";
     ctx.lineWidth = 1;
     for (let i = 0; i <= 4; i++) {
@@ -3106,22 +3211,26 @@
     ctx.beginPath(); ctx.moveTo(left, bottom); ctx.lineTo(right, bottom); ctx.stroke();
     for (let i = 0; i < partials.length; i++) {
       const x = left + (right - left) * (i + 1) / (partials.length + 1);
-      if (partials[i] > 0) {
-        ctx.strokeStyle = i === 0 ? "#278bb8" : "#16998f";
-        ctx.lineWidth = 9;
+      if (partials[i].magnitude > 0) {
+        const focused = timbre === "overtones" && i + 1 === state.motionHarmonic;
+        ctx.strokeStyle = focused ? "#e18c30" : i === 0 ? "#278bb8" : "#16998f";
+        ctx.lineWidth = Math.min(9, (right - left) / (partials.length * 2.4));
         ctx.beginPath(); ctx.moveTo(x, bottom);
-        ctx.lineTo(x, bottom - (bottom - top) * partials[i] / peak * state.motionLevel);
+        ctx.lineTo(x, bottom - (bottom - top) * partials[i].magnitude / peak * state.motionLevel);
         ctx.stroke();
       }
       ctx.fillStyle = "#7489a1";
       ctx.font = "10px system-ui, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText(i === 0 ? "f" : (i + 1) + "f", x, height - 11);
+      if (i === 0 || i === 1 || (i + 1) % 4 === 0 ||
+          (timbre === "overtones" && i + 1 === state.motionHarmonic)) {
+        ctx.fillText(i === 0 ? "f₀" : (i + 1) + "f₀", x, height - 11);
+      }
     }
     ctx.fillStyle = "#7489a1";
     ctx.font = "10px system-ui, sans-serif";
     ctx.textAlign = "left";
-    ctx.fillText(hzText(state.motionHz) + " – " + hzText(8 * state.motionHz), left, 13);
+    ctx.fillText(hzText(state.motionHz) + " – " + hzText(partials.length * state.motionHz), left, 13);
   }
 
   function drawMotionPlots() {
@@ -3486,6 +3595,12 @@
   });
   document.querySelectorAll("[data-theremin-timbre]").forEach(button => {
     button.addEventListener("click", () => setMotionTimbre(button.dataset.thereminTimbre));
+  });
+  document.querySelectorAll("[data-theremin-vowel]").forEach(button => {
+    button.addEventListener("click", () => setMotionVowel(button.dataset.thereminVowel));
+  });
+  $("thereminHarmonic").addEventListener("input", event => {
+    setMotionHarmonic(Number(event.target.value));
   });
   document.querySelectorAll("[data-harmonic-preset]").forEach(button => {
     button.addEventListener("click", () => setHarmonicPreset(button.dataset.harmonicPreset));

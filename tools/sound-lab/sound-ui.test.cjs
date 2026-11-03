@@ -34,12 +34,12 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-transient\.js\?v=s019"/);
   assert.match(html, /src="sound-sustain\.js\?v=s020b"/);
   assert.match(html, /src="sound-spectrum\.js\?v=s017"/);
-  assert.match(html, /src="sound-motion\.js\?v=s015"/);
+  assert.match(html, /src="sound-motion\.js\?v=s020c"/);
   assert.match(html, /src="sound-beats\.js"/);
   assert.match(html, /src="sound-harmonics\.js"/);
   assert.match(html, /src="sound-noise\.js"/);
-  assert.match(html, /src="sound-lab\.js\?v=s020b"/);
-  assert.match(html, /href="sound-lab\.css\?v=s017"/);
+  assert.match(html, /src="sound-lab\.js\?v=s020c"/);
+  assert.match(html, /href="sound-lab\.css\?v=s020c"/);
   assert.match(html, /src="sound-recorder\.js"/);
   assert.match(html, /id="recordPreview"[^>]*controls/);
   assert.match(html, /id="recordDownload"[^>]*download="sound-lab\.wav"/);
@@ -91,6 +91,10 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   for (const timbre of motionModel.TIMBRES) {
     assert.match(html, new RegExp('data-theremin-timbre="' + timbre + '"'));
   }
+  for (const vowel of motionModel.VOWELS) {
+    assert.match(html, new RegExp('data-theremin-vowel="' + vowel + '"'));
+  }
+  assert.match(html, /id="thereminHarmonic" type="range" min="2" max="12"/);
   assert.equal([...html.matchAll(/data-theremin-timbre="/g)].length, 4);
   assert.equal([...html.matchAll(/data-siren-pattern="/g)].length, 3);
   assert.equal([...html.matchAll(/data-mix-gap="/g)].length, 4);
@@ -172,6 +176,7 @@ function fakePage(search = "", supportWorklets = true) {
   const motionButtons = ["theremin", "siren"].map(motion => element({ motion }));
   const sirenPatternButtons = motionModel.PATTERNS.map(sirenPattern => element({ sirenPattern }));
   const timbreButtons = motionModel.TIMBRES.map(thereminTimbre => element({ thereminTimbre }));
+  const vowelButtons = motionModel.VOWELS.map(thereminVowel => element({ thereminVowel }));
   const mixGapButtons = [0, 2, 4, 10].map(mixGap => element({ mixGap: String(mixGap) }));
   const mixKindButtons = Array.from({ length: 3 }, () =>
     ["beats", "harmonics", "noise"].map(mixKind => element({ mixKind }))).flat();
@@ -200,6 +205,7 @@ function fakePage(search = "", supportWorklets = true) {
       if (selector === "[data-motion]") return motionButtons;
       if (selector === "[data-siren-pattern]") return sirenPatternButtons;
       if (selector === "[data-theremin-timbre]") return timbreButtons;
+      if (selector === "[data-theremin-vowel]") return vowelButtons;
       if (selector === "[data-mix-gap]") return mixGapButtons;
       if (selector === "[data-mix-kind]") return mixKindButtons;
       if (selector === "[data-harmonic-preset]") return harmonicPresetButtons;
@@ -309,12 +315,16 @@ function fakePage(search = "", supportWorklets = true) {
     createBiquadFilter() {
       const filter = {
         type: "lowpass",
-        Q: { value: 0, setValueAtTime(value) { this.value = value; } },
-        gain: { value: 0, setValueAtTime(value) { this.value = value; } },
+        Q: { value: 0,
+          setValueAtTime(value) { this.value = value; },
+          setTargetAtTime(value) { this.value = value; } },
+        gain: { value: 0,
+          setValueAtTime(value) { this.value = value; },
+          setTargetAtTime(value) { this.value = value; } },
         frequency: { value: 0,
           setValueAtTime(value) { this.value = value; },
           setTargetAtTime(value) { this.value = value; } },
-        connect() {}, disconnect() {}
+        connect(target) { this.connected = target; }, disconnect() { this.disconnected = true; }
       };
       this.filters.push(filter);
       return filter;
@@ -388,7 +398,7 @@ function fakePage(search = "", supportWorklets = true) {
     contexts, elements, document, window, waveButtons, strikeButtons,
     guitarPlayButtons, guitarChordButtons, pianoTouchButtons, sustainButtons,
     sustainGestureButtons, drumButtons, spectrumButtons,
-    motionButtons, sirenPatternButtons, timbreButtons, mixGapButtons, mixKindButtons,
+    motionButtons, sirenPatternButtons, timbreButtons, vowelButtons, mixGapButtons, mixKindButtons,
     harmonicPresetButtons, harmonicLevelInputs, noiseColorButtons,
     hzLabels, objectUrls, revokedUrls,
     analyzedAt,
@@ -1078,13 +1088,18 @@ test("theremin timbres are silent presets that crossfade when sounding and updat
   assert.equal(app.contexts.length, 0, "Changing timbre does not autoplay");
   assert.equal(app.timbreButtons[2].getAttribute("aria-pressed"), "true");
   assert.equal(app.timbreButtons[0].getAttribute("aria-pressed"), "false");
-  assert.ok(app.elements.get("motionSpectrumCanvas").drawnText.includes("3f"));
+  assert.ok(app.elements.get("motionSpectrumCanvas").drawnText.includes("4f₀"));
+  assert.equal(app.elements.get("thereminVowelGroup").hidden, false);
+  assert.equal(app.elements.get("thereminOvertoneGroup").hidden, true);
 
   await app.fire("thereminPad", "keydown", { key: " " });
   const context = app.contexts[0];
   assert.equal(context.oscillators.length, 1);
   assert.equal(context.periodicWaves.length, 1);
-  assert.equal(context.oscillators[0].periodicWave.imag[3], Math.fround(.85));
+  assert.equal(context.oscillators[0].periodicWave.imag[3], Math.fround(Math.pow(3, -1.2)));
+  assert.equal(context.filters.length, 4, "Three vocal formants and one lowpass filter");
+  assert.equal(context.filters[0].type, "peaking");
+  assert.equal(context.filters[0].frequency.value, 750);
 
   app.timbreButtons[1].events.click();
   await new Promise(resolve => setImmediate(resolve));
@@ -1105,6 +1120,55 @@ test("theremin timbres are silent presets that crossfade when sounding and updat
   assert.equal(app.timbreButtons[0].getAttribute("aria-pressed"), "true");
   app.fire("langEn", "click");
   assert.equal(app.elements.get("thereminTimbres").getAttribute("aria-label"), "Theremin timbre options");
+});
+
+test("vowel and overtone controls stay silent until played and shape the same source live", async () => {
+  const app = fakePage();
+  app.fire("modeMotion", "click");
+  app.timbreButtons[2].events.click();
+  app.vowelButtons[2].events.click(); // И
+  assert.equal(app.contexts.length, 0);
+  assert.equal(app.vowelButtons[2].getAttribute("aria-pressed"), "true");
+  await app.fire("thereminPad", "keydown", { key: " " });
+  const context = app.contexts[0];
+  const firstOsc = context.oscillators[0];
+  assert.equal(context.filters[0].frequency.value, 310);
+  app.vowelButtons[4].events.click(); // У: formants change, no new oscillator
+  assert.equal(context.oscillators.length, 1);
+  assert.equal(context.filters[0].frequency.value, 340);
+  assert.equal(context.filters[1].frequency.value, 810);
+  app.fire("thereminPad", "keydown", { key: "ArrowLeft" });
+  assert.equal(context.filters[0].frequency.value, 340, "Formant Hz remains fixed when pitch changes");
+  assert.ok(firstOsc.frequency.value < 440);
+
+  app.timbreButtons[3].events.click(); // One glottal-like source, focus filter
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(firstOsc.stopped, true);
+  assert.equal(app.elements.get("thereminVowelGroup").hidden, true);
+  assert.equal(app.elements.get("thereminOvertoneGroup").hidden, false);
+  assert.equal(context.oscillators.length, 2);
+  assert.equal(context.filters.length, 6, "Overtone model adds one peaking and one lowpass filter");
+  const focusFilter = context.filters[4];
+  assert.equal(focusFilter.type, "peaking");
+  const hz = context.oscillators[1].frequency.value;
+  assert.ok(Math.abs(focusFilter.frequency.value - 6 * hz) < 1e-7);
+  app.elements.get("thereminHarmonic").value = "9";
+  app.fire("thereminHarmonic", "input");
+  assert.equal(context.oscillators.length, 2, "Selecting a harmonic does not start a second voice");
+  assert.ok(Math.abs(focusFilter.frequency.value - 9 * hz) < 1e-7);
+  assert.match(app.elements.get("thereminHarmonicValue").textContent, /^9f₀ = /);
+  app.fire("thereminPad", "keydown", { key: "ArrowRight" });
+  assert.ok(Math.abs(focusFilter.frequency.value - 9 * context.oscillators[1].frequency.value) < 1e-7);
+  app.fire("stopAll", "click");
+  assert.ok(context.oscillators.every(osc => osc.stopped));
+  assert.ok(context.filters.every(filter => filter.disconnected));
+  app.fire("motionReset", "click");
+  assert.equal(app.elements.get("thereminVowelGroup").hidden, true);
+  assert.equal(app.elements.get("thereminOvertoneGroup").hidden, true);
+  assert.equal(app.elements.get("thereminHarmonic").value, "6");
+  assert.equal(app.vowelButtons[0].getAttribute("aria-pressed"), "true");
+  app.fire("langEn", "click");
+  assert.equal(app.elements.get("thereminVowels").getAttribute("aria-label"), "Vowel resonance selection");
 });
 
 test("siren changes two-tone/sweep pitch with its clock; Stop and mode switch cancel sound", async () => {

@@ -6,19 +6,19 @@
   <meta name="theme-color" content="#192d49">
   <meta name="description" content="Explore sound waves, plucked and held instrument models, harmonic synthesis, noise, a theremin and sirens with interactive plots and bilingual controls.">
   <title>Sound Lab · Sol</title>
-  <link rel="stylesheet" href="sound-lab.css?v=s017">
+  <link rel="stylesheet" href="sound-lab.css?v=s020c">
   <script src="sound-model.js" defer></script>
   <script src="sound-string.js?v=s017" defer></script>
   <script src="sound-piano.js?v=s019" defer></script>
   <script src="sound-transient.js?v=s019" defer></script>
   <script src="sound-sustain.js?v=s020b" defer></script>
   <script src="sound-spectrum.js?v=s017" defer></script>
-  <script src="sound-motion.js?v=s015" defer></script>
+  <script src="sound-motion.js?v=s020c" defer></script>
   <script src="sound-beats.js" defer></script>
   <script src="sound-harmonics.js" defer></script>
   <script src="sound-noise.js" defer></script>
   <script src="sound-recorder.js" defer></script>
-  <script src="sound-lab.js?v=s020b" defer></script>
+  <script src="sound-lab.js?v=s020c" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -452,8 +452,25 @@
             <div class="timbre-choices" id="thereminTimbres" role="group" aria-label="Тереминий дууны өнгө">
               <button type="button" class="selected" data-theremin-timbre="pure" aria-pressed="true" data-i18n="timbrePure">Цэвэр</button>
               <button type="button" data-theremin-timbre="rich" aria-pressed="false" data-i18n="timbreRich">Баян</button>
-              <button type="button" data-theremin-timbre="voice" aria-pressed="false" data-i18n="timbreVoice">Хоолой шиг</button>
-              <button type="button" data-theremin-timbre="overtones" aria-pressed="false" data-i18n="timbreOvertones">Дээд авиа</button>
+              <button type="button" data-theremin-timbre="voice" aria-pressed="false" data-i18n="timbreVoice">Эгшиг авиа</button>
+              <button type="button" data-theremin-timbre="overtones" aria-pressed="false" data-i18n="timbreOvertones">Дээд гармоник</button>
+            </div>
+            <p id="thereminTimbreHint" class="field-help">Цэвэр синус долгион зөвхөн үндсэн давтамжтай.</p>
+            <div id="thereminVowelGroup" class="theremin-subcontrol" hidden>
+              <span class="field-help timbre-label" data-i18n="thereminVowelLabel">Эгшиг сонгох</span>
+              <div class="timbre-choices vowel-choices" id="thereminVowels" role="group" aria-label="Эгшиг авиа сонгох">
+                <button type="button" class="selected" data-theremin-vowel="a" aria-pressed="true" data-i18n="vowelA">А</button>
+                <button type="button" data-theremin-vowel="e" aria-pressed="false" data-i18n="vowelE">Э</button>
+                <button type="button" data-theremin-vowel="i" aria-pressed="false" data-i18n="vowelI">И</button>
+                <button type="button" data-theremin-vowel="o" aria-pressed="false" data-i18n="vowelO">О</button>
+                <button type="button" data-theremin-vowel="u" aria-pressed="false" data-i18n="vowelU">У</button>
+              </div>
+              <p class="field-help" data-i18n="thereminVowelHint">Эгшгийн өнгө нь давтамжтай хамт хөдөлдөггүй амны хөндийн резонансаас үүснэ. 120–350 Гц-д турш.</p>
+            </div>
+            <div id="thereminOvertoneGroup" class="theremin-subcontrol" hidden>
+              <div class="field-title"><label for="thereminHarmonic" data-i18n="thereminHarmonicLabel">Онцлох гармоник</label><output id="thereminHarmonicValue">6f₀ = 2,640 Гц</output></div>
+              <input id="thereminHarmonic" type="range" min="2" max="12" step="1" value="6">
+              <p class="field-help" data-i18n="thereminOvertoneHint">Нэг эх үүсвэрийн f₀, 2f₀, 3f₀… гармоникуудаас нэгийг хүчтэй сонсгоно. Хөөмийн зарчмыг хялбарчилсан нь; хоёр тусдаа хоолой биш.</p>
             </div>
           </div>
           <div class="theremin-pad" id="thereminPad" role="button" tabindex="0" aria-pressed="false" aria-describedby="thereminHelp thereminKeyboardHelp" aria-label="Теремин тоглох талбар">

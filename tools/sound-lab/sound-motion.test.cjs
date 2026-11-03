@@ -22,7 +22,7 @@ test("theremin colors have bounded, distinct harmonic recipes for sound and wave
   const signatures = [];
   for (const timbre of motion.TIMBRES) {
     const partials = motion.timbrePartials(timbre);
-    assert.equal(partials.length, 8);
+    assert.equal(partials.length, ["voice", "overtones"].includes(timbre) ? 24 : 8);
     assert.ok(Object.isFrozen(partials));
     assert.ok(partials.every(x => Number.isFinite(x) && x >= 0 && x <= 1));
     const samples = Array.from({ length: 1000 }, (_, i) =>
@@ -34,6 +34,47 @@ test("theremin colors have bounded, distinct harmonic recipes for sound and wave
   assert.ok(Math.abs(motion.timbreWaveAt(Math.PI / 4, "pure") - Math.SQRT1_2) < 1e-12);
   assert.throws(() => motion.timbrePartials("piano"), RangeError);
   assert.throws(() => motion.timbreWaveAt(Infinity, "voice"), RangeError);
+});
+
+test("vowel colors use fixed-frequency formants rather than fixed harmonic-number mixtures", () => {
+  assert.deepEqual(motion.VOWELS, ["a", "e", "i", "o", "u"]);
+  for (const vowel of motion.VOWELS) {
+    const formants = motion.vowelFormants(vowel);
+    assert.equal(formants.length, 3);
+    assert.ok(formants.every(([frequency, q, db]) => frequency > 0 && q > 0 && db > 0));
+  }
+  // 5*150=3*250=750 Hz. The vocal tract responds to the *same frequency*,
+  // although that is the fifth harmonic of one note and third of the other.
+  const at150 = motion.timbreComponents("voice", 150, "a")[4].magnitude / motion.timbrePartials("voice")[4];
+  const at250 = motion.timbreComponents("voice", 250, "a")[2].magnitude / motion.timbrePartials("voice")[2];
+  assert.ok(Math.abs(at150 - at250) < 1e-10);
+  assert.ok(at150 > 3, "An A-vowel formant enhances 750 Hz");
+  assert.ok(motion.timbreComponents("voice", 150, "i")[1].magnitude >
+    motion.timbreComponents("voice", 150, "a")[1].magnitude * 3,
+  "An I-vowel formant emphasizes lower harmonics than an A-vowel");
+  assert.throws(() => motion.vowelFormants("x"), RangeError);
+  assert.throws(() => motion.timbreComponents("voice", 200, "x"), RangeError);
+});
+
+test("overtone focusing emphasizes a selected existing harmonic, preserving the low drone", () => {
+  for (let n = motion.MIN_OVERTONE; n <= motion.MAX_OVERTONE; n++) {
+    const focus = motion.overtoneFocus(180, n);
+    assert.equal(focus.frequency, n * 180);
+    assert.ok(focus.gain >= 12 && focus.gain <= 27);
+    assert.equal(focus.q, 14);
+    const components = motion.timbreComponents("overtones", 180, "a", n);
+    assert.ok(components[n - 1].magnitude > components[n].magnitude * 2);
+    assert.ok(components[0].magnitude > 0.8, "The fundamental drone remains present");
+  }
+  const six = motion.timbreComponents("overtones", 200, "a", 6);
+  const nine = motion.timbreComponents("overtones", 200, "a", 9);
+  assert.ok(six[5].magnitude > nine[5].magnitude * 5);
+  assert.ok(nine[8].magnitude > six[8].magnitude * 5);
+  const high = motion.timbreComponents("voice", 1600, "e", 6, 16000);
+  assert.equal(high[5].magnitude, 0, "No plotted harmonics above Nyquist");
+  for (const invalid of [1, 13, 3.5, NaN]) {
+    assert.throws(() => motion.overtoneFocus(180, invalid), RangeError);
+  }
 });
 
 test("the abrupt siren alternates between only its two chosen frequencies", () => {
