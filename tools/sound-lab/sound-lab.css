@@ -182,21 +182,15 @@ h1, h2, p { margin-top: 0; }
   color: #315b8c; font-size: 12px; font-weight: 750; padding: 8px; }
 .ear-task-presets button:hover { background: #e5f0ff; }
 .ear-task-presets button.selected { background: #e2f5f0; border-color: #2e9e93; color: #16716c; }
-.ear-slider-group input[type="range"] { width: 100%; accent-color: #2779c5; margin: 12px 0 2px; }
-.ear-action, .ear-fold { display: block; width: 100%; border: 1px solid #247b91; border-radius: 10px; padding: 12px;
+.ear-slider-group { padding: 12px 13px; border: 1px solid #c9dfeb; border-radius: 11px; background: #edf7fd; }
+.ear-slider-group input[type="range"] { width: 100%; accent-color: #2779c5; margin: 8px 0 2px; }
+.ear-action { display: block; width: 100%; border: 1px solid #247b91; border-radius: 10px; padding: 12px;
   background: #e3f3fa; color: #225d83; font-size: 14px; font-weight: 800; margin-top: 10px; }
-.ear-action:hover, .ear-fold:hover { background: #d4eef9; }
-.ear-fold { background: #fff0d9; color: #905b15; border-color: #dba249; }
-.ear-fold:hover { background: #ffe3b4; }
-.ear-next { background: #dff5ef; color: #167367; border-color: #31a18e; }
+.ear-action:hover { background: #d4eef9; }
 .ear-result { background: #f4f9ff; border: 1px solid #c9dbea; border-radius: 10px; padding: 11px;
   font-variant-numeric: tabular-nums; color: #345879; font-size: 12px; line-height: 1.65; white-space: pre-line; }
 .ear-result.good { background: #e4f6ee; border-color: #80c8ae; color: #17674d; }
-.ear-history { display: flex; flex-wrap: wrap; gap: 7px; padding: 9px 2px 0; }
-.ear-history span { padding: 7px 10px; border-radius: 16px; background: #e9f2fc; color: #35678f;
-  font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.ear-history span.folded { background: #fff0d9; color: #926021; }
-.chart-panel #earHarmonicsCanvas { height: 280px; }
+.chart-panel #earHarmonicsCanvas { height: 240px; }
 .chart-panel #earOctaveCanvas { height: 240px; }
 .scale-presets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
 .scale-presets button, .scale-tonic-grid button, .scale-directions button {

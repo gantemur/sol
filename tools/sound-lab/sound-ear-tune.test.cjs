@@ -3,53 +3,60 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const model = require("./sound-ear-tune.js");
 
-test("single interval exercises start mistuned and can be adjusted to exact 3:2 and 5:4", () => {
-  for (const taskId of ["fifth", "third"]) {
+test("all ear exercises consist of a single ratio, starting imperfectly tuned", () => {
+  assert.equal(Object.keys(model.TASKS).length, 7);
+  for (const [taskId, task] of Object.entries(model.TASKS)) {
     const before = model.step({ taskId });
-    assert.ok(Math.abs(before.errorCents) >= 16);
-    assert.ok(before.nearBeatHz > 1);
-    const exact = model.step({ taskId, adjustment: -model.OFFSETS[taskId][0] });
+    assert.ok(Math.abs(before.errorCents) >= 15);
+    assert.ok(before.nearBeatHz > 0);
+    const exact = model.step({ taskId, adjustment: -model.OFFSETS[taskId] });
     assert.ok(Math.abs(exact.errorCents) < 1e-12);
     assert.ok(Math.abs(exact.nearBeatHz) < 1e-9);
-    assert.ok(Math.abs(exact.highHz / exact.lowHz - model.TASKS[taskId].ratio) < 1e-12);
+    assert.ok(Math.abs(exact.tunedHz / exact.referenceHz - task.ratio) < 1e-12);
     assert.equal(model.rating(exact.errorCents), "excellent");
   }
 });
 
-test("two fifths travel outside the C octave, then fold from 9/4 to 9/8", () => {
-  const first = model.step({ taskId: "chain2", adjustment: 19 });
-  const second = model.step({ taskId: "chain2", index: 1, lowHz: first.highHz, adjustment: -21 });
-  assert.equal(first.shifts, 0);
-  assert.equal(second.shifts, -1);
-  assert.ok(Math.abs(second.highHz / model.START_HZ - 9 / 4) < 1e-12);
-  assert.ok(Math.abs(second.foldedHz / model.START_HZ - 9 / 8) < 1e-12);
-  assert.equal(second.highHz / second.foldedHz, 2);
+test("descending 3:4, 2:3 and 1:2 tune below C4 then lift into the C4 octave", () => {
+  for (const [taskId, ratio, foldedRatio] of [
+    ["downFourth", 3 / 4, 3 / 2],
+    ["downFifth", 2 / 3, 4 / 3],
+    ["octaveDown", 1 / 2, 1]
+  ]) {
+    const data = model.step({ taskId, adjustment: -model.OFFSETS[taskId] });
+    assert.ok(Math.abs(data.tunedHz / model.START_HZ - ratio) < 1e-12);
+    assert.equal(data.shifts, 1);
+    assert.ok(Math.abs(data.foldedHz / model.START_HZ - foldedRatio) < 1e-12);
+  }
+});
+
+test("octave equivalent stays in the same chosen direction despite slight detuning", () => {
+  const up = model.step({ taskId: "octaveUp" });
+  const down = model.step({ taskId: "octaveDown", adjustment: -60 });
+  assert.equal(up.shifts, -1);
+  assert.equal(down.shifts, 1);
+  assert.ok(up.foldedHz > 0 && down.foldedHz > 0);
+  assert.ok(Math.abs(model.cents(up.foldedHz, model.START_HZ) - model.OFFSETS.octaveUp) < 1e-8);
   assert.equal(model.foldOctave(model.START_HZ / 3).shifts, 2);
 });
 
-test("three fifths create 27/16 A4 and errors accumulate through the chain", () => {
-  const offsets = [20, -17, 15];
-  let lowHz = model.START_HZ;
-  const history = [];
-  for (let i = 0; i < 3; i++) {
-    const data = model.step({ taskId: "chain3", index: i, lowHz, adjustment: -offsets[i] });
-    history.push(data);
-    lowHz = data.foldedHz;
+test("pure, rich, guitar-like, and piano-like overtone recipes are bounded", () => {
+  for (const sound of model.SOUNDS) {
+    const partials = model.partials(sound);
+    assert.equal(partials.length, sound === "pure" ? 1 : 8);
+    assert.ok(Math.abs(partials.reduce((sum, p) => sum + p.amplitude, 0) - 1) < 1e-12);
+    assert.ok(partials.every(p => p.amplitude >= 0 && p.multiplier > 0));
   }
-  assert.ok(Math.abs(lowHz / model.START_HZ - 27 / 16) < 1e-12);
-  assert.equal(model.cumulativeCents(history), 0);
-  const imperfect = [model.step({ taskId: "chain3", adjustment: -17 })]; // +3 cents
-  imperfect.push(model.step({ taskId: "chain3", index: 1, lowHz: imperfect[0].highHz,
-    adjustment: 12 })); // -5 cents
-  const result = model.step({ taskId: "chain3", index: 2, lowHz: imperfect[1].foldedHz,
-    adjustment: -8 }); // +7 cents
-  assert.equal(model.cumulativeCents(imperfect, result.errorCents), 5);
-  assert.ok(Math.abs(model.cents(result.foldedHz, model.START_HZ * 27 / 16) - 5) < 1e-9);
+  assert.ok(model.partials("piano")[2].multiplier > 3);
+  assert.equal(model.partials("guitar")[1].multiplier, 2);
+  assert.deepEqual(model.PATTERNS, ["alternating", "together"]);
 });
 
-test("invalid practice steps and frequencies are rejected", () => {
+test("invalid tasks, timbres and frequencies are rejected", () => {
   assert.throws(() => model.step({ taskId: "unknown" }), RangeError);
-  assert.throws(() => model.step({ taskId: "chain2", index: 2 }), RangeError);
+  assert.throws(() => model.step({ taskId: "chain2" }), RangeError);
   assert.throws(() => model.step({ adjustment: NaN }), RangeError);
+  assert.throws(() => model.step({ referenceHz: 0 }), RangeError);
   assert.throws(() => model.foldOctave(0), RangeError);
+  assert.throws(() => model.partials("violin"), RangeError);
 });
