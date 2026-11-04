@@ -11,6 +11,7 @@
   const earModel = window.SoundLabEarTune;
   const scaleModel = window.SoundLabScales;
   const limit5Model = window.SoundLabLimit5;
+  const tempModel = window.SoundLabTemperaments;
   const harmonicModel = window.SoundLabHarmonics;
   const noiseModel = window.SoundLabNoise;
   const recorderModel = window.SoundLabRecorder;
@@ -75,8 +76,8 @@
       mixExperimentIntervals: "Interval", mixExperimentNoise: "Noise",
       intervalExperiment: "Ratios", earExperiment: "Tune",
       harmonicPhase: "05 · Build a sound", noisePhase: "05 · Explore noise",
-      intervalPhase: "06 · Musical intervals", earPhase: "06 · Tune", scalePhase: "06 · 3-limit", limit5Phase: "06 · 5-limit",
-      tuningExperimentsAria: "Tuning experiments", scaleExperiment: "3-limit", limit5Experiment: "5-limit",
+      intervalPhase: "06 · Musical intervals", earPhase: "06 · Tune", scalePhase: "06 · 3-limit", limit5Phase: "06 · 5-limit", tempPhase: "06 · Temperaments",
+      tuningExperimentsAria: "Tuning experiments", scaleExperiment: "3-limit", limit5Experiment: "5-limit", tempExperiment: "Temperaments",
       earChoose: "Tune the next note",
       earDescription: "Choose a ratio and tune the second note by ear. Try downward intervals and octave shifts too.",
       earPlay: "Hear the two notes", earStop: "Stop listening",
@@ -204,6 +205,30 @@
       limit5Hidden: "Sound stopped when you left the page.", limit5Invalid: "Enter a starting frequency from 110 to 330 Hz.",
       limit5NoNotes: "Choose at least one note before playing.", limit5Blocked: "Cannot start playback. Check your browser sound settings.",
       limit5Limit: "You can choose at most 12 notes.",
+      tempChoose: "Twelve-note temperaments", tempDescription: "Twelve pure fifths do not equal seven octaves. Listen to how five systems distribute that difference across the circle.",
+      tempSystemTitle: "Tuning system", tempKeyTitle: "Chord root", tempQualityTitle: "Chord quality",
+      tempEqual: "12-TET · Equal", tempPythagorean: "Pythagorean", tempMeantone: "Quarter-comma meantone",
+      tempWerckmeister: "Werckmeister III", tempVallotti: "Vallotti", tempMajor: "Major", tempMinor: "Minor",
+      tempPlaybackAria: "Play the notes in sequence or together; tap again to stop", tempMelody: "In sequence", tempChord: "Together",
+      tempReference: "A4 stays at 440 Hz in every system; the other pitches change.",
+      tempCircleTitle: "Circle of fifths", tempCircleHint: "Select a root by tapping a note. Link colors show which fifths are pure, narrowed, or wolves.",
+      tempCircleAria: "Interactive circle of fifths; tap a note to choose a chord root; left and right arrow keys rotate selection",
+      tempPure: "Pure 3:2", tempNarrow: "Narrowed", tempWolfLegend: "Wolf fifth",
+      tempFifthsTitle: "How each fifth differs", tempFifthsHint: "Each bar is measured in cents relative to a pure 3:2 fifth. The horizontal line marks 0.",
+      tempFifthsAria: "Twelve fifths: cents difference from a pure fifth; wolf fifth highlighted",
+      tempFifthsTable: "Numerical table of twelve fifths", tempTableFifth: "Fifth", tempTableSize: "Size (cents)", tempTableDeviation: "From 3:2 (cents)",
+      tempCommaBadge: "Pythagorean comma: {cents} cents", tempWolfFact: "Wolf fifth: {from}–{to}, {cents} cents ({deviation} from pure).",
+      tempNoWolfFact: "All fifths close the circle without a single wolf interval. {narrow} of twelve fifths are tempered.",
+      tempChordTitle: "Chord frequencies", tempChordHint: "All systems use A4 = 440 Hz. The deviations below compare each named note with 12-TET.",
+      tempChordFoot: "Switch the tuning system or the root to hear how the same chord changes.",
+      tempChordFact: "Root–third: {third} cents · root–fifth: {fifth} cents. (12-TET: {expected} and 700 cents.)",
+      tempChallengeText: "Compare C major and E major in Werckmeister III, then in equal temperament. Which sounds more different?",
+      tempLearnMore: "Why is there more than one way to close the circle of fifths?",
+      tempLessonOne: "A pure 3:2 fifth spans 701.955 cents, but twelve pure fifths exceed seven octaves by 23.46 cents (the Pythagorean comma). A closed twelve-note keyboard must distribute this difference.",
+      tempLessonTwo: "Equal temperament narrows all fifths to 700 cents. Pythagorean and meantone tuning put the leftover in a wolf fifth; Werckmeister III and Vallotti distribute it over selected fifths. This is a fixed twelve-key reconstruction with A4 = 440 Hz, not a model of every historical keyboard or enharmonic distinction.",
+      tempReady: "Ready. Select a tuning and listen to your chord.", tempStarting: "Preparing the notes…",
+      tempPlaying: "Playing. Tap the active button again to stop.", tempStopped: "Stopped. Try a different tuning.",
+      tempHidden: "Sound stopped when you left the page.", tempBlocked: "Playback failed. Check browser audio settings.",
       intervalChoose: "Two-note frequency ratios",
       intervalDescription: "Compare two independent notes in simple ratios and see where their harmonics overlap.",
       intervalPresetsTitle: "Ratio (upper : lower)", intervalPresetsAria: "Simple two-note frequency ratios",
@@ -529,8 +554,8 @@
       mixExperimentIntervals: "Интервал", mixExperimentNoise: "Шуугиан",
       intervalExperiment: "Харьцаа", earExperiment: "Тааруулах",
       harmonicPhase: "05 · Авиа бүтээх", noisePhase: "05 · Шуугиан судлах",
-      intervalPhase: "06 · Хөгжмийн интервал", earPhase: "06 · Тааруулах", scalePhase: "06 · 3-хязгаар", limit5Phase: "06 · 5-хязгаар",
-      tuningExperimentsAria: "Хөгийн туршилтууд", scaleExperiment: "3-хязгаар", limit5Experiment: "5-хязгаар",
+      intervalPhase: "06 · Хөгжмийн интервал", earPhase: "06 · Тааруулах", scalePhase: "06 · 3-хязгаар", limit5Phase: "06 · 5-хязгаар", tempPhase: "06 · Темперамент",
+      tuningExperimentsAria: "Хөгийн туршилтууд", scaleExperiment: "3-хязгаар", limit5Experiment: "5-хязгаар", tempExperiment: "Темперамент",
       earChoose: "Нот тааруулах",
       earDescription: "Харьцаагаа сонгоод хоёр дахь нотыг чихээр тааруул. Доош алхам, октаваар шилжүүлэхийг ч бас туршаарай.",
       earPlay: "Хоёр нотыг сонсох", earStop: "Зогсоох",
@@ -658,6 +683,30 @@
       limit5Hidden: "Хуудсаас гарахад дуу зогслоо.", limit5Invalid: "Эхлэх давтамж 110–330 Гц байх ёстой.",
       limit5NoNotes: "Тоглуулахын өмнө ядаж нэг нот сонго.", limit5Blocked: "Дуу эхэлсэнгүй. Хөтчийн дууны тохиргоог шалгаарай.",
       limit5Limit: "Ихдээ 12 нот сонгож болно.",
+      tempChoose: "Арван хоёр нотын хөг", tempDescription: "Арван хоёр цэвэр квинт долоон октавтай тэнцдэггүй. Тэр зөрүүг таван систем хэрхэн хуваарилдгийг сонсоорой.",
+      tempSystemTitle: "Хөгийн систем", tempKeyTitle: "Аккордын үндэс", tempQualityTitle: "Аккордын төрөл",
+      tempEqual: "12-TET · Тэнцүү", tempPythagorean: "Пифагорын", tempMeantone: "1/4-комма дундаж",
+      tempWerckmeister: "Веркмайстер III", tempVallotti: "Валлотти", tempMajor: "Мажор", tempMinor: "Минор",
+      tempPlaybackAria: "Нотуудыг ээлжлэн эсвэл хамт сонсох, дахин дарж зогсоох", tempMelody: "Ээлжлэн", tempChord: "Хамт",
+      tempReference: "Бүх системд Ля4 = 440 Гц хэвээр; бусад нотын өндөр өөрчлөгдөнө.",
+      tempCircleTitle: "Квинтийн тойрог", tempCircleHint: "Нот дээр товшиж үндсийг сонго. Холбоосын өнгөөр цэвэр, нарийссан, чоно квинтийг ялгана.",
+      tempCircleAria: "Интерактив квинтийн тойрог; нот дээр товшиж үндэс сонгоно, зүүн ба баруун сум сонголтыг эргүүлнэ",
+      tempPure: "Цэвэр 3:2", tempNarrow: "Нарийссан", tempWolfLegend: "Чоно квинт",
+      tempFifthsTitle: "Квинт бүрийн зөрүү", tempFifthsHint: "Баганууд нь цэвэр 3:2 квинтээс хэдэн центээр зөрснийг харуулна. Хэвтээ шугам 0.",
+      tempFifthsAria: "Цэвэр квинтээс зөрөх арван хоёр багана; чоно квинтийг ялган тэмдэглэсэн",
+      tempFifthsTable: "12 квинтийн хүснэгт", tempTableFifth: "Квинт", tempTableSize: "Хэмжээ (цент)", tempTableDeviation: "3:2-оос (цент)",
+      tempCommaBadge: "Пифагорын комма: {cents} цент", tempWolfFact: "Чоно квинт: {from}–{to}, {cents} цент (цэвэр квинтээс {deviation}).",
+      tempNoWolfFact: "Тусдаа чоно квинтгүйгээр тойрог хаагдана. Арван хоёр квинтийн {narrow} нь нарийссан.",
+      tempChordTitle: "Аккордын давтамж", tempChordHint: "Бүх хөгт Ля4 = 440 Гц. Доорх зөрүү нь ижил нэртэй 12-TET нотоос хэдэн центээр өөр байгааг харуулна.",
+      tempChordFoot: "Ижил аккордыг өөрөөр сонсохын тулд систем эсвэл үндсэн нотоо солиорой.",
+      tempChordFact: "Үндэс–терц: {third} цент · үндэс–квинт: {fifth} цент. (12-TET-д: {expected} ба 700 цент.)",
+      tempChallengeText: "До мажор, Ми мажорыг Веркмайстер III-д, дараа нь тэнцүү хөгт харьцуулж сонс. Аль нь илүү өөр сонсогдох вэ?",
+      tempLearnMore: "Квинтийн тойргийг яагаад олон аргаар хаадаг вэ?",
+      tempLessonOne: "Цэвэр 3:2 квинт 701.955 цент боловч арван хоёр цэвэр квинт долоон октаваас 23.46 центээр их: энэ нь Пифагорын комма. Арван хоёр нотыг тойрог болгохын тулд үүнийг хуваарилна.",
+      tempLessonTwo: "Тэнцүү хөг бүх квинтийг 700 цент болгоно. Пифагорын болон дундаж хөг зөрүүг нэг чоно квинтэд үлдээнэ. Веркмайстер III, Валлотти хэдэн квинтэд тараадаг. Энэ бол Ля4 = 440 Гц авсан, арван хоёр товчлууртай түүхэн загварын хялбаршуулалт юм.",
+      tempReady: "Бэлэн. Хөг, аккордоо сонгоод сонсоорой.", tempStarting: "Нотуудыг бэлтгэж байна…",
+      tempPlaying: "Эгшиглэж байна. Идэвхтэй товчийг дахин дарж зогсооно.", tempStopped: "Зогслоо. Өөр хөг туршаарай.",
+      tempHidden: "Хуудсаас гарахад дуу зогслоо.", tempBlocked: "Авиа эхэлсэнгүй. Хөтчийн дууны тохиргоог шалгаарай.",
       intervalChoose: "Хоёр нотын харьцаа",
       intervalDescription: "Хоёр тусдаа авианы давтамжийг энгийн харьцаагаар тохируулж, гармоникууд нь хаана давхцахыг харьцуул.",
       intervalPresetsTitle: "Давтамжийн харьцаа (дээд : доод)", intervalPresetsAria: "Хоёр нотын энгийн харьцаа",
@@ -1042,6 +1091,15 @@
     limit5Cursor: [0, 0],
     limit5Focus: [0, 0],
     limit5GridFocused: false,
+    tempSystem: "werckmeister",
+    tempKey: 0,
+    tempQuality: "major",
+    tempMode: "melody",
+    tempVolume: 38,
+    tempPlaying: false,
+    tempStarting: false,
+    tempStatus: "tempReady",
+    tempError: false,
     harmonicBase: 220,
     harmonicPartials: harmonicModel.preset("pure"),
     harmonicPreset: "pure",
@@ -2094,6 +2152,51 @@
     }
   }
 
+  // Buffered notes share the 5-limit lab's gentle harmonic tone envelope.
+  // Only the fundamental frequencies come from the selected temperament.
+  class TemperamentEngine extends Limit5Engine {
+    async start(notes, mode) {
+      const ticket = ++this.generation;
+      const context = await this.contextOwner.readyContext();
+      if (ticket !== this.generation || state.mode !== "tuning" || state.tuningKind !== "temperaments") return false;
+      for (const voice of this.voices) this.fadeAndStop(voice, true);
+      const samples = limit5Model.makeSamples(notes, context.sampleRate, mode);
+      const buffer = context.createBuffer(1, samples.length, context.sampleRate);
+      buffer.getChannelData(0).set(samples);
+      const source = context.createBufferSource();
+      const gain = context.createGain();
+      const now = context.currentTime;
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(maxGain.scaleVoice * state.tempVolume / 100, now + .02);
+      source.buffer = buffer;
+      source.connect(gain);
+      gain.connect(this.contextOwner.output);
+      const voice = { source, gain, stopping: false };
+      source.onended = () => {
+        source.disconnect();
+        gain.disconnect();
+        this.voices.delete(voice);
+        if (this.currentVoice === voice) {
+          this.currentVoice = null;
+          state.tempPlaying = false;
+          setTempStatus("tempStopped");
+          renderTempControls();
+        }
+      };
+      this.voices.add(voice);
+      this.currentVoice = voice;
+      source.start(now);
+      return true;
+    }
+    updateVolume() {
+      if (!this.currentVoice) return;
+      const now = this.contextOwner.context.currentTime;
+      const gain = this.currentVoice.gain.gain;
+      gain.cancelScheduledValues(now);
+      gain.setTargetAtTime(maxGain.scaleVoice * state.tempVolume / 100, now, .015);
+    }
+  }
+
   class HarmonicEngine {
     constructor(contextOwner) {
       this.contextOwner = contextOwner;
@@ -2288,6 +2391,8 @@
   let limit5Frame = null;
   let limit5Active = null;
   let limit5PlaybackRequest = 0;
+  const tempAudio = new TemperamentEngine(audio);
+  let tempPlaybackRequest = 0;
   const harmonicAudio = new HarmonicEngine(audio);
   const noiseAudio = new NoiseEngine(audio);
   const recorder = new recorderModel.Recorder(audio, window.AudioWorkletNode);
@@ -2559,6 +2664,13 @@
     state.limit5Error = error;
     $("limit5Status").textContent = text(status);
     $("limit5Status").classList.toggle("error", error);
+  }
+
+  function setTempStatus(status, error = false) {
+    state.tempStatus = status;
+    state.tempError = error;
+    $("tempStatus").textContent = text(status);
+    $("tempStatus").classList.toggle("error", error);
   }
 
   function setHarmonicStatus(status, error = false) {
@@ -3443,6 +3555,119 @@
     drawPlots();
   }
 
+  const tempCents = value => (value >= 0 ? "+" : "") + value.toFixed(2);
+
+  function renderTempControls() {
+    const chord = tempModel.chord(state.tempSystem, state.tempKey, state.tempQuality);
+    const fifths = tempModel.fifths(state.tempSystem);
+    $("tempSystemSelect").value = state.tempSystem;
+    $("tempKeySelect").value = String(state.tempKey);
+    $("tempQualitySelect").value = state.tempQuality;
+    $("tempVolume").value = String(state.tempVolume);
+    $("tempVolumeValue").textContent = state.tempVolume + "%";
+    $("tempCircleBadge").textContent = tempModel.NOTE_NAMES[state.tempKey] + " " + text(state.tempQuality === "major" ? "tempMajor" : "tempMinor");
+    $("tempChordBadge").textContent = chord.notes.map(note => note.name).join(" · ");
+    $("tempCommaBadge").textContent = intervalPhrase("tempCommaBadge", { cents: tempModel.PYTHAGOREAN_COMMA.toFixed(2) });
+    for (let i = 0; i < 3; i++) {
+      const note = chord.notes[i];
+      $("tempNoteName" + i).textContent = note.name;
+      $("tempNoteHz" + i).textContent = hzText(note.hz);
+      $("tempNoteDev" + i).textContent = tempCents(note.deviation) + " " + (state.language === "mn" ? "цент" : "cents");
+    }
+    $("tempChordFact").textContent = intervalPhrase("tempChordFact", {
+      third: chord.thirdCents.toFixed(2), fifth: chord.fifthCents.toFixed(2),
+      expected: state.tempQuality === "major" ? 400 : 300
+    });
+    const wolf = fifths.find(fifth => fifth.wolf);
+    $("tempWolfFact").textContent = wolf ? intervalPhrase("tempWolfFact", {
+      from: wolf.from, to: wolf.to, cents: wolf.cents.toFixed(2), deviation: tempCents(wolf.deviation)
+    }) : intervalPhrase("tempNoWolfFact", { narrow: fifths.filter(fifth => fifth.deviation < -0.01).length });
+    $("tempFifthsBody").innerHTML = fifths.map(fifth =>
+      '<tr' + (fifth.wolf ? ' class="wolf-row"' : '') + '><td>' + fifth.from + '–' + fifth.to +
+      '</td><td>' + fifth.cents.toFixed(2) + '</td><td>' + tempCents(fifth.deviation) + '</td></tr>').join("");
+    document.querySelectorAll("[data-temp-play]").forEach(button => {
+      const active = (state.tempPlaying || state.tempStarting) && state.tempMode === button.dataset.tempPlay;
+      button.classList.toggle("playing", active);
+      button.setAttribute("aria-pressed", String(active));
+      button.textContent = (active ? "■ " : "▶ ") + text(button.dataset.tempPlay === "melody" ? "tempMelody" : "tempChord");
+    });
+  }
+
+  function stopTempSound(immediate = false, message = "tempStopped") {
+    tempPlaybackRequest++;
+    tempAudio.stop(immediate);
+    state.tempPlaying = false;
+    state.tempStarting = false;
+    setTempStatus(message);
+    renderTempControls();
+  }
+
+  async function toggleTempSound(mode) {
+    if (!["melody", "chord"].includes(mode) || state.mode !== "tuning" || state.tuningKind !== "temperaments") return;
+    if ((state.tempPlaying || state.tempStarting) && state.tempMode === mode) {
+      stopTempSound(); return;
+    }
+    const request = ++tempPlaybackRequest;
+    tempAudio.stop(true);
+    state.tempPlaying = false;
+    state.tempStarting = true;
+    state.tempMode = mode;
+    setTempStatus("tempStarting");
+    renderTempControls();
+    try {
+      const notes = tempModel.chord(state.tempSystem, state.tempKey, state.tempQuality).notes;
+      const started = await tempAudio.start(notes, mode);
+      if (request !== tempPlaybackRequest) return;
+      state.tempStarting = false;
+      state.tempPlaying = Boolean(started);
+      setTempStatus(started ? "tempPlaying" : "tempReady");
+      renderTempControls();
+    } catch (_) {
+      if (request !== tempPlaybackRequest) return;
+      stopTempSound(true, "tempBlocked");
+      setTempStatus("tempBlocked", true);
+    }
+  }
+
+  function selectTempSystem(system) {
+    if (!tempModel.SYSTEMS.includes(system) || system === state.tempSystem) return;
+    stopTempSound();
+    state.tempSystem = system;
+    setTempStatus("tempReady");
+    renderTempControls();
+    drawPlots();
+  }
+
+  function selectTempKey(pc) {
+    if (!Number.isInteger(pc) || pc < 0 || pc > 11 || pc === state.tempKey) return;
+    stopTempSound();
+    state.tempKey = pc;
+    setTempStatus("tempReady");
+    renderTempControls();
+    drawPlots();
+  }
+
+  function selectTempQuality(quality) {
+    if (!["major", "minor"].includes(quality) || quality === state.tempQuality) return;
+    stopTempSound();
+    state.tempQuality = quality;
+    setTempStatus("tempReady");
+    renderTempControls();
+    drawPlots();
+  }
+
+  function resetTemp() {
+    stopTempSound();
+    state.tempSystem = "werckmeister";
+    state.tempKey = 0;
+    state.tempQuality = "major";
+    state.tempMode = "melody";
+    state.tempVolume = 38;
+    setTempStatus("tempReady");
+    renderTempControls();
+    drawPlots();
+  }
+
   function mixRecipe() {
     return { baseHz: state.mixBase, gapHz: state.mixGap };
   }
@@ -3794,6 +4019,7 @@
     const isEar = isTuning && state.tuningKind === "ear";
     const isScales = isTuning && state.tuningKind === "scales";
     const isLimit5 = isTuning && state.tuningKind === "limit5";
+    const isTemp = isTuning && state.tuningKind === "temperaments";
     const isNoise = isMix && state.mixKind === "noise";
     $("pureWorkspace").hidden = isStrike || isSustain || isMotion || isMix || isTuning;
     $("pureChallenge").hidden = isStrike || isSustain || isMotion || isMix || isTuning;
@@ -3825,6 +4051,9 @@
     $("limit5Workspace").hidden = !isLimit5;
     $("limit5Challenge").hidden = !isLimit5;
     $("limit5Explanation").hidden = !isLimit5;
+    $("temperamentWorkspace").hidden = !isTemp;
+    $("tempChallenge").hidden = !isTemp;
+    $("tempExplanation").hidden = !isTemp;
     $("noiseWorkspace").hidden = !isNoise;
     $("noiseChallenge").hidden = !isNoise;
     $("noiseExplanation").hidden = !isNoise;
@@ -3845,7 +4074,7 @@
       $(id).setAttribute("aria-pressed", String(selected));
     }
     $("pagePhase").textContent = text(isStrike ? "strikePhase" : isSustain ? "sustainPhase" : isMotion ? "motionPhase" :
-      isHarmonics ? "harmonicPhase" : isIntervals ? "intervalPhase" : isEar ? "earPhase" : isScales ? "scalePhase" : isLimit5 ? "limit5Phase" :
+      isHarmonics ? "harmonicPhase" : isIntervals ? "intervalPhase" : isEar ? "earPhase" : isScales ? "scalePhase" : isLimit5 ? "limit5Phase" : isTemp ? "tempPhase" :
         isNoise ? "noisePhase" : isMix ? "mixPhase" : "phase");
   }
 
@@ -3941,6 +4170,12 @@
     $("limit5LatticeCanvas").setAttribute("aria-label", text("limit5LatticeAria"));
     $("limit5OctaveCanvas").setAttribute("aria-label", text("limit5OctaveAria"));
     $("limit5FourierCanvas").setAttribute("aria-label", text("limit5FourierAria"));
+    $("tempSystemSelect").setAttribute("aria-label", text("tempSystemTitle"));
+    $("tempKeySelect").setAttribute("aria-label", text("tempKeyTitle"));
+    $("tempQualitySelect").setAttribute("aria-label", text("tempQualityTitle"));
+    $("tempPlayModes").setAttribute("aria-label", text("tempPlaybackAria"));
+    $("tempCircleCanvas").setAttribute("aria-label", text("tempCircleAria"));
+    $("tempFifthsCanvas").setAttribute("aria-label", text("tempFifthsAria"));
     $("harmonicPresets").setAttribute("aria-label", text("harmonicPresetsAria"));
     $("harmonicSliders").setAttribute("aria-label", text("harmonicSlidersAria"));
     $("harmonicWaveCanvas").setAttribute("aria-label", text("harmonicWaveAria"));
@@ -3959,6 +4194,7 @@
     setEarStatus(state.earStatus, state.earError);
     setScaleStatus(state.scaleStatus, state.scaleError);
     setLimit5Status(state.limit5Status, state.limit5Error);
+    setTempStatus(state.tempStatus, state.tempError);
     setHarmonicStatus(state.harmonicStatus, state.harmonicError);
     setNoiseStatus(state.noiseStatus, state.noiseError);
     renderMode();
@@ -3970,6 +4206,7 @@
     renderEarControls();
     renderScaleControls();
     renderLimit5Controls();
+    renderTempControls();
     renderHarmonicControls();
     renderNoiseControls();
     renderStrikeTime();
@@ -4202,6 +4439,7 @@
     stopEarSound(immediate, message === "hidden" ? "earHidden" : "earStopped");
     stopScaleSound(immediate, message === "hidden" ? "scaleHidden" : "scaleStopped");
     stopLimit5Sound(immediate, message === "hidden" ? "limit5Hidden" : "limit5Stopped");
+    stopTempSound(immediate, message === "hidden" ? "tempHidden" : "tempStopped");
     stopHarmonicSound(immediate);
     stopNoiseSound(immediate);
     stopSound(immediate, message);
@@ -4248,7 +4486,8 @@
       if (state.tuningKind === "intervals") setIntervalStatus("intervalReady");
       else if (state.tuningKind === "ear") setEarStatus("earReady");
       else if (state.tuningKind === "scales") setScaleStatus("scaleReady");
-      else setLimit5Status("limit5Ready");
+      else if (state.tuningKind === "limit5") setLimit5Status("limit5Ready");
+      else setTempStatus("tempReady");
     }
     renderTexts();
     drawPlots();
@@ -4266,13 +4505,14 @@
   }
 
   function selectTuningKind(kind) {
-    if (!["intervals", "ear", "scales", "limit5"].includes(kind) || kind === state.tuningKind) return;
+    if (!["intervals", "ear", "scales", "limit5", "temperaments"].includes(kind) || kind === state.tuningKind) return;
     stopAllAudio();
     state.tuningKind = kind;
     if (kind === "intervals") setIntervalStatus("intervalReady");
     else if (kind === "ear") setEarStatus("earReady");
     else if (kind === "scales") setScaleStatus("scaleReady");
-    else setLimit5Status("limit5Ready");
+    else if (kind === "limit5") setLimit5Status("limit5Ready");
+    else setTempStatus("tempReady");
     renderTexts();
     drawPlots();
   }
@@ -6015,6 +6255,89 @@
     drawNoiseSpectrum();
   }
 
+  function tempCirclePositions(width, height) {
+    const cx = width / 2, cy = height / 2;
+    const radius = Math.max(42, Math.min(width * .34, height * .34));
+    return tempModel.CIRCLE.map((name, index) => {
+      const angle = -Math.PI / 2 + index * Math.PI / 6;
+      return { name, pc: tempModel.PITCH_CLASSES[index], x: cx + radius * Math.cos(angle),
+        y: cy + radius * Math.sin(angle) };
+    });
+  }
+
+  function drawTempCircle() {
+    const { ctx, width, height } = plotContext($("tempCircleCanvas"));
+    const points = tempCirclePositions(width, height);
+    const edges = tempModel.fifths(state.tempSystem);
+    const chord = tempModel.chord(state.tempSystem, state.tempKey, state.tempQuality);
+    const selectedNotes = chord.notes.map(note => note.pc);
+    const compact = width < 370;
+    const nodeRadius = compact ? 15 : 20;
+    ctx.lineCap = "round";
+    for (const edge of edges) {
+      const start = points[edge.index], end = points[(edge.index + 1) % 12];
+      ctx.lineWidth = edge.wolf ? 6 : 4;
+      ctx.strokeStyle = edge.wolf ? "#db9238" : edge.deviation < -.01 ? "#378acc" : "#6c9c83";
+      ctx.beginPath(); ctx.moveTo(start.x, start.y); ctx.lineTo(end.x, end.y); ctx.stroke();
+    }
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    for (const point of points) {
+      const selected = point.pc === state.tempKey;
+      const chordIndex = selectedNotes.indexOf(point.pc);
+      ctx.fillStyle = selected ? "#1c69ac" : chordIndex >= 0 ? "#def4ee" : "#fff";
+      ctx.strokeStyle = selected ? "#1c69ac" : chordIndex >= 0 ? "#199484" : "#94acc5";
+      ctx.lineWidth = selected ? 3 : 1.8;
+      ctx.beginPath(); ctx.arc(point.x, point.y, nodeRadius, 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = selected ? "#fff" : chordIndex >= 0 ? "#126b60" : "#345b7a";
+      ctx.font = (compact ? "bold 11px " : "bold 14px ") + "system-ui, sans-serif";
+      ctx.fillText(point.name, point.x, point.y);
+    }
+    ctx.fillStyle = "#325d7b";
+    ctx.font = "bold " + (compact ? 12 : 17) + "px system-ui, sans-serif";
+    ctx.fillText(tempModel.NOTE_NAMES[state.tempKey] + " " + text(state.tempQuality === "major" ? "tempMajor" : "tempMinor"), width / 2, height / 2 - 8);
+    ctx.font = "12px system-ui, sans-serif";
+    ctx.fillText("(3/2)¹² ≠ 2⁷", width / 2, height / 2 + 14);
+  }
+
+  function drawTempFifths() {
+    const { ctx, width, height } = plotContext($("tempFifthsCanvas"));
+    const edges = tempModel.fifths(state.tempSystem);
+    const largest = Math.max(10, ...edges.map(edge => Math.abs(edge.deviation)));
+    const magnitude = Math.ceil(largest / 5) * 5;
+    const left = 38, right = width - 8, top = 18, bottom = height - 34;
+    const mid = (top + bottom) / 2;
+    const barHeight = (bottom - top) / 2;
+    ctx.strokeStyle = "#d9e7f1";
+    ctx.lineWidth = 1;
+    for (const fraction of [-1, -.5, .5, 1]) {
+      const y = mid - fraction * barHeight;
+      ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(right, y); ctx.stroke();
+      ctx.fillStyle = "#6f869b";
+      ctx.font = "10px system-ui, sans-serif";
+      ctx.textAlign = "right";
+      ctx.fillText((fraction * magnitude).toFixed(0), left - 5, y + 3);
+    }
+    ctx.strokeStyle = "#819bb4";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(left, mid); ctx.lineTo(right, mid); ctx.stroke();
+    ctx.fillStyle = "#6f869b"; ctx.textAlign = "right"; ctx.fillText("0", left - 5, mid + 3);
+    const column = (right - left) / 12;
+    edges.forEach((edge, i) => {
+      const x = left + column * (i + .5);
+      const y = mid - edge.deviation / magnitude * barHeight;
+      ctx.fillStyle = edge.wolf ? "#db9238" : edge.deviation < -.01 ? "#378acc" : "#6c9c83";
+      const absHeight = Math.max(1.7, Math.abs(mid - y));
+      ctx.fillRect(x - column * .32, Math.min(y, mid) - (edge.deviation === 0 ? 1 : 0), column * .64, absHeight);
+      ctx.fillStyle = edge.wolf ? "#a16523" : "#516d84";
+      ctx.font = (width < 450 ? "9px " : "11px ") + "system-ui, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(edge.from, x, bottom + 16);
+    });
+  }
+
+  function drawTempPlots() { drawTempCircle(); drawTempFifths(); }
+
   function drawPlots() {
     if (state.mode === "strike") {
       renderStrikeTime();
@@ -6032,7 +6355,8 @@
       if (state.tuningKind === "intervals") drawIntervalPlots();
       else if (state.tuningKind === "ear") drawEarPlots();
       else if (state.tuningKind === "scales") drawScalePlots();
-      else drawLimit5Plots();
+      else if (state.tuningKind === "limit5") drawLimit5Plots();
+      else drawTempPlots();
     } else {
       drawWave();
       drawSpectrum();
@@ -6166,6 +6490,37 @@
     renderLimit5Controls();
   });
   $("limit5Reset").addEventListener("click", resetLimit5);
+  $("tempSystemSelect").addEventListener("change", event => selectTempSystem(event.target.value));
+  $("tempKeySelect").addEventListener("change", event => selectTempKey(Number(event.target.value)));
+  $("tempQualitySelect").addEventListener("change", event => selectTempQuality(event.target.value));
+  document.querySelectorAll("[data-temp-play]").forEach(button => {
+    button.addEventListener("click", () => toggleTempSound(button.dataset.tempPlay));
+  });
+  $("tempVolume").addEventListener("input", event => {
+    state.tempVolume = Math.min(100, Math.max(0, Number(event.target.value)));
+    tempAudio.updateVolume();
+    renderTempControls();
+  });
+  $("tempReset").addEventListener("click", resetTemp);
+  $("tempCircleCanvas").addEventListener("click", event => {
+    const rect = $("tempCircleCanvas").getBoundingClientRect();
+    const points = tempCirclePositions(rect.width, rect.height);
+    const x = event.clientX - rect.left, y = event.clientY - rect.top;
+    const closest = points.map(point => ({ ...point, distance: Math.hypot(point.x - x, point.y - y) }))
+      .sort((a, b) => a.distance - b.distance)[0];
+    if (closest && closest.distance <= 28) selectTempKey(closest.pc);
+  });
+  $("tempCircleCanvas").addEventListener("keydown", event => {
+    if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+      event.preventDefault();
+      const index = tempModel.PITCH_CLASSES.indexOf(state.tempKey);
+      const direction = event.key === "ArrowRight" ? 1 : -1;
+      selectTempKey(tempModel.PITCH_CLASSES[(index + direction + 12) % 12]);
+    } else if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      toggleTempSound("chord");
+    }
+  });
   $("limit5LatticeCanvas").addEventListener("click", event => {
     const canvas = $("limit5LatticeCanvas");
     const rect = canvas.getBoundingClientRect();
@@ -6547,7 +6902,7 @@
   window.addEventListener("blur", () => {
     if (recorder.state === "recording") stopRecording();
     if (state.sustainPlaying || sustainPointerId !== null || sustainKeyboardHeld ||
-        state.motionPlaying || state.mixPlaying || state.intervalPlaying || state.earPlaying || state.scalePlaying || state.limit5Playing || state.limit5Starting ||
+        state.motionPlaying || state.mixPlaying || state.intervalPlaying || state.earPlaying || state.scalePlaying || state.limit5Playing || state.limit5Starting || state.tempPlaying || state.tempStarting ||
         state.harmonicPlaying || state.noisePlaying) {
       stopAllAudio(true, "hidden");
     }
@@ -6582,6 +6937,8 @@
     observer.observe($("limit5LatticeCanvas"));
     observer.observe($("limit5OctaveCanvas"));
     observer.observe($("limit5FourierCanvas"));
+    observer.observe($("tempCircleCanvas"));
+    observer.observe($("tempFifthsCanvas"));
     observer.observe($("harmonicWaveCanvas"));
     observer.observe($("harmonicSpectrumCanvas"));
     observer.observe($("noiseWaveCanvas"));

@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#192d49">
   <meta name="description" content="Explore sound waves, plucked and held instrument models, harmonic synthesis, noise, a theremin and sirens with interactive plots and bilingual controls.">
   <title>Sound Lab · Sol</title>
-  <link rel="stylesheet" href="sound-lab.css?v=s032">
+  <link rel="stylesheet" href="sound-lab.css?v=s033">
   <script src="sound-model.js" defer></script>
   <script src="sound-string.js?v=s017" defer></script>
   <script src="sound-piano.js?v=s019" defer></script>
@@ -19,10 +19,11 @@
   <script src="sound-ear-tune.js?v=s028" defer></script>
   <script src="sound-scales.js?v=s031" defer></script>
   <script src="sound-limit5.js?v=s030" defer></script>
+  <script src="sound-temperaments.js?v=s033" defer></script>
   <script src="sound-harmonics.js" defer></script>
   <script src="sound-noise.js" defer></script>
   <script src="sound-recorder.js" defer></script>
-  <script src="sound-lab.js?v=s032" defer></script>
+  <script src="sound-lab.js?v=s033" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -625,6 +626,7 @@
           <button type="button" data-tuning-kind="ear" aria-pressed="false" data-i18n="earExperiment">Тааруулах</button>
           <button type="button" data-tuning-kind="scales" aria-pressed="false" data-i18n="scaleExperiment">3-хязгаар</button>
           <button type="button" data-tuning-kind="limit5" aria-pressed="false" data-i18n="limit5Experiment">5-хязгаар</button>
+          <button type="button" data-tuning-kind="temperaments" aria-pressed="false" data-i18n="tempExperiment">Темперамент</button>
         </div>
         <div class="field-group">
           <div class="field-title"><label for="intervalRatioSelect" data-i18n="intervalPresetsTitle">Давтамжийн харьцаа (дээд:доод)</label><output id="intervalName">Квинт · 3:2</output></div>
@@ -705,6 +707,7 @@
           <button type="button" data-tuning-kind="ear" class="selected" aria-pressed="true" data-i18n="earExperiment">Тааруулах</button>
           <button type="button" data-tuning-kind="scales" aria-pressed="false" data-i18n="scaleExperiment">3-хязгаар</button>
           <button type="button" data-tuning-kind="limit5" aria-pressed="false" data-i18n="limit5Experiment">5-хязгаар</button>
+          <button type="button" data-tuning-kind="temperaments" aria-pressed="false" data-i18n="tempExperiment">Темперамент</button>
         </div>
         <div class="field-group">
           <div class="field-title"><label for="earTaskSelect" data-i18n="earTasksTitle">Даалгавар</label></div>
@@ -785,6 +788,7 @@
           <button type="button" data-tuning-kind="ear" aria-pressed="false" data-i18n="earExperiment">Тааруулах</button>
           <button type="button" data-tuning-kind="scales" class="selected" aria-pressed="true" data-i18n="scaleExperiment">3-хязгаар</button>
           <button type="button" data-tuning-kind="limit5" aria-pressed="false" data-i18n="limit5Experiment">5-хязгаар</button>
+          <button type="button" data-tuning-kind="temperaments" aria-pressed="false" data-i18n="tempExperiment">Темперамент</button>
         </div>
         <div class="field-group">
           <div class="field-title"><label for="scalePresetSelect" data-i18n="scalePresetsTitle">Шатлалын жишээ</label><output id="scaleCountValue">5 нот</output></div>
@@ -894,6 +898,7 @@
           <button type="button" data-tuning-kind="ear" aria-pressed="false" data-i18n="earExperiment">Тааруулах</button>
           <button type="button" data-tuning-kind="scales" aria-pressed="false" data-i18n="scaleExperiment">3-хязгаар</button>
           <button type="button" data-tuning-kind="limit5" class="selected" aria-pressed="true" data-i18n="limit5Experiment">5-хязгаар</button>
+          <button type="button" data-tuning-kind="temperaments" aria-pressed="false" data-i18n="tempExperiment">Темперамент</button>
         </div>
         <div class="field-group">
           <div class="field-title"><span data-i18n="limit5PresetsTitle">Харьцаагаар бүтээсэн жишээнүүд</span><output id="limit5Count">3 нот</output></div>
@@ -970,6 +975,102 @@
             <p id="limit5RulerValue">81:80 ≈ 21.51 цент</p>
             <p id="limit5BeatFact" class="field-help"></p>
           </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="workspace" id="temperamentWorkspace" hidden>
+      <section class="panel controls" aria-labelledby="temp-controls-title">
+        <div class="section-top">
+          <h2 id="temp-controls-title" data-i18n="tempChoose">Арван хоёр нотын хөг</h2>
+          <p class="description" data-i18n="tempDescription">Арван хоёр квинт нэг тойрог болоход 7 октаваас зөрдөг. Зөрөөг хэрхэн хуваарилснаас хөг бүрийн өнгө төрх өөрчлөгдөнө.</p>
+        </div>
+        <div class="experiment-switch tuning-experiment-switch" role="group" data-i18n-aria="tuningExperimentsAria" aria-label="Хөгийн туршилтууд">
+          <button type="button" data-tuning-kind="intervals" aria-pressed="false" data-i18n="intervalExperiment">Харьцаа</button>
+          <button type="button" data-tuning-kind="ear" aria-pressed="false" data-i18n="earExperiment">Тааруулах</button>
+          <button type="button" data-tuning-kind="scales" aria-pressed="false" data-i18n="scaleExperiment">3-хязгаар</button>
+          <button type="button" data-tuning-kind="limit5" aria-pressed="false" data-i18n="limit5Experiment">5-хязгаар</button>
+          <button type="button" data-tuning-kind="temperaments" class="selected" aria-pressed="true" data-i18n="tempExperiment">Темперамент</button>
+        </div>
+        <div class="field-group">
+          <div class="field-title"><label for="tempSystemSelect" data-i18n="tempSystemTitle">Хөгийн систем</label></div>
+          <select id="tempSystemSelect" class="ear-task-select" aria-label="Хөгийн систем">
+            <option value="equal" data-i18n="tempEqual">12-TET · Тэнцүү</option>
+            <option value="pythagorean" data-i18n="tempPythagorean">Пифагорын</option>
+            <option value="meantone" data-i18n="tempMeantone">1/4-комма дундаж</option>
+            <option value="werckmeister" selected data-i18n="tempWerckmeister">Веркмайстер III</option>
+            <option value="vallotti" data-i18n="tempVallotti">Валлотти</option>
+          </select>
+        </div>
+        <div class="temp-key-row">
+          <div class="field-group">
+            <div class="field-title"><label for="tempKeySelect" data-i18n="tempKeyTitle">Аккордын үндэс</label></div>
+            <select id="tempKeySelect" class="ear-task-select" aria-label="Аккордын үндсэн нот">
+              <option value="0">C</option><option value="1">C♯</option><option value="2">D</option>
+              <option value="3">E♭</option><option value="4">E</option><option value="5">F</option>
+              <option value="6">F♯</option><option value="7">G</option><option value="8">G♯</option>
+              <option value="9">A</option><option value="10">B♭</option><option value="11">B</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <div class="field-title"><label for="tempQualitySelect" data-i18n="tempQualityTitle">Аккордын төрөл</label></div>
+            <select id="tempQualitySelect" class="ear-task-select" aria-label="Мажор эсвэл минор">
+              <option value="major" data-i18n="tempMajor">Мажор</option>
+              <option value="minor" data-i18n="tempMinor">Минор</option>
+            </select>
+          </div>
+        </div>
+        <div id="tempPlayModes" class="ear-play-controls" role="group" data-i18n-aria="tempPlaybackAria">
+          <button type="button" data-temp-play="melody" aria-pressed="false">▶ Ээлжлэн</button>
+          <button type="button" data-temp-play="chord" aria-pressed="false">▶ Хамт</button>
+        </div>
+        <p id="tempStatus" class="audio-status" role="status" aria-live="polite">Бэлэн. Сонсох аргаа сонгоорой.</p>
+        <p class="field-help" data-i18n="tempReference">Ля4 = 440 Гц-ийг хэвээр барина. Өөр системд бусад нотын давтамж өөрчлөгдөнө.</p>
+        <div class="field-group volume-field">
+          <div class="field-title"><label for="tempVolume" data-i18n="volume">Дууны хэмжээ</label><output id="tempVolumeValue">38%</output></div>
+          <input id="tempVolume" type="range" min="0" max="100" step="1" value="38">
+          <p class="field-help" data-i18n="safeVolume">Эхэндээ аяархан сонсоорой.</p>
+        </div>
+      </section>
+      <div class="visuals">
+        <section class="panel chart-panel" aria-labelledby="temp-circle-title">
+          <div class="chart-heading"><div>
+            <h2 id="temp-circle-title" data-i18n="tempCircleTitle">Квинтийн тойрог</h2>
+            <p data-i18n="tempCircleHint">Нот дээр товшиж өөр үндэс сонго. Өнгөт холбоос бүрийн квинт 3:2-оос хэрхэн зөрж байгааг доорх тооноос хар.</p>
+          </div><span id="tempCircleBadge" class="chart-badge">C мажор</span></div>
+          <canvas id="tempCircleCanvas" width="760" height="440" role="button" tabindex="0" aria-label="Квинтийн тойргоос үндсэн нот сонгох"></canvas>
+          <div class="temp-legend" aria-label="Квинтийн төрлүүд">
+            <span><i class="temp-legend-pure"></i><span data-i18n="tempPure">Цэвэр</span></span>
+            <span><i class="temp-legend-narrow"></i><span data-i18n="tempNarrow">Бага зэрэг нарийссан</span></span>
+            <span><i class="temp-legend-wolf"></i><span data-i18n="tempWolfLegend">Чоно квинт</span></span>
+          </div>
+          <p id="tempWolfFact" class="temp-feature-fact"></p>
+        </section>
+        <section class="panel chart-panel" aria-labelledby="temp-fifths-title">
+          <div class="chart-heading"><div>
+            <h2 id="temp-fifths-title" data-i18n="tempFifthsTitle">Квинт бүрийн зөрүү</h2>
+            <p data-i18n="tempFifthsHint">Босоо утга нь цэвэр 3:2-оос хэдэн центээр зөрснийг харуулна. Хэвтээ шугам 0 цент.</p>
+          </div><span class="chart-badge" id="tempCommaBadge">23.46 цент</span></div>
+          <canvas id="tempFifthsCanvas" width="760" height="240" role="img" aria-label="Цэвэр квинтээс зөрөх 12 багана"></canvas>
+          <details class="temp-fifths-details"><summary data-i18n="tempFifthsTable">12 квинтийн хүснэгт</summary>
+            <div class="temp-table-scroll"><table class="temp-table">
+              <thead><tr><th data-i18n="tempTableFifth">Квинт</th><th data-i18n="tempTableSize">Хэмжээ (цент)</th><th data-i18n="tempTableDeviation">3:2-оос (цент)</th></tr></thead>
+              <tbody id="tempFifthsBody"></tbody>
+            </table></div>
+          </details>
+        </section>
+        <section class="panel chart-panel" aria-labelledby="temp-chord-title">
+          <div class="chart-heading"><div>
+            <h2 id="temp-chord-title" data-i18n="tempChordTitle">Аккордын давтамж</h2>
+            <p data-i18n="tempChordHint">Бүх хөгт Ля4 = 440 Гц. Доорх зөрүү нь яг ижил нэртэй 12-TET нотоос хэдэн центээр өөр байгааг харуулна.</p>
+          </div><span class="chart-badge" id="tempChordBadge">C · E · G</span></div>
+          <div class="temp-note-grid" id="tempNoteGrid">
+            <div><strong id="tempNoteName0">C4</strong><span id="tempNoteHz0">261.63 Гц</span><small id="tempNoteDev0">+0.0 цент</small></div>
+            <div><strong id="tempNoteName1">E4</strong><span id="tempNoteHz1">329.63 Гц</span><small id="tempNoteDev1">+0.0 цент</small></div>
+            <div><strong id="tempNoteName2">G4</strong><span id="tempNoteHz2">392.00 Гц</span><small id="tempNoteDev2">+0.0 цент</small></div>
+          </div>
+          <p class="temp-feature-fact" id="tempChordFact"></p>
+          <p class="field-help" data-i18n="tempChordFoot">Ижил аккордыг өөр өнгөөр сонсохын тулд хөгийн системийг солих, эсвэл үндсэн нотоо өөрчлөх боломжтой.</p>
         </section>
       </div>
     </div>
@@ -1159,6 +1260,11 @@
       <div class="challenge-copy"><h2 id="limit5-challenge-heading" data-i18n="tryThis">ТУРШИЖ ҮЗ</h2><p data-i18n="limit5Challenge">До–Ми–Соль мажор аккордыг сонсоод, Ми нотын хоёр хувилбарыг хамт эгшиглүүл. Дараа нь Ре-ийн хоёр хувилбарыг харьцуул.</p></div>
       <button type="button" id="limit5Reset" class="reset-button" data-i18n="reset">↺ Эхнээс нь</button>
     </section>
+    <section class="challenge" id="tempChallenge" aria-labelledby="temp-challenge-heading" hidden>
+      <div class="challenge-icon" aria-hidden="true">✧</div>
+      <div class="challenge-copy"><h2 id="temp-challenge-heading" data-i18n="tryThis">ТУРШИЖ ҮЗ</h2><p data-i18n="tempChallengeText">До мажор, Ми мажор аккордыг Веркмайстер III ба тэнцүү хөгт ээлжлэн сонсоорой. Ялгааг нь ажигла.</p></div>
+      <button type="button" id="tempReset" class="reset-button" data-i18n="reset">↺ Эхнээс нь</button>
+    </section>
     <section class="challenge" id="noiseChallenge" aria-labelledby="noise-challenge-heading" hidden>
       <div class="challenge-icon" aria-hidden="true">✧</div>
       <div class="challenge-copy"><h2 id="noise-challenge-heading" data-i18n="tryThis">ТУРШИЖ ҮЗ</h2><p data-i18n="noiseChallenge">Цагаан, ягаан, бор шуугианыг ижил дууны хэмжээгээр харьцуул.</p></div>
@@ -1214,6 +1320,11 @@
       <summary data-i18n="limit5LearnMore">Яагаад нэг нотоос хоёр өөр давтамж үүсэв?</summary>
       <p data-i18n="limit5LessonOne">3-хязгаарын хөгт 2 ба 3-ын зэрэг хангалттай. 5-хязгаарын хөгт 5:4 их терцийг нэмж, торын нөгөө чиглэлд алхана. Нотуудаа сонгох нь зөвхөн математикийн биш, хөгжмийн шийдвэр.</p>
       <p data-i18n="limit5LessonTwo">Дөрвөн цэвэр квинтээс 81:64, нэг цэвэр их терцээс 5:4 гарна. Тэдний харьцаа 81:80 буюу 21.51 цент — синтоник комма. Үүнийг 12-TET тэнцүү нот болгож авдаг бол цэвэр харьцаанд хоёр өөр цэг хэвээр үлдэнэ.</p>
+    </details>
+    <details class="explanation" id="tempExplanation" hidden>
+      <summary data-i18n="tempLearnMore">Яагаад квинтийн тойрогт янз бүрийн хөг хэрэгтэй вэ?</summary>
+      <p data-i18n="tempLessonOne">Цэвэр квинт 3:2 нь 701.955 цент боловч арван хоёр квинт долоон октаваас 23.46 центээр их. Арван хоёр нотыг тойрог болгож хаахын тулд энэ Пифагорын коммаг өөр өөр квинтэд хуваарилдаг.</p>
+      <p data-i18n="tempLessonTwo">Тэнцүү хөг бүх квинтийг 700 цент болгоно. Пифагорын болон дундаж хөг ихэнх квинтийг ижилхэн байлгаж нэг чоно квинттэй үлдэнэ. Веркмайстер III, Валлотти системүүд зөрүүг сонгосон хэдэн квинтэд тараадаг. Энэ бол 12 ноттой, тогтмол Ля4=440 Гц авсан түүхэн хялбаршуулсан загвар юм.</p>
     </details>
     <details class="explanation" id="noiseExplanation" hidden>
       <summary data-i18n="noiseLearnMore">Шуугиан яагаад цэвэр авианаас өөр вэ?</summary>
