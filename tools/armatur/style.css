@@ -74,8 +74,12 @@ button.primary:hover { background: #0b5e58; }
 .result-actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: 1rem; }
 .help { border-top: 1px solid #d9e5e1; margin: 1.6rem 0; padding: 1rem .5rem; color: #4b6267; }
 .help summary { font-weight: 750; cursor: pointer; }
-footer { display: flex; flex-wrap: wrap; gap: .5rem; color: #718283; font-size: .8rem; padding-top: 1rem; }
+footer { color: #556d73; font-size: .8rem; padding-top: 1rem; }
+.footer-links { display: flex; flex-wrap: wrap; align-items: baseline; gap: .35rem .5rem; margin-bottom: .45rem; }
 footer a { color: #17786e; }
+.dedication { max-width: 68ch; border-top: 1px solid #d9e5e1; margin-top: 1.35rem; padding-top: 1rem; font-size: .9rem; line-height: 1.65; }
+.dedication p { margin: 0 0 .55rem; }
+.dedication .in-memory { font-style: italic; color: #3e5b61; }
 @media (max-width: 720px) {
   .field-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }

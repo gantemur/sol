@@ -9,3 +9,17 @@ arithmetic, correct waste formatting, and no floating-point termination loop.
 
 The greedy choices are unchanged for valid inputs with no cutting kerf.
 For better layouts and a saw-width setting, use the parent index page.
+
+## Dedication
+
+This tool was first created many years ago at the request of my friend
+M. Purev-Erdene, to help with his work as chief engineer on many major
+construction projects. It is dedicated to his memory.
+
+## Credits and licensing status
+
+The original source is [gantemur/armatur at f937ba9](https://github.com/gantemur/armatur/tree/f937ba9ab252372858f2e81076f2663772f87fcb).
+That revision contains no explicit software license. This corrected reference
+does not establish a new license grant or relicense the historical material.
+Its historical licensing remains unconfirmed. No third-party runtime
+dependencies are bundled in this standalone subfolder.

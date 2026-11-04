@@ -27,4 +27,16 @@ const translations = [...html.matchAll(/data-i18n="([^"]+)"/g)].map((match) => m
 for (const key of translations) {
   assert.ok(app.includes(key + ":"), "missing UI translation key " + key);
 }
+for (const key of ["sourceLink", "creditsLink", "dedicationHistory", "dedicationMemory"]) {
+  assert.equal([...app.matchAll(new RegExp("\\b" + key + ":", "g"))].length, 2,
+    "footer key must exist in both languages: " + key);
+}
+assert.match(html, /data-i18n="dedicationHistory"/);
+assert.match(html, /data-i18n="dedicationMemory"/);
+for (const page of ["index.html", "legacy/index.html"]) {
+  const content = fs.readFileSync(path.join(tool, page), "utf8");
+  assert.match(content, /М\. Пүрэв-Эрдэнийн/);
+  assert.match(content, /#credits-and-licensing-status/);
+  assert.doesNotMatch(content, /sol-private/);
+}
 console.log("Armatur local HTML and assets: static checks passed");
