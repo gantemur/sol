@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#192d49">
   <meta name="description" content="Explore sound waves, plucked and held instrument models, harmonic synthesis, noise, a theremin and sirens with interactive plots and bilingual controls.">
   <title>Sound Lab · Sol</title>
-  <link rel="stylesheet" href="sound-lab.css?v=s033b">
+  <link rel="stylesheet" href="sound-lab.css?v=s034">
   <script src="sound-model.js" defer></script>
   <script src="sound-string.js?v=s017" defer></script>
   <script src="sound-piano.js?v=s019" defer></script>
@@ -19,11 +19,11 @@
   <script src="sound-ear-tune.js?v=s028" defer></script>
   <script src="sound-scales.js?v=s031" defer></script>
   <script src="sound-limit5.js?v=s030" defer></script>
-  <script src="sound-temperaments.js?v=s033" defer></script>
+  <script src="sound-temperaments.js?v=s034" defer></script>
   <script src="sound-harmonics.js" defer></script>
   <script src="sound-noise.js" defer></script>
   <script src="sound-recorder.js" defer></script>
-  <script src="sound-lab.js?v=s033" defer></script>
+  <script src="sound-lab.js?v=s034" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -993,16 +993,38 @@
           <button type="button" data-tuning-kind="temperaments" class="selected" aria-pressed="true" data-i18n="tempExperiment">Темперамент</button>
         </div>
         <div class="field-group">
+          <div class="field-title"><label for="tempTaskSelect" data-i18n="tempTaskTitle">Юуг судлах вэ?</label></div>
+          <select id="tempTaskSelect" class="ear-task-select" aria-label="Темпераментийн туршилт">
+            <option value="build" data-i18n="tempTaskBuild">Квинтийг өөрчилж үзэх</option>
+            <option value="wolf" data-i18n="tempTaskWolf">Чоно квинтийг сонсох</option>
+            <option value="third" data-i18n="tempTaskThird">Цэвэр терцтэй харьцуулах</option>
+            <option value="chord" data-i18n="tempTaskChord">Аккорд ба тональ</option>
+          </select>
+          <p class="field-help" id="tempTaskHint"></p>
+        </div>
+        <div class="field-group">
           <div class="field-title"><label for="tempSystemSelect" data-i18n="tempSystemTitle">Хөгийн систем</label></div>
           <select id="tempSystemSelect" class="ear-task-select" aria-label="Хөгийн систем">
             <option value="equal" data-i18n="tempEqual">12-TET · Тэнцүү</option>
             <option value="pythagorean" data-i18n="tempPythagorean">Пифагорын</option>
             <option value="meantone" data-i18n="tempMeantone">1/4-комма дундаж</option>
-            <option value="werckmeister" selected data-i18n="tempWerckmeister">Веркмайстер III</option>
+            <option value="werckmeister" data-i18n="tempWerckmeister">Веркмайстер III</option>
             <option value="vallotti" data-i18n="tempVallotti">Валлотти</option>
+            <option value="adjustable" selected data-i18n="tempAdjustable">Өөрөө тохируулах</option>
           </select>
         </div>
-        <div class="temp-key-row">
+        <div id="tempAdjustGroup" class="field-group temp-adjust-group">
+          <div class="field-title"><label for="tempNarrowSlider" data-i18n="tempNarrowTitle">11 квинтийг нарийсгах хэмжээ</label><output id="tempNarrowValue">5.38 ¢</output></div>
+          <input id="tempNarrowSlider" type="range" min="0" max="6" step="0.01" value="5.38">
+          <div class="temp-narrow-presets" role="group" data-i18n-aria="tempPresetAria">
+            <button type="button" data-temp-narrow-preset="pythagorean" data-i18n="tempPythShort">Пифагор</button>
+            <button type="button" data-temp-narrow-preset="equal" data-i18n="tempEqualShort">Тэнцүү</button>
+            <button type="button" data-temp-narrow-preset="no-wolf" data-i18n="tempNoWolfShort">Чоногүй</button>
+            <button type="button" data-temp-narrow-preset="meantone" data-i18n="tempMeantoneShort">1/4-комма</button>
+          </div>
+          <p id="tempAdjustFact" class="temp-feature-fact"></p>
+        </div>
+        <div class="temp-key-row" id="tempChordFields">
           <div class="field-group">
             <div class="field-title"><label for="tempKeySelect" data-i18n="tempKeyTitle">Аккордын үндэс</label></div>
             <select id="tempKeySelect" class="ear-task-select" aria-label="Аккордын үндсэн нот">
@@ -1020,6 +1042,7 @@
             </select>
           </div>
         </div>
+        <p class="field-help" id="tempListenFact"></p>
         <div id="tempPlayModes" class="ear-play-controls" role="group" data-i18n-aria="tempPlaybackAria">
           <button type="button" data-temp-play="melody" aria-pressed="false">▶ Ээлжлэн</button>
           <button type="button" data-temp-play="chord" aria-pressed="false">▶ Хамт</button>
@@ -1032,7 +1055,23 @@
           <p class="field-help" data-i18n="safeVolume">Эхэндээ аяархан сонсоорой.</p>
         </div>
       </section>
-      <div class="visuals">
+      <div class="visuals temp-visuals">
+        <section class="panel chart-panel temp-lattice-panel" aria-labelledby="temp-lattice-title">
+          <div class="chart-heading"><div>
+            <h2 id="temp-lattice-title" data-i18n="tempLatticeTitle">3:2 ба 5:4-ийн гурвалжин тор</h2>
+            <p data-i18n="tempLatticeHint">Цайвар цэгүүд нь цэвэр харьцааны тор. Өнгөт цэгүүд нь сонгосон хөгийн нотыг түүний Пифагорын жишигтэй харьцуулсан байрлал; зөрөөг харагдуулахын тулд томруулсан.</p>
+          </div><span class="chart-badge" id="tempLatticeBadge">C · E · G</span></div>
+          <canvas id="tempLatticeCanvas" width="920" height="510" role="button" tabindex="0" aria-label="Гурвалжин тор болон 12 нотын сонголт"></canvas>
+          <div class="temp-lattice-legend">
+            <span><i class="temp-grid-dot"></i><span data-i18n="tempExactLegend">Яг цэвэр тор</span></span>
+            <span><i class="temp-tuned-dot"></i><span data-i18n="tempTunedLegend">Сонгосон хөг</span></span>
+            <span><i class="temp-ideal-line"></i><span data-i18n="tempTriangleLegend">Цэвэр аккордын гурвалжин</span></span>
+          </div>
+          <p id="tempLatticeFact" class="temp-feature-fact"></p>
+          <p id="tempLatticeClosureFact" class="field-help"></p>
+          <div class="chart-foot"><span data-i18n="tempLatticeFoot">→ 3:2 · ↗ 5:4. Нэг нэртэй нотын өөр замууд нь 81:80, харин 12 квинтийн төгсгөл 23.46 центээр зөрнө.</span><span data-i18n="tempLatticeScale">Зөрөөг дүрслэлд ×8 томруулав</span></div>
+        </section>
+        <div class="temp-lower-visuals">
         <section class="panel chart-panel" aria-labelledby="temp-circle-title">
           <div class="chart-heading"><div>
             <h2 id="temp-circle-title" data-i18n="tempCircleTitle">Квинтийн тойрог</h2>
@@ -1059,7 +1098,16 @@
             </table></div>
           </details>
         </section>
-        <section class="panel chart-panel" aria-labelledby="temp-chord-title">
+        </div>
+        <section class="panel chart-panel temp-partial-panel" aria-labelledby="temp-partial-title">
+          <div class="chart-heading"><div>
+            <h2 id="temp-partial-title" data-i18n="tempPartialTitle">Давхцах гармоникууд ба цохилт</h2>
+            <p id="tempPartialHint" data-i18n="tempPartialHint">3:2 квинтэд доод нотын 3f, дээд нотын 2f давхцана. Зөрвөл цохилт үүснэ.</p>
+          </div><span class="chart-badge" id="tempPartialBadge">3f ≈ 2f</span></div>
+          <canvas id="tempPartialCanvas" width="920" height="210" role="img" aria-label="Хоёр нотын гармоникийн давхцал"></canvas>
+          <p id="tempBeatFact" class="temp-feature-fact"></p>
+        </section>
+        <section class="panel chart-panel" id="tempChordPanel" aria-labelledby="temp-chord-title">
           <div class="chart-heading"><div>
             <h2 id="temp-chord-title" data-i18n="tempChordTitle">Аккордын давтамж</h2>
             <p data-i18n="tempChordHint">Бүх хөгт Ля4 = 440 Гц. Доорх зөрүү нь яг ижил нэртэй 12-TET нотоос хэдэн центээр өөр байгааг харуулна.</p>

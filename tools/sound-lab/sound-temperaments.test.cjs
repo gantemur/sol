@@ -84,3 +84,71 @@ test("invalid model input is rejected instead of silently producing NaN", () => 
   for (const key of [-1, 12]) assert.throws(() => temp.chord("equal", key), RangeError);
   assert.throws(() => temp.chord("equal", 0, "seventh"), RangeError);
 });
+
+test("fifth-narrowing slider trades a purer major third for a wider closing fifth", () => {
+  close(temp.PURE_MAJOR_THIRD, 386.3137138648348);
+  close(temp.PURE_MINOR_THIRD, 315.64128700055255);
+  close(temp.EQUAL_NARROWING, temp.PYTHAGOREAN_COMMA / 12);
+  close(temp.WOLF_FREE_NARROWING, temp.PYTHAGOREAN_COMMA / 11);
+  close(temp.MEANTONE_NARROWING, temp.SYNTONIC_COMMA / 4);
+  assert.equal(temp.SELECTABLE_SYSTEMS.length, 6);
+  for (const narrowed of [0, temp.EQUAL_NARROWING, temp.WOLF_FREE_NARROWING,
+    temp.MEANTONE_NARROWING, 6]) {
+    const edges = temp.fifths("adjustable", narrowed);
+    close(edges.reduce((sum, edge) => sum + edge.cents, 0), 8400);
+    for (const [i, edge] of edges.entries()) {
+      if (i !== temp.WOLF_EDGE) close(edge.cents, temp.FIFTH_CENTS - narrowed);
+    }
+    close(temp.chord("adjustable", 0, "major", 440, narrowed).thirdCents,
+      4 * (temp.FIFTH_CENTS - narrowed) - 2400);
+  }
+  const pyth = temp.fifths("adjustable", 0)[temp.WOLF_EDGE];
+  const meantone = temp.fifths("adjustable", temp.MEANTONE_NARROWING)[temp.WOLF_EDGE];
+  assert.ok(pyth.deviation < -23 && meantone.deviation > 35,
+    "The same closure edge reverses sign when the ordinary fifths are narrowed");
+  assert.deepEqual(temp.fifths("adjustable", temp.WOLF_FREE_NARROWING)
+    .filter(edge => edge.wolf), [], "The special closing edge may be pure without being a wolf");
+  for (const edge of temp.fifths("adjustable", temp.EQUAL_NARROWING)) close(edge.cents, 700);
+});
+
+test("the exact 3:2–5:4 lattice has triangular pure chords and distinct comma endpoints", () => {
+  const pyth = temp.latticeNotes("pythagorean");
+  assert.deepEqual(pyth.map(note => note.m), [0, 1, 2, 3, 4, 5, 6, 7, 8, -3, -2, -1]);
+  assert.ok(pyth.every(note => Math.abs(note.deviation) < 1e-6),
+    "Pythagorean shadows are precisely exact lattice points");
+  assert.ok(temp.latticeNotes("equal").some(note => Math.abs(note.deviation) > 1));
+  const major = temp.latticeChord("meantone", 0, "major");
+  const minor = temp.latticeChord("meantone", 0, "minor");
+  assert.deepEqual(major.vertices.map(({ m, n }) => [m, n]), [[0, 0], [0, 1], [1, 0]]);
+  assert.deepEqual(minor.vertices.map(({ m, n }) => [m, n]), [[0, 0], [1, -1], [1, 0]]);
+  close(major.vertices[1].deviation, 0);
+  close(temp.latticeChord("pythagorean", 0, "major").vertices[1].deviation,
+    temp.SYNTONIC_COMMA);
+  const ends = temp.closure();
+  assert.equal(ends.pureEnd.m - ends.start.m, 12);
+  close(ends.cents, temp.PYTHAGOREAN_COMMA);
+  assert.notDeepEqual(ends.pureEnd, ends.start);
+});
+
+test("rich two-note comparisons expose 3-to-2, 5-to-4, and 6-to-5 partial gaps", () => {
+  const ordinary = temp.partialGap(220, 330, "fifth");
+  assert.deepEqual([ordinary.lowerHarmonic, ordinary.upperHarmonic, ordinary.beatHz], [3, 2, 0]);
+  close(temp.partialGap(220, 275, "major").beatHz, 0);
+  close(temp.partialGap(220, 264, "minor").beatHz, 0);
+  const wolf = temp.partialGap(temp.frequency("meantone", 8),
+    temp.frequency("meantone", 3, 5), "fifth");
+  assert.ok(wolf.beatHz > 15, "Wolf fifth should produce rapid mismatch of harmonic 3 and 2");
+  const sampleRate = 8000;
+  const rich = temp.makeSamples([{ hz: 220 }, { hz: 330 }], sampleRate, "chord");
+  const pure = temp.makeSamples([{ hz: 220 }, { hz: 330 }], sampleRate, "chord", false);
+  assert.equal(rich.length, 4 * sampleRate);
+  assert.equal(temp.makeSamples([{ hz: 220 }, { hz: 330 }], sampleRate, "melody").length,
+    Math.ceil(2 * .64 * sampleRate));
+  assert.ok(rich.every(value => Number.isFinite(value) && Math.abs(value) <= 1));
+  assert.notDeepEqual([...rich.subarray(0, 100)], [...pure.subarray(0, 100)],
+    "Richer upper partials are part of the listening experiment");
+  assert.throws(() => temp.widths("adjustable", 7), RangeError);
+  assert.throws(() => temp.widths("adjustable", NaN), RangeError);
+  assert.throws(() => temp.partialGap(220, 0), RangeError);
+  assert.throws(() => temp.makeSamples([{ hz: -1 }], 8000), RangeError);
+});
