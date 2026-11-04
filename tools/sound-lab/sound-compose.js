@@ -95,6 +95,7 @@
       this.$ = id => document.getElementById(id);
       this.language = "mn";
       this.score = null;
+      this.lastError = null;
       this.lastStatus = "ready";
       this.noteGroups = [];
       this.lastHighlighted = -2;
@@ -137,11 +138,18 @@
       this.$("composePlayPause").textContent = this.t(this.player.status === "playing" ? "pause" :
         this.player.status === "paused" ? "resume" : "play");
       this.$("composeVolumeValue").textContent = this.$("composeVolume").value + "%";
-      this.$("composeStatus").textContent = this.t(this.lastStatus) || this.t("ready");
+      this.$("composeStatus").textContent = this.lastError ?
+        this.errorText(this.lastError) : this.t(this.lastStatus) || this.t("ready");
+      this.$("composeStatus").classList.toggle("error", Boolean(this.lastError));
       this.$("composeScoreSvg").setAttribute("aria-label", this.t("staff"));
       this.renderMeta();
       this.lastHighlighted = -2;
       this.highlight(this.player.currentBeat);
+    }
+
+    errorText(error) {
+      return error instanceof abc.ABCError ? localError(error, this.language) :
+        this.t("rangeError") + ": " + error.message;
     }
 
     parseScore() {
@@ -152,6 +160,7 @@
         this.player.configure({ score, instrument: this.$("composeInstrument").value,
           tuning: this.$("composeTuning").value, volume: Number(this.$("composeVolume").value) });
         this.score = score;
+        this.lastError = null;
         this.lastStatus = "ready";
         this.$("composeStatus").textContent = this.t("ready");
         this.$("composeStatus").classList.toggle("error", false);
@@ -159,9 +168,9 @@
         this.renderStaff();
       } catch (error) {
         this.score = null;
+        this.lastError = error;
         this.lastStatus = "ready";
-        this.$("composeStatus").textContent = error instanceof abc.ABCError ?
-          localError(error, this.language) : this.t("rangeError") + ": " + error.message;
+        this.$("composeStatus").textContent = this.errorText(error);
         this.$("composeStatus").classList.toggle("error", true);
         this.$("composePlayPause").disabled = true;
         this.noteGroups = [];
@@ -196,6 +205,7 @@
 
     parsePending() { if (this.parseTimer !== null) this.parseScore(); }
     stop() { this.player.stop(); }
+    hasSession() { return this.player.status !== "stopped"; }
     isPlaying() { return this.player.status === "playing" || this.player.status === "starting"; }
 
     async loadFile(file) {

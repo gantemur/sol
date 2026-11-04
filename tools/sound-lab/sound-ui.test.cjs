@@ -2461,6 +2461,8 @@ test("Compose C1 renders a four-bar staff, stays silent until Play and responds 
   assert.equal(app.contexts.length, 0, "Loading the page or parsing the default score is silent");
   app.fire("modeCompose", "click");
   assert.equal(app.elements.get("composeWorkspace").hidden, false);
+  assert.match(app.elements.get("composeStatus").textContent, /Бэлэн/,
+    "Opening Compose before playback shows Ready, not Stopped");
   assert.equal(app.elements.get("pureWorkspace").hidden, true);
   assert.equal(app.elements.get("pagePhase").textContent, "07 · Ая зохиох");
   assert.match(app.elements.get("composeMeta").textContent, /4 такт/);
@@ -2506,6 +2508,10 @@ test("Compose C1 validates edits and loads local ABC scores without autoplay", a
   assert.equal(app.elements.get("composePlayPause").disabled, true);
   assert.match(app.elements.get("composeStatus").textContent, /алдаа/);
   assert.equal(app.contexts.length, 0);
+  app.fire("langEn", "click");
+  assert.match(app.elements.get("composeStatus").textContent, /Score error/,
+    "An invalid ABC score must remain visibly invalid when switching language");
+  app.fire("langMn", "click");
 
   const source = composeModel.EXAMPLES.minor;
   const file = { name: "little.abc", size: source.length, text: async () => source };

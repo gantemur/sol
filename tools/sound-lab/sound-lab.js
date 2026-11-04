@@ -4776,7 +4776,7 @@
   }
 
   function stopAllAudio(immediate = false, message = "stopped") {
-    if (compose) compose.stop();
+    if (compose && compose.hasSession()) compose.stop();
     strikeTicket++;
     transientAudio.stop(immediate);
     stopStrikeFollow();
