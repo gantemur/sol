@@ -19,8 +19,17 @@
   const CHORDS = Object.freeze({
     em: Object.freeze([0, 2, 2, 0, 0, 0]),
     g: Object.freeze([3, 2, 0, 0, 0, 3]),
-    c: Object.freeze([-1, 3, 2, 0, 1, 0])
+    c: Object.freeze([-1, 3, 2, 0, 1, 0]),
+    am: Object.freeze([-1, 0, 2, 2, 1, 0]),
+    d: Object.freeze([-1, -1, 0, 2, 3, 2]),
+    a: Object.freeze([-1, 0, 2, 2, 2, 0]),
+    e: Object.freeze([0, 2, 2, 1, 0, 0]),
+    dm: Object.freeze([-1, -1, 0, 2, 3, 1]),
+    g7: Object.freeze([3, 2, 0, 0, 0, 1]),
+    c7: Object.freeze([-1, 3, 2, 3, 1, 0]),
+    dsus4: Object.freeze([-1, -1, 0, 2, 3, 3])
   });
+  const STRUM_PATTERNS = Object.freeze(["down", "up", "alternate", "arpeggio", "fingerpick"]);
   const pluckCache = new Map();
   const strumCache = new Map();
 
@@ -106,16 +115,43 @@
     return interpolate(pluckWave(frequency, decay, position), time);
   }
 
-  function makeStrumWave(chord, decay, position) {
+  function strokeEvents(frequencies, pattern) {
+    const active = frequencies.map((frequency, index) => frequency === null ? -1 : index)
+      .filter(index => index >= 0);
+    const events = [];
+    const add = (index, seconds, strength = 1) => events.push({
+      index, offset: Math.round(seconds * RATE),
+      weight: strength * (index < 2 ? .82 : 1)
+    });
+    if (pattern === "down" || pattern === "up" || pattern === "alternate") {
+      const stroke = (direction, start, strength = 1) => {
+        for (const index of active) {
+          const sequence = direction === "up" ? 5 - index : index;
+          add(index, start + sequence * .012, strength);
+        }
+      };
+      stroke(pattern === "up" ? "up" : "down", 0);
+      if (pattern === "alternate") stroke("up", .15, .77);
+    } else if (pattern === "arpeggio") {
+      active.forEach((index, sequence) => add(index, sequence * .052, .92));
+    } else {
+      // A simple bass-thumb then finger sequence, not a transcription of a
+      // particular song or guitarist. Repeated treble notes create a rhythm.
+      const order = [active[0], 3, 4, 5, 4, 3, 2].filter(index => active.includes(index));
+      order.forEach((index, sequence) => add(index, sequence * .042,
+        sequence === 0 ? 1 : .70));
+    }
+    return events;
+  }
+
+  function makeStrumWave(chord, decay, position, pattern) {
     const frequencies = chordFrequencies(chord);
     const count = Math.ceil(lengthFor(decay) * RATE);
     const result = new Float32Array(count);
-    // A plectrum reaches the strings in sequence, not simultaneously.
-    frequencies.forEach((frequency, stringIndex) => {
-      if (frequency === null) return;
-      const string = pluckWave(frequency, decay, position);
-      const offset = Math.round(stringIndex * 0.012 * RATE);
-      const weight = stringIndex < 2 ? 0.82 : 1;
+    // Every gesture consists of individually excited, correctly fretted
+    // strings; only timing/order and emphasis change between techniques.
+    strokeEvents(frequencies, pattern).forEach(({ index, offset, weight }) => {
+      const string = pluckWave(frequencies[index], decay, position);
       for (let i = offset; i < count; i++) result[i] += weight * string[i - offset];
     });
     let peak = 0;
@@ -125,21 +161,22 @@
     return result;
   }
 
-  function strumWave(chord, decay, position = 0.22) {
+  function strumWave(chord, decay, position = 0.22, pattern = "down") {
     if (!Object.hasOwn(CHORDS, chord) || !Number.isFinite(decay) ||
-        decay < 0.12 || decay > 1.2 || !validPosition(position)) {
+        decay < 0.12 || decay > 1.2 || !validPosition(position) ||
+        !STRUM_PATTERNS.includes(pattern)) {
       throw new RangeError("Invalid guitar-strum parameters");
     }
-    const key = [chord, decay, position].join("|");
-    return remember(strumCache, key, () => makeStrumWave(chord, decay, position), 3);
+    const key = [chord, decay, position, pattern].join("|");
+    return remember(strumCache, key, () => makeStrumWave(chord, decay, position, pattern), 5);
   }
 
-  function strumAt(time, chord, decay, position = 0.22) {
-    return interpolate(strumWave(chord, decay, position), time);
+  function strumAt(time, chord, decay, position = 0.22, pattern = "down") {
+    return interpolate(strumWave(chord, decay, position, pattern), time);
   }
 
   return Object.freeze({
-    RATE, TUNING, CHORDS, midiHz, chordFrequencies, validate, pluckAt, strumAt,
+    RATE, TUNING, CHORDS, STRUM_PATTERNS, midiHz, chordFrequencies, validate, pluckAt, strumAt,
     validPosition
   });
 });
