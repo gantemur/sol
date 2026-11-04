@@ -274,6 +274,22 @@ h1, h2, p { margin-top: 0; }
 .temp-visuals { min-width: 0; }
 .temp-lower-visuals { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: 14px; align-items: start; }
 .temp-lower-visuals > .chart-panel { min-width: 0; }
+/* On the smaller fifth-deviation card a wide comma badge must not squeeze the explanatory text. */
+#temperamentWorkspace .temp-lower-visuals .chart-heading { display: block; }
+#temperamentWorkspace .temp-lower-visuals .chart-badge { display: inline-block; margin-top: 9px; }
+.temp-just-guide { margin: 10px 0 13px; padding: 12px; background: #eff9f7;
+  border: 1px solid #b9ded8; border-radius: 11px; }
+.temp-just-guide p { margin: 0 0 11px; color: #326b65; font-size: 12px; line-height: 1.5; }
+.temp-just-ratio-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+.temp-just-ratio-grid > span { display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 5px; padding: 7px 3px; border: 1px solid #c0dcd5; border-radius: 7px;
+  color: #30645d; background: #fff; font-size: 11px; font-variant-numeric: tabular-nums; }
+.temp-just-ratio-grid > span.active { border-color: #20a08c; background: #d7f2e8; font-weight: 800; }
+.temp-just-ratio-grid strong { color: #176f64; }
+.temp-just-link { margin-top: 11px; padding: 8px 12px; border: 1px solid #248c7c; border-radius: 8px;
+  background: #d9f4e9; color: #12695f; font-size: 12px; font-weight: 800; cursor: pointer; }
+.temp-just-link:hover, .temp-just-link:focus-visible { background: #c0eadf; }
+.limit5-just-hint { color: #1e7c70; background: #e9f7f2; padding: 9px 11px; border-radius: 8px; }
 .temp-lattice-panel #tempLatticeCanvas { display: block; width: 100%; height: auto;
   aspect-ratio: 920 / 300; margin: 10px 0 2px; cursor: pointer; touch-action: manipulation; }
 .temp-partial-panel #tempPartialCanvas { display: block; width: 100%; height: auto;
@@ -391,6 +407,7 @@ h1, h2, p { margin-top: 0; }
   .chart-panel { padding: 18px 16px 13px; }
 }
 @media (max-width: 810px) {
+  .temp-just-ratio-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .workspace { grid-template-columns: 1fr; }
   .controls { padding: 22px; }
   .description { min-height: 0; }
@@ -444,6 +461,7 @@ h1, h2, p { margin-top: 0; }
   .footer { padding: 2px 14px 28px; }
 }
 @media (max-width: 470px) {
+  .temp-just-ratio-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .brand-mark, .brand small { display: none; }
   .record-button-label, .record-timer { display: none; }
   .record-button { min-width: 38px; padding: 7px; }

@@ -7,8 +7,8 @@ function close(actual, expected, tolerance = 1e-7) {
   assert.ok(Math.abs(actual - expected) < tolerance, `${actual} should equal ${expected}`);
 }
 
-test("all five systems close twelve fifths against exactly seven octaves", () => {
-  assert.deepEqual(temp.SYSTEMS, ["equal", "pythagorean", "meantone", "werckmeister", "vallotti"]);
+test("five temperaments and the C-centred just comparator close twelve fifths against seven octaves", () => {
+  assert.deepEqual(temp.SYSTEMS, ["equal", "pythagorean", "meantone", "werckmeister", "vallotti", "just"]);
   for (const system of temp.SYSTEMS) {
     const fifths = temp.fifths(system);
     assert.equal(fifths.length, 12);
@@ -91,7 +91,7 @@ test("fifth-narrowing slider trades a purer major third for a wider closing fift
   close(temp.EQUAL_NARROWING, temp.PYTHAGOREAN_COMMA / 12);
   close(temp.WOLF_FREE_NARROWING, temp.PYTHAGOREAN_COMMA / 11);
   close(temp.MEANTONE_NARROWING, temp.SYNTONIC_COMMA / 4);
-  assert.equal(temp.SELECTABLE_SYSTEMS.length, 6);
+  assert.equal(temp.SELECTABLE_SYSTEMS.length, 7);
   for (const narrowed of [0, temp.EQUAL_NARROWING, temp.WOLF_FREE_NARROWING,
     temp.MEANTONE_NARROWING, 6]) {
     const edges = temp.fifths("adjustable", narrowed);
@@ -109,6 +109,38 @@ test("fifth-narrowing slider trades a purer major third for a wider closing fift
   assert.deepEqual(temp.fifths("adjustable", temp.WOLF_FREE_NARROWING)
     .filter(edge => edge.wolf), [], "The special closing edge may be pure without being a wolf");
   for (const edge of temp.fifths("adjustable", temp.EQUAL_NARROWING)) close(edge.cents, 700);
+});
+
+test("the fixed twelve-note just scale uses twelve exact 3:2–5:4 lattice points", () => {
+  const limit5 = require("./sound-limit5.js");
+  assert.deepEqual(temp.JUST12_COORDS, limit5.PRESETS.just12);
+  assert.equal(new Set(temp.JUST12_COORDS.map(pair => pair.join(","))).size, 12);
+  for (const [pc, coords] of temp.JUST12_COORDS.entries()) {
+    const exact = limit5.point(...coords, 264);
+    const [numerator, denominator] = temp.JUST12_RATIOS[pc];
+    assert.deepEqual([exact.numerator, exact.denominator], [numerator, denominator]);
+    assert.equal(exact.tetStep, pc);
+    assert.ok(coords[1] >= -1 && coords[1] <= 1);
+    close(temp.frequency("just", pc, 4), exact.hz, 1e-9);
+  }
+  close(temp.frequency("just", 0, 4), 264);
+  close(temp.frequency("just", 9, 4), 440);
+  close(temp.chord("just", 0, "major").thirdCents, temp.PURE_MAJOR_THIRD);
+  close(temp.chord("just", 0, "major").fifthCents, temp.FIFTH_CENTS);
+  close(temp.chord("just", 2, "major").thirdCents, temp.PURE_MAJOR_THIRD);
+  close(temp.chord("just", 2, "major").fifthCents, 1200 * Math.log2(40 / 27));
+  const fifths = temp.fifths("just");
+  assert.equal(fifths.filter(edge => Math.abs(edge.deviation) < .001).length, 9);
+  assert.deepEqual(fifths.filter(edge => edge.deviation < -1).map(edge => edge.from + "–" + edge.to),
+    ["D–A", "B♭–F"]);
+  close(fifths[2].deviation, -temp.SYNTONIC_COMMA);
+  close(fifths[10].deviation, -temp.SYNTONIC_COMMA);
+  close(fifths[6].deviation, 1200 * Math.log2(2048 / 2025));
+  assert.ok(fifths.every(edge => !edge.wolf), "There is no single closing wolf in this just selection");
+  assert.ok(temp.latticeNotes("just").every(note => Math.abs(note.deviation) < 1e-9));
+  const dMajor = temp.latticeChord("just", 2, "major");
+  assert.deepEqual(dMajor.vertices.map(vertex => [vertex.m, vertex.n]), [[2, 0], [2, 1], [3, 0]]);
+  assert.deepEqual(dMajor.actualVertices.map(vertex => [vertex.m, vertex.n]), [[2, 0], [2, 1], [-1, 1]]);
 });
 
 test("the exact 3:2–5:4 lattice has triangular pure chords and distinct comma endpoints", () => {

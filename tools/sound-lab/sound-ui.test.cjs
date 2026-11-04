@@ -46,10 +46,10 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-harmonics\.js"/);
   assert.match(html, /src="sound-noise\.js"/);
   assert.match(html, /src="sound-scales\.js\?v=s031"/);
-  assert.match(html, /src="sound-limit5\.js\?v=s030"/);
-  assert.match(html, /src="sound-temperaments\.js\?v=s034"/);
-  assert.match(html, /src="sound-lab\.js\?v=s035"/);
-  assert.match(html, /href="sound-lab\.css\?v=s035"/);
+  assert.match(html, /src="sound-limit5\.js\?v=s036"/);
+  assert.match(html, /src="sound-temperaments\.js\?v=s036"/);
+  assert.match(html, /src="sound-lab\.js\?v=s036"/);
+  assert.match(html, /href="sound-lab\.css\?v=s036"/);
   assert.match(html, /id="scaleGapToggle" type="checkbox"/);
   assert.match(html, /id="scaleGapPanel" hidden/);
   assert.match(html, /src="sound-recorder\.js"/);
@@ -113,7 +113,11 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
     "5-limit presets, playback toggles, frequency and advanced options follow the compact order");
   assert.doesNotMatch(limit5Markup, /id="limit5Button"|id="limit5CompareButton"|id="limit5Presets"/);
   assert.equal([...limit5Markup.matchAll(/data-limit5-play="/g)].length, 2);
-  assert.equal([...limit5Markup.matchAll(/<option value="(?:major|minor|gmajor|dminor|seven|fifths|commaE|commaD|diaschisma|custom)"/g)].length, 10);
+  assert.equal([...limit5Markup.matchAll(/<option value="(?:major|minor|gmajor|dminor|seven|just12|fifths|commaE|commaD|diaschisma|custom)"/g)].length, 11);
+  assert.match(limit5Markup, /id="limit5JustHint"/);
+  assert.match(html, /<option value="just" data-i18n="tempJust"/);
+  assert.match(html, /id="tempJustGuide"[^>]*hidden/);
+  assert.match(html, /id="tempOpenJustLattice"/);
   assert.match(limit5Markup, /id="limit5LatticeCanvas"/);
   assert.match(limit5Markup, /id="limit5OctaveCanvas"/);
   assert.match(limit5Markup, /id="limit5FourierCanvas"/);
@@ -2553,6 +2557,49 @@ test("S034 wolf and third experiments compare actual harmonic gaps without chang
   assert.ok(tunedGap > 10);
   assert.equal(pureGap, 0);
   assert.equal(app.contexts[0].sources.at(-1).buffer.length, 4 * 44100);
+});
+
+test("S036 C-centred just selection shows exact lattice ratios, impure D–A and the 5-limit shortcut", async () => {
+  const app = fakePage();
+  app.fire("modeTuning", "click");
+  app.tuningKindButtons[4].click();
+  assert.equal(app.elements.get("tempJustGuide").hidden, true);
+  app.fire("tempSystemSelect", "change", { target: { value: "just" } });
+  assert.equal(app.elements.get("tempJustGuide").hidden, false);
+  assert.equal(app.elements.get("tempAdjustGroup").hidden, true);
+  assert.equal(app.elements.get("tempTaskSelect").value, "chord");
+  assert.equal([...app.elements.get("tempJustRatioGrid").innerHTML.matchAll(/<span/g)].length, 12);
+  assert.match(app.elements.get("tempJustRatioGrid").innerHTML, /16:15/);
+  assert.match(app.elements.get("tempJustRatioGrid").innerHTML, /45:32/);
+  assert.match(app.elements.get("tempNoteHz0").textContent, /264/);
+  assert.match(app.elements.get("tempLatticeHint").textContent, /гурван мөр/);
+  assert.match(app.elements.get("tempLatticeScale").textContent, /томруулалтгүй/);
+  assert.match(app.elements.get("tempWolfFact").textContent, /9 квинт/);
+  assert.match(app.elements.get("tempLatticeConstructionFact").textContent, /386\.31/);
+  assert.ok(app.elements.get("tempLatticeCanvas").drawnText.includes("E · 5:4 ✓"));
+  assert.equal(app.contexts.length, 0, "Choosing a tuning must not start audio");
+  app.fire("tempKeySelect", "change", { target: { value: "2" } });
+  assert.match(app.elements.get("tempChordFact").textContent, /680\.45/);
+  assert.match(app.elements.get("tempLatticeFact").textContent, /-21\.51/);
+  app.fire("tempTaskSelect", "change", { target: { value: "wolf" } });
+  assert.match(app.elements.get("tempTaskHint").textContent, /Ре–Ля/);
+  assert.match(app.elements.get("tempLatticeBadge").textContent, /D–A/);
+  app.fire("langEn", "click");
+  assert.match(app.elements.get("tempJustRatioGrid").innerHTML, /1:1/);
+  assert.match(app.elements.get("tempJustGuide").hidden === false ?
+    app.elements.get("tempLatticeHint").textContent : "", /three rows/);
+  assert.equal(app.tempPlayButtons[1].textContent, "▶ Narrow D–A fifth");
+  await app.tempPlayButtons[1].click();
+  assert.equal(app.contexts[0].sources.length, 1);
+  assert.match(app.elements.get("tempBeatFact").textContent, /11\.00 Hz/);
+  app.fire("tempOpenJustLattice", "click");
+  assert.equal(app.elements.get("temperamentWorkspace").hidden, true);
+  assert.equal(app.elements.get("limit5Workspace").hidden, false);
+  assert.equal(app.elements.get("limit5PresetSelect").value, "just12");
+  assert.equal(app.elements.get("limit5Count").textContent, "12 notes");
+  assert.equal(app.elements.get("limit5BaseValue").textContent, "264 Hz");
+  assert.equal(app.elements.get("limit5JustHint").hidden, false);
+  assert.equal(app.contexts[0].sources[0].stopped, true, "Changing experiment stops the previous sound");
 });
 
 test("S033 pending browser audio is canceled on tab switch and page hide", async () => {

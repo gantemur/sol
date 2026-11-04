@@ -175,7 +175,8 @@
       limit5Choose: "Build notes with 3:2 and 5:4", limit5Description: "Move horizontally by a pure fifth (3:2), diagonally by a major third (5:4). Fold the points into one octave and choose your own notes.",
       limit5Play: "Hear the notes", limit5Stop: "Stop", limit5PlayCaption: "In sequence or together",
       limit5PresetsTitle: "Examples and exercises", limit5PresetsAria: "Five-limit examples and comma routes",
-      limit5Major: "C major", limit5Minor: "E minor", limit5GMajor: "G major", limit5DMinor: "D minor", limit5Seven: "7 notes", limit5Fifths: "Only 3:2",
+      limit5Major: "C major", limit5Minor: "E minor", limit5GMajor: "G major", limit5DMinor: "D minor", limit5Seven: "7 notes", limit5Just12: "12 just notes · C-centred", limit5Fifths: "Only 3:2",
+      limit5JustHint: "Twelve exact lattice notes, one per keyboard key. For A4 = 440 Hz the reference is C4 = 264 Hz. This is one C-centred choice: chords in other keys need not be pure. Play in sequence to hear the scale; all twelve together sound dense.",
       limit5CommaE: "E: two routes (81:80)", limit5CommaD: "D: two routes (81:80)",
       limit5Diaschisma: "Second 5:4 layer (2048:2025)", limit5Custom: "My selection",
       limit5PickHint: "Tap a lattice point to add or remove it (up to 12). Its octave pitch is shown on the right.",
@@ -205,40 +206,57 @@
       limit5Hidden: "Sound stopped when you left the page.", limit5Invalid: "Enter a starting frequency from 110 to 330 Hz.",
       limit5NoNotes: "Choose at least one note before playing.", limit5Blocked: "Cannot start playback. Check your browser sound settings.",
       limit5Limit: "You can choose at most 12 notes.",
-      tempChoose: "Twelve-note temperaments", tempDescription: "Why do we change pure fifths? Explore exact chord triangles, the wolf interval, and five tuning systems.",
-      tempTaskTitle: "Listening experiment", tempTaskBuild: "Adjust the fifths", tempTaskWolf: "Hear the wolf",
+      tempChoose: "Twelve-note tuning systems", tempDescription: "Why do we change pure intervals? Compare a twelve-note just scale with temperaments, chord triangles, and imperfect fifths.",
+      tempTaskTitle: "Listening experiment", tempTaskBuild: "Adjust the fifths", tempTaskWolf: "Compare fifths / wolf",
       tempTaskThird: "Compare pure thirds", tempTaskChord: "Chords in different keys",
       tempTaskHintBuild: "Move the slider: ordinary fifths get narrower, major thirds improve, but the closing fifth may become a wolf.",
       tempTaskHintWolf: "Compare an ordinary fifth C–G and the closing fifth G♯–E♭ in the same tuning. Listen for fast rough beating.",
       tempTaskHintWolfFree: "This system has no wolf. Compare C–G and the closing G♯–E♭ fifth: both stay near 700¢.",
+      tempTaskHintJustFifth: "Just tuning gives nine pure fifths, but D–A and B♭–F are 21.51¢ narrow and F♯–C♯ is 19.55¢ wide. Compare C–G with D–A.",
+      tempTaskHintJustBuild: "This is a fixed selection of twelve exact pitches, not a fifth-narrowing slider. Choose a chord root or quality to see which lattice triangles remain pure.",
       tempTaskHintThird: "Compare the selected tuning's third with an exact 5:4 major or 6:5 minor third. Listen for beating, not just pitch.",
       tempTaskHintChord: "Move the same major or minor triangle around the keys. Some temperaments change its sound greatly.",
       tempSystemTitle: "Tuning system", tempKeyTitle: "Chord root", tempQualityTitle: "Chord quality",
       tempEqual: "12-TET · Equal", tempPythagorean: "Pythagorean", tempMeantone: "Quarter-comma meantone",
-      tempWerckmeister: "Werckmeister III", tempVallotti: "Vallotti", tempAdjustable: "Adjustable fifths",
+      tempWerckmeister: "Werckmeister III", tempVallotti: "Vallotti", tempJust: "12-note just intonation · C", tempAdjustable: "Adjustable fifths",
       tempMajor: "Major", tempMinor: "Minor", tempNarrowTitle: "Narrow eleven fifths by", tempPresetAria: "Examples of fifth narrowing",
       tempPythShort: "Pythagorean", tempEqualShort: "Equal", tempNoWolfShort: "Pure closing fifth", tempMeantoneShort: "Quarter-comma",
       tempAdjustFact: "Ordinary fifth: {regular}¢ · closing fifth: {wolf}¢ · C–E third: {third}¢.",
       tempListenBuild: "Play the chosen chord while adjusting the fifths. Exact major thirds have a 5:4 ratio (386.31¢).",
       tempListenWolf: "Hear the wolf's rapid roughness: the lower note's third harmonic no longer lines up with the upper note's second.",
       tempListenWolfFree: "Here the closing fifth is deliberately tempered. Switch to Pythagorean or meantone to hear an actual wolf.",
+      tempListenJustFifth: "Compare the pure C–G (701.96¢) and narrow D–A (680.45¢) fifths. The latter may beat noticeably with rich harmonics.",
+      tempListenJustBuild: "C major is a pure 4:5:6 chord. Move the root to D major: its third is pure, but its fifth is no longer 3:2.",
       tempListenThird: "The fifth harmonic of the lower note and fourth of the higher note match in a pure major third.",
       tempListenThirdMinor: "In a pure minor third, the lower note's sixth harmonic matches the upper note's fifth.",
       tempListenChord: "Compare C major and G♯ major in meantone, then try equal temperament.",
       tempPlaybackAria: "Play the notes in sequence or together; tap again to stop", tempMelody: "In sequence", tempChord: "Together",
-      tempRegularPlay: "Ordinary fifth", tempWolfPlay: "Wolf fifth", tempClosingPlay: "Closing fifth", tempTunedPlay: "Tuned third", tempPurePlay: "Pure third",
+      tempRegularPlay: "Ordinary fifth", tempWolfPlay: "Wolf fifth", tempClosingPlay: "Closing fifth", tempJustImperfectPlay: "Narrow D–A fifth", tempTunedPlay: "Tuned third", tempPurePlay: "Pure third",
       tempReference: "A4 stays at 440 Hz in every system; the other pitches change.",
       tempLatticeTitle: "The 3:2–5:4 triangular lattice",
       tempLatticeHint: "Three exact-ratio rows: hollow points are 3:2–5:4 constructions. Colored pitches are shown beside fifth-chain shadows, not against every possible pure target. Displacements are magnified.",
+      tempJustLatticeHint: "All twelve chosen pitches are exact 3:2–5:4 lattice points (three rows). Gold shows the ideal chord triangle; teal connects the actual notes. Different keys may make different triangles.",
+      tempJustTunedLegend: "Chosen exact lattice notes",
+      tempJustIntro: "One exact ratio per keyboard key, chosen around C. The highlighted chord may not be a pure triangle in another key. No single twelve-note just scale makes all keys pure.",
+      tempJustRatioAria: "The twelve exact frequency ratios of the selected C-centred just scale",
+      tempJustLatticeAria: "Three-row 3:2 and 5:4 lattice with twelve exact note points, an ideal chord triangle and the actual chord; click a named note to change root",
+      tempJustFifthsAria: "Twelve fifths of the C-centred just scale: nine pure, two narrow and one wide",
+      tempOpenJustLattice: "Explore the twelve exact points in 5-limit →",
       tempExactLegend: "Exact ratio lattice", tempTunedLegend: "Tuned pitches (fifth-chain view)", tempTriangleLegend: "Pure chord triangle",
       tempLatticeScale: "Pitch displacements ×8 (diagram only)",
+      tempJustLatticeScale: "Actual lattice points · no magnification",
       tempLatticeFoot: "→ is a 3:2 fifth; ↗ a 5:4 third. The pure D♯ and E♭ fifth-chain endpoints differ by the Pythagorean comma (23.46¢).",
+      tempJustLatticeFoot: "→ is an exact 3:2 fifth; ↗ an exact 5:4 third. Distinct octave-folded paths can have similar note names but different frequencies.",
       tempLatticeAria: "Three-row exact-ratio lattice, fifth-chain shadows of tuned notes, marked pure C to E target and chord triangles; click a named note to change root",
       tempLatticeFact: "The selected {quality} chord has a {third}¢ third ({thirdError}¢ from pure) and {fifth}¢ fifth ({fifthError}¢ from pure). Where visible, the dashed line shows the 21.51¢ third discrepancy.",
       tempLatticeWolf: "The ordinary C–G and the G♯–E♭ closing fifth are different. The 23.46¢ Pythagorean comma is why a pure-fifth D♯ cannot replace E♭ without changing the keyboard.",
       tempLatticeWolfFree: "This tuning distributes the closure without a single wolf. The exact lattice nevertheless has distinct E♭ and D♯ points, separated by 23.46¢.",
+      tempJustLatticeFifths: "The fixed C-centred choice contains nine pure fifths and three altered fifths. The narrow D–A fifth demonstrates the cost of selecting only twelve exact pitches.",
+      tempJustChordFact: "This {quality} chord has a {third}¢ third ({thirdError}¢ from pure) and a {fifth}¢ fifth ({fifthError}¢ from pure). Gold is the ideal triangle; teal is the chosen set of notes.",
       tempLatticeConstruction: "C→E by four tuned fifths: {actual}¢. Exact 5:4 target: 386.31¢ (difference {error}¢). {outcome}",
       tempLatticeConstructionExact: "The two constructions agree: E lands on the exact 5:4 point, even though its Pythagorean shadow is elsewhere.",
+      tempJustConstructionExact: "C–E is an exact 5:4 third. This does not guarantee an exact third in every other key.",
+      tempJustConstruction: "C→E through the chosen fifths: {actual}¢; pure 5:4: 386.31¢ (difference {error}¢). {outcome}",
       tempLatticeConstructionOther: "The two constructions differ. A colored note missing its Pythagorean shadow does not mean every pure interval is missed.",
       tempPartialTitle: "Matching harmonics and beating", tempPartialHint: "A pure fifth shares 3f of the low note with 2f of the high one; a pure major third shares 5f and 4f.",
       tempPartialHintMinor: "A pure minor third shares 6f of its lower note with 5f of its upper note.",
@@ -246,12 +264,15 @@
       tempBeatFact: "{lower}–{upper}: highlighted {a}f and {b}f differ by {beat} Hz. When heard together, rich tones may beat or sound rough.",
       tempCircleTitle: "Circle of fifths", tempCircleHint: "Select a root by tapping a note. Link colors show which fifths are pure, narrowed, or wolves.",
       tempCircleAria: "Interactive circle of fifths; tap a note to choose a chord root; left and right arrow keys rotate selection",
-      tempPure: "Pure 3:2", tempNarrow: "Narrowed", tempWolfLegend: "Wolf fifth",
+      tempPure: "Pure 3:2", tempNarrow: "Narrowed", tempWolfLegend: "Wolf fifth", tempJustWide: "Widened fifth",
       tempFifthsTitle: "How each fifth differs", tempFifthsHint: "Each bar is measured in cents relative to a pure 3:2 fifth. The horizontal line marks 0.",
       tempFifthsAria: "Twelve fifths: cents difference from a pure fifth; wolf fifth highlighted",
       tempFifthsTable: "Numerical table of twelve fifths", tempTableFifth: "Fifth", tempTableSize: "Size (cents)", tempTableDeviation: "From 3:2 (cents)",
       tempCommaBadge: "Pythagorean comma: {cents} cents", tempWolfFact: "Wolf fifth: {from}–{to}, {cents} cents ({deviation} from pure).",
       tempNoWolfFact: "All fifths close the circle without a single wolf interval. {narrow} of twelve fifths are tempered.",
+      tempJustFifthsFact: "9 pure fifths; D–A and B♭–F are 21.51¢ narrow, F♯–C♯ is 19.55¢ wide. These are different fifths, not one closing wolf.",
+      tempJustCircleFoot: "12 exact notes · 3 altered fifths",
+      tempJustCircleHint: "Tap a note to choose a chord root. Green connections are exact 3:2 fifths, blue are narrow and orange are wide; there is no single closing wolf.",
       tempChordTitle: "Chord frequencies", tempChordHint: "All systems use A4 = 440 Hz. The deviations below compare each named note with 12-TET.",
       tempChordFoot: "Switch the tuning system or the root to hear how the same chord changes.",
       tempChordFact: "Root–third: {third} cents · root–fifth: {fifth} cents. (12-TET: {expected} and 700 cents.)",
@@ -686,7 +707,8 @@
       limit5Choose: "3:2 ба 5:4-өөр нот бүтээх", limit5Description: "Хэвтээ алхам нь 3:2 квинт, ташуу алхам нь 5:4 их терц. Нэг октавт шилжүүлсэн цэгүүдээс өөрийн хөгийг сонго.",
       limit5Play: "Нотуудыг сонсох", limit5Stop: "Зогсоох", limit5PlayCaption: "Ээлжлэн эсвэл хамтад нь",
       limit5PresetsTitle: "Жишээ ба даалгавар", limit5PresetsAria: "5-хязгаарын жишээ болон коммагийн замууд",
-      limit5Major: "До мажор", limit5Minor: "Ми минор", limit5GMajor: "Соль мажор", limit5DMinor: "Ре минор", limit5Seven: "7 нот", limit5Fifths: "Зөвхөн 3:2",
+      limit5Major: "До мажор", limit5Minor: "Ми минор", limit5GMajor: "Соль мажор", limit5DMinor: "Ре минор", limit5Seven: "7 нот", limit5Just12: "12 цэвэр нот · До төвтэй", limit5Fifths: "Зөвхөн 3:2",
+      limit5JustHint: "Төгөлдөр хуурын 12 товчлуур бүрд нэг цэвэр торын цэг сонгосон. Ля4 = 440 Гц бол До4 = 264 Гц. Энэ нь До төвтэй нэг хувилбар; бусад тоналийн бүх аккорд цэвэр болохгүй. Шатлалыг ээлжлэн сонс; 12 нотыг хамт эгшиглүүлбэл нягт сонсогдоно.",
       limit5CommaE: "Ми: хоёр зам (81:80)", limit5CommaD: "Ре: хоёр зам (81:80)",
       limit5Diaschisma: "Хоёр дахь 5:4 давхар (2048:2025)", limit5Custom: "Миний сонголт",
       limit5PickHint: "Тор дээрх цэгийг дарж нот нэмэх, хасах (ихдээ 12). Октав дахь байрлалыг баруун талд харна.",
@@ -716,40 +738,57 @@
       limit5Hidden: "Хуудсаас гарахад дуу зогслоо.", limit5Invalid: "Эхлэх давтамж 110–330 Гц байх ёстой.",
       limit5NoNotes: "Тоглуулахын өмнө ядаж нэг нот сонго.", limit5Blocked: "Дуу эхэлсэнгүй. Хөтчийн дууны тохиргоог шалгаарай.",
       limit5Limit: "Ихдээ 12 нот сонгож болно.",
-      tempChoose: "Арван хоёр нотын хөг", tempDescription: "Яагаад цэвэр квинтийг өөрчилдөг вэ? Аккордын гурвалжин, чоно квинт, таван хөгжийн системийг турш.",
-      tempTaskTitle: "Юуг судлах вэ?", tempTaskBuild: "Квинтийг өөрчилж үзэх", tempTaskWolf: "Чоно квинтийг сонсох",
+      tempChoose: "Арван хоёр нотын хөг", tempDescription: "Цэвэр интервалуудыг яагаад өөрчилдөг вэ? 12 нотын цэвэр хөг ба темперамент, аккордын гурвалжин, өөрчлөгдсөн квинтийг харьцуул.",
+      tempTaskTitle: "Юуг судлах вэ?", tempTaskBuild: "Квинтийг өөрчилж үзэх", tempTaskWolf: "Квинт / чоныг харьцуулах",
       tempTaskThird: "Цэвэр терцтэй харьцуулах", tempTaskChord: "Аккорд ба тональ",
       tempTaskHintBuild: "Гулсуурыг хөдөлгө: энгийн квинт нарийсахад их терц сайжирна, харин хаалтын квинт чоно болж болно.",
       tempTaskHintWolf: "Нэг хөгт До–Соль квинт ба Соль♯–Ми♭ хаалтын квинтийг харьцуул. Түргэн биение, барзгар авиаг сонс.",
       tempTaskHintWolfFree: "Энэ хөгт чоно квинт байхгүй. До–Соль ба Соль♯–Ми♭ хаалтын квинт хоёулаа 700 центэд ойр.",
+      tempTaskHintJustFifth: "Энэ цэвэр хөгт 9 квинт яг 3:2, харин Ре–Ля ба Си♭–Фа 21.51 центээр нарийн, Фа♯–До♯ 19.55 центээр өргөн. До–Соль ба Ре–Ля-г харьцуул.",
+      tempTaskHintJustBuild: "Энд 12 цэвэр нотыг тогтмол сонгосон тул квинт нарийсгах гулсуур байхгүй. Аккордын үндэс, төрлийг сольж торын гурвалжин хаана цэвэр байгааг үз.",
       tempTaskHintThird: "Сонгосон хөгийн терцийг яг 5:4 их, эсвэл 6:5 бага терцтэй харьцуул. Дууны өндөр бус, биениеийг анзаар.",
       tempTaskHintChord: "Нэг гурвалжныг өөр тональ руу шилжүүл. Зарим хөгт аккордын өнгө их өөрчлөгдөнө.",
       tempSystemTitle: "Хөгийн систем", tempKeyTitle: "Аккордын үндэс", tempQualityTitle: "Аккордын төрөл",
       tempEqual: "12-TET · Тэнцүү", tempPythagorean: "Пифагорын", tempMeantone: "1/4-комма дундаж",
-      tempWerckmeister: "Веркмайстер III", tempVallotti: "Валлотти", tempAdjustable: "Өөрөө тохируулах",
+      tempWerckmeister: "Веркмайстер III", tempVallotti: "Валлотти", tempJust: "12 цэвэр нот · До төвтэй", tempAdjustable: "Өөрөө тохируулах",
       tempMajor: "Мажор", tempMinor: "Минор", tempNarrowTitle: "11 квинтийг нарийсгах хэмжээ", tempPresetAria: "Квинтийг нарийсгах жишээнүүд",
       tempPythShort: "Пифагор", tempEqualShort: "Тэнцүү", tempNoWolfShort: "Цэвэр хаалт", tempMeantoneShort: "1/4-комма",
       tempAdjustFact: "Энгийн квинт: {regular} цент · хаалтын квинт: {wolf} цент · До–Ми терц: {third} цент.",
       tempListenBuild: "Квинтийг өөрчлөөд аккордыг сонс. Цэвэр их терц 5:4 буюу 386.31 цент.",
       tempListenWolf: "Квинтийн үед доод нотын 3f ба дээд нотын 2f гармоник хэрхэн зөрж байгааг харьцуул.",
       tempListenWolfFree: "Энд хаалтын квинтийг зохицуулсан. Жинхэнэ чоно квинтийг сонсохын тулд Пифагор эсвэл дундаж хөг сонго.",
+      tempListenJustFifth: "Цэвэр До–Соль (701.96 цент) ба нарийн Ре–Ля (680.45 цент)-г харьцуул. Гармониктай авианд хоёр дахь нь биение үүсгэж болно.",
+      tempListenJustBuild: "До мажор 4:5:6 цэвэр аккорд. Үндсийг Ре мажор болгоод үз: терц нь цэвэр, харин квинт нь 3:2 биш.",
       tempListenThird: "Цэвэр их терцэд доод нотын 5 дахь, дээд нотын 4 дэх гармоник давхцана.",
       tempListenThirdMinor: "Цэвэр бага терцэд доод нотын 6 дахь, дээд нотын 5 дахь гармоник давхцана.",
       tempListenChord: "До мажор ба Соль♯ мажорыг дундаж хөгт харьцуул. Дараа нь тэнцүү хөгт турш.",
       tempPlaybackAria: "Нотуудыг ээлжлэн эсвэл хамт сонсох, дахин дарж зогсоох", tempMelody: "Ээлжлэн", tempChord: "Хамт",
-      tempRegularPlay: "Энгийн квинт", tempWolfPlay: "Чоно квинт", tempClosingPlay: "Хаалтын квинт", tempTunedPlay: "Хөгийн терц", tempPurePlay: "Цэвэр терц",
+      tempRegularPlay: "Энгийн квинт", tempWolfPlay: "Чоно квинт", tempClosingPlay: "Хаалтын квинт", tempJustImperfectPlay: "Нарийн Ре–Ля квинт", tempTunedPlay: "Хөгийн терц", tempPurePlay: "Цэвэр терц",
       tempReference: "Бүх системд Ля4 = 440 Гц хэвээр; бусад нотын өндөр өөрчлөгдөнө.",
       tempLatticeTitle: "3:2 ба 5:4-ийн гурвалжин тор",
       tempLatticeHint: "Цэвэр харьцааны гурван мөр: хөндий цэгүүд 3:2 ба 5:4-ийн зам. Өнгөт нотыг квинтийн замын жишигтэй харьцуулсан; энэ нь цэвэр терцийн бүх боломж биш. Зөрөөг томруулсан.",
+      tempJustLatticeHint: "Сонгосон бүх 12 нот 3:2 ба 5:4-ийн торын яг цэг дээр (гурван мөр) байна. Алтан нь цэвэр аккордын гурвалжин, хөх ногоон нь бодит сонгосон гурван нот; өөр тональд хэлбэр нь өөрчлөгдөнө.",
+      tempJustTunedLegend: "Тороос сонгосон цэвэр нот",
+      tempJustIntro: "До төвтэйгээр 12 товчлуур бүрд нэг яг цэвэр харьцаа сонгосон. Өөр тональд аккордын гурвалжин цэвэр биш байж болно: ямар ч 12 нотын тогтмол цэвэр хөг бүх тональд нэгэн зэрэг таарахгүй.",
+      tempJustRatioAria: "До төвтэй сонгосон цэвэр хөгжийн арван хоёр яг давтамжийн харьцаа",
+      tempJustLatticeAria: "3:2 ба 5:4 торын гурван мөр дээрх яг цэвэр 12 нот, цэвэр гурвалжин ба бодит аккорд; нот дээр дарж үндэс сонгоно",
+      tempJustFifthsAria: "До төвтэй цэвэр хөгжийн арван хоёр квинт: ес нь цэвэр, хоёр нь нарийн, нэг нь өргөн",
+      tempOpenJustLattice: "Энэ 12 цэгийг 5-хязгаарт үзэх →",
       tempExactLegend: "Цэвэр тор", tempTunedLegend: "Хөглөсөн нот (квинтийн зам)", tempTriangleLegend: "Цэвэр аккордын гурвалжин",
       tempLatticeScale: "Зөрөөг зурагт ×8 томруулав",
+      tempJustLatticeScale: "Торын яг цэгүүд · томруулалтгүй",
       tempLatticeFoot: "→ нь 3:2 квинт, ↗ нь 5:4 терц. Цэвэр Ре♯ ба Ми♭-ийн замын төгсгөл Пифагорын коммагаар (23.46 цент) зөрнө.",
+      tempJustLatticeFoot: "→ нь яг 3:2 квинт, ↗ нь яг 5:4 терц. Нэр ойролцоо ч зам өөр бол октавт оруулсан давтамж ялгаатай байж болно.",
       tempLatticeAria: "Цэвэр харьцааны гурван мөр, квинтийн замын жишиг, До–Ми цэвэр 5:4 зорилтот цэг ба аккордын гурвалжин; нот дээр дарж үндэс сонгоно",
       tempLatticeFact: "{quality} аккордын терц {third} цент (цэвэрээс {thirdError}), квинт {fifth} цент (цэвэрээс {fifthError}). Харагдаж буй тасархай холбоос нь терцийн хоёр замын 21.51 центийн зөрүүг заана.",
       tempLatticeWolf: "До–Соль энгийн квинт ба Соль♯–Ми♭ хаалтын квинт ялгаатай. Пифагорын 23.46 центийн коммаас шалтгаалж цэвэр Ре♯-ийг Ми♭-ээр шууд орлуулж болохгүй.",
       tempLatticeWolfFree: "Энэ хөг хаалтын зөрөөг нэг чоно квинтгүйгээр хуваарилсан. Гэхдээ цэвэр торын Ми♭ ба Ре♯ цэгүүд 23.46 центээр ялгаатай хэвээр.",
+      tempJustLatticeFifths: "До төвтэй энэ 12 нотод 9 квинт цэвэр, 3 квинт өөрчлөгдсөн. Ре–Ля-ийн нарийн квинт бол торын цэгүүдээс зөвхөн 12-ыг сонгосны үр дагавар.",
+      tempJustChordFact: "Энэ {quality} аккордын терц {third} цент (цэвэрээс {thirdError}), квинт {fifth} цент (цэвэрээс {fifthError}). Алтан нь цэвэр гурвалжин, хөх ногоон нь сонгосон гурван нот.",
       tempLatticeConstruction: "До→Ми дөрвөн хөглөсөн квинтээр: {actual} цент. Цэвэр 5:4 зорилт: 386.31 цент (зөрүү {error} цент). {outcome}",
       tempLatticeConstructionExact: "Хоёр зам таарлаа: Ми яг 5:4-ийн цэгт хүрнэ. Гэвч Пифагорын жишиг нь торын өөр цэгт байна.",
+      tempJustConstructionExact: "До–Ми яг 5:4 терц. Гэхдээ бусад тональд терц бүр цэвэр байх албагүй.",
+      tempJustConstruction: "Сонгосон квинтээр До→Ми: {actual} цент; цэвэр 5:4: 386.31 цент (зөрүү {error} цент). {outcome}",
       tempLatticeConstructionOther: "Хоёр зам зөрж байна. Нот Пифагорын жишгээс зөрсөн нь бүх цэвэр интервалыг алдсан гэсэн үг биш.",
       tempPartialTitle: "Гармоникийн давхцал ба биение", tempPartialHint: "Цэвэр квинтэд доод 3f, дээд 2f, цэвэр их терцэд доод 5f, дээд 4f гармоник давхцана.",
       tempPartialHintMinor: "Цэвэр бага терцэд доод нотын 6f, дээд нотын 5f гармоник давхцана.",
@@ -757,12 +796,15 @@
       tempBeatFact: "{lower}–{upper}: {a}f ба {b}f гармоник {beat} Гц-ээр зөрнө. Хамт эгшиглэхэд биение, барзгар өнгө сонсогдож болно.",
       tempCircleTitle: "Квинтийн тойрог", tempCircleHint: "Нот дээр товшиж үндсийг сонго. Холбоосын өнгөөр цэвэр, нарийссан, чоно квинтийг ялгана.",
       tempCircleAria: "Интерактив квинтийн тойрог; нот дээр товшиж үндэс сонгоно, зүүн ба баруун сум сонголтыг эргүүлнэ",
-      tempPure: "Цэвэр 3:2", tempNarrow: "Нарийссан", tempWolfLegend: "Чоно квинт",
+      tempPure: "Цэвэр 3:2", tempNarrow: "Нарийссан", tempWolfLegend: "Чоно квинт", tempJustWide: "Өргөссөн квинт",
       tempFifthsTitle: "Квинт бүрийн зөрүү", tempFifthsHint: "Баганууд нь цэвэр 3:2 квинтээс хэдэн центээр зөрснийг харуулна. Хэвтээ шугам 0.",
       tempFifthsAria: "Цэвэр квинтээс зөрөх арван хоёр багана; чоно квинтийг ялган тэмдэглэсэн",
       tempFifthsTable: "12 квинтийн хүснэгт", tempTableFifth: "Квинт", tempTableSize: "Хэмжээ (цент)", tempTableDeviation: "3:2-оос (цент)",
       tempCommaBadge: "Пифагорын комма: {cents} цент", tempWolfFact: "Чоно квинт: {from}–{to}, {cents} цент (цэвэр квинтээс {deviation}).",
       tempNoWolfFact: "Тусдаа чоно квинтгүйгээр тойрог хаагдана. Арван хоёр квинтийн {narrow} нь нарийссан.",
+      tempJustFifthsFact: "9 квинт цэвэр; Ре–Ля ба Си♭–Фа 21.51 центээр нарийн, Фа♯–До♯ 19.55 центээр өргөн. Эдгээр нь нэг хаалтын чоно квинт биш.",
+      tempJustCircleFoot: "Яг 12 нот · 3 өөр квинт",
+      tempJustCircleHint: "Нот дээр дарж үндсийг сонго. Ногоон шугам яг 3:2 квинт, цэнхэр нь нарийн, улбар шар нь өргөн. Тусдаа нэг хаалтын чоно квинт байхгүй.",
       tempChordTitle: "Аккордын давтамж", tempChordHint: "Бүх хөгт Ля4 = 440 Гц. Доорх зөрүү нь ижил нэртэй 12-TET нотоос хэдэн центээр өөр байгааг харуулна.",
       tempChordFoot: "Ижил аккордыг өөрөөр сонсохын тулд систем эсвэл үндсэн нотоо солиорой.",
       tempChordFact: "Үндэс–терц: {third} цент · үндэс–квинт: {fifth} цент. (12-TET-д: {expected} ба 700 цент.)",
@@ -3433,7 +3475,7 @@
   }
 
   function limit5Name(note) {
-    return ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"][note.tetStep];
+    return tempModel.NOTE_NAMES[note.tetStep];
   }
 
   function limit5Pair() {
@@ -3469,6 +3511,7 @@
     $("limit5VolumeValue").textContent = state.limit5Volume + "%";
     $("limit5TetGuides").checked = state.limit5TetGuides;
     $("limit5PresetSelect").value = state.limit5Preset || "custom";
+    $("limit5JustHint").hidden = state.limit5Preset !== "just12";
     document.querySelectorAll("[data-limit5-play]").forEach(button => {
       const playing = (state.limit5Playing || state.limit5Starting) && button.dataset.limit5Play === state.limit5Mode;
       button.classList.toggle("playing", playing);
@@ -3574,6 +3617,9 @@
     stopLimit5Sound();
     state.limit5Coords = limit5Model.PRESETS[preset].map(pair => [...pair]);
     state.limit5Preset = preset;
+    // Matching the A4 = 440 Hz convention in the temperaments panel means
+    // C4 = 440 / (5/3) = 264 Hz for this particular C-centred just scale.
+    if (preset === "just12" && Math.abs(state.limit5Base - 261.63) < .005) state.limit5Base = 264;
     state.limit5ShowRoutes = Boolean(limit5Model.closePairs(state.limit5Coords, state.limit5Base).length);
     state.limit5Focus = [...state.limit5Coords[0]];
     state.limit5Cursor = [...state.limit5Focus];
@@ -3638,11 +3684,13 @@
   function tempPlayback(mode = state.tempMode) {
     if (state.tempTask === "wolf") {
       const ordinary = mode === "melody";
-      const lowPc = ordinary ? 0 : 8, highPc = ordinary ? 7 : 3;
+      const isJust = state.tempSystem === "just";
+      const lowPc = ordinary ? 0 : isJust ? 2 : 8, highPc = ordinary ? 7 : isJust ? 9 : 3;
       const low = { name: tempModel.NOTE_NAMES[lowPc] + "4",
         hz: tempModel.frequency(state.tempSystem, lowPc, 4, 440, state.tempNarrow) };
-      const high = { name: tempModel.NOTE_NAMES[highPc] + (ordinary ? "4" : "5"),
-        hz: tempModel.frequency(state.tempSystem, highPc, ordinary ? 4 : 5, 440, state.tempNarrow) };
+      const upperOctave = ordinary || isJust ? 4 : 5;
+      const high = { name: tempModel.NOTE_NAMES[highPc] + upperOctave,
+        hz: tempModel.frequency(state.tempSystem, highPc, upperOctave, 440, state.tempNarrow) };
       return { notes: [low, high], mode: "chord", interval: "fifth" };
     }
     const chord = tempChord();
@@ -3657,6 +3705,7 @@
 
   function tempListenKey(mode) {
     return state.tempTask === "wolf" ? mode === "melody" ? "tempRegularPlay" :
+      state.tempSystem === "just" ? "tempJustImperfectPlay" :
       tempFifths().some(edge => edge.wolf) ? "tempWolfPlay" : "tempClosingPlay" :
       state.tempTask === "third" ? mode === "melody" ? "tempTunedPlay" : "tempPurePlay" :
         mode === "melody" ? "tempMelody" : "tempChord";
@@ -3666,12 +3715,28 @@
     const chord = tempChord();
     const fifths = tempFifths();
     const task = state.tempTask;
+    const isJust = state.tempSystem === "just";
     const hasWolf = fifths.some(edge => edge.wolf);
     $("tempTaskSelect").value = task;
-    $("tempTaskHint").textContent = text(task === "wolf" && !hasWolf ? "tempTaskHintWolfFree" :
+    $("tempTaskHint").textContent = text(isJust && task === "wolf" ? "tempTaskHintJustFifth" :
+      isJust && task === "build" ? "tempTaskHintJustBuild" :
+      task === "wolf" && !hasWolf ? "tempTaskHintWolfFree" :
       { build: "tempTaskHintBuild", wolf: "tempTaskHintWolf",
       third: "tempTaskHintThird", chord: "tempTaskHintChord" }[task]);
     $("tempSystemSelect").value = state.tempSystem;
+    $("tempJustGuide").hidden = !isJust;
+    $("tempJustRatioGrid").setAttribute("aria-label", text("tempJustRatioAria"));
+    $("tempJustRatioGrid").innerHTML = isJust ? tempModel.JUST12_RATIOS.map(([numerator, denominator], pc) =>
+      '<span' + (chord.notes.some(note => note.pc === pc) ? ' class="active"' : '') +
+      '><strong>' + tempModel.NOTE_NAMES[pc] + '</strong> ' + numerator + ':' + denominator + '</span>').join("") : "";
+    $("tempLatticeHint").textContent = text(isJust ? "tempJustLatticeHint" : "tempLatticeHint");
+    $("tempLatticeFoot").textContent = text(isJust ? "tempJustLatticeFoot" : "tempLatticeFoot");
+    $("tempLatticeScale").textContent = text(isJust ? "tempJustLatticeScale" : "tempLatticeScale");
+    $("tempTunedLegend").textContent = text(isJust ? "tempJustTunedLegend" : "tempTunedLegend");
+    $("tempWolfLegend").textContent = text(isJust ? "tempJustWide" : "tempWolfLegend");
+    $("tempCircleHint").textContent = text(isJust ? "tempJustCircleHint" : "tempCircleHint");
+    $("tempLatticeCanvas").setAttribute("aria-label", text(isJust ? "tempJustLatticeAria" : "tempLatticeAria"));
+    $("tempFifthsCanvas").setAttribute("aria-label", text(isJust ? "tempJustFifthsAria" : "tempFifthsAria"));
     $("tempAdjustGroup").hidden = state.tempSystem !== "adjustable";
     $("tempChordFields").hidden = task === "wolf";
     $("tempChordPanel").hidden = task === "wolf";
@@ -3689,18 +3754,21 @@
     });
     $("tempKeySelect").value = String(state.tempKey);
     $("tempQualitySelect").value = state.tempQuality;
-    $("tempListenFact").textContent = text(task === "wolf" && !hasWolf ? "tempListenWolfFree" :
+    $("tempListenFact").textContent = text(isJust && task === "wolf" ? "tempListenJustFifth" :
+      isJust && task === "build" ? "tempListenJustBuild" :
+      task === "wolf" && !hasWolf ? "tempListenWolfFree" :
       task === "third" && state.tempQuality === "minor" ? "tempListenThirdMinor" :
       { build: "tempListenBuild", wolf: "tempListenWolf",
         third: "tempListenThird", chord: "tempListenChord" }[task]);
     $("tempVolume").value = String(state.tempVolume);
     $("tempVolumeValue").textContent = state.tempVolume + "%";
-    $("tempCircleBadge").textContent = task === "wolf" ? "G♯–E♭" :
+    $("tempCircleBadge").textContent = task === "wolf" ? (isJust ? "C–G / D–A" : "G♯–E♭") :
       tempModel.NOTE_NAMES[state.tempKey] + " " + text(state.tempQuality === "major" ? "tempMajor" : "tempMinor");
     $("tempChordBadge").textContent = chord.notes.map(note => note.name).join(" · ");
-    $("tempLatticeBadge").textContent = task === "wolf" ? "C–G · G♯–E♭" :
+    $("tempLatticeBadge").textContent = task === "wolf" ? (isJust ? "C–G · D–A" : "C–G · G♯–E♭") :
       chord.notes.map(note => note.name.replace(/[45]$/, "")).join(" · ");
-    $("tempLatticeFact").textContent = task === "wolf" ? text(hasWolf ? "tempLatticeWolf" : "tempLatticeWolfFree") : intervalPhrase("tempLatticeFact", {
+    $("tempLatticeFact").textContent = task === "wolf" ? text(isJust ? "tempJustLatticeFifths" :
+      hasWolf ? "tempLatticeWolf" : "tempLatticeWolfFree") : intervalPhrase(isJust ? "tempJustChordFact" : "tempLatticeFact", {
       quality: text(state.tempQuality === "major" ? "tempMajor" : "tempMinor"),
       third: chord.thirdCents.toFixed(2), thirdError: tempCents(chord.thirdCents -
         (state.tempQuality === "major" ? tempModel.PURE_MAJOR_THIRD : tempModel.PURE_MINOR_THIRD)),
@@ -3712,11 +3780,11 @@
     const constructedThird = tempModel.chord(state.tempSystem, 0, "major", 440,
       state.tempNarrow).thirdCents;
     const thirdGap = constructedThird - tempModel.PURE_MAJOR_THIRD;
-    $("tempLatticeConstructionFact").textContent = intervalPhrase("tempLatticeConstruction", {
+    $("tempLatticeConstructionFact").textContent = intervalPhrase(isJust ? "tempJustConstruction" : "tempLatticeConstruction", {
       actual: constructedThird.toFixed(2),
       error: tempCents(Math.abs(thirdGap) < .01 ? 0 : thirdGap),
       outcome: text(Math.abs(thirdGap) < .01 ?
-        "tempLatticeConstructionExact" : "tempLatticeConstructionOther")
+        isJust ? "tempJustConstructionExact" : "tempLatticeConstructionExact" : "tempLatticeConstructionOther")
     });
     const pair = tempPlayback();
     const gap = tempModel.partialGap(pair.notes[0].hz, pair.notes[1].hz, pair.interval);
@@ -3738,7 +3806,7 @@
       expected: state.tempQuality === "major" ? 400 : 300
     });
     const wolf = fifths.find(fifth => fifth.wolf);
-    $("tempWolfFact").textContent = wolf ? intervalPhrase("tempWolfFact", {
+    $("tempWolfFact").textContent = isJust ? text("tempJustFifthsFact") : wolf ? intervalPhrase("tempWolfFact", {
       from: wolf.from, to: wolf.to, cents: wolf.cents.toFixed(2), deviation: tempCents(wolf.deviation)
     }) : intervalPhrase("tempNoWolfFact", { narrow: fifths.filter(fifth => fifth.deviation < -0.01).length });
     $("tempFifthsBody").innerHTML = fifths.map(fifth =>
@@ -3793,6 +3861,7 @@
     if (!tempModel.SELECTABLE_SYSTEMS.includes(system) || system === state.tempSystem) return;
     stopTempSound();
     state.tempSystem = system;
+    if (system === "just" && state.tempTask === "build") state.tempTask = "chord";
     setTempStatus("tempReady");
     renderTempControls();
     drawPlots();
@@ -6466,6 +6535,16 @@
     const notes = tempModel.latticeNotes(state.tempSystem, state.tempNarrow);
     const rootM = notes.find(note => note.pc === state.tempKey).m;
     const compact = width < 580;
+    if (state.tempSystem === "just") {
+      // All twelve selected pitches lie at n = -1, 0, 1. Use literal
+      // lattice coordinates instead of projecting from Pythagorean shadows.
+      const unit = Math.min((width - 85) / 5, (height - 112) / 2.15);
+      const position = (m, n) => ({
+        x: width * .50 + (m - .5 + n / 2) * unit,
+        y: height * .47 - n * Math.sqrt(3) / 2 * unit
+      });
+      return { notes, rootM, compact, minM: -2, maxM: 3, unit, position };
+    }
     const minM = compact ? Math.max(-4, Math.min(rootM - 2, 5)) : -4;
     const maxM = compact ? minM + 7 : 10;
     const unit = Math.min((width - 72) / (maxM - minM + 1), height / 4.6);
@@ -6480,9 +6559,10 @@
     const { ctx, width, height } = plotContext($("tempLatticeCanvas"));
     const layout = tempLatticeGeometry(width, height);
     const { notes, compact, minM, maxM, position } = layout;
+    const isJust = state.tempSystem === "just";
     const chord = tempModel.latticeChord(state.tempSystem, state.tempKey,
       state.tempQuality, state.tempNarrow);
-    const selected = new Set(state.tempTask === "wolf" ? [0, 7, 8, 3] :
+    const selected = new Set(state.tempTask === "wolf" ? (isJust ? [0, 7, 2, 9] : [0, 7, 8, 3]) :
       chord.vertices.map(vertex => vertex.pc));
     const shift = deviation => deviation * 8 / tempModel.PURE_MAJOR_THIRD;
     const inView = point => point.x >= 16 && point.x <= width - 12 &&
@@ -6516,7 +6596,8 @@
 
     // An unobtrusive route through the twelve named pitches, in chromatic
     // order. It is only a visual guide, not an additional tuning rule.
-    const candidates = notes.map(note => ({ ...note, point: position(note.m, shift(note.deviation)) }))
+    const candidates = notes.map(note => ({ ...note, point: position(note.m,
+      isJust ? note.n : shift(note.deviation)) }))
       .filter(note => inView(note.point));
     const chromatic = [...candidates].sort((a, b) => a.pc - b.pc);
     ctx.save();
@@ -6534,10 +6615,10 @@
     // One pure-fifth point per named note is a *reference choice*, not an
     // assertion that the actual tempered note lies on that point.
     for (const note of candidates) {
-      const anchor = position(note.m, 0), dot = note.point;
+      const anchor = position(note.m, isJust ? note.n : 0), dot = note.point;
       ctx.strokeStyle = "#9aaeb8"; ctx.lineWidth = 1.1;
       ctx.beginPath(); ctx.arc(anchor.x, anchor.y, 5.3, 0, Math.PI * 2); ctx.stroke();
-      if (Math.abs(note.deviation) > .02) {
+      if (!isJust && Math.abs(note.deviation) > .02) {
         ctx.strokeStyle = "#5e9caf"; ctx.lineWidth = 1.4;
         ctx.beginPath(); ctx.moveTo(anchor.x, anchor.y); ctx.lineTo(dot.x, dot.y); ctx.stroke();
       }
@@ -6550,7 +6631,7 @@
       ctx.fillStyle = active ? "#145680" : inChord ? "#146e61" : "#466b80";
       ctx.font = "bold " + (compact ? 10 : 12) + "px system-ui, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText(note.name, dot.x, dot.y + (note.deviation < -5 ? 20 : -12));
+      ctx.fillText(note.name, dot.x, dot.y + (isJust && note.n < 0 || note.deviation < -5 ? 20 : -12));
     }
 
     // The theoretical just-intonation chord is an equilateral triangle;
@@ -6558,7 +6639,8 @@
     const ideal = chord.vertices.map(vertex => position(vertex.m, vertex.n));
     const rootNote = notes.find(note => note.pc === state.tempKey);
     const rootShift = shift(rootNote.deviation);
-    const tuned = chord.vertices.map(vertex => position(vertex.m, vertex.n + rootShift + shift(vertex.deviation)));
+    const tuned = isJust ? chord.actualVertices.map(vertex => position(vertex.m, vertex.n)) :
+      chord.vertices.map(vertex => position(vertex.m, vertex.n + rootShift + shift(vertex.deviation)));
     const trace = vertices => {
       ctx.beginPath(); ctx.moveTo(vertices[0].x, vertices[0].y);
       for (let i = 1; i < vertices.length; i++) ctx.lineTo(vertices[i].x, vertices[i].y);
@@ -6582,7 +6664,7 @@
 
     const pythThirdM = chord.rootM + (state.tempQuality === "major" ? 4 : -3);
     const pythThird = position(pythThirdM, 0);
-    if (state.tempTask !== "wolf" && inView(pythThird) && inView(ideal[1])) {
+    if (!isJust && state.tempTask !== "wolf" && inView(pythThird) && inView(ideal[1])) {
       ctx.save();
       ctx.strokeStyle = "#b98a52"; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
       ctx.beginPath(); ctx.moveTo(ideal[1].x, ideal[1].y);
@@ -6594,7 +6676,7 @@
     }
 
     const extra = position(9, 0);
-    if (inView(extra)) {
+    if (!isJust && inView(extra)) {
       ctx.strokeStyle = "#cc7751"; ctx.lineWidth = 2; ctx.setLineDash([3, 3]);
       ctx.beginPath(); ctx.arc(extra.x, extra.y, 7, 0, 2 * Math.PI); ctx.stroke();
       ctx.setLineDash([]); ctx.font = "bold 11px system-ui, sans-serif";
@@ -6691,20 +6773,21 @@
     const points = tempCirclePositions(width, height);
     const edges = tempFifths();
     const chord = tempChord();
-    const selectedNotes = state.tempTask === "wolf" ? [0, 7, 8, 3] : chord.notes.map(note => note.pc);
+    const isJust = state.tempSystem === "just";
+    const selectedNotes = state.tempTask === "wolf" ? (isJust ? [0, 7, 2, 9] : [0, 7, 8, 3]) : chord.notes.map(note => note.pc);
     const compact = width < 400;
     const nodeRadius = compact ? 13 : 16;
     ctx.lineCap = "round";
     for (const edge of edges) {
       const start = points[edge.index], end = points[(edge.index + 1) % 12];
       ctx.lineWidth = edge.wolf ? 5 : 3;
-      ctx.strokeStyle = edge.wolf ? "#db9238" : edge.deviation < -.01 ? "#378acc" : "#6c9c83";
+      ctx.strokeStyle = edge.wolf || edge.deviation > .01 ? "#db9238" : edge.deviation < -.01 ? "#378acc" : "#6c9c83";
       ctx.beginPath(); ctx.moveTo(start.x, start.y); ctx.lineTo(end.x, end.y); ctx.stroke();
     }
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     for (const point of points) {
-      const selected = state.tempTask === "wolf" ? point.pc === 8 || point.pc === 3 : point.pc === state.tempKey;
+      const selected = state.tempTask === "wolf" ? (isJust ? point.pc === 2 || point.pc === 9 : point.pc === 8 || point.pc === 3) : point.pc === state.tempKey;
       const chordIndex = selectedNotes.indexOf(point.pc);
       ctx.fillStyle = selected ? "#1c69ac" : chordIndex >= 0 ? "#def4ee" : "#fff";
       ctx.strokeStyle = selected ? "#1c69ac" : chordIndex >= 0 ? "#199484" : "#94acc5";
@@ -6716,10 +6799,10 @@
     }
     ctx.fillStyle = "#325d7b";
     ctx.font = "bold " + (compact ? 11 : 15) + "px system-ui, sans-serif";
-    ctx.fillText(state.tempTask === "wolf" ? "C–G / G♯–E♭" :
+    ctx.fillText(state.tempTask === "wolf" ? (isJust ? "C–G / D–A" : "C–G / G♯–E♭") :
       tempModel.NOTE_NAMES[state.tempKey] + " " + text(state.tempQuality === "major" ? "tempMajor" : "tempMinor"), width / 2, height / 2 - 8);
     ctx.font = (compact ? "10" : "12") + "px system-ui, sans-serif";
-    ctx.fillText("(3/2)¹² ≠ 2⁷", width / 2, height / 2 + 14);
+    ctx.fillText(isJust ? text("tempJustCircleFoot") : "(3/2)¹² ≠ 2⁷", width / 2, height / 2 + 14);
   }
 
   function drawTempFifths() {
@@ -6748,10 +6831,10 @@
     edges.forEach((edge, i) => {
       const x = left + column * (i + .5);
       const y = mid - edge.deviation / magnitude * barHeight;
-      ctx.fillStyle = edge.wolf ? "#db9238" : edge.deviation < -.01 ? "#378acc" : "#6c9c83";
+      ctx.fillStyle = edge.wolf || edge.deviation > .01 ? "#db9238" : edge.deviation < -.01 ? "#378acc" : "#6c9c83";
       const absHeight = Math.max(1.7, Math.abs(mid - y));
       ctx.fillRect(x - column * .32, Math.min(y, mid) - (edge.deviation === 0 ? 1 : 0), column * .64, absHeight);
-      ctx.fillStyle = edge.wolf ? "#a16523" : "#516d84";
+      ctx.fillStyle = edge.wolf || edge.deviation > .01 ? "#a16523" : "#516d84";
       ctx.font = (width < 450 ? "9px " : "11px ") + "system-ui, sans-serif";
       ctx.textAlign = "center";
       ctx.fillText(edge.from, x, bottom + 16);
@@ -6914,6 +6997,10 @@
   $("limit5Reset").addEventListener("click", resetLimit5);
   $("tempTaskSelect").addEventListener("change", event => selectTempTask(event.target.value));
   $("tempSystemSelect").addEventListener("change", event => selectTempSystem(event.target.value));
+  $("tempOpenJustLattice").addEventListener("click", () => {
+    selectLimit5Preset("just12");
+    selectTuningKind("limit5");
+  });
   $("tempNarrowSlider").addEventListener("input", event => setTempNarrow(event.target.value));
   document.querySelectorAll("[data-temp-narrow-preset]").forEach(button => {
     button.addEventListener("click", () => selectTempNarrowPreset(button.dataset.tempNarrowPreset));
@@ -6934,7 +7021,8 @@
     const { notes, position } = tempLatticeGeometry(rect.width, rect.height);
     const x = event.clientX - rect.left, y = event.clientY - rect.top;
     const closest = notes.map(note => ({ pc: note.pc,
-      point: position(note.m, note.deviation * 8 / tempModel.PURE_MAJOR_THIRD) }))
+      point: position(note.m, state.tempSystem === "just" ? note.n :
+        note.deviation * 8 / tempModel.PURE_MAJOR_THIRD) }))
       .map(note => ({ ...note, distance: Math.hypot(note.point.x - x, note.point.y - y) }))
       .sort((a, b) => a.distance - b.distance)[0];
     if (closest && closest.distance <= 24) selectTempKey(closest.pc);
