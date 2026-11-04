@@ -171,28 +171,34 @@
       scaleInvalid: "Enter a starting frequency from 110 to 330 Hz.",
       limit5Choose: "Build notes with 3:2 and 5:4", limit5Description: "Move horizontally by a pure fifth (3:2), diagonally by a major third (5:4). Fold the points into one octave and choose your own notes.",
       limit5Play: "Hear the notes", limit5Stop: "Stop", limit5PlayCaption: "In sequence or together",
-      limit5PresetsTitle: "Ratio-built examples", limit5PresetsAria: "Five-limit musical examples",
+      limit5PresetsTitle: "Examples and exercises", limit5PresetsAria: "Five-limit examples and comma routes",
       limit5Major: "C major", limit5Minor: "E minor", limit5GMajor: "G major", limit5DMinor: "D minor", limit5Seven: "7 notes", limit5Fifths: "Only 3:2",
-      limit5PickHint: "Tap a dot on the lattice to add or remove a note (up to 12). Green is the starting note C.",
+      limit5CommaE: "E: two routes (81:80)", limit5CommaD: "D: two routes (81:80)",
+      limit5Diaschisma: "Second 5:4 layer (2048:2025)", limit5Custom: "My selection",
+      limit5PickHint: "Tap a lattice point to add or remove it (up to 12). Its octave pitch is shown on the right.",
       limit5BaseTitle: "Reference C frequency", limit5BaseHint: "261.63 Hz is middle C. Changing it transposes the entire tuning together.",
-      limit5PlaybackTitle: "How to listen", limit5PlaybackAria: "Sequence or chord playback", limit5Melody: "In sequence", limit5Chord: "Together (chord)",
-      limit5TetGuides: "Show sample 12-TET equivalent-pitch guides", limit5TetHint: "Ends of a dashed line have the same name in 12-TET, yet may have different exact frequencies.",
-      limit5CommaTitle: "Syntonic comma · 81:80", limit5CommaAria: "Choose a syntonic comma comparison",
-      limit5CommaE: "E: two paths", limit5CommaD: "D: two paths", limit5Compare: "Hear both pitches together", limit5CompareStop: "Stop comparison",
+      limit5PlaybackAria: "Play or stop the selected notes in sequence or together", limit5Melody: "In sequence", limit5Chord: "Together",
+      limit5DisplayOptions: "Paths and guides", limit5Routes: "Show the two routes for a selected near-return",
+      limit5TetGuides: "Connect points with the same 12-TET name", limit5TetHint: "Dashed links have similar nominal pitches, not necessarily equal exact frequencies.",
       limit5CommaFact: "{name}: {just} versus {pyth} · {cents} cents", limit5BeatFact: "{low} and {high} Hz · {beats} Hz beats",
       limit5LatticeTitle: "The 3–5 lattice", limit5LatticeHint: "→ is 3:2, ↗ is 5:4; the third edge is 6:5. Colored points form your selection.",
-      limit5LatticeFoot: "The same 12-TET note name can correspond to different ratios. The gold link locates the syntonic comma.", limit5GridAxis: "→ 3:2 · ↗ 5:4",
+      limit5LatticeFoot: "Each layer adds a 5:4 step; select a point to inspect where it lands in the octave.", limit5GridAxis: "→ 3:2 · ↗ 5:4",
       limit5LatticeAria: "3:2 and 5:4 lattice: tap a note; keyboard arrows move, Enter selects", limit5NowIdle: "Play to see the sounding notes.", limit5NowPlaying: "Playing {ratio} · {hz}",
-      limit5NowChord: "Playing all selected notes together.", limit5NowCompare: "Two versions of {name} sound together.",
-      limit5OctaveTitle: "Pitch order within one octave", limit5OctaveHint: "Octave-folded notes run from left to right. The 12-TET ticks are reference positions, not a requirement.",
-      limit5OctaveFoot: "The two gold markers are different versions of the same note. Their tiny offset is magnified below.",
-      limit5OctaveAria: "Selected pitches and a comma pair inside one octave, with reference semitones", limit5RulerTitle: "Magnified comma", limit5RulerValue: "81:80 ≈ {cents} cents",
-      limit5Challenge: "Listen to the pure C–E–G chord, then play both E versions together. Next compare the two versions of D.",
+      limit5NowChord: "Playing the selected notes together.",
+      limit5OctaveTitle: "Where the notes land in one octave", limit5OctaveHint: "Selected points are folded into C4–C5 and placed by cents; 12-TET ticks are only guides.",
+      limit5OctaveFoot: "Only when a near-return pair is selected do we magnify its difference below; not every note receives an arbitrary comma.",
+      limit5OctaveAria: "Selected octave-folded pitches with optional close-pair markers", limit5RulerTitle: "Difference between selected routes", limit5RulerValue: "{ratio} ≈ {cents} cents",
+      limit5PointFact: "{name} · {ratio} · {cents} cents · {hz} · (m={m}, n={n}) · {fold}",
+      limit5PairFact: "{name}: {just} and {pyth} · {cents} cents", limit5NoMatches: "Choose neighboring notes on the lattice to reveal exact harmonic coincidences.",
+      limit5FourierTitle: "Notes and their harmonics", limit5FourierHint: "Each pitch-ordered row is a selected note. Circles: octave-folded fundamentals; diamonds: illustrative harmonics.",
+      limit5FourierBadge: "3:2 · 5:4", limit5FourierAria: "Pitch-ordered harmonic rows, octave copies and harmonic coincidences for fifths and thirds",
+      limit5FourierFoot: "Blue connections use 3:2; green use 5:4; gray diamonds are possible harmonics, not measured sound. Pale octave copies are not extra partials.",
+      limit5Challenge: "Play C–E–G together, then select ‘E: two routes’ and listen for beats. Try the second 5:4 layer: does a different small gap appear?",
       limit5LearnMore: "How can one note have two exact pitches?",
       limit5LessonOne: "The 3-limit uses powers of 2 and 3. The 5-limit adds pure 5:4 major thirds, creating a second direction on the lattice. Choosing which pitches make a useful scale is also a musical decision, not only mathematics.",
-      limit5LessonTwo: "Four pure fifths produce 81:64, while one pure major third produces 5:4. Their ratio is 81:80, or about 21.51 cents: the syntonic comma. Equal temperament identifies these as one nominal note; pure ratios leave distinct lattice points.",
-      limit5Ready: "Ready. Choose notes and press Play.", limit5Starting: "Preparing the sound…", limit5Playing: "Playing. Tap the large button to stop.",
-      limit5Comparing: "Playing both comma pitches; listen for slow beats.", limit5Stopped: "Stopped. Try another chord or comma pair.",
+      limit5LessonTwo: "Four pure fifths produce 81:64, while one 5:4 step gives 5:4: their 81:80 syntonic comma is 21.51 cents. With two 5:4 steps a different close-return example gives 2048:2025, the 19.55-cent diaschisma. These are relations between particular routes, not gaps attached to every note.",
+      limit5Ready: "Ready. Choose a preset or lattice notes, then tap a blue playback button.", limit5Starting: "Preparing the sound…", limit5Playing: "Playing. Tap the active button to stop.",
+      limit5Stopped: "Stopped. Try another selection.",
       limit5Hidden: "Sound stopped when you left the page.", limit5Invalid: "Enter a starting frequency from 110 to 330 Hz.",
       limit5NoNotes: "Choose at least one note before playing.", limit5Blocked: "Cannot start playback. Check your browser sound settings.",
       limit5Limit: "You can choose at most 12 notes.",
@@ -617,28 +623,34 @@
       scaleInvalid: "Эхлэх давтамж 110–330 Гц байх ёстой.",
       limit5Choose: "3:2 ба 5:4-өөр нот бүтээх", limit5Description: "Хэвтээ алхам нь 3:2 квинт, ташуу алхам нь 5:4 их терц. Нэг октавт шилжүүлсэн цэгүүдээс өөрийн хөгийг сонго.",
       limit5Play: "Нотуудыг сонсох", limit5Stop: "Зогсоох", limit5PlayCaption: "Ээлжлэн эсвэл хамтад нь",
-      limit5PresetsTitle: "Харьцаагаар бүтээсэн жишээнүүд", limit5PresetsAria: "5-хязгаарын жишээнүүд",
+      limit5PresetsTitle: "Жишээ ба даалгавар", limit5PresetsAria: "5-хязгаарын жишээ болон коммагийн замууд",
       limit5Major: "До мажор", limit5Minor: "Ми минор", limit5GMajor: "Соль мажор", limit5DMinor: "Ре минор", limit5Seven: "7 нот", limit5Fifths: "Зөвхөн 3:2",
-      limit5PickHint: "Тор дээрх дугуйг дарж нот нэмж, хасна (ихдээ 12). Ногоон нь До буюу эхлэх нот.",
+      limit5CommaE: "Ми: хоёр зам (81:80)", limit5CommaD: "Ре: хоёр зам (81:80)",
+      limit5Diaschisma: "Хоёр дахь 5:4 давхар (2048:2025)", limit5Custom: "Миний сонголт",
+      limit5PickHint: "Тор дээрх цэгийг дарж нот нэмэх, хасах (ихдээ 12). Октав дахь байрлалыг баруун талд харна.",
       limit5BaseTitle: "До (C) нотын давтамж", limit5BaseHint: "261.63 Гц бол До4. Давтамжийг өөрчилбөл бүх шатлал хамт шилжинэ.",
-      limit5PlaybackTitle: "Яаж сонсох вэ?", limit5PlaybackAria: "Ээлжлэх эсвэл хамт тоглох", limit5Melody: "Ээлжлэн", limit5Chord: "Хамт (аккорд)",
-      limit5TetGuides: "12-TET-д ижил нэртэй нотын жишээг холбох", limit5TetHint: "Тасархай шугамын хоёр үзүүр 12-TET-д нэг нэртэй боловч цэвэр харьцаагаар өөр давтамжтай байж болно.",
-      limit5CommaTitle: "Синтоник комма · 81:80", limit5CommaAria: "Синтоник коммагийн харьцуулалт",
-      limit5CommaE: "Ми: 2 зам", limit5CommaD: "Ре: 2 зам", limit5Compare: "Хоёр давтамжийг хамт сонсох", limit5CompareStop: "Харьцуулалтыг зогсоох",
+      limit5PlaybackAria: "Сонгосон нотуудыг ээлжлэн эсвэл хамт тоглуулж, зогсоох", limit5Melody: "Ээлжлэн", limit5Chord: "Хамт",
+      limit5DisplayOptions: "Зам ба тэмдэглэгээ", limit5Routes: "Ойролцоо хоёр нотын замыг харуулах",
+      limit5TetGuides: "12-TET-д ижил нэртэй цэгүүдийг холбох", limit5TetHint: "Тасархай шугамын үзүүрүүд ойролцоо нэртэй боловч яг ижил давтамжтай биш байж болно.",
       limit5CommaFact: "{name}: {just} ба {pyth} · {cents} цент", limit5BeatFact: "{low} ба {high} Гц · {beats} Гц биение",
       limit5LatticeTitle: "3 ба 5-ын тор", limit5LatticeHint: "→ нь 3:2, ↗ нь 5:4, гурав дахь тал нь 6:5. Тэмдэглэсэн цэгүүд тоглоход оролцоно.",
-      limit5LatticeFoot: "Ижил 12-TET нэртэй цэгүүд үнэндээ өөр байж болно. Алтан холбоос синтоник коммаг харуулна.", limit5GridAxis: "→ 3:2 · ↗ 5:4",
+      limit5LatticeFoot: "Давхар бүрд 5:4-ийн алхам нэмэгдэнэ; цэг сонгоход октав дахь байрлалыг нь харна.", limit5GridAxis: "→ 3:2 · ↗ 5:4",
       limit5LatticeAria: "3:2 ба 5:4-ийн тор: цэг дарж нот сонго; гарын сум ба Enter-ээр бас сонгоно", limit5NowIdle: "Нотуудын эгшиглэх ээлжийг тоглуулахад харна.", limit5NowPlaying: "Эгшиглэж байна: {ratio} · {hz}",
-      limit5NowChord: "Сонгосон бүх нот хамт эгшиглэж байна.", limit5NowCompare: "{name} нотын хоёр хувилбар хамт эгшиглэж байна.",
-      limit5OctaveTitle: "Нэг октав дахь нотын эрэмбэ", limit5OctaveHint: "Нэг октавт шилжүүлсэн нотууд зүүнээс баруун тийш өснө. 12-TET тэмдэглэгээ нь зөвхөн жишиг.",
-      limit5OctaveFoot: "Алтлаг хоёр цэг нь нэг нотын хоёр өөр хувилбар. Бяцхан зөрүүг доор томруулж харууллаа.",
-      limit5OctaveAria: "Нэг октав дахь сонгосон нот ба коммагийн хоёр цэг", limit5RulerTitle: "Коммаг томруулбал", limit5RulerValue: "81:80 ≈ {cents} цент",
-      limit5Challenge: "До–Ми–Соль мажор аккордыг сонсоод Ми нотын хоёр хувилбарыг хамт эгшиглүүл. Дараа нь Ре-ийн хоёр хувилбарыг харьцуул.",
+      limit5NowChord: "Сонгосон нотууд хамт эгшиглэж байна.",
+      limit5OctaveTitle: "Нэг октавт нот хаана буух вэ?", limit5OctaveHint: "Сонгосон цэг бүрийг До4–До5 дотор оруулж центээр байрлуулна. 12-TET бол зөвхөн жишиг.",
+      limit5OctaveFoot: "Хоёр ойролцоо цэг сонговол ялгааг доор томруулна; бүх нотод коммаг хүчээр оноохгүй.",
+      limit5OctaveAria: "Октавт шилжүүлсэн сонгосон нот, ойрхон хосын тэмдэглэгээ", limit5RulerTitle: "Сонгосон хоёр замын зөрүү", limit5RulerValue: "{ratio} ≈ {cents} цент",
+      limit5PointFact: "{name} · {ratio} · {cents} цент · {hz} · (m={m}, n={n}) · {fold}",
+      limit5PairFact: "{name}: {just} ба {pyth} · {cents} цент", limit5NoMatches: "Хоёр хөрш цэг сонговол гармоникуудын яг давхцах байрыг харуулна.",
+      limit5FourierTitle: "Нот ба гармоникийн мөрүүд", limit5FourierHint: "Нэг мөрд нэг сонгосон нот. Дугуй нь октав дахь үндсэн давтамж, ромб нь боломжит гармоник.",
+      limit5FourierBadge: "3:2 · 5:4", limit5FourierAria: "Өндрөөр эрэмбэлсэн нотын гармоникууд, октавын хувилбар ба квинт, терцийн давхцал",
+      limit5FourierFoot: "Цэнхэр нь 3:2, ногоон нь 5:4 алхмын гармоникийн давхцал. Ромбууд бол жишээ гармоникууд, хэмжсэн спектр биш; саарал цэг шинэ гармоник биш.",
+      limit5Challenge: "До–Ми–Соль-ийг хамт сонс. Дараа нь «Ми: хоёр зам»-ыг сонгож биений хэмнэлийг ажигла. Хоёр дахь 5:4 давхарт өөр жижиг зөрүү гарч байна уу?",
       limit5LearnMore: "Яагаад нэг нотоос хоёр өөр давтамж үүсэв?",
       limit5LessonOne: "3-хязгаарын хөгт 2 ба 3-ын зэрэг хангалттай. 5-хязгаарын хөгт 5:4 их терцийг нэмж, торын нөгөө чиглэлд алхана. Нотуудаа сонгох нь зөвхөн математикийн биш, хөгжмийн шийдвэр.",
-      limit5LessonTwo: "Дөрвөн цэвэр квинтээс 81:64, нэг цэвэр их терцээс 5:4 гарна. Тэдний харьцаа 81:80 буюу 21.51 цент — синтоник комма. Үүнийг 12-TET тэнцүү нот болгож авдаг бол цэвэр харьцаанд хоёр өөр цэг хэвээр үлдэнэ.",
-      limit5Ready: "Бэлэн. Нотуудаа сонгоод тоглуулаарай.", limit5Starting: "Авиа бэлтгэж байна…", limit5Playing: "Тоглож байна. Зогсоохын тулд том товчийг дар.",
-      limit5Comparing: "Коммагийн хоёр нот хамт эгшиглэж байна. Биений хэмнэлийг сонсоорой.", limit5Stopped: "Зогслоо. Өөр аккорд эсвэл комма сонго.",
+      limit5LessonTwo: "Дөрвөн квинт 81:64, нэг 5:4 алхам 5:4 үүсгэнэ: тэдний 81:80 синтоник комма 21.51 цент. Харин хоёр 5:4 алхамтай өөр замууд 2048:2025 буюу 19.55 центийн диасхизма өгч болно. Эдгээр нь бүх нотод наасан зөрүү бус, тодорхой хоёр замын харьцаа юм.",
+      limit5Ready: "Бэлэн. Жишээ эсвэл цэгүүдээ сонгоод цэнхэр товчийг дар.", limit5Starting: "Авиа бэлтгэж байна…", limit5Playing: "Эгшиглэж байна. Идэвхтэй товчийг дарж зогсооно.",
+      limit5Stopped: "Зогслоо. Өөр сонголт туршаарай.",
       limit5Hidden: "Хуудсаас гарахад дуу зогслоо.", limit5Invalid: "Эхлэх давтамж 110–330 Гц байх ёстой.",
       limit5NoNotes: "Тоглуулахын өмнө ядаж нэг нот сонго.", limit5Blocked: "Дуу эхэлсэнгүй. Хөтчийн дууны тохиргоог шалгаарай.",
       limit5Limit: "Ихдээ 12 нот сонгож болно.",
@@ -1015,13 +1027,14 @@
     limit5Mode: "melody",
     limit5Base: 261.63,
     limit5Volume: 38,
-    limit5Comma: "e",
     limit5TetGuides: false,
+    limit5ShowRoutes: false,
     limit5Playing: false,
-    limit5Comparing: false,
+    limit5Starting: false,
     limit5Status: "limit5Ready",
     limit5Error: false,
     limit5Cursor: [0, 0],
+    limit5Focus: [0, 0],
     limit5GridFocused: false,
     harmonicBase: 220,
     harmonicPartials: harmonicModel.preset("pure"),
@@ -1979,13 +1992,12 @@
       try { voice.source.stop(now + (immediate ? .002 : .08)); }
       catch (_) { /* The source may already have ended. */ }
     }
-    async start(notes, mode, comparison = false) {
+    async start(notes, mode) {
       const ticket = ++this.generation;
       const context = await this.contextOwner.readyContext();
       if (ticket !== this.generation || state.mode !== "tuning" || state.tuningKind !== "limit5") return false;
       for (const voice of this.voices) this.fadeAndStop(voice, true);
-      const samples = comparison ? limit5Model.makeComparisonSamples(state.limit5Comma, state.limit5Base, context.sampleRate) :
-        limit5Model.makeSamples(notes, context.sampleRate, mode);
+      const samples = limit5Model.makeSamples(notes, context.sampleRate, mode);
       const buffer = context.createBuffer(1, samples.length, context.sampleRate);
       buffer.getChannelData(0).set(samples);
       const source = context.createBufferSource();
@@ -1996,7 +2008,7 @@
       source.buffer = buffer;
       source.connect(gain);
       gain.connect(this.contextOwner.output);
-      const voice = { source, gain, notes, mode, comparison, startedAt: now, stopping: false };
+      const voice = { source, gain, notes, mode, startedAt: now, stopping: false };
       source.onended = () => {
         source.disconnect();
         gain.disconnect();
@@ -2004,7 +2016,7 @@
         if (this.currentVoice === voice) {
           this.currentVoice = null;
           state.limit5Playing = false;
-          state.limit5Comparing = false;
+          state.limit5Starting = false;
           stopLimit5Tracking();
           setLimit5Status("limit5Stopped");
           renderLimit5Controls();
@@ -2221,6 +2233,7 @@
   const limit5Audio = new Limit5Engine(audio);
   let limit5Frame = null;
   let limit5Active = null;
+  let limit5PlaybackRequest = 0;
   const harmonicAudio = new HarmonicEngine(audio);
   const noiseAudio = new NoiseEngine(audio);
   const recorder = new recorderModel.Recorder(audio, window.AudioWorkletNode);
@@ -3173,23 +3186,23 @@
     return ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"][note.tetStep];
   }
 
-  function limit5CommaName() {
-    return state.language === "mn" ? state.limit5Comma === "e" ? "Ми" : "Ре" :
-      state.limit5Comma.toUpperCase();
+  function limit5Pair() {
+    return state.limit5Coords.length < 2 ? null :
+      limit5Model.closePairs(state.limit5Coords, state.limit5Base)[0] || null;
   }
+
+  function limit5FocusNote() { return limit5Model.point(...state.limit5Focus, state.limit5Base); }
 
   function renderLimit5Now() {
     const label = $("limit5Now");
     const active = limit5Active;
-    if (state.limit5Comparing) {
-      label.textContent = intervalPhrase("limit5NowCompare", { name: limit5CommaName() });
-    } else if (state.limit5Playing && active === "all") label.textContent = text("limit5NowChord");
+    if (state.limit5Playing && active === "all") label.textContent = text("limit5NowChord");
     else if (state.limit5Playing && active) {
       label.textContent = intervalPhrase("limit5NowPlaying", {
         ratio: active.numerator + "/" + active.denominator, hz: hzText(active.hz)
       });
     } else label.textContent = text("limit5NowIdle");
-    label.classList.toggle("active", (state.limit5Playing || state.limit5Comparing) && Boolean(active));
+    label.classList.toggle("active", state.limit5Playing && Boolean(active));
   }
 
   function renderLimit5Controls() {
@@ -3205,40 +3218,37 @@
     $("limit5Volume").value = String(state.limit5Volume);
     $("limit5VolumeValue").textContent = state.limit5Volume + "%";
     $("limit5TetGuides").checked = state.limit5TetGuides;
-    $("limit5Button").classList.toggle("playing", state.limit5Playing);
-    $("limit5Button").setAttribute("aria-pressed", String(state.limit5Playing));
-    $("limit5PlayIcon").textContent = state.limit5Playing ? "■" : "▶";
-    $("limit5PlayLabel").textContent = text(state.limit5Playing ? "limit5Stop" : "limit5Play");
-    $("limit5PlayCaption").textContent = text(state.limit5Playing ? "stopCaption" : "limit5PlayCaption");
-    $("limit5CompareButton").textContent = text(state.limit5Comparing ? "limit5CompareStop" : "limit5Compare");
-    $("limit5CompareButton").setAttribute("aria-pressed", String(state.limit5Comparing));
-    $("limit5CompareButton").classList.toggle("playing", state.limit5Comparing);
-    document.querySelectorAll("[data-limit5-preset]").forEach(button => {
-      const selected = button.dataset.limit5Preset === state.limit5Preset;
-      button.classList.toggle("selected", selected);
-      button.setAttribute("aria-pressed", String(selected));
+    $("limit5PresetSelect").value = state.limit5Preset || "custom";
+    document.querySelectorAll("[data-limit5-play]").forEach(button => {
+      const playing = (state.limit5Playing || state.limit5Starting) && button.dataset.limit5Play === state.limit5Mode;
+      button.classList.toggle("playing", playing);
+      button.setAttribute("aria-pressed", String(playing));
+      button.textContent = (playing ? "■ " : "▶ ") + text(button.dataset.limit5Play === "melody" ? "limit5Melody" : "limit5Chord");
     });
-    document.querySelectorAll("[data-limit5-mode]").forEach(button => {
-      const selected = button.dataset.limit5Mode === state.limit5Mode;
-      button.classList.toggle("selected", selected);
-      button.setAttribute("aria-pressed", String(selected));
+    $("limit5ShowRoutes").checked = state.limit5ShowRoutes;
+    const focus = limit5FocusNote();
+    const shift = limit5Model.octaveShift(focus.m, focus.n);
+    $("limit5PointInfo").textContent = intervalPhrase("limit5PointFact", {
+      name: limit5Name(focus), ratio: focus.numerator + "/" + focus.denominator,
+      cents: focus.cents.toFixed(1), hz: hzText(focus.hz), m: focus.m, n: focus.n,
+      fold: shift > 0 ? "×" + 2 ** shift : shift < 0 ? "÷" + 2 ** -shift : "×1"
     });
-    document.querySelectorAll("[data-limit5-comma]").forEach(button => {
-      const selected = button.dataset.limit5Comma === state.limit5Comma;
-      button.classList.toggle("selected", selected);
-      button.setAttribute("aria-pressed", String(selected));
-    });
-    const gap = limit5Model.comparison(state.limit5Comma, state.limit5Base);
+    const gap = limit5Pair();
+    $("limit5CommaRuler").hidden = !gap;
     const fraction = note => note.numerator + "/" + note.denominator;
-    $("limit5CommaFact").textContent = intervalPhrase("limit5CommaFact", {
-      name: limit5CommaName(), just: fraction(gap.just), pyth: fraction(gap.pyth), cents: gap.cents.toFixed(2)
-    });
-    $("limit5BeatFact").textContent = intervalPhrase("limit5BeatFact", {
-      low: frequencyText(gap.just.hz), high: frequencyText(gap.pyth.hz), beats: gap.beatHz.toFixed(2)
-    });
-    $("limit5RulerJust").textContent = fraction(gap.just);
-    $("limit5RulerPyth").textContent = fraction(gap.pyth);
-    $("limit5RulerValue").textContent = intervalPhrase("limit5RulerValue", { cents: gap.cents.toFixed(2) });
+    if (gap) {
+      $("limit5CommaFact").textContent = intervalPhrase("limit5PairFact", {
+        name: limit5Name(gap.low), just: fraction(gap.low), pyth: fraction(gap.high), cents: gap.cents.toFixed(2)
+      });
+      $("limit5BeatFact").textContent = intervalPhrase("limit5BeatFact", {
+        low: frequencyText(gap.low.hz), high: frequencyText(gap.high.hz), beats: gap.beatHz.toFixed(2)
+      });
+      $("limit5RulerJust").textContent = fraction(gap.low);
+      $("limit5RulerPyth").textContent = fraction(gap.high);
+      $("limit5RulerValue").textContent = intervalPhrase("limit5RulerValue", {
+        ratio: gap.numerator + ":" + gap.denominator, cents: gap.cents.toFixed(2)
+      });
+    }
     renderLimit5Now();
   }
 
@@ -3268,44 +3278,44 @@
   }
 
   function stopLimit5Sound(immediate = false, message = "limit5Stopped") {
+    limit5PlaybackRequest++;
     limit5Audio.stop(immediate);
     state.limit5Playing = false;
-    state.limit5Comparing = false;
+    state.limit5Starting = false;
     stopLimit5Tracking();
     setLimit5Status(message);
     renderLimit5Controls();
   }
 
-  async function toggleLimit5Sound() {
-    if (state.limit5Playing) { stopLimit5Sound(); return; }
+  async function toggleLimit5Sound(mode) {
     if (state.mode !== "tuning" || state.tuningKind !== "limit5") return;
+    if ((state.limit5Playing || state.limit5Starting) && state.limit5Mode === mode) {
+      stopLimit5Sound(); return;
+    }
     if (!state.limit5Coords.length) { setLimit5Status("limit5NoNotes", true); return; }
-    if (state.limit5Comparing) stopLimit5Sound(true);
+    limit5Audio.stop(true);
+    if (limit5Frame !== null) window.cancelAnimationFrame(limit5Frame);
+    limit5Frame = null;
+    limit5Active = null;
+    const request = ++limit5PlaybackRequest;
+    state.limit5Playing = false;
+    state.limit5Starting = true;
+    state.limit5Mode = mode;
     setLimit5Status("limit5Starting");
+    renderLimit5Controls();
     try {
-      const notes = state.limit5Mode === "chord" ? limit5Model.chordVoicing(state.limit5Coords, state.limit5Base) : limit5Notes();
-      if (await limit5Audio.start(notes, state.limit5Mode)) {
+      // Two near-return pitches must share an octave for audible beating.
+      const notes = mode === "chord" && !(state.limit5Coords.length === 2 && limit5Pair()) ?
+        limit5Model.chordVoicing(state.limit5Coords, state.limit5Base) : limit5Notes();
+      const started = await limit5Audio.start(notes, mode);
+      if (request !== limit5PlaybackRequest) return;
+      state.limit5Starting = false;
+      if (started) {
         state.limit5Playing = true;
         setLimit5Status("limit5Playing");
         renderLimit5Controls();
         followLimit5Playback();
-      }
-    } catch (_) { stopLimit5Sound(true, "limit5Blocked"); setLimit5Status("limit5Blocked", true); }
-  }
-
-  async function toggleLimit5Compare() {
-    if (state.limit5Comparing) { stopLimit5Sound(); return; }
-    if (state.mode !== "tuning" || state.tuningKind !== "limit5") return;
-    if (state.limit5Playing) stopLimit5Sound(true);
-    setLimit5Status("limit5Starting");
-    try {
-      if (await limit5Audio.start([], "compare", true)) {
-        state.limit5Comparing = true;
-        limit5Active = "comma";
-        setLimit5Status("limit5Comparing");
-        renderLimit5Controls();
-        drawLimit5Plots();
-      }
+      } else { setLimit5Status("limit5Ready"); renderLimit5Controls(); }
     } catch (_) { stopLimit5Sound(true, "limit5Blocked"); setLimit5Status("limit5Blocked", true); }
   }
 
@@ -3314,6 +3324,9 @@
     stopLimit5Sound();
     state.limit5Coords = limit5Model.PRESETS[preset].map(pair => [...pair]);
     state.limit5Preset = preset;
+    state.limit5ShowRoutes = Boolean(limit5Model.closePairs(state.limit5Coords, state.limit5Base).length);
+    state.limit5Focus = [...state.limit5Coords[0]];
+    state.limit5Cursor = [...state.limit5Focus];
     setLimit5Status("limit5Ready");
     renderLimit5Controls();
     drawPlots();
@@ -3326,6 +3339,7 @@
     stopLimit5Sound();
     if (index >= 0) state.limit5Coords.splice(index, 1);
     else state.limit5Coords.push([m, n]);
+    state.limit5Focus = [m, n];
     state.limit5Preset = null;
     setLimit5Status("limit5Ready");
     renderLimit5Controls();
@@ -3351,9 +3365,11 @@
     state.limit5Mode = "melody";
     state.limit5Base = 261.63;
     state.limit5Volume = 38;
-    state.limit5Comma = "e";
     state.limit5TetGuides = false;
+    state.limit5ShowRoutes = false;
+    state.limit5Starting = false;
     state.limit5Cursor = [0, 0];
+    state.limit5Focus = [0, 0];
     setLimit5Status("limit5Ready");
     renderLimit5Controls();
     drawPlots();
@@ -3850,11 +3866,11 @@
     $("scaleSpiralCanvas").setAttribute("aria-label", text("scaleSpiralAria"));
     $("scaleFourierCanvas").setAttribute("aria-label", text("scaleFourierAria"));
     $("scaleGapCanvas").setAttribute("aria-label", text("scaleGapCanvasAria"));
-    $("limit5Presets").setAttribute("aria-label", text("limit5PresetsAria"));
+    $("limit5PresetSelect").setAttribute("aria-label", text("limit5PresetsAria"));
     $("limit5PlaybackModes").setAttribute("aria-label", text("limit5PlaybackAria"));
-    $("limit5Commas").setAttribute("aria-label", text("limit5CommaAria"));
     $("limit5LatticeCanvas").setAttribute("aria-label", text("limit5LatticeAria"));
     $("limit5OctaveCanvas").setAttribute("aria-label", text("limit5OctaveAria"));
+    $("limit5FourierCanvas").setAttribute("aria-label", text("limit5FourierAria"));
     $("harmonicPresets").setAttribute("aria-label", text("harmonicPresetsAria"));
     $("harmonicSliders").setAttribute("aria-label", text("harmonicSlidersAria"));
     $("harmonicWaveCanvas").setAttribute("aria-label", text("harmonicWaveAria"));
@@ -5504,6 +5520,16 @@
       ctx.stroke();
       ctx.setLineDash([]);
     };
+    // A horizontal band is one power of 5/4; the 3/2 chain runs along it.
+    for (let n = limit5Model.MIN_N; n <= limit5Model.MAX_N; n++) {
+      const y = xy({ m: 0, n }).y;
+      ctx.fillStyle = n === 0 ? "#f0f5fb" : n === 1 ? "#edf8f4" : n === 2 ? "#f5f1fa" : "#fafafa";
+      ctx.fillRect(8, y - height * .077, width - 16, height * .154);
+      ctx.fillStyle = "#7891a5";
+      ctx.font = "10px system-ui, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("n=" + n, 14, y - height * .052);
+    }
     // Oblique/triangular Tonnetz: each edge is a pure fifth, major third or minor third.
     for (const note of lattice) {
       for (const [dm, dn] of [[1, 0], [0, 1], [-1, 1]]) {
@@ -5520,45 +5546,55 @@
         }
       }
     }
-    const gap = limit5Model.comparison(state.limit5Comma, state.limit5Base);
-    // Two routes to nominal E or D are drawn with contrasting colored paths.
-    const justPath = state.limit5Comma === "e" ? [[0, 0], [0, 1]] :
-      [[0, 0], [0, 1], [-1, 1], [-2, 1]];
-    const fifthPath = state.limit5Comma === "e" ?
-      [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0]] : [[0, 0], [1, 0], [2, 0]];
-    for (const [path, color] of [[justPath, "#128f81"], [fifthPath, "#d58b28"]]) {
-      for (let i = 1; i < path.length; i++) line({ m: path[i - 1][0], n: path[i - 1][1] },
-        { m: path[i][0], n: path[i][1] }, color, 3.4);
+    const gap = limit5Pair();
+    if (gap && state.limit5ShowRoutes) {
+      // Any near-return selected by the learner, not only pre-chosen E and D.
+      const pathTo = note => {
+        const path = [{ m: 0, n: 0 }];
+        let m = 0, n = 0;
+        while (m !== note.m) { m += Math.sign(note.m - m); path.push({ m, n }); }
+        while (n !== note.n) { n += Math.sign(note.n - n); path.push({ m, n }); }
+        return path;
+      };
+      for (const [note, color] of [[gap.low, "#128f81"], [gap.high, "#d58b28"]]) {
+        const path = pathTo(note);
+        for (let i = 1; i < path.length; i++) line(path[i - 1], path[i], color, 3.3);
+      }
+      line(gap.low, gap.high, "#e7a343", 1.7, [5, 4]);
     }
-    line(gap.just, gap.pyth, "#e7a343", 1.7, [6, 4]);
     for (const note of lattice) {
       const { x, y } = xy(note);
-      const active = state.limit5Playing && (limit5Active === "all" ||
-        (limit5Active && limit5Active.key === note.key));
-      const comparison = state.limit5Comparing && (note.key === gap.just.key || note.key === gap.pyth.key);
-      const endpoint = note.key === gap.just.key || note.key === gap.pyth.key;
       const selected = chosen.has(note.key);
-      if (active || comparison) {
+      const active = selected && state.limit5Playing && (limit5Active === "all" ||
+        (limit5Active && limit5Active.key === note.key));
+      const endpoint = gap && (note.key === gap.low.key || note.key === gap.high.key);
+      const focused = note.m === state.limit5Focus[0] && note.n === state.limit5Focus[1];
+      if (active) {
         ctx.beginPath();
         ctx.fillStyle = "#ffe0a1";
         ctx.arc(x, y, 13, 0, 2 * Math.PI);
         ctx.fill();
       }
       ctx.beginPath();
-      ctx.arc(x, y, selected || endpoint ? 6.3 : 4.7, 0, 2 * Math.PI);
-      ctx.fillStyle = active || comparison ? "#e89b27" : selected ?
+      ctx.arc(x, y, selected || focused ? 6.3 : 4.7, 0, 2 * Math.PI);
+      ctx.fillStyle = active ? "#e89b27" : selected ?
         note.key === "0,0" ? "#159a88" : "#347ec6" : "#ffffff";
       ctx.fill();
-      ctx.strokeStyle = endpoint ? "#d68c27" : selected ? "#347ec6" : "#a8bfd3";
-      ctx.lineWidth = endpoint ? 2 : 1.3;
+      ctx.strokeStyle = endpoint && state.limit5ShowRoutes ? "#d68c27" : selected ? "#347ec6" : "#a8bfd3";
+      ctx.lineWidth = focused ? 2.4 : 1.3;
       ctx.stroke();
-      if (selected || endpoint) {
+      if (selected) {
         ctx.textAlign = "center";
-        ctx.fillStyle = active || comparison ? "#9f6310" : endpoint ? "#966722" : "#355a80";
+        ctx.fillStyle = active ? "#9f6310" : "#355a80";
         ctx.font = "bold 11px system-ui, sans-serif";
         ctx.fillText(limit5Name(note), x, y - 15);
         ctx.font = "10px system-ui, sans-serif";
         ctx.fillText(note.numerator + "/" + note.denominator, x, y + 20);
+      }
+      if (focused) {
+        ctx.strokeStyle = "#149587";
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(x, y, 11.5, 0, 2 * Math.PI); ctx.stroke();
       }
       if (state.limit5GridFocused && note.m === state.limit5Cursor[0] && note.n === state.limit5Cursor[1]) {
         ctx.strokeStyle = "#273d58";
@@ -5574,13 +5610,13 @@
     ctx.fillText("→  3:2", 15, height - 24);
     ctx.fillText("↗  5:4", 15, height - 8);
     ctx.textAlign = "right";
-    ctx.fillText("81:80  ·  " + limit5Model.COMMA_CENTS.toFixed(2) + "¢", width - 16, height - 13);
+    if (gap) ctx.fillText(gap.numerator + ":" + gap.denominator + " · " + gap.cents.toFixed(2) + "¢", width - 16, height - 13);
   }
 
   function drawLimit5Octave() {
     const { ctx, width, height } = plotContext($("limit5OctaveCanvas"));
     const notes = limit5Notes();
-    const gap = limit5Model.comparison(state.limit5Comma, state.limit5Base);
+    const gap = limit5Pair();
     const left = 38, right = width - 24, span = right - left;
     const xAt = cents => left + Math.max(0, Math.min(1200, cents)) * span / 1200;
     const trackY = height * .76;
@@ -5604,37 +5640,149 @@
     ctx.beginPath(); ctx.moveTo(left, trackY); ctx.lineTo(right, trackY); ctx.stroke();
     for (const note of notes) {
       const x = xAt(note.cents);
+      const separated = gap && note.key === gap.high.key;
+      const y = separated ? trackY - 32 : trackY;
       const active = state.limit5Playing && (limit5Active === "all" ||
         (limit5Active && limit5Active.key === note.key));
+      if (separated) {
+        ctx.strokeStyle = "#d1aa69";
+        ctx.setLineDash([3, 4]);
+        ctx.beginPath(); ctx.moveTo(x, y + 7); ctx.lineTo(x, trackY); ctx.stroke();
+        ctx.setLineDash([]);
+      }
       if (active) {
-        ctx.beginPath(); ctx.fillStyle = "#ffe0a1"; ctx.arc(x, trackY, 12, 0, 2 * Math.PI); ctx.fill();
+        ctx.beginPath(); ctx.fillStyle = "#ffe0a1"; ctx.arc(x, y, 12, 0, 2 * Math.PI); ctx.fill();
       }
       ctx.fillStyle = active ? "#e3952f" : note.key === "0,0" ? "#159a88" : "#347ec6";
-      ctx.beginPath(); ctx.arc(x, trackY, 6.5, 0, 2 * Math.PI); ctx.fill();
+      ctx.beginPath(); ctx.arc(x, y, 6.5, 0, 2 * Math.PI); ctx.fill();
       ctx.fillStyle = "#355c83";
       ctx.font = "bold 10px system-ui, sans-serif";
-      ctx.fillText(limit5Name(note), x, trackY - 17);
+      ctx.fillText(limit5Name(note), x, y - 17);
     }
-    // Separate vertically because a 21.5-cent comma is only a few pixels wide on phones.
-    const markerY = [height * .20, height * .39];
-    for (const [index, note] of [gap.just, gap.pyth].entries()) {
-      const x = xAt(note.cents);
-      ctx.fillStyle = state.limit5Comparing ? "#e99b2c" : index === 0 ? "#188e82" : "#d18c30";
-      ctx.beginPath(); ctx.arc(x, markerY[index], 5.5, 0, 2 * Math.PI); ctx.fill();
-      ctx.strokeStyle = "#dab474";
-      ctx.setLineDash([3, 3]);
-      ctx.beginPath(); ctx.moveTo(x, markerY[index] + 8); ctx.lineTo(x, trackY - 13); ctx.stroke();
-      ctx.setLineDash([]);
+    // Nothing is marked as a comma until the selection itself contains a pair.
+    if (gap) {
       ctx.font = "11px system-ui, sans-serif";
-      ctx.fillStyle = "#78633e";
-      ctx.textAlign = x > width * .75 ? "right" : "left";
-      ctx.fillText((index === 0 ? "5:4 · " : "3:2 · ") + note.numerator + "/" + note.denominator, x + (x > width * .75 ? -10 : 10), markerY[index] + 4);
+      ctx.fillStyle = "#9c6a2b";
+      ctx.textAlign = "center";
+      ctx.fillText(gap.numerator + ":" + gap.denominator + " · " + gap.cents.toFixed(2) + "¢",
+        (xAt(gap.low.cents) + xAt(gap.high.cents)) / 2, 23);
     }
+  }
+
+  function drawLimit5Fourier() {
+    const notes = limit5Notes();
+    const canvas = $("limit5FourierCanvas");
+    const desiredHeight = Math.max(270, 110 + notes.length * 43) + "px";
+    if (canvas.style.height !== desiredHeight) canvas.style.height = desiredHeight;
+    const { ctx, width, height } = plotContext(canvas);
+    const left = width < 470 ? 67 : 86, right = width - 16;
+    const minLog = -.28, maxLog = 3.35;
+    const xAt = ratio => left + (Math.log2(ratio) - minLog) / (maxLog - minLog) * (right - left);
+    const top = 53, bottom = height - 38;
+    const yAt = index => notes.length < 2 ? (top + bottom) / 2 :
+      top + index * (bottom - top) / (notes.length - 1);
+    const focus = limit5FocusNote();
+    const selectedFocus = notes.find(note => note.key === focus.key);
+    const matches = [];
+
+    ctx.fillStyle = "#e9f7ef";
+    ctx.fillRect(xAt(1), top - 22, xAt(2) - xAt(1), bottom - top + 44);
+    for (const ratio of [1, 2, 4, 8]) {
+      const x = xAt(ratio);
+      ctx.strokeStyle = ratio === 1 || ratio === 2 ? "#99cab4" : "#e0e8f2";
+      ctx.lineWidth = ratio <= 2 ? 1.5 : 1;
+      ctx.beginPath(); ctx.moveTo(x, top - 22); ctx.lineTo(x, bottom + 22); ctx.stroke();
+      ctx.fillStyle = "#667f9b";
+      ctx.textAlign = "center";
+      ctx.font = "10px system-ui, sans-serif";
+      ctx.fillText(ratio === 1 ? "f₀" : ratio + "f₀", x, height - 10);
+    }
+    ctx.fillStyle = "#318a70";
+    ctx.textAlign = "center";
+    ctx.font = "bold 11px system-ui, sans-serif";
+    ctx.fillText(text("scaleWindowLabel"), (xAt(1) + xAt(2)) / 2, 18);
+
+    // Only links incident to the inspected lattice point are drawn, keeping
+    // seven- and twelve-note presets readable. They connect exact shared
+    // physical partials of *octave-folded* sounding fundamentals.
+    if (selectedFocus) for (const note of notes) {
+      if (note.key === focus.key) continue;
+      const dm = note.m - focus.m, dn = note.n - focus.n;
+      let kind = "", color = "";
+      if (Math.abs(dm) === 1 && dn === 0) { kind = "3:2"; color = "#397bc5"; }
+      else if (dm === 0 && Math.abs(dn) === 1) { kind = "5:4"; color = "#119b86"; }
+      else if (Math.abs(dm) === 1 && Math.abs(dn) === 1 && dm * dn < 0) {
+        kind = "6:5"; color = "#8c78b6";
+      } else continue;
+      const match = limit5Model.harmonicMatch(focus, note);
+      if (!match || xAt(match.ratio) > right) continue;
+      const x = xAt(match.ratio), y1 = yAt(notes.indexOf(selectedFocus)), y2 = yAt(notes.indexOf(note));
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.6;
+      ctx.beginPath(); ctx.moveTo(x, y1); ctx.lineTo(x, y2); ctx.stroke();
+      ctx.fillStyle = color;
+      ctx.beginPath(); ctx.arc(x, (y1 + y2) / 2, 3.6, 0, 2 * Math.PI); ctx.fill();
+      matches.push({ note, match, kind });
+    }
+
+    for (const [index, note] of notes.entries()) {
+      const y = yAt(index);
+      const active = state.limit5Playing && (limit5Active === "all" ||
+        (limit5Active && limit5Active.key === note.key));
+      const inspected = note.key === focus.key;
+      ctx.strokeStyle = inspected ? "#8fc7bb" : "#d9e4ef";
+      ctx.lineWidth = inspected ? 1.6 : 1;
+      ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(right, y); ctx.stroke();
+      ctx.textAlign = "right";
+      ctx.fillStyle = inspected ? "#117f74" : "#456987";
+      ctx.font = "bold 11px system-ui, sans-serif";
+      ctx.fillText(limit5Name(note), left - 9, y - 9);
+      ctx.font = "9px system-ui, sans-serif";
+      ctx.fillText(note.numerator + "/" + note.denominator, left - 9, y + 4);
+      const shift = limit5Model.octaveShift(note.m, note.n);
+      if (shift) {
+        ctx.fillStyle = "#899bac";
+        ctx.fillText(shift > 0 ? "×" + 2 ** shift : "÷" + 2 ** -shift, left - 9, y + 16);
+      }
+      for (let h = 2; h <= 8; h++) {
+        const x = xAt(note.ratio * h);
+        if (x > right + 5) break;
+        ctx.fillStyle = h <= 5 ? "#8cafd1" : "#b7c8d8";
+        const size = h <= 4 ? 4 : 3;
+        ctx.beginPath(); ctx.moveTo(x, y - size); ctx.lineTo(x + size, y);
+        ctx.lineTo(x, y + size); ctx.lineTo(x - size, y); ctx.lineTo(x, y - size); ctx.fill();
+      }
+      const raw = limit5Model.FIFTH ** note.m * limit5Model.THIRD ** note.n;
+      if (shift && raw >= 2 ** minLog && raw <= 2 ** maxLog) {
+        // A hollow gray marker denotes the unfurled route's original pitch,
+        // even if it happens to coincide with a harmonic of the folded note.
+        ctx.strokeStyle = "#a8b4c3";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(xAt(raw), y, 8, 0, 2 * Math.PI); ctx.stroke();
+      }
+      const x = xAt(note.ratio);
+      if (active) {
+        ctx.fillStyle = "#ffdf9b";
+        ctx.beginPath(); ctx.arc(x, y, 13, 0, 2 * Math.PI); ctx.fill();
+      }
+      ctx.fillStyle = active ? "#dd9734" : note.key === "0,0" ? "#159889" : "#317ec5";
+      ctx.beginPath(); ctx.arc(x, y, active ? 7.3 : 6, 0, 2 * Math.PI); ctx.fill();
+      if (inspected) {
+        ctx.strokeStyle = "#159889";
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(x, y, 11, 0, 2 * Math.PI); ctx.stroke();
+      }
+    }
+    $("limit5FourierFact").textContent = matches.length ? matches.map(({ note, match, kind }) =>
+      match.i + " × " + focus.numerator + "/" + focus.denominator + " = " +
+      match.j + " × " + note.numerator + "/" + note.denominator + " (" + kind + ")").join("  ·  ") :
+      text("limit5NoMatches");
   }
 
   function drawLimit5Plots() {
     drawLimit5Lattice();
     drawLimit5Octave();
+    drawLimit5Fourier();
   }
 
   function drawHarmonicWave() {
@@ -5913,25 +6061,12 @@
   document.querySelectorAll("[data-scale-tonic]").forEach(button => {
     button.addEventListener("click", () => selectScaleTonic(Number(button.dataset.scaleTonic)));
   });
-  document.querySelectorAll("[data-limit5-preset]").forEach(button => {
-    button.addEventListener("click", () => selectLimit5Preset(button.dataset.limit5Preset));
+  $("limit5PresetSelect").addEventListener("change", event => {
+    if (event.target.value === "custom") return;
+    selectLimit5Preset(event.target.value);
   });
-  document.querySelectorAll("[data-limit5-mode]").forEach(button => {
-    button.addEventListener("click", () => {
-      if (state.limit5Mode === button.dataset.limit5Mode) return;
-      stopLimit5Sound();
-      state.limit5Mode = button.dataset.limit5Mode;
-      renderLimit5Controls();
-    });
-  });
-  document.querySelectorAll("[data-limit5-comma]").forEach(button => {
-    button.addEventListener("click", () => {
-      if (state.limit5Comma === button.dataset.limit5Comma) return;
-      stopLimit5Sound();
-      state.limit5Comma = button.dataset.limit5Comma;
-      renderLimit5Controls();
-      drawPlots();
-    });
+  document.querySelectorAll("[data-limit5-play]").forEach(button => {
+    button.addEventListener("click", () => toggleLimit5Sound(button.dataset.limit5Play));
   });
   document.querySelectorAll("[data-interval-ratio]").forEach(button => {
     button.addEventListener("click", () => selectIntervalRatio(button.dataset.intervalRatio));
@@ -5957,8 +6092,10 @@
   $("scaleRemoveDown").addEventListener("click", () => changeScaleBoundary("down", -1));
   $("scaleRemoveUp").addEventListener("click", () => changeScaleBoundary("up", -1));
   $("scaleReset").addEventListener("click", resetScale);
-  $("limit5Button").addEventListener("click", toggleLimit5Sound);
-  $("limit5CompareButton").addEventListener("click", toggleLimit5Compare);
+  $("limit5ShowRoutes").addEventListener("change", event => {
+    state.limit5ShowRoutes = event.target.checked;
+    drawPlots();
+  });
   $("limit5TetGuides").addEventListener("change", event => {
     state.limit5TetGuides = event.target.checked;
     drawPlots();
@@ -6001,8 +6138,12 @@
     if (delta) {
       event.preventDefault();
       const m = state.limit5Cursor[0] + delta[0], n = state.limit5Cursor[1] + delta[1];
-      if (limit5Model.within(m, n)) state.limit5Cursor = [m, n];
-      drawLimit5Lattice();
+      if (limit5Model.within(m, n)) {
+        state.limit5Cursor = [m, n];
+        state.limit5Focus = [m, n];
+        renderLimit5Controls();
+      }
+      drawLimit5Plots();
     } else if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       toggleLimit5Point(...state.limit5Cursor);
@@ -6328,7 +6469,7 @@
   window.addEventListener("blur", () => {
     if (recorder.state === "recording") stopRecording();
     if (state.sustainPlaying || sustainPointerId !== null || sustainKeyboardHeld ||
-        state.motionPlaying || state.mixPlaying || state.intervalPlaying || state.earPlaying || state.scalePlaying || state.limit5Playing || state.limit5Comparing ||
+        state.motionPlaying || state.mixPlaying || state.intervalPlaying || state.earPlaying || state.scalePlaying || state.limit5Playing || state.limit5Starting ||
         state.harmonicPlaying || state.noisePlaying) {
       stopAllAudio(true, "hidden");
     }
@@ -6362,6 +6503,7 @@
     observer.observe($("scaleFourierCanvas"));
     observer.observe($("limit5LatticeCanvas"));
     observer.observe($("limit5OctaveCanvas"));
+    observer.observe($("limit5FourierCanvas"));
     observer.observe($("harmonicWaveCanvas"));
     observer.observe($("harmonicSpectrumCanvas"));
     observer.observe($("noiseWaveCanvas"));

@@ -20,7 +20,10 @@
     gmajor: Object.freeze([[1, 0], [1, 1], [2, 0]]),
     dminor: Object.freeze([[-2, 1], [-1, 0], [-1, 1]]),
     seven: Object.freeze([[0, 0], [2, 0], [0, 1], [-1, 0], [1, 0], [-1, 1], [1, 1]]),
-    fifths: Object.freeze([[-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0]])
+    fifths: Object.freeze([[-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0]]),
+    commaE: Object.freeze([[0, 1], [4, 0]]),
+    commaD: Object.freeze([[-2, 1], [2, 0]]),
+    diaschisma: Object.freeze([[-2, 0], [2, 2]])
   });
   const COMPARISONS = Object.freeze({
     e: Object.freeze({ just: [0, 1], pyth: [4, 0], name: "E" }),
@@ -75,6 +78,40 @@
     });
     return notes.sort((a, b) => a.cents - b.cents);
   }
+  function octaveShift(m, n) {
+    if (!within(m, n)) throw new RangeError("Invalid lattice coordinates");
+    // Raw 3:2 and 5:4 moves may leave the starting octave.
+    return -Math.floor(Math.log2(FIFTH ** m * THIRD ** n)) || 0;
+  }
+  function closePairs(coords, baseHz = 220) {
+    const notes = selected(coords, baseHz);
+    const pairs = [];
+    for (let i = 0; i < notes.length; i++) for (let j = i + 1; j < notes.length; j++) {
+      const low = notes[i], high = notes[j];
+      const cents = high.cents - low.cents;
+      // A near-return is an actual pair of distinct lattice pitches,
+      // not an assertion that every equal-tempered note is identical.
+      if (high.tetStep !== low.tetStep || cents >= 60) continue;
+      let numerator = high.numerator * low.denominator;
+      let denominator = high.denominator * low.numerator;
+      const divisor = gcd(numerator, denominator);
+      numerator /= divisor;
+      denominator /= divisor;
+      pairs.push({ low, high, cents, numerator, denominator,
+        beatHz: high.hz - low.hz, fifthSteps: high.m - low.m,
+        thirdSteps: high.n - low.n });
+    }
+    return pairs.sort((a, b) => a.cents - b.cents);
+  }
+  function harmonicMatch(a, b, maxPartial = 8) {
+    if (!Number.isInteger(maxPartial) || maxPartial < 2 || maxPartial > 16) throw new RangeError("Invalid partial count");
+    let best = null;
+    for (let i = 1; i <= maxPartial; i++) for (let j = 1; j <= maxPartial; j++) {
+      if (Math.abs(a.ratio * i - b.ratio * j) > 1e-9) continue;
+      if (!best || i + j < best.i + best.j) best = { i, j, ratio: a.ratio * i };
+    }
+    return best;
+  }
   function chordVoicing(coords, baseHz = 220) {
     const tonic = point(...coords[0], baseHz);
     return selected(coords, baseHz).map(note => ({ ...note,
@@ -121,5 +158,6 @@
   }
   return Object.freeze({ FIFTH, THIRD, COMMA, COMMA_CENTS, STEP_SECONDS, NOTE_SECONDS, CHORD_SECONDS,
     COMPARE_SECONDS, MIN_M, MAX_M, MIN_N, MAX_N, PRESETS, COMPARISONS,
-    key, within, point, lattice, selected, chordVoicing, comparison, makeSamples, makeComparisonSamples });
+    key, within, point, lattice, selected, octaveShift, closePairs, harmonicMatch,
+    chordVoicing, comparison, makeSamples, makeComparisonSamples });
 });
