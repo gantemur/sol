@@ -132,6 +132,14 @@ for(const h of shiftScene.hours){
   }
   yes(h.offset===null);
 }
+const perpendicular={...S.defaults,surface:'inclined',tilt:45,azimuth:0,lat:45};
+const perp=S.build(perpendicular),perpSketch=S.profile(perpendicular);
+eq(perp.frame.polarAngle,90,1e-7);
+yes(perp.hours.length>0);
+yes(perpSketch.items.some(q=>q.type==='text'&&q.value.includes('PERPENDICULAR')));
+const raisedSketch=S.profile({...S.defaults,surface:'inclined',tilt:45,azimuth:130,style:'raised'});
+const rod=raisedSketch.items.find(q=>q.type==='path'&&q.width===1);
+yes(rod&&Math.abs(rod.pts[1][1]-rod.pts[0][1])>1);
 const semi=S.build({...S.defaults,shape:'semicircle'});
 eq(semi.face.w,300);eq(semi.face.h,150);
 yes(semi.items.some(x=>x.type==='semicircle'));
