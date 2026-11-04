@@ -1,4 +1,4 @@
-/* Twelve-key historical temperament recipes, computed from fifth allocations.
+/* Twelve-key temperament recipes and a C-centred exact just-intonation comparison.
  * Mathematical definitions follow Scholtz (Music Theory Online 4.4, 1998)
  * and Yamamoto (University of York thesis, 2015), linked in README.md.
  */
@@ -12,8 +12,16 @@
   const CIRCLE = Object.freeze(["C", "G", "D", "A", "E", "B", "F♯", "C♯", "G♯", "E♭", "B♭", "F"]);
   const PITCH_CLASSES = Object.freeze([0, 7, 2, 9, 4, 11, 6, 1, 8, 3, 10, 5]);
   const NOTE_NAMES = Object.freeze(["C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "G♯", "A", "B♭", "B"]);
-  const SYSTEMS = Object.freeze(["equal", "pythagorean", "meantone", "werckmeister", "vallotti"]);
+  const SYSTEMS = Object.freeze(["equal", "pythagorean", "meantone", "werckmeister", "vallotti", "just"]);
   const SELECTABLE_SYSTEMS = Object.freeze([...SYSTEMS, "adjustable"]);
+  // A *chosen* fixed twelve-note C scale. Its accidentals are not unique:
+  // other just scales may choose other exact coordinates (and spellings).
+  // Ordered chromatically from C; a note's frequency is C4 × numerator/denominator.
+  const JUST12_RATIOS = Object.freeze([[1, 1], [16, 15], [9, 8], [6, 5], [5, 4], [4, 3],
+    [45, 32], [3, 2], [8, 5], [5, 3], [9, 5], [15, 8]].map(pair => Object.freeze(pair)));
+  // Coordinates are exponents of octave-folded 3:2 and 5:4 steps, not cents.
+  const JUST12_COORDS = Object.freeze([[0, 0], [-1, -1], [2, 0], [1, -1], [0, 1], [-1, 0],
+    [2, 1], [1, 0], [0, -1], [-1, 1], [2, -1], [1, 1]].map(pair => Object.freeze(pair)));
   const FIFTH_CENTS = 1200 * Math.log2(3 / 2);
   const PURE_MAJOR_THIRD = 1200 * Math.log2(5 / 4);
   const PYTHAGOREAN_COMMA = 12 * FIFTH_CENTS - 7 * 1200;
@@ -24,6 +32,7 @@
   const MEANTONE_NARROWING = SYNTONIC_COMMA / 4;
   const WOLF_EDGE = 8; // G♯ → E♭; enharmonic substitution at this twelve-key seam.
   const mod = (x, n) => ((x % n) + n) % n;
+  const justCents = pc => 1200 * Math.log2(JUST12_RATIOS[pc][0] / JUST12_RATIOS[pc][1]);
 
   function validateNarrowing(narrowing) {
     if (!Number.isFinite(narrowing) || narrowing < 0 || narrowing > 6) {
@@ -33,6 +42,14 @@
 
   function widths(system, narrowing = MEANTONE_NARROWING) {
     if (!SELECTABLE_SYSTEMS.includes(system)) throw new RangeError("Unknown temperament");
+    if (system === "just") {
+      const result = PITCH_CLASSES.map((pc, index) =>
+        mod(justCents(PITCH_CLASSES[(index + 1) % 12]) - justCents(pc), 1200));
+      if (Math.abs(result.reduce((sum, value) => sum + value, 0) - 8400) > 1e-8) {
+        throw new Error("Just-scale fifths must close by seven octaves");
+      }
+      return result;
+    }
     const result = Array(12).fill(FIFTH_CENTS);
     if (system === "equal") result.fill(700);
     if (system === "pythagorean" || system === "meantone" || system === "adjustable") {
@@ -65,6 +82,7 @@
   }
 
   function pitches(system, narrowing) {
+    if (system === "just") return JUST12_RATIOS.map((_, pc) => justCents(pc));
     const span = widths(system, narrowing);
     const fromC = Array(12).fill(null);
     fromC[0] = 0;
@@ -115,6 +133,11 @@
   // does not determine a unique two-dimensional embedding.
   function latticeNotes(system, narrowing) {
     const pitch = pitches(system, narrowing);
+    if (system === "just") return CIRCLE.map((name, index) => {
+      const pc = PITCH_CLASSES[index];
+      const [m, n] = JUST12_COORDS[pc];
+      return { pc, name, m, n, pureCents: pitch[pc], actualCents: pitch[pc], deviation: 0 };
+    });
     return CIRCLE.map((name, index) => {
       const pc = PITCH_CLASSES[index];
       const m = index <= WOLF_EDGE ? index : index - 12;
@@ -127,6 +150,22 @@
 
   function latticeChord(system, tonic = 0, quality = "major", narrowing) {
     const played = chord(system, tonic, quality, 440, narrowing);
+    if (system === "just") {
+      const [m, n] = JUST12_COORDS[tonic];
+      const idealCoords = [[m, n], [m + (quality === "major" ? 0 : 1),
+        n + (quality === "major" ? 1 : -1)], [m + 1, n]];
+      return {
+        played, rootM: m, idealThird: quality === "major" ? PURE_MAJOR_THIRD : PURE_MINOR_THIRD,
+        vertices: played.notes.map((note, index) => ({
+          m: idealCoords[index][0], n: idealCoords[index][1],
+          pc: note.pc, name: note.name
+        })),
+        actualVertices: played.notes.map(note => {
+          const [actualM, actualN] = JUST12_COORDS[note.pc];
+          return { m: actualM, n: actualN, pc: note.pc, name: note.name };
+        })
+      };
+    }
     const rootM = latticeNotes(system, narrowing).find(note => note.pc === tonic).m;
     const major = quality === "major";
     const idealThird = major ? PURE_MAJOR_THIRD : PURE_MINOR_THIRD;
@@ -187,6 +226,7 @@
   }
 
   return Object.freeze({ CIRCLE, PITCH_CLASSES, NOTE_NAMES, SYSTEMS, SELECTABLE_SYSTEMS,
+    JUST12_RATIOS, JUST12_COORDS,
     FIFTH_CENTS, PURE_MAJOR_THIRD, PURE_MINOR_THIRD, PYTHAGOREAN_COMMA, SYNTONIC_COMMA,
     EQUAL_NARROWING, WOLF_FREE_NARROWING, MEANTONE_NARROWING, WOLF_EDGE,
     widths, fifths, pitches, frequency, chord, deviations, latticeNotes, latticeChord,

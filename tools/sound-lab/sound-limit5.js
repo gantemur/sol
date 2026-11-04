@@ -20,6 +20,10 @@
     gmajor: Object.freeze([[1, 0], [1, 1], [2, 0]]),
     dminor: Object.freeze([[-2, 1], [-1, 0], [-1, 1]]),
     seven: Object.freeze([[0, 0], [2, 0], [0, 1], [-1, 0], [1, 0], [-1, 1], [1, 1]]),
+    // One C-centred chromatic selection, not a universal just temperament.
+    // The twelve notes have distinct pitch classes and use only n = -1, 0, 1.
+    just12: Object.freeze([[0, 0], [-1, -1], [2, 0], [1, -1], [0, 1], [-1, 0],
+      [2, 1], [1, 0], [0, -1], [-1, 1], [2, -1], [1, 1]]),
     fifths: Object.freeze([[-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0]]),
     commaE: Object.freeze([[0, 1], [4, 0]]),
     commaD: Object.freeze([[-2, 1], [2, 0]]),

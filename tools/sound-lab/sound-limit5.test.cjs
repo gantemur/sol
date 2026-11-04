@@ -37,6 +37,19 @@ test("pure major/minor chords and G major/D minor use consistent ratio voicing",
   assert.throws(() => m.selected([[0, 0], [0, 0]]), RangeError);
 });
 
+test("the C-centred twelve-note just preset is an exact chromatic one-per-key selection", () => {
+  const notes = m.selected(m.PRESETS.just12, 264);
+  assert.equal(notes.length, 12);
+  assert.deepEqual(notes.map(note => note.tetStep), [...Array(12).keys()]);
+  assert.deepEqual(notes.map(note => note.numerator + "/" + note.denominator),
+    ["1/1", "16/15", "9/8", "6/5", "5/4", "4/3", "45/32", "3/2", "8/5", "5/3", "9/5", "15/8"]);
+  assert.equal(m.closePairs(m.PRESETS.just12).length, 0);
+  assert.equal(notes.find(note => note.tetStep === 9).hz, 440);
+  const samples = m.makeSamples(notes, 8000, "melody");
+  assert.equal(samples.length, Math.ceil(12 * m.STEP_SECONDS * 8000));
+  assert.ok(samples.every(value => Number.isFinite(value) && Math.abs(value) <= 1));
+});
+
 test("both routes E and D give exactly 81/80 syntonic comma", () => {
   assert.ok(Math.abs(m.COMMA_CENTS - 21.50628959671478) < 1e-10);
   for (const which of ["e", "d"]) {

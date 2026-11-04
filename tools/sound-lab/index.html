@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#192d49">
   <meta name="description" content="Explore sound waves, plucked and held instrument models, harmonic synthesis, noise, a theremin and sirens with interactive plots and bilingual controls.">
   <title>Sound Lab · Sol</title>
-  <link rel="stylesheet" href="sound-lab.css?v=s035">
+  <link rel="stylesheet" href="sound-lab.css?v=s036">
   <script src="sound-model.js" defer></script>
   <script src="sound-string.js?v=s017" defer></script>
   <script src="sound-piano.js?v=s019" defer></script>
@@ -18,12 +18,12 @@
   <script src="sound-intervals.js?v=s021" defer></script>
   <script src="sound-ear-tune.js?v=s028" defer></script>
   <script src="sound-scales.js?v=s031" defer></script>
-  <script src="sound-limit5.js?v=s030" defer></script>
-  <script src="sound-temperaments.js?v=s034" defer></script>
+  <script src="sound-limit5.js?v=s036" defer></script>
+  <script src="sound-temperaments.js?v=s036" defer></script>
   <script src="sound-harmonics.js" defer></script>
   <script src="sound-noise.js" defer></script>
   <script src="sound-recorder.js" defer></script>
-  <script src="sound-lab.js?v=s035" defer></script>
+  <script src="sound-lab.js?v=s036" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -908,12 +908,14 @@
             <option value="gmajor" data-i18n="limit5GMajor">Соль мажор</option>
             <option value="dminor" data-i18n="limit5DMinor">Ре минор</option>
             <option value="seven" data-i18n="limit5Seven">7 нот</option>
+            <option value="just12" data-i18n="limit5Just12">12 цэвэр нот (До төвтэй)</option>
             <option value="fifths" data-i18n="limit5Fifths">Зөвхөн 3:2</option>
             <option value="commaE" data-i18n="limit5CommaE">Ми: хоёр зам (81:80)</option>
             <option value="commaD" data-i18n="limit5CommaD">Ре: хоёр зам (81:80)</option>
             <option value="diaschisma" data-i18n="limit5Diaschisma">Хоёр дахь давхар (2048:2025)</option>
             <option value="custom" data-i18n="limit5Custom">Миний сонголт</option>
           </select>
+          <p id="limit5JustHint" class="field-help limit5-just-hint" data-i18n="limit5JustHint" hidden>12 нотоо яг цэвэр тороос сонголоо. Ля4 = 440 Гц бол До4 = 264 Гц. Энэ бол До төвтэй нэг сонголт: бүх тональд аккорд цэвэр болохгүй.</p>
         </div>
         <div id="limit5PlaybackModes" class="ear-play-controls" role="group" data-i18n-aria="limit5PlaybackAria">
           <button type="button" data-limit5-play="melody" aria-pressed="false">▶ Ээлжлэн</button>
@@ -1010,6 +1012,7 @@
             <option value="meantone" data-i18n="tempMeantone">1/4-комма дундаж</option>
             <option value="werckmeister" data-i18n="tempWerckmeister">Веркмайстер III</option>
             <option value="vallotti" data-i18n="tempVallotti">Валлотти</option>
+            <option value="just" data-i18n="tempJust">12 цэвэр нот (До төвтэй)</option>
             <option value="adjustable" selected data-i18n="tempAdjustable">Өөрөө тохируулах</option>
           </select>
         </div>
@@ -1059,29 +1062,34 @@
         <section class="panel chart-panel temp-lattice-panel" aria-labelledby="temp-lattice-title">
           <div class="chart-heading"><div>
             <h2 id="temp-lattice-title" data-i18n="tempLatticeTitle">3:2 ба 5:4-ийн гурвалжин тор</h2>
-            <p data-i18n="tempLatticeHint">Цайвар цэгүүд нь цэвэр харьцааны тор. Өнгөт цэгүүд нь сонгосон хөгийн нотыг түүний Пифагорын жишигтэй харьцуулсан байрлал; зөрөөг харагдуулахын тулд томруулсан.</p>
+            <p id="tempLatticeHint" data-i18n="tempLatticeHint">Цайвар цэгүүд нь цэвэр харьцааны тор. Өнгөт цэгүүд нь сонгосон хөгийн нотыг түүний Пифагорын жишигтэй харьцуулсан байрлал; зөрөөг харагдуулахын тулд томруулсан.</p>
           </div><span class="chart-badge" id="tempLatticeBadge">C · E · G</span></div>
           <canvas id="tempLatticeCanvas" width="920" height="300" role="button" tabindex="0" aria-label="Гурвалжин тор болон 12 нотын сонголт"></canvas>
+          <div id="tempJustGuide" class="temp-just-guide" hidden>
+            <p data-i18n="tempJustIntro">Эдгээр 12 нот 3:2 ба 5:4-ийн яг цэвэр торын цэгүүд. Ногоон хүрээ нь сонгосон аккордын нотууд; бүх тональд гурвалжин цэвэр байхгүй.</p>
+            <div id="tempJustRatioGrid" class="temp-just-ratio-grid" aria-label="12 нотын яг цэвэр харьцаа"></div>
+            <button id="tempOpenJustLattice" type="button" class="temp-just-link" data-i18n="tempOpenJustLattice">Эдгээр 12 цэгийг 5-хязгаарт үзэх</button>
+          </div>
           <div class="temp-lattice-legend">
             <span><i class="temp-grid-dot"></i><span data-i18n="tempExactLegend">Яг цэвэр тор</span></span>
-            <span><i class="temp-tuned-dot"></i><span data-i18n="tempTunedLegend">Сонгосон хөг</span></span>
+            <span><i class="temp-tuned-dot"></i><span id="tempTunedLegend" data-i18n="tempTunedLegend">Сонгосон хөг</span></span>
             <span><i class="temp-ideal-line"></i><span data-i18n="tempTriangleLegend">Цэвэр аккордын гурвалжин</span></span>
           </div>
           <p id="tempLatticeFact" class="temp-feature-fact"></p>
           <p id="tempLatticeConstructionFact" class="field-help"></p>
-          <div class="chart-foot"><span data-i18n="tempLatticeFoot">→ 3:2 · ↗ 5:4. Нэг нэртэй нотын өөр замууд нь 81:80, харин 12 квинтийн төгсгөл 23.46 центээр зөрнө.</span><span data-i18n="tempLatticeScale">Зөрөөг дүрслэлд ×8 томруулав</span></div>
+          <div class="chart-foot"><span id="tempLatticeFoot" data-i18n="tempLatticeFoot">→ 3:2 · ↗ 5:4. Нэг нэртэй нотын өөр замууд нь 81:80, харин 12 квинтийн төгсгөл 23.46 центээр зөрнө.</span><span id="tempLatticeScale" data-i18n="tempLatticeScale">Зөрөөг дүрслэлд ×8 томруулав</span></div>
         </section>
         <div class="temp-lower-visuals">
         <section class="panel chart-panel" aria-labelledby="temp-circle-title">
           <div class="chart-heading"><div>
             <h2 id="temp-circle-title" data-i18n="tempCircleTitle">Квинтийн тойрог</h2>
-            <p data-i18n="tempCircleHint">Нот дээр товшиж өөр үндэс сонго. Өнгөт холбоос бүрийн квинт 3:2-оос хэрхэн зөрж байгааг доорх тооноос хар.</p>
+            <p id="tempCircleHint" data-i18n="tempCircleHint">Нот дээр товшиж өөр үндэс сонго. Өнгөт холбоос бүрийн квинт 3:2-оос хэрхэн зөрж байгааг доорх тооноос хар.</p>
           </div><span id="tempCircleBadge" class="chart-badge">C мажор</span></div>
           <canvas id="tempCircleCanvas" width="760" height="440" role="button" tabindex="0" aria-label="Квинтийн тойргоос үндсэн нот сонгох"></canvas>
           <div class="temp-legend" aria-label="Квинтийн төрлүүд">
             <span><i class="temp-legend-pure"></i><span data-i18n="tempPure">Цэвэр</span></span>
             <span><i class="temp-legend-narrow"></i><span data-i18n="tempNarrow">Бага зэрэг нарийссан</span></span>
-            <span><i class="temp-legend-wolf"></i><span data-i18n="tempWolfLegend">Чоно квинт</span></span>
+            <span><i class="temp-legend-wolf"></i><span id="tempWolfLegend" data-i18n="tempWolfLegend">Чоно квинт</span></span>
           </div>
           <p id="tempWolfFact" class="temp-feature-fact"></p>
         </section>
