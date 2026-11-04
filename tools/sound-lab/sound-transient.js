@@ -28,6 +28,15 @@
   const DRUM_MIN_TENSION = .5;
   const DRUM_MAX_TENSION = 2;
   const KICK_SIZES = Object.freeze({ large: 0.72, medium: 1, small: 1.4 });
+  // The three existing drum pads are reused across families. Steel-pan pads
+  // name three tuned notes; cymbal pads select distinct decay/size profiles.
+  const DRUM_VOICES = Object.freeze(["membrane", "snare", "cymbal", "steelpan"]);
+  const STEELPAN_PITCHES = Object.freeze({ large: 261.625565, medium: 329.627557,
+    small: 391.995436 });
+  const CYMBAL_MODES = Object.freeze([1, 1.42, 1.87, 2.31, 2.92, 3.55, 4.23, 5.04, 6.17]);
+  const CYMBAL_WEIGHTS = Object.freeze([.6, .42, .37, .31, .24, .19, .17, .12, .10]);
+  const PAN_MODES = Object.freeze([1, 2.005, 3.012, 4.16, 5.34, 6.08]);
+  const PAN_WEIGHTS = Object.freeze([1, .67, .42, .18, .10, .07]);
 
   function validate(kind, pitchHz, decaySec, kickSize = "medium", options = {}) {
     if (!KINDS.includes(kind)) throw new RangeError("Unknown transient sound");
@@ -39,13 +48,15 @@
       throw new RangeError("Pitched-string frequency outside the supported range");
     }
     if (kind === "kick" && (!Object.hasOwn(KICK_SIZES, kickSize) ||
+        !DRUM_VOICES.includes(options.drumVoice ?? "membrane") ||
         !Number.isFinite(options.drumTension ?? 1) ||
         (options.drumTension ?? 1) < DRUM_MIN_TENSION ||
         (options.drumTension ?? 1) > DRUM_MAX_TENSION)) {
       throw new RangeError("Unknown drum-size preset");
     }
     if (kind === "pluck" && (!strings.validPosition(options.position ?? .22) ||
-        (options.strumChord !== undefined && !Object.hasOwn(strings.CHORDS, options.strumChord)))) {
+        (options.strumChord !== undefined && !Object.hasOwn(strings.CHORDS, options.strumChord)) ||
+        (options.strumPattern !== undefined && !strings.STRUM_PATTERNS.includes(options.strumPattern)))) {
       throw new RangeError("Unknown pluck position or guitar chord");
     }
     if (kind === "piano" && (!piano.validVelocity(options.velocity ?? .55) ||
@@ -58,7 +69,9 @@
     if (time <= 0) return 0;
     if (kind === "piano") return piano.envelope(time, decaySec, options.touch ?? "press");
     const attack = kind === "kick" ? 0.0015 : 0.0025;
-    return (1 - Math.exp(-time / attack)) * Math.exp(-time / decaySec);
+    const effectiveDecay = kind === "kick" && (options.drumVoice === "cymbal" ||
+      options.drumVoice === "steelpan") ? decaySec * 1.3 : decaySec;
+    return (1 - Math.exp(-time / attack)) * Math.exp(-time / effectiveDecay);
   }
 
   function kickFrequency(time, size = "medium", tension = 1) {
@@ -74,25 +87,86 @@
     return DRUM_ZEROS.map(zero => fundamental * zero / DRUM_ZEROS[0]);
   }
 
+  function drumReferenceHz(size = "medium", tension = 1, voice = "membrane") {
+    if (!Object.hasOwn(KICK_SIZES, size) || !DRUM_VOICES.includes(voice)) {
+      throw new RangeError("Unknown drum pad or sound family");
+    }
+    if (voice === "cymbal") return null; // Cymbals have no single perceived fundamental.
+    if (voice === "steelpan") return STEELPAN_PITCHES[size];
+    return kickFrequency(0, size, tension);
+  }
+
+  // Smooth, deterministic noise: a simplified broadband rattle or turbulent
+  // plate response, not an audio sample or a stochastic hardware input.
+  function hash(index) {
+    let value = Math.imul(index, 1664525) + 1013904223;
+    value ^= value >>> 15;
+    value = Math.imul(value, 2246822519);
+    return (value >>> 0) / 2147483648 - 1;
+  }
+
+  function noiseAt(time) {
+    const sample = time * 6500;
+    const index = Math.floor(sample), fraction = sample - index;
+    return hash(index) * (1 - fraction) + hash(index + 1) * fraction;
+  }
+
+  function membraneAt(time, size, tension, decaySec) {
+    const base = kickFrequency(0, size, tension);
+    let value = 0;
+    for (let i = 0; i < DRUM_ZEROS.length; i++) {
+      const modeDecay = decaySec / (1 + i * .16);
+      const frequency = base * DRUM_ZEROS[i] / DRUM_ZEROS[0];
+      value += DRUM_WEIGHTS[i] * Math.exp(-time / modeDecay) * Math.sin(TAU * frequency * time);
+    }
+    const knock = .1 * Math.exp(-time / .007) * Math.sin(TAU * 2300 * time);
+    return (1 - Math.exp(-time / .0015)) * (value / 2.2 + knock);
+  }
+
+  function snareAt(time, size, tension, decaySec) {
+    const body = membraneAt(time, size, tension, decaySec);
+    const rattle = noiseAt(time) * Math.exp(-time / (decaySec * .48));
+    return .48 * body + .53 * (1 - Math.exp(-time / .0012)) * rattle;
+  }
+
+  function cymbalAt(time, size, decaySec) {
+    const base = { large: 310, medium: 415, small: 630 }[size];
+    const factor = { large: 1.65, medium: 1.25, small: .58 }[size];
+    const decay = decaySec * factor;
+    let ringing = 0;
+    CYMBAL_MODES.forEach((ratio, index) => {
+      ringing += CYMBAL_WEIGHTS[index] * Math.sin(TAU * base * ratio * time + index * .37) *
+        Math.exp(-time / (decay * (1 - .045 * index)));
+    });
+    const fizz = noiseAt(time) * Math.exp(-time / (decay * .72));
+    return (1 - Math.exp(-time / .002)) * (.26 * ringing + .43 * fizz);
+  }
+
+  function steelpanAt(time, size, decaySec) {
+    const base = STEELPAN_PITCHES[size];
+    let ringing = 0;
+    PAN_MODES.forEach((ratio, index) => {
+      ringing += PAN_WEIGHTS[index] * Math.exp(-time / (decaySec * (1.35 - index * .11))) *
+        Math.sin(TAU * base * ratio * time);
+    });
+    const strike = .055 * Math.exp(-time / .008) * noiseAt(time);
+    return (1 - Math.exp(-time / .0015)) * (.38 * ringing + strike);
+  }
+
   function sampleAt(kind, time, pitchHz, decaySec, kickSize = "medium", options = {}) {
     if (time <= 0) return 0;
     if (kind === "kick") {
+      const voice = options.drumVoice ?? "membrane";
+      if (voice === "snare") return snareAt(time, kickSize, options.drumTension ?? 1, decaySec);
+      if (voice === "cymbal") return cymbalAt(time, kickSize, decaySec);
+      if (voice === "steelpan") return steelpanAt(time, kickSize, decaySec);
       // Circular-membrane eigenfrequencies are Bessel zeros, not integer harmonics.
-      // A slightly off-center strike excites non-axisymmetric modes as well.
-      const base = kickFrequency(0, kickSize, options.drumTension ?? 1);
-      let value = 0;
-      for (let i = 0; i < DRUM_ZEROS.length; i++) {
-        const modeDecay = decaySec / (1 + i * .16);
-        const frequency = base * DRUM_ZEROS[i] / DRUM_ZEROS[0];
-        value += DRUM_WEIGHTS[i] * Math.exp(-time / modeDecay) * Math.sin(TAU * frequency * time);
-      }
-      const knock = .1 * Math.exp(-time / .007) * Math.sin(TAU * 2300 * time);
-      return (1 - Math.exp(-time / .0015)) * (value / 2.2 + knock);
+      return membraneAt(time, kickSize, options.drumTension ?? 1, decaySec);
     }
     if (kind === "pluck") {
       const position = options.position ?? .22;
       return options.strumChord ?
-        strings.strumAt(time, options.strumChord, decaySec, position) :
+        strings.strumAt(time, options.strumChord, decaySec, position, options.strumPattern ?? "down") :
         strings.pluckAt(time, pitchHz, decaySec, position);
     }
     return piano.sampleAt(time, pitchHz, decaySec, options.velocity ?? .55,
@@ -140,11 +214,13 @@
   }
 
   return Object.freeze({
-    KINDS, KICK_SIZES, DRUM_MIN_TENSION, DRUM_MAX_TENSION, STRUM_CHORDS: strings.CHORDS,
+    KINDS, KICK_SIZES, DRUM_VOICES, DRUM_MIN_TENSION, DRUM_MAX_TENSION,
+    STEELPAN_PITCHES, STRUM_CHORDS: strings.CHORDS, STRUM_PATTERNS: strings.STRUM_PATTERNS,
     MIN_PITCH_HZ, MAX_PITCH_HZ, MIN_DECAY, MAX_DECAY,
     PIANO_STIFFNESS: piano.STIFFNESS, PIANO_TOUCHES: piano.TOUCHES,
     pianoPartialHz: piano.pianoPartialHz,
-    validate, envelope, plottedEnvelope, kickFrequency, drumModeFrequencies, sampleAt, plottedSampleAt,
+    validate, envelope, plottedEnvelope, kickFrequency, drumModeFrequencies, drumReferenceHz,
+    sampleAt, plottedSampleAt,
     duration, makeSamples, sliderToHz, hzToSlider
   });
 });

@@ -23,7 +23,7 @@ test("a feedback-plucked string is finite, pitched and decays", () => {
 });
 
 test("strumming excites independently tuned and staggered strings", () => {
-  assert.deepEqual(Object.keys(guitar.CHORDS), ["em", "g", "c"]);
+  assert.deepEqual(Object.keys(guitar.CHORDS), ["em", "g", "c", "am", "d", "a", "e", "dm", "g7", "c7", "dsus4"]);
   const em = guitar.chordFrequencies("em");
   assert.equal(em.length, 6);
   assert.ok(Math.abs(em[0] - 82.4069) < .01);
@@ -42,4 +42,31 @@ test("strumming excites independently tuned and staggered strings", () => {
     }
   }
   assert.throws(() => guitar.chordFrequencies("wrong"), RangeError);
+});
+
+test("expanded chords mute the correct strings and five original strokes are distinct and bounded", () => {
+  assert.deepEqual(guitar.STRUM_PATTERNS, ["down", "up", "alternate", "arpeggio", "fingerpick"]);
+  assert.deepEqual(guitar.CHORDS.am, [-1, 0, 2, 2, 1, 0]);
+  assert.deepEqual(guitar.CHORDS.d, [-1, -1, 0, 2, 3, 2]);
+  assert.deepEqual(guitar.CHORDS.dsus4, [-1, -1, 0, 2, 3, 3]);
+  assert.deepEqual(guitar.CHORDS.g7, [3, 2, 0, 0, 0, 1]);
+  assert.equal(guitar.chordFrequencies("dm")[0], null);
+  assert.equal(guitar.chordFrequencies("dm")[1], null);
+  assert.ok(Math.abs(guitar.chordFrequencies("a")[1] - 110) < 1e-6);
+  for (const chord of Object.keys(guitar.CHORDS)) {
+    const frequencies = guitar.chordFrequencies(chord);
+    assert.ok(frequencies.filter(frequency => frequency !== null).length >= 4);
+    for (const pattern of guitar.STRUM_PATTERNS) {
+      for (const time of [0, .01, .055, .15, .25, .42, 1, 2.8]) {
+        const value = guitar.strumAt(time, chord, .7, .22, pattern);
+        assert.ok(Number.isFinite(value) && Math.abs(value) <= 1);
+      }
+    }
+  }
+  const gestureSamples = guitar.STRUM_PATTERNS.map(pattern =>
+    [.018, .065, .17, .245].map(time => guitar.strumAt(time, "em", .7, .22, pattern).toFixed(5)).join("|"));
+  assert.equal(new Set(gestureSamples).size, 5, "Different gestures produce different timing and tone");
+  assert.equal(guitar.strumAt(.15, "em", .7), guitar.strumAt(.15, "em", .7, .22, "down"),
+    "Existing chord behavior remains the default");
+  assert.throws(() => guitar.strumAt(.1, "em", .7, .22, "shuffle"), RangeError);
 });

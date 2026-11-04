@@ -32,6 +32,42 @@ test("membrane fundamentals depend on size and the square root of tension", () =
   }
 });
 
+test("four percussion families share bounded playback/plot samples and distinct frequency responses", () => {
+  assert.deepEqual(sound.DRUM_VOICES, ["membrane", "snare", "cymbal", "steelpan"]);
+  assert.equal(sound.drumReferenceHz("medium", 1, "cymbal"), null);
+  assert.ok(Math.abs(sound.drumReferenceHz("large", 1, "steelpan") - 261.6256) < .001);
+  assert.ok(Math.abs(sound.drumReferenceHz("medium", 1, "steelpan") - 329.6276) < .001);
+  assert.ok(Math.abs(sound.drumReferenceHz("small", 1, "steelpan") - 391.9954) < .001);
+  assert.ok(sound.drumReferenceHz("small", 1.5, "snare") >
+    sound.drumReferenceHz("large", 1.5, "snare"));
+  const sampleRate = 16000;
+  const signatures = [];
+  for (const voice of sound.DRUM_VOICES) {
+    const decay = { membrane: .3, snare: .33, cymbal: .55, steelpan: .8 }[voice];
+    for (const size of Object.keys(sound.KICK_SIZES)) {
+      const options = { drumVoice: voice, drumTension: 1 };
+      const samples = sound.makeSamples("kick", 220, decay, sampleRate, size, options);
+      assert.ok(samples.length >= 5000);
+      assert.ok(samples.every(value => Number.isFinite(value) && Math.abs(value) <= 1),
+        voice + "/" + size + " is safe in a four-voice percussion mix");
+      assert.ok(Math.abs(samples.at(-1)) < .001, "Every hit has a silent end");
+      for (const index of [100, 330, 2400, 6000]) {
+        assert.ok(Math.abs(samples[index] -
+          sound.plottedSampleAt("kick", index / sampleRate, 220, decay, size, options)) < 1e-6,
+        "Playback and zoomed plot sample exactly the same modeled sound");
+      }
+      const max = Math.max(...samples.slice(0, 1000).map(Math.abs));
+      assert.ok(max > .03, "New voices remain audible at normal strength");
+      if (size === "medium") signatures.push([samples[277], samples[1111], samples[4444]].join("|"));
+    }
+  }
+  assert.equal(new Set(signatures).size, 4, "All four families have distinct waveforms");
+  const pan = spectrum.spectrumAt(sound, { kind: "kick", pitchHz: 220, decaySec: .8,
+    kickSize: "medium", options: { drumVoice: "steelpan" } }, .1);
+  assert.ok(pan.magnitudes[Math.round(sound.STEELPAN_PITCHES.medium / pan.binHz)] > .1,
+    "Steel pan produces a pitched Fourier component");
+});
+
 test("invalid or unbounded transient recipes are rejected", () => {
   assert.throws(() => sound.makeSamples("other", 220, 0.5, 44100), RangeError);
   assert.throws(() => sound.makeSamples("pluck", 2000, 0.5, 44100), RangeError);
@@ -40,7 +76,9 @@ test("invalid or unbounded transient recipes are rejected", () => {
   assert.throws(() => sound.makeSamples("kick", 220, 0.3, 0), RangeError);
   assert.throws(() => sound.makeSamples("kick", 220, 0.3, 44100, "giant"), RangeError);
   assert.throws(() => sound.makeSamples("kick", 220, .3, 44100, "medium", { drumTension: 3 }), RangeError);
+  assert.throws(() => sound.makeSamples("kick", 220, .3, 44100, "medium", { drumVoice: "timpani" }), RangeError);
   assert.throws(() => sound.makeSamples("pluck", 220, .3, 44100, "medium", { strumChord: "other" }), RangeError);
+  assert.throws(() => sound.makeSamples("pluck", 220, .3, 44100, "medium", { strumChord: "am", strumPattern: "wrong" }), RangeError);
   assert.throws(() => sound.makeSamples("piano", 440, .3, 44100, "medium", { velocity: 1.1 }), RangeError);
   assert.throws(() => sound.makeSamples("piano", 440, .3, 44100, "medium", { velocity: NaN }), RangeError);
   assert.throws(() => sound.makeSamples("piano", 440, .3, 44100, "medium", { touch: "unknown" }), RangeError);

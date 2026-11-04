@@ -135,6 +135,13 @@ h1, h2, p { margin-top: 0; }
 .strike-pads button.selected { background: #d9edf9; border-color: #298c9c; color: #155e6d; }
 .strike-pads button:hover { background: #d1e8ff; }
 .strike-pads button:active { background: #aedaf7; transform: translateY(1px); }
+.strike-more-chords { margin-top: 7px; border: 1px solid #d2e2ef; border-radius: 9px;
+  background: #f5f9ff; padding: 8px 10px; }
+.strike-more-chords summary { cursor: pointer; color: #36658c; font-size: 12px;
+  font-weight: 800; }
+.strike-more-chords .drum-sizes { margin-top: 9px; }
+#strikeChordGroup > label, #strikeDrumSizeGroup > label { margin-top: 12px; }
+#strikeDrumTensionGroup { margin-top: 12px; }
 .strike-glyph { font-size: 25px; flex: none; }
 .strike-button { background: linear-gradient(130deg, #18969b, #19727e); }
 .strike-button:hover { background: linear-gradient(130deg, #17878e, #126671); }

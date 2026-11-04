@@ -401,13 +401,24 @@
       strikePianoTouchTitle: "How to play", strikePianoPress: "Press", strikePianoTap: "Tap",
       strikePianoTouchHint: "Press models a held key with free decay. Tap is gentler and brings the damper back after a short press.",
       strikeGuitarPlay: "Play guitar", strikeSingle: "One string", strikeStrum: "Several strings",
-      strikeChord: "Strum a chord", strikeChordHint: "Tap Em, G or C to strum immediately, then tap again for a rhythm. The pick sweeps across the strings; muted strings are skipped.",
+      strikeChord: "Strum a chord", strikeMoreChords: "More chords",
+      strikePatternTitle: "Strumming pattern", strikePatternDown: "Downstroke", strikePatternUp: "Upstroke",
+      strikePatternAlternate: "Down–up", strikePatternArpeggio: "Arpeggio", strikePatternFingerpick: "Fingerpicking",
+      strikeChordHint: "Tap a chord pad for an immediate stroke. Try down, up, alternating strokes, a slow arpeggio or a thumb–finger pattern. Each tap makes a new sound.",
       strikePluckPosition: "Pluck position", strikePluckPositionHint: "Plucking nearer the end brings out more high harmonics.",
       strikePitch: "Note frequency", strikePitchSliderAria: "Note pitch slider",
       strikePitchInputAria: "Note frequency in hertz",
       strikeStrength: "Strength", strikeDecay: "Decay time",
+      strikeDrumVoiceTitle: "Percussion family", strikeDrumMembrane: "Bass drum / tom",
+      strikeDrumSnare: "Snare", strikeDrumCymbal: "Cymbals", strikeDrumSteelpan: "Steel pan",
       strikeDrumSize: "Hit a drum", strikeLarge: "Large", strikeMedium: "Medium", strikeSmall: "Small",
+      strikeSnareLow: "Low", strikeSnareMid: "Mid", strikeSnareHigh: "High",
+      strikeCymbalCrash: "Crash", strikeCymbalRide: "Ride", strikeCymbalHat: "Hi-hat",
+      strikePanC: "C4", strikePanE: "E4", strikePanG: "G4", strikeNoSinglePitch: "No fixed note",
       strikeDrumHint: "Tap any size repeatedly to make a rhythm. Larger membranes vibrate more slowly; their modes are not integer harmonics.",
+      strikeSnareHint: "A snare adds a short broadband rattle to a vibrating membrane. Tap low, mid and high to compare.",
+      strikeCymbalHint: "Crash, ride and hi-hat use inharmonic plate-like modes and deterministic noise. They do not have a single pitched note.",
+      strikePanHint: "The steel pan has tuned pitches with a prominent octave and near-twelfth overtone. Try C4, E4 and G4 as a three-note melody.",
       strikeDrumTension: "Membrane tension", strikeDrumTensionHint: "Tighten the membrane to raise all its natural frequencies.",
       strikeWaveTitle: "Waveform · zoom and explore",
       strikeWaveSubtitle: "See the full decay; zoom in to reveal individual vibrations.",
@@ -422,6 +433,9 @@
       strikeSpectrumHere: "At selected time", strikeSpectrumWhole: "Whole sound",
       strikeSpectrumModesAria: "Spectrum time range",
       strikeSpectrumHint: "String harmonics fade at different speeds. Drum modes do not follow integer frequency ratios.",
+      strikeSnareSpectrumHint: "The snare has both membrane resonances and a broad rattling spectrum.",
+      strikeCymbalSpectrumHint: "A cymbal spreads energy over many inharmonic, noisy high frequencies.",
+      strikePanSpectrumHint: "A steel pan concentrates energy at its tuned pitch, octave and near-twelfth.",
       strikeSpectrumWholeHint: "Average frequency content across the whole modeled hit.",
       strikeWaveAria: "Modeled waveform with a movable time cursor",
       strikeSpectrumAria: "Short-time Fourier magnitude spectrum of the modeled sound",
@@ -435,7 +449,7 @@
       strikeChallenge: "Change the decay time. What happens to the sound and its envelope?",
       strikeLearnMore: "Why do these sounds fade away?",
       strikeLessonOne: "A plucked string vibrates at several frequencies. Its higher harmonics fade faster than its fundamental.",
-      strikeLessonTwo: "A circular membrane has non-integer frequency ratios because its modes involve Bessel functions. Its size and tension change the frequencies, while a string produces nearly harmonic overtones. Compare their local spectra.",
+      strikeLessonTwo: "A circular membrane has non-integer mode ratios, determined by Bessel functions. A snare adds broadband rattling; cymbals have many inharmonic plate-like vibrations. A tuned steel pan instead emphasizes pitch, octave and a near-twelfth. Compare the sounds and their local spectra.",
       strikeReady: "Ready. Sound starts only when you tap the pad.",
       strikeStarting: "Preparing the sound…", strikeDone: "Sound triggered. Tap again to make a rhythm.",
       strikeStopped: "Stopped. Tap the pad to try again.",
@@ -445,7 +459,7 @@
       strikeInvalid: "Enter a string frequency between 110 and 880 Hz.",
       strikeDesc: {
         pluck: "A plucked string repeatedly reflects its vibration, losing some energy each cycle. Several strings can form a chord.",
-        kick: "A vibrating circular membrane has several natural modes, with frequencies set by its size and tension.",
+        kick: "Compare a membrane, rattling snare, inharmonic cymbals and a tuned steel pan. Tap the pads to build a rhythm.",
         piano: "Hammer force changes the brightness of slightly detuned, stiff strings. Their overtones fade at different rates."
       },
       sustainPhase: "03 · Held sounds", sustainChoose: "Choose a held sound",
@@ -933,13 +947,24 @@
       strikePianoTouchTitle: "Тоглох арга", strikePianoPress: "Дарах", strikePianoTap: "Товших",
       strikePianoTouchHint: "Дарахад товчлуурыг барьсан үеийн авиа чөлөөтэй намдана. Товшиход алх зөөлөн цохиж, намжаагч удахгүй буцна.",
       strikeGuitarPlay: "Гитар тоглуулах", strikeSingle: "Нэг чавхдас", strikeStrum: "Олон чавхдас",
-      strikeChord: "Аккорд цохих", strikeChordHint: "Em, G, C товчийг дарахад шууд цохино. Дахин дахин товшоод хэмнэл үүсгээрэй. Чавхдасууд ээлжлэн дуугарч, зарим нь алгасагдана.",
+      strikeChord: "Аккорд цохих", strikeMoreChords: "Бусад аккорд",
+      strikePatternTitle: "Цохих арга", strikePatternDown: "Доош цохих", strikePatternUp: "Дээш цохих",
+      strikePatternAlternate: "Доош–дээш", strikePatternArpeggio: "Арпеджио", strikePatternFingerpick: "Хуруугаар татах",
+      strikeChordHint: "Аккордын товчийг дарахад шууд дуугарна. Доош, дээш, ээлжлэн цохих, арпеджио, эрхий–хурууны таталтыг туршаарай. Товшилт бүр шинэ авиа үүсгэнэ.",
       strikePluckPosition: "Татах байрлал", strikePluckPositionHint: "Үзүүрт нь ойр татахад дээд гармоникууд тодордог.",
       strikePitch: "Нотын давтамж", strikePitchSliderAria: "Нотын давтамжийн гулсуур",
       strikePitchInputAria: "Нотын давтамжийг герцээр оруулах",
       strikeStrength: "Цохилтын хүч", strikeDecay: "Намдах хугацаа",
+      strikeDrumVoiceTitle: "Цохивор хөгжмийн төрөл", strikeDrumMembrane: "Басс бөмбөр / том",
+      strikeDrumSnare: "Бага бөмбөр", strikeDrumCymbal: "Цан", strikeDrumSteelpan: "Ган бөмбөр",
       strikeDrumSize: "Бөмбөр цохих", strikeLarge: "Том", strikeMedium: "Дунд", strikeSmall: "Жижиг",
+      strikeSnareLow: "Нам", strikeSnareMid: "Дунд", strikeSnareHigh: "Өндөр",
+      strikeCymbalCrash: "Крэш", strikeCymbalRide: "Райд", strikeCymbalHat: "Хай-хэт",
+      strikePanC: "До4", strikePanE: "Ми4", strikePanG: "Соль4", strikeNoSinglePitch: "Тогтмол нотгүй",
       strikeDrumHint: "Том, дунд, жижиг бөмбөрийг шууд товшиж хэмнэл үүсгээрэй. Том мембран нам хэлбэлздэг; өөрийн модын давтамжууд бүхэл тоон харьцаатай биш.",
+      strikeSnareHint: "Бага бөмбөрт мембраны доргион дээр богино шуугиантай цуурай нэмэгдэнэ. Нам, дунд, өндөр цохилтыг харьцуул.",
+      strikeCymbalHint: "Цангийн гурван төрөл нь хоорондоо үл бүхэл харьцаатай хэлбэлзэл ба шуугиантай. Тогтсон ганц нотгүй.",
+      strikePanHint: "Ган бөмбөр нь октав болон ойролцоо 3 дахин давтамжийн хүчтэй өнгөтэй, хөглөгдсөн цохивор хөгжим. До4, Ми4, Соль4-өөр аялгуу бүтээ.",
       strikeDrumTension: "Мембраны таталт", strikeDrumTensionHint: "Мембраныг чангалахад бүх хэлбэлзлийн давтамж өснө.",
       strikeWaveTitle: "Дууны долгион · томруулж үзэх",
       strikeWaveSubtitle: "Бүхэлд нь намдлыг, томруулбал нэг нэг хэлбэлзлийг харна.",
@@ -954,6 +979,9 @@
       strikeSpectrumHere: "Энэ мөчид", strikeSpectrumWhole: "Бүх дуу",
       strikeSpectrumModesAria: "Спектрийн хугацааны сонголт",
       strikeSpectrumHint: "Чавхдасны гармоникууд өөр өөр хурдтай намдана. Бөмбөрийн модын давтамжууд бүхэл тоон харьцаатай биш.",
+      strikeSnareSpectrumHint: "Бага бөмбөрт мембраны оргилууд дээр шуугианы өргөн спектр нэмэгдэнэ.",
+      strikeCymbalSpectrumHint: "Цангийн энерги дээд давтамжийн олон үл бүхэл харьцаатай хэлбэлзэлд тархана.",
+      strikePanSpectrumHint: "Ган бөмбөрийн спектрт үндсэн нот, октав ба ойролцоогоор 3 дахин давтамж тодорно.",
       strikeSpectrumWholeHint: "Загварчилсан цохилтын турших хугацааны дундаж спектр.",
       strikeWaveAria: "Хугацаа сонгох тэмдэглэгээтэй загвар долгион",
       strikeSpectrumAria: "Загварчилсан дууны хугацааны хэсгийн Фурье спектр",
@@ -967,7 +995,7 @@
       strikeChallenge: "Намдах хугацааг өөрчил. Дуу болон график хэрхэн өөрчлөгдөж байна вэ?",
       strikeLearnMore: "Яагаад эдгээр дуу намддаг вэ?",
       strikeLessonOne: "Чавхдас олон давтамжаар хэлбэлзэнэ. Өндөр гармоникууд нь үндсэн давтамжаас хурдан намдана.",
-      strikeLessonTwo: "Дугуй мембраны хэлбэлзлийн давтамжууд Бесселийн функцийн тэгүүдээс хамаардаг тул бүхэл тоон харьцаатай биш. Хэмжээ ба таталтыг өөрчлөхөд давтамжууд хувирна. Харин чавхдасны дээд гармоникууд үндсэн давтамжийн ойролцоогоор бүхэл тоон үржвэр байдаг.",
+      strikeLessonTwo: "Дугуй мембраны модын давтамжууд Бесселийн функцээс хамаардаг тул бүхэл тоон харьцаатай биш. Бага бөмбөрт шуугиант цуурай нэмэгдэж, цанд олон үл бүхэл харьцаатай хэлбэлзэл бий. Харин хөглөгдсөн ган бөмбөр үндсэн нот, октав ба ойролцоох 3 дахин давтамжийг тодотгодог. Эдгээрийн спектрийг харьцуул.",
       strikeReady: "Бэлэн. Дарахад л дуу гарна.",
       strikeStarting: "Дууг бэлтгэж байна…", strikeDone: "Цохилоо. Дахин дахин товшоод хэмнэл үүсгээрэй.",
       strikeStopped: "Зогслоо. Дахин дарж сонсоорой.",
@@ -977,7 +1005,7 @@
       strikeInvalid: "Нотын давтамжийг 110–880 Гц-ийн хооронд оруулна уу.",
       strikeDesc: {
         pluck: "Чавхдасны хэлбэлзэл эргэж ойж, энергиэ бага багаар алддаг. Хэд хэдэн чавхдас аккорд үүсгэнэ.",
-        kick: "Дугуй мембран олон өөрийн модоор хэлбэлзэнэ. Давтамжууд нь хэмжээ ба таталтаас хамаарна.",
+        kick: "Мембран, шуугиантай бага бөмбөр, цан, хөглөгдсөн ган бөмбөрийг харьцуул. Товчлууруудыг товшиж хэмнэл үүсгээрэй.",
         piano: "Алх цохиход өчүүхэн зөрүүтэй чавхдас зэрэг хэлбэлзэнэ. Цохилтын хүчийг өсгөхөд дээд гармоникууд тодорч, авиа хурц болно."
       },
       sustainPhase: "03 · Үргэлжлэх авиа", sustainChoose: "Үргэлжлэх дуу сонгох",
@@ -1100,12 +1128,15 @@
     strikePitch: 220,
     strikeSnap: false,
     strikeDrumSize: "medium",
+    strikeDrumVoice: "membrane",
     strikeDrumTension: 1,
     strikeGuitarPlay: "single",
     strikeChord: "em",
+    strikeGuitarPattern: "down",
     strikePluckPosition: .22,
     strikePianoTouch: "press",
     strikeStrength: 55,
+    strikeStrengthByKind: { pluck: 55, kick: 78, piano: 55 },
     strikeDecay: 0.65,
     strikeStatus: "strikeReady",
     strikeError: false,
@@ -2627,12 +2658,21 @@
       decaySec: state.strikeDecay, kickSize: state.strikeDrumSize,
       options: {
         position: state.strikePluckPosition,
+        drumVoice: state.strikeDrumVoice,
         drumTension: state.strikeDrumTension,
         ...(state.strikeKind === "piano" ?
           { velocity: state.strikeStrength / 100, touch: state.strikePianoTouch } : {}),
         ...(state.strikeKind === "pluck" && state.strikeGuitarPlay === "strum" ?
-          { strumChord: state.strikeChord } : {})
+          { strumChord: state.strikeChord, strumPattern: state.strikeGuitarPattern } : {})
       } };
+  }
+
+  function strikeDrumSpectrumMaxHz() {
+    if (state.strikeDrumVoice === "snare") return 5200;
+    if (state.strikeDrumVoice === "cymbal") return 6000;
+    if (state.strikeDrumVoice === "steelpan") return 4000;
+    return Math.max(600, transientModel.kickFrequency(0,
+      state.strikeDrumSize, state.strikeDrumTension) * 4);
   }
 
   function stopStrikeFollow() {
@@ -2668,8 +2708,11 @@
     $("strikeTimeValue").textContent = "t = " + secondsFixedText(state.strikeCursor);
     $("strikeSpectrumBadge").textContent = state.strikeSpectrumView === "local" ?
       "t = " + secondsFixedText(state.strikeCursor) : text("strikeSpectrumWhole");
+    const voiceHints = { snare: "strikeSnareSpectrumHint", cymbal: "strikeCymbalSpectrumHint",
+      steelpan: "strikePanSpectrumHint" };
     $("strikeSpectrumHint").textContent = text(state.strikeSpectrumView === "local" ?
-      "strikeSpectrumHint" : "strikeSpectrumWholeHint");
+      (state.strikeKind === "kick" ? voiceHints[state.strikeDrumVoice] : null) ||
+        "strikeSpectrumHint" : "strikeSpectrumWholeHint");
   }
 
   function setStrikeView(span, center = state.strikeCursor) {
@@ -4518,14 +4561,23 @@
     $("strikePianoHint").hidden = state.strikeKind !== "piano";
     $("strikeButton").hidden = state.strikeKind !== "kick";
     $("strikeChordGroup").hidden = state.strikeKind !== "pluck";
+    $("strikeGuitarPattern").value = state.strikeGuitarPattern;
     $("strikePluckPositionGroup").hidden = state.strikeKind !== "pluck";
     $("strikePluckPosition").value = String(Math.round(100 * state.strikePluckPosition));
     $("strikePluckPositionValue").textContent = Math.round(100 * state.strikePluckPosition) + "%";
     $("strikeDrumSizeGroup").hidden = state.strikeKind !== "kick";
+    $("strikeDrumVoice").value = state.strikeDrumVoice;
+    $("strikeDrumTensionGroup").hidden = state.strikeDrumVoice === "cymbal" ||
+      state.strikeDrumVoice === "steelpan";
     $("strikeDrumTension").value = String(Math.round(state.strikeDrumTension * 100));
     $("strikeDrumTensionValue").textContent = Math.round(state.strikeDrumTension * 100) + "%";
-    $("strikeDrumFrequencies").textContent = hzText(Math.round(
-      transientModel.kickFrequency(0, state.strikeDrumSize, state.strikeDrumTension)));
+    const drumHz = transientModel.drumReferenceHz(state.strikeDrumSize,
+      state.strikeDrumTension, state.strikeDrumVoice);
+    $("strikeDrumFrequencies").textContent = drumHz === null ?
+      text("strikeNoSinglePitch") : hzText(Math.round(drumHz));
+    $("strikeDrumHint").textContent = text({ membrane: "strikeDrumHint",
+      snare: "strikeSnareHint", cymbal: "strikeCymbalHint",
+      steelpan: "strikePanHint" }[state.strikeDrumVoice]);
     $("strikeStrength").value = String(state.strikeStrength);
     $("strikeStrengthValue").textContent = state.strikeStrength + "%";
     $("strikeDecay").value = String(state.strikeDecay);
@@ -4551,6 +4603,12 @@
       const selected = button.dataset.drumSize === state.strikeDrumSize;
       button.classList.toggle("selected", selected);
       button.setAttribute("aria-pressed", String(selected));
+      const index = ["large", "medium", "small"].indexOf(button.dataset.drumSize);
+      const keys = { membrane: ["strikeLarge", "strikeMedium", "strikeSmall"],
+        snare: ["strikeSnareLow", "strikeSnareMid", "strikeSnareHigh"],
+        cymbal: ["strikeCymbalCrash", "strikeCymbalRide", "strikeCymbalHat"],
+        steelpan: ["strikePanC", "strikePanE", "strikePanG"] };
+      button.textContent = text(keys[state.strikeDrumVoice][index]);
     });
   }
 
@@ -4783,8 +4841,11 @@
   function selectStrikeKind(kind) {
     if (!transientModel.KINDS.includes(kind) || kind === state.strikeKind) return;
     stopStrikeForEdit();
+    state.strikeStrengthByKind[state.strikeKind] = state.strikeStrength;
     state.strikeKind = kind;
-    state.strikeDecay = kind === "pluck" ? 0.65 : kind === "piano" ? 0.8 : 0.30;
+    state.strikeStrength = state.strikeStrengthByKind[kind];
+    state.strikeDecay = kind === "pluck" ? 0.65 : kind === "piano" ? 0.8 :
+      { membrane: .3, snare: .33, cymbal: .55, steelpan: .8 }[state.strikeDrumVoice];
     state.strikeCursor = 0;
     state.strikeViewStart = 0;
     state.strikeViewSpan = 3;
@@ -4854,12 +4915,15 @@
     state.strikePitch = 220;
     state.strikeSnap = false;
     state.strikeDrumSize = "medium";
+    state.strikeDrumVoice = "membrane";
     state.strikeDrumTension = 1;
     state.strikeGuitarPlay = "single";
     state.strikeChord = "em";
+    state.strikeGuitarPattern = "down";
     state.strikePluckPosition = .22;
     state.strikePianoTouch = "press";
     state.strikeStrength = 55;
+    state.strikeStrengthByKind = { pluck: 55, kick: 78, piano: 55 };
     state.strikeDecay = 0.65;
     state.strikeCursor = 0;
     state.strikeViewStart = 0;
@@ -5051,7 +5115,7 @@
       const topFrequency = state.strikeKind === "pluck" ?
         (state.strikeGuitarPlay === "strum" ? 4000 : state.strikePitch * 8) :
         state.strikeKind === "piano" ? state.strikePitch * 8.5 :
-        transientModel.kickFrequency(0, state.strikeDrumSize, state.strikeDrumTension) * 3.6;
+        strikeDrumSpectrumMaxHz();
       const points = Math.min(16000, Math.max(700, Math.round(plotWidth * 2),
         Math.ceil(span * topFrequency * 10)));
       ctx.lineWidth = 2;
@@ -5122,7 +5186,7 @@
       state.strikeKind === "pluck" ?
         (state.strikeGuitarPlay === "strum" ? 4000 :
           Math.min(8000, Math.max(1200, state.strikePitch * 8.3))) :
-        Math.max(600, transientModel.kickFrequency(0, state.strikeDrumSize, state.strikeDrumTension) * 4);
+        strikeDrumSpectrumMaxHz();
     ctx.strokeStyle = "#e8eff7";
     ctx.lineWidth = 1;
     for (let i = 0; i <= 4; i++) {
@@ -7357,6 +7421,23 @@
     renderStrikeControls();
     drawPlots();
   });
+  $("strikeGuitarPattern").addEventListener("change", event => {
+    if (!transientModel.STRUM_PATTERNS.includes(event.target.value)) return;
+    stopStrikeForEdit();
+    state.strikeGuitarPattern = event.target.value;
+    renderStrikeControls();
+    drawPlots();
+  });
+  $("strikeDrumVoice").addEventListener("change", event => {
+    const voice = event.target.value;
+    if (!transientModel.DRUM_VOICES.includes(voice) || voice === state.strikeDrumVoice) return;
+    stopStrikeForEdit();
+    state.strikeDrumVoice = voice;
+    state.strikeDrumSize = "medium";
+    state.strikeDecay = { membrane: .3, snare: .33, cymbal: .55, steelpan: .8 }[voice];
+    renderStrikeControls();
+    drawPlots();
+  });
   $("strikeDrumTension").addEventListener("input", event => {
     stopStrikeForEdit();
     state.strikeDrumTension = Number(event.target.value) / 100;
@@ -7366,6 +7447,7 @@
   $("strikeStrength").addEventListener("input", event => {
     stopStrikeForEdit();
     state.strikeStrength = Number(event.target.value);
+    state.strikeStrengthByKind[state.strikeKind] = state.strikeStrength;
     renderStrikeControls();
     drawPlots();
   });

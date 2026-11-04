@@ -34,9 +34,9 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /id="modeStrike"[^>]*>Цохих\/татах<\/button>/);
   assert.match(html, /id="modeSustain"[^>]*>Үлээх\/нумдах<\/button>/);
   assert.match(html, /id="fixedTimeCheck" checked/);
-  assert.match(html, /src="sound-string\.js\?v=s017"/);
+  assert.match(html, /src="sound-string\.js\?v=s037"/);
   assert.match(html, /src="sound-piano\.js\?v=s019"/);
-  assert.match(html, /src="sound-transient\.js\?v=s019"/);
+  assert.match(html, /src="sound-transient\.js\?v=s037"/);
   assert.match(html, /src="sound-sustain\.js\?v=s020b"/);
   assert.match(html, /src="sound-spectrum\.js\?v=s017"/);
   assert.match(html, /src="sound-motion\.js\?v=s020c"/);
@@ -48,8 +48,8 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-scales\.js\?v=s031"/);
   assert.match(html, /src="sound-limit5\.js\?v=s036"/);
   assert.match(html, /src="sound-temperaments\.js\?v=s036"/);
-  assert.match(html, /src="sound-lab\.js\?v=s036"/);
-  assert.match(html, /href="sound-lab\.css\?v=s036"/);
+  assert.match(html, /src="sound-lab\.js\?v=s037"/);
+  assert.match(html, /href="sound-lab\.css\?v=s037"/);
   assert.match(html, /id="scaleGapToggle" type="checkbox"/);
   assert.match(html, /id="scaleGapPanel" hidden/);
   assert.match(html, /src="sound-recorder\.js"/);
@@ -2322,6 +2322,93 @@ test("S032 momentary guitar strokes and exclusive bowed hold/toggle controls sta
   assert.equal(app.elements.get("sustainToggleButton").getAttribute("aria-pressed"), "false");
   app.fire("sustainHoldButton", "pointerup", { pointerId: 44 });
   assert.equal(app.elements.get("sustainHoldButton").getAttribute("aria-pressed"), "false");
+});
+
+test("S037 additional guitar chords and strokes remain momentary and quiet until tapped", async () => {
+  const app = fakePage();
+  app.fire("modeStrike", "click");
+  assert.equal(app.guitarChordButtons.length, 11);
+  for (const pattern of transientModel.STRUM_PATTERNS) {
+    assert.match(html, new RegExp('value="' + pattern + '" data-i18n="strikePattern'));
+  }
+  assert.equal(app.contexts.length, 0);
+  app.elements.get("strikeGuitarPattern").value = "fingerpick";
+  app.fire("strikeGuitarPattern", "change");
+  assert.equal(app.contexts.length, 0, "Changing a gesture must not start sound");
+  await app.guitarChordButtons[10].click(); // Dsus4
+  const context = app.contexts[0];
+  const firstBuffer = context.sources[0].buffer.getChannelData(0);
+  assert.equal(app.guitarChordButtons[10].getAttribute("aria-pressed"), "true");
+  await app.guitarChordButtons[10].click();
+  assert.equal(context.sources.length, 2, "Repeated Dsus4 hits overlap");
+  assert.equal(context.sources[0].stopped, false);
+  assert.equal(context.sources[1].buffer, context.sources[0].buffer, "Same gesture reuses samples");
+  app.elements.get("strikeGuitarPattern").value = "up";
+  app.fire("strikeGuitarPattern", "change");
+  assert.equal(context.sources[0].stopped, true, "Changing the synthesis recipe stops the old tail");
+  assert.equal(context.sources.length, 2, "A change alone does not play a chord");
+  await app.guitarChordButtons[10].click();
+  const upBuffer = context.sources[2].buffer.getChannelData(0);
+  assert.notEqual(firstBuffer[1800], upBuffer[1800], "Upstroke has distinct onset order");
+  app.fire("langEn", "click");
+  assert.equal(app.elements.get("strikeGuitarPattern").value, "up");
+  assert.equal(app.contexts.length, 1, "Language change cannot create a second audio context");
+});
+
+test("S037 percussion pads switch families silently, expose high frequencies, and start louder", async () => {
+  const app = fakePage();
+  app.fire("modeStrike", "click");
+  assert.equal(app.elements.get("strikeStrengthValue").textContent, "55%");
+  app.strikeButtons[1].click();
+  assert.equal(app.elements.get("strikeStrengthValue").textContent, "78%",
+    "Default drum strength increases without altering the guitar default");
+  assert.equal(app.contexts.length, 0);
+  assert.equal(app.elements.get("strikeDrumVoice").value, "membrane");
+  await app.drumButtons[1].click();
+  const context = app.contexts[0];
+  assert.ok(Math.abs(context.gains.at(-1).gain.value - .21 * .78) < 1e-10,
+    "Drum gain applies the distinct default strength through the original safety cap");
+  const previous = context.sources[0];
+  const families = [
+    "snare", "cymbal", "steelpan"
+  ];
+  const waveforms = [];
+  for (const family of families) {
+    app.elements.get("strikeDrumVoice").value = family;
+    app.fire("strikeDrumVoice", "change");
+    assert.equal(context.sources.length, 1 + waveforms.length, "Selecting percussion is silent");
+    assert.equal(previous.stopped, true, "Changing to another family stops the old membrane");
+    assert.equal(app.elements.get("strikeDrumVoice").value, family);
+    assert.equal(app.elements.get("strikeDrumTensionGroup").hidden,
+      family !== "snare", "Tension only applies to membranous percussion");
+    assert.equal(app.elements.get("strikeStrengthValue").textContent, "78%");
+    assert.ok(app.elements.get("strikeSpectrumHint").textContent.length > 0);
+    assert.equal(app.drumButtons[1].textContent,
+      { snare: "Дунд", cymbal: "Райд", steelpan: "Ми4" }[family]);
+    await app.drumButtons[1].click();
+    waveforms.push(context.sources.at(-1).buffer.getChannelData(0)[400]);
+    assert.equal(context.gains.at(-1).gain.value, .21 * .78);
+    if (family === "cymbal") {
+      assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "Тогтмол нотгүй");
+      assert.ok(app.elements.get("strikeSpectrumCanvas").drawnText.some(t => t.includes("6 кГц")),
+        "Cymbal plot has a high-frequency axis, not the membrane-only axis");
+    }
+    if (family === "steelpan") {
+      assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "330 Гц");
+      assert.ok(app.elements.get("strikeSpectrumCanvas").drawnText.some(t => t.includes("4 кГц")));
+    }
+  }
+  assert.equal(new Set(waveforms).size, 3, "Each percussion family has distinct audio");
+  app.fire("langEn", "click");
+  assert.equal(app.drumButtons[1].textContent, "E4");
+  assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "330 Hz");
+  app.strikeButtons[0].click();
+  assert.equal(app.elements.get("strikeStrengthValue").textContent, "55%",
+    "Guitar maintains its original strength after playing percussion");
+  app.strikeButtons[1].click();
+  assert.equal(app.elements.get("strikeStrengthValue").textContent, "78%");
+  app.fire("stopAll", "click");
+  assert.ok(context.sources.every(source => source.stopped), "Global Stop silences the last hit");
 });
 
 test("harmonic builder is an interactive eight-partial synthesis without autoplay", async () => {
