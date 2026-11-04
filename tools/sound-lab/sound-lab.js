@@ -322,13 +322,13 @@
       strikePianoTouchTitle: "How to play", strikePianoPress: "Press", strikePianoTap: "Tap",
       strikePianoTouchHint: "Press models a held key with free decay. Tap is gentler and brings the damper back after a short press.",
       strikeGuitarPlay: "Play guitar", strikeSingle: "One string", strikeStrum: "Several strings",
-      strikeChord: "Choose a chord", strikeChordHint: "The pick sweeps across the strings. Frets change each string's pitch; muted strings are skipped.",
+      strikeChord: "Strum a chord", strikeChordHint: "Tap Em, G or C to strum immediately, then tap again for a rhythm. The pick sweeps across the strings; muted strings are skipped.",
       strikePluckPosition: "Pluck position", strikePluckPositionHint: "Plucking nearer the end brings out more high harmonics.",
       strikePitch: "Note frequency", strikePitchSliderAria: "Note pitch slider",
       strikePitchInputAria: "Note frequency in hertz",
       strikeStrength: "Strength", strikeDecay: "Decay time",
-      strikeDrumSize: "Drum size", strikeLarge: "Large", strikeMedium: "Medium", strikeSmall: "Small",
-      strikeDrumHint: "A larger membrane vibrates more slowly. Its natural modes are not integer harmonics.",
+      strikeDrumSize: "Hit a drum", strikeLarge: "Large", strikeMedium: "Medium", strikeSmall: "Small",
+      strikeDrumHint: "Tap any size repeatedly to make a rhythm. Larger membranes vibrate more slowly; their modes are not integer harmonics.",
       strikeDrumTension: "Membrane tension", strikeDrumTensionHint: "Tighten the membrane to raise all its natural frequencies.",
       strikeWaveTitle: "Waveform · zoom and explore",
       strikeWaveSubtitle: "See the full decay; zoom in to reveal individual vibrations.",
@@ -358,7 +358,7 @@
       strikeLessonOne: "A plucked string vibrates at several frequencies. Its higher harmonics fade faster than its fundamental.",
       strikeLessonTwo: "A circular membrane has non-integer frequency ratios because its modes involve Bessel functions. Its size and tension change the frequencies, while a string produces nearly harmonic overtones. Compare their local spectra.",
       strikeReady: "Ready. Sound starts only when you tap the pad.",
-      strikeStarting: "Preparing the sound…", strikeDone: "Sound playing. Tap the active button to stop.",
+      strikeStarting: "Preparing the sound…", strikeDone: "Sound triggered. Tap again to make a rhythm.",
       strikeStopped: "Stopped. Tap the pad to try again.",
       strikeHidden: "Sound stopped when you left the page.",
       strikeUnsupported: "This browser does not support synthesized sound playback.",
@@ -776,13 +776,13 @@
       strikePianoTouchTitle: "Тоглох арга", strikePianoPress: "Дарах", strikePianoTap: "Товших",
       strikePianoTouchHint: "Дарахад товчлуурыг барьсан үеийн авиа чөлөөтэй намдана. Товшиход алх зөөлөн цохиж, намжаагч удахгүй буцна.",
       strikeGuitarPlay: "Гитар тоглуулах", strikeSingle: "Нэг чавхдас", strikeStrum: "Олон чавхдас",
-      strikeChord: "Аккорд сонгох", strikeChordHint: "Цохиход чавхдасууд ээлжлэн дуугарна. Аккордоос хамаарч дарсан нот нь өөр, зарим чавхдас дуугарахгүй.",
+      strikeChord: "Аккорд цохих", strikeChordHint: "Em, G, C товчийг дарахад шууд цохино. Дахин дахин товшоод хэмнэл үүсгээрэй. Чавхдасууд ээлжлэн дуугарч, зарим нь алгасагдана.",
       strikePluckPosition: "Татах байрлал", strikePluckPositionHint: "Үзүүрт нь ойр татахад дээд гармоникууд тодордог.",
       strikePitch: "Нотын давтамж", strikePitchSliderAria: "Нотын давтамжийн гулсуур",
       strikePitchInputAria: "Нотын давтамжийг герцээр оруулах",
       strikeStrength: "Цохилтын хүч", strikeDecay: "Намдах хугацаа",
-      strikeDrumSize: "Бөмбөрийн хэмжээ", strikeLarge: "Том", strikeMedium: "Дунд", strikeSmall: "Жижиг",
-      strikeDrumHint: "Том мембран нам хэлбэлзэнэ. Түүний давтамжууд үндсэн давтамжийн бүхэл тоон үржвэр биш.",
+      strikeDrumSize: "Бөмбөр цохих", strikeLarge: "Том", strikeMedium: "Дунд", strikeSmall: "Жижиг",
+      strikeDrumHint: "Том, дунд, жижиг бөмбөрийг шууд товшиж хэмнэл үүсгээрэй. Том мембран нам хэлбэлздэг; өөрийн модын давтамжууд бүхэл тоон харьцаатай биш.",
       strikeDrumTension: "Мембраны таталт", strikeDrumTensionHint: "Мембраныг чангалахад бүх хэлбэлзлийн давтамж өснө.",
       strikeWaveTitle: "Дууны долгион · томруулж үзэх",
       strikeWaveSubtitle: "Бүхэлд нь намдлыг, томруулбал нэг нэг хэлбэлзлийг харна.",
@@ -812,7 +812,7 @@
       strikeLessonOne: "Чавхдас олон давтамжаар хэлбэлзэнэ. Өндөр гармоникууд нь үндсэн давтамжаас хурдан намдана.",
       strikeLessonTwo: "Дугуй мембраны хэлбэлзлийн давтамжууд Бесселийн функцийн тэгүүдээс хамаардаг тул бүхэл тоон харьцаатай биш. Хэмжээ ба таталтыг өөрчлөхөд давтамжууд хувирна. Харин чавхдасны дээд гармоникууд үндсэн давтамжийн ойролцоогоор бүхэл тоон үржвэр байдаг.",
       strikeReady: "Бэлэн. Дарахад л дуу гарна.",
-      strikeStarting: "Дууг бэлтгэж байна…", strikeDone: "Дуугарч байна. Идэвхтэй товчийг дахин дарж зогсооно.",
+      strikeStarting: "Дууг бэлтгэж байна…", strikeDone: "Цохилоо. Дахин дахин товшоод хэмнэл үүсгээрэй.",
       strikeStopped: "Зогслоо. Дахин дарж сонсоорой.",
       strikeHidden: "Хуудсаас гарахад дуу зогслоо.",
       strikeUnsupported: "Энэ хөтөч дуу үүсгэж тоглуулах боломжгүй байна.",
@@ -948,8 +948,6 @@
     strikeChord: "em",
     strikePluckPosition: .22,
     strikePianoTouch: "press",
-    strikePlaying: false,
-    strikePlayback: null,
     strikeStrength: 55,
     strikeDecay: 0.65,
     strikeStatus: "strikeReady",
@@ -1184,6 +1182,9 @@
       this.contextOwner = contextOwner;
       this.voices = new Set();
       this.generation = 0;
+      // A fresh AudioBufferSourceNode per hit can reuse the same immutable
+      // buffer. This avoids regenerating expensive strings for every beat.
+      this.bufferCache = new Map();
     }
 
     stopVoice(voice, immediate) {
@@ -1203,24 +1204,32 @@
       for (const voice of this.voices) this.stopVoice(voice, immediate);
     }
 
-    async trigger(onEnded = null) {
+    async trigger(recipe, strength) {
       const ticket = this.generation;
       const context = await this.contextOwner.readyContext();
       if (ticket !== this.generation || state.mode !== "strike") return false;
-      const samples = transientModel.makeSamples(
-        state.strikeKind, state.strikePitch, state.strikeDecay, context.sampleRate,
-        state.strikeDrumSize, strikeRecipe().options);
-      const buffer = context.createBuffer(1, samples.length, context.sampleRate);
-      buffer.getChannelData(0).set(samples);
+      const key = JSON.stringify([context.sampleRate, recipe]);
+      let buffer = this.bufferCache.get(key);
+      if (buffer) this.bufferCache.delete(key); // Refresh LRU position.
+      else {
+        const samples = transientModel.makeSamples(
+          recipe.kind, recipe.pitchHz, recipe.decaySec, context.sampleRate,
+          recipe.kickSize, recipe.options);
+        buffer = context.createBuffer(1, samples.length, context.sampleRate);
+        buffer.getChannelData(0).set(samples);
+      }
+      this.bufferCache.set(key, buffer);
+      if (this.bufferCache.size > 8) this.bufferCache.delete(this.bufferCache.keys().next().value);
       const source = context.createBufferSource();
       const gain = context.createGain();
       const now = context.currentTime;
       source.buffer = buffer;
-      gain.gain.setValueAtTime(maxGain.transient * state.strikeStrength / 100, now);
+      gain.gain.setValueAtTime(maxGain.transient * strength / 100, now);
       source.connect(gain);
       gain.connect(this.contextOwner.output);
 
-      // A drum roll can be tapped repeatedly, but cannot spawn unbounded voices.
+      // All struck instruments can overlap for rhythms, but the number of
+      // simultaneously sounding voices and summed peak gain remain bounded.
       while (this.voices.size >= 4) {
         const oldest = this.voices.values().next().value;
         this.stopVoice(oldest, true);
@@ -1232,10 +1241,9 @@
         source.disconnect();
         gain.disconnect();
         this.voices.delete(voice);
-        if (onEnded) onEnded();
       };
       source.start(now);
-      return { context, startedAt: now, duration: samples.length / context.sampleRate };
+      return { context, startedAt: now, duration: buffer.length / context.sampleRate };
     }
   }
 
@@ -2421,8 +2429,6 @@
     strikeTicket++;
     transientAudio.stop(false);
     stopStrikeFollow();
-    state.strikePlaying = false;
-    state.strikePlayback = null;
     overallSpectrumCache = null;
     setStrikeStatus("strikeReady");
   }
@@ -4011,7 +4017,7 @@
     $("strikePianoPlayModes").hidden = state.strikeKind !== "piano";
     $("strikePianoHint").hidden = state.strikeKind !== "piano";
     $("strikeButton").hidden = state.strikeKind !== "kick";
-    $("strikeChordGroup").hidden = state.strikeKind !== "pluck" || state.strikeGuitarPlay !== "strum";
+    $("strikeChordGroup").hidden = state.strikeKind !== "pluck";
     $("strikePluckPositionGroup").hidden = state.strikeKind !== "pluck";
     $("strikePluckPosition").value = String(Math.round(100 * state.strikePluckPosition));
     $("strikePluckPositionValue").textContent = Math.round(100 * state.strikePluckPosition) + "%";
@@ -4029,10 +4035,7 @@
     const strikePlayLabels = { single: "strikePluckButton", strum: "strikeStrumButton",
       press: "strikePianoButton", tap: "strikePianoTapButton" };
     document.querySelectorAll("[data-strike-play]").forEach(button => {
-      const active = state.strikePlaying && button.dataset.strikePlay === state.strikePlayback;
-      button.classList.toggle("playing", active);
-      button.setAttribute("aria-pressed", String(active));
-      button.textContent = (active ? "■ " : "▶ ") + text(strikePlayLabels[button.dataset.strikePlay]);
+      button.textContent = "▶ " + text(strikePlayLabels[button.dataset.strikePlay]);
     });
     document.querySelectorAll("[data-guitar-chord]").forEach(button => {
       const selected = button.dataset.guitarChord === state.strikeChord;
@@ -4191,8 +4194,6 @@
     strikeTicket++;
     transientAudio.stop(immediate);
     stopStrikeFollow();
-    state.strikePlaying = false;
-    state.strikePlayback = null;
     renderStrikeControls();
     stopSustainSound(immediate, message === "hidden" ? "sustainHidden" : "sustainStopped");
     stopMotionSound(immediate, message === "hidden" ? "motionHidden" : "motionStopped");
@@ -4304,38 +4305,35 @@
     drawPlots();
   }
 
-  async function triggerStrike(mode = "kick") {
+  async function triggerStrike(mode = "kick", modelChanged = false) {
+    if (state.mode !== "strike") return;
     const isGuitar = state.strikeKind === "pluck";
     const isPiano = state.strikeKind === "piano";
     if (isGuitar && !["single", "strum"].includes(mode) ||
-        isPiano && !["press", "tap"].includes(mode)) return;
-    if ((isGuitar || isPiano) && state.strikePlaying && state.strikePlayback === mode) {
-      stopStrikeForEdit();
-      setStrikeStatus("strikeStopped");
-      renderStrikeControls();
-      return;
+        isPiano && !["press", "tap"].includes(mode) ||
+        !isGuitar && !isPiano && mode !== "kick") return;
+    if (isGuitar) {
+      modelChanged ||= state.strikeGuitarPlay !== mode;
+      state.strikeGuitarPlay = mode;
+    } else if (isPiano) {
+      modelChanged ||= state.strikePianoTouch !== mode;
+      state.strikePianoTouch = mode;
     }
-    if (isGuitar || isPiano) {
-      stopStrikeForEdit();
-      if (isGuitar) state.strikeGuitarPlay = mode;
-      else state.strikePianoTouch = mode;
-      state.strikePlaying = true; // Also lets the user cancel an audio-context start in progress.
-      state.strikePlayback = mode;
-    }
+    // Capture the recipe before awaiting AudioContext startup. Two rapid taps
+    // with different pads must not both adopt the newest selected recipe.
+    const recipe = strikeRecipe();
+    const strength = state.strikeStrength;
     const ticket = ++strikeTicket;
     setStrikeStatus("strikeStarting");
     renderStrikeControls();
-    drawPlots();
+    if (modelChanged) {
+      overallSpectrumCache = null;
+      drawPlots();
+    }
     try {
-      const info = await transientAudio.trigger(() => {
-        if (ticket !== strikeTicket) return;
-        state.strikePlaying = false;
-        state.strikePlayback = null;
-        renderStrikeControls();
-      });
+      const info = await transientAudio.trigger(recipe, strength);
       if (info && ticket === strikeTicket) {
         setStrikeStatus("strikeDone");
-        renderStrikeControls();
         startStrikeFollow(info);
       }
     } catch (error) {
@@ -4343,10 +4341,7 @@
       strikeTicket++;
       transientAudio.stop(true);
       stopStrikeFollow();
-      state.strikePlaying = false;
-      state.strikePlayback = null;
       setStrikeStatus(error.message === "unsupported" ? "strikeUnsupported" : "strikeBlocked", true);
-      renderStrikeControls();
     }
   }
 
@@ -6055,11 +6050,9 @@
   });
   document.querySelectorAll("[data-guitar-chord]").forEach(button => {
     button.addEventListener("click", () => {
-      if (state.strikeChord === button.dataset.guitarChord) return;
-      stopStrikeForEdit();
+      const changed = state.strikeChord !== button.dataset.guitarChord;
       state.strikeChord = button.dataset.guitarChord;
-      renderStrikeControls();
-      drawPlots();
+      return triggerStrike("strum", changed);
     });
   });
   document.querySelectorAll("[data-sustain]").forEach(button => {
@@ -6067,11 +6060,9 @@
   });
   document.querySelectorAll("[data-drum-size]").forEach(button => {
     button.addEventListener("click", () => {
-      if (state.strikeDrumSize === button.dataset.drumSize) return;
-      stopStrikeForEdit();
+      const changed = state.strikeDrumSize !== button.dataset.drumSize;
       state.strikeDrumSize = button.dataset.drumSize;
-      renderStrikeControls();
-      drawPlots();
+      return triggerStrike("kick", changed);
     });
   });
   document.querySelectorAll("[data-spectrum-view]").forEach(button => {

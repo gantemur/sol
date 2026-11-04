@@ -46,8 +46,8 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-noise\.js"/);
   assert.match(html, /src="sound-scales\.js\?v=s031"/);
   assert.match(html, /src="sound-limit5\.js\?v=s030"/);
-  assert.match(html, /src="sound-lab\.js\?v=s031a"/);
-  assert.match(html, /href="sound-lab\.css\?v=s031"/);
+  assert.match(html, /src="sound-lab\.js\?v=s032"/);
+  assert.match(html, /href="sound-lab\.css\?v=s032"/);
   assert.match(html, /id="scaleGapToggle" type="checkbox"/);
   assert.match(html, /id="scaleGapPanel" hidden/);
   assert.match(html, /src="sound-recorder\.js"/);
@@ -1052,7 +1052,7 @@ test("transient controls change modeled decay and category changes cancel pendin
   assert.equal(app.elements.get("strikeDecayValue").textContent, "0.65 сек");
 });
 
-test("string snap and small/medium/large drum recipes are separate controls", async () => {
+test("string snap and small/medium/large drum pads play immediately and repeat", async () => {
   const app = fakePage();
   app.fire("modeStrike", "click");
   app.elements.get("strikeFrequencyInput").value = "437";
@@ -1065,53 +1065,105 @@ test("string snap and small/medium/large drum recipes are separate controls", as
   app.strikeButtons[1].events.click();
   assert.equal(app.elements.get("strikePitchGroup").hidden, true);
   assert.equal(app.elements.get("strikeDrumSizeGroup").hidden, false);
-  app.drumButtons[0].events.click();
+  await app.drumButtons[0].click();
   assert.equal(app.drumButtons[0].getAttribute("aria-pressed"), "true");
   assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "81 Гц");
-  await app.fire("strikeButton", "click");
-  assert.equal(app.contexts[0].sources.length, 1);
-  app.drumButtons[2].events.click();
+  const context = app.contexts[0];
+  assert.equal(context.sources.length, 1, "Choosing Large also strikes the drum");
+  await app.drumButtons[0].click();
+  assert.equal(context.sources.length, 2, "Tapping the same pad produces a second attack");
+  assert.equal(context.buffers.length, 1, "Repeated hits reuse synthesized drum samples");
+  assert.equal(context.sources[0].stopped, false, "The first hit continues ringing");
+  assert.equal(context.sources[0].buffer, context.sources[1].buffer);
+  await app.drumButtons[2].click();
   assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "157 Гц");
-  assert.equal(app.contexts[0].sources[0].stopped, true);
+  assert.equal(context.sources.length, 3, "Choosing Small strikes it immediately");
+  assert.equal(context.sources[0].stopped, false);
   await app.fire("strikeButton", "click");
   const first = app.contexts[0].buffers[0].getChannelData(0);
   const second = app.contexts[0].buffers[1].getChannelData(0);
   assert.notEqual(first[400], second[400], "Drum size changes actual audio samples");
 });
 
-test("guitar pluck and strum buttons immediately play, toggle off and switch exclusively", async () => {
+test("guitar pluck, strum and chord pads always retrigger without stopping earlier attacks", async () => {
   const app = fakePage();
   app.fire("modeStrike", "click");
   assert.equal(app.elements.get("strikeGuitarPlayModes").hidden, false);
-  assert.equal(app.elements.get("strikeChordGroup").hidden, true);
+  assert.equal(app.elements.get("strikeChordGroup").hidden, false);
   assert.equal(app.contexts.length, 0, "Opening guitar is silent");
   await app.guitarPlayButtons[1].click();
   assert.equal(app.contexts.length, 1, "The Strum button both chooses and plays the gesture");
   assert.equal(app.elements.get("strikePitchGroup").hidden, true);
   assert.equal(app.elements.get("strikeChordGroup").hidden, false);
-  assert.equal(app.guitarPlayButtons[1].getAttribute("aria-pressed"), "true");
+  assert.equal(app.guitarPlayButtons[1].getAttribute("aria-pressed"), undefined,
+    "Momentary trigger buttons must not claim a persistent pressed state");
+  assert.match(app.guitarPlayButtons[1].textContent, /^▶/);
   const em = app.contexts[0].buffers[0].getChannelData(0);
   assert.ok(em.some(value => Math.abs(value) > .02));
   await app.guitarPlayButtons[1].click();
-  assert.equal(app.contexts[0].sources[0].stopped, true, "Tapping the active Strum button stops it");
-  assert.equal(app.guitarPlayButtons[1].getAttribute("aria-pressed"), "false");
-  app.guitarChordButtons[1].click();
-  await app.guitarPlayButtons[1].click();
+  const context = app.contexts[0];
+  assert.equal(context.sources.length, 2, "Tapping Strum again launches another stroke");
+  assert.equal(context.sources[0].stopped, false);
+  assert.equal(context.buffers.length, 1, "Repeating a chord reuses its audio buffer");
+  await app.guitarChordButtons[1].click();
+  assert.equal(context.sources.length, 3, "G chord pad itself starts a strum");
+  assert.equal(app.guitarChordButtons[1].getAttribute("aria-pressed"), "true");
   const g = app.contexts[0].buffers[1].getChannelData(0);
   assert.notEqual(em[3000], g[3000], "Different fret patterns produce different audio");
+  await app.guitarChordButtons[1].click();
+  assert.equal(context.sources.length, 4);
+  assert.equal(context.buffers.length, 2, "G pad repeated without resynthesizing its notes");
+  assert.equal(context.sources[2].stopped, false);
+  await app.guitarPlayButtons[0].click();
+  assert.equal(context.sources.length, 5);
+  assert.equal(context.sources[0].stopped, true, "Oldest active voice is evicted at the four-voice limit");
+  assert.equal(context.sources[3].stopped, false, "Newest chord keeps ringing");
+  assert.equal(app.elements.get("strikePitchGroup").hidden, false);
+  assert.equal(app.elements.get("strikeChordGroup").hidden, false,
+    "Chord rhythm pads remain accessible when Pluck is selected");
   app.elements.get("strikePluckPosition").value = "48";
   app.fire("strikePluckPosition", "input");
   assert.equal(app.elements.get("strikePluckPositionValue").textContent, "48%");
   await app.guitarPlayButtons[0].click();
-  assert.equal(app.contexts[0].sources[1].stopped, true, "Switching to Pluck stops Strum");
+  assert.equal(context.sources.length, 6);
   assert.equal(app.elements.get("strikePitchGroup").hidden, false);
-  assert.equal(app.elements.get("strikeChordGroup").hidden, true);
   app.strikeButtons[1].click();
   assert.equal(app.elements.get("strikeGuitarPlayModes").hidden, true);
   app.elements.get("strikeDrumTension").value = "200";
   app.fire("strikeDrumTension", "input");
   assert.equal(app.elements.get("strikeDrumTensionValue").textContent, "200%");
   assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "158 Гц");
+});
+
+test("rapid pending chord and drum pad taps capture the intended sound recipes", async () => {
+  const app = fakePage();
+  app.fire("modeStrike", "click");
+  const emPending = app.guitarChordButtons[0].click();
+  const cPending = app.guitarChordButtons[2].click();
+  await Promise.all([emPending, cPending]);
+  const context = app.contexts[0];
+  assert.equal(context.sources.length, 2, "Both quick chord taps are audible");
+  assert.equal(context.buffers.length, 2, "Each pending tap used its own selected chord recipe");
+  const em = context.sources[0].buffer.getChannelData(0);
+  const c = context.sources[1].buffer.getChannelData(0);
+  assert.notEqual(em[3000], c[3000]);
+  assert.equal(context.sources[0].stopped, false);
+  assert.equal(context.sources[1].stopped, false);
+
+  app.strikeButtons[1].click();
+  const largePending = app.drumButtons[0].click();
+  const smallPending = app.drumButtons[2].click();
+  await Promise.all([largePending, smallPending]);
+  assert.equal(context.sources.length, 4);
+  assert.notEqual(context.sources[2].buffer.getChannelData(0)[400],
+    context.sources[3].buffer.getChannelData(0)[400]);
+  assert.equal(context.sources[2].stopped, false);
+  assert.equal(context.sources[3].stopped, false);
+  app.fire("strikeWaveCanvas", "click", { offsetX: 250 });
+  assert.equal(context.sources[3].stopped, false, "Manual waveform inspection changes cursor only");
+  await app.drumButtons[2].click();
+  assert.equal(context.sources.length, 5, "The same size can be hit again straight away");
+  assert.equal(context.sources[3].buffer, context.sources[4].buffer);
 });
 
 test("one transient waveform supports zoom, pan, presets and time scrubbing", () => {
@@ -2121,7 +2173,7 @@ test("modeled piano has press and gentle tap gestures with matching audio and UI
   assert.equal(app.elements.get("strikeDrumSizeGroup").hidden, true);
   assert.equal(app.elements.get("strikePianoPlayModes").hidden, false);
   assert.match(app.pianoTouchButtons[0].textContent, /Товчлуур дарах/);
-  assert.equal(app.pianoTouchButtons[0].getAttribute("aria-pressed"), "false");
+  assert.equal(app.pianoTouchButtons[0].getAttribute("aria-pressed"), undefined);
   assert.match(app.elements.get("strikeDescription").textContent, /Алх цохиход/);
   assert.equal(app.elements.get("strikeDecayValue").textContent, "0.8 сек");
   await app.pianoTouchButtons[0].click();
@@ -2141,9 +2193,12 @@ test("modeled piano has press and gentle tap gestures with matching audio and UI
   "Hammer strength changes the underlying synthesized piano waveform");
   await app.pianoTouchButtons[1].click();
   assert.match(app.pianoTouchButtons[1].textContent, /Товших/);
-  assert.equal(app.pianoTouchButtons[1].getAttribute("aria-pressed"), "true");
-  assert.equal(context.buffers.length, 3, "Tap starts immediately and replaces Press");
-  assert.equal(context.sources[1].stopped, true, "The two gestures are mutually exclusive");
+  assert.equal(app.pianoTouchButtons[1].getAttribute("aria-pressed"), undefined);
+  assert.equal(context.buffers.length, 3, "Tap starts immediately as a different gesture");
+  assert.equal(context.sources[1].stopped, false, "Press may decay under the next Tap");
+  await app.pianoTouchButtons[1].click();
+  assert.equal(context.sources.length, 4, "Repeated Tap starts a separate note");
+  assert.equal(context.buffers.length, 3, "Repeated Tap uses the cached piano samples");
   const tapped = context.buffers[2].getChannelData();
   const rms = (buffer, start, count = 1024) => {
     const from = Math.round(start * context.sampleRate);
@@ -2219,18 +2274,20 @@ test("S031 3-limit dropdown and chord button use bounded audio and stop on switc
   assert.equal(app.elements.get("scalePresetSelect").value, "five-up");
 });
 
-test("S031 exclusive guitar and bowed-instrument buttons clear on natural stop and gesture changes", async () => {
+test("S032 momentary guitar strokes and exclusive bowed hold/toggle controls stay distinct", async () => {
   const app = fakePage();
   app.fire("modeStrike", "click");
   await app.guitarPlayButtons[0].click();
   const context = app.contexts[0];
-  assert.equal(app.guitarPlayButtons[0].getAttribute("aria-pressed"), "true");
+  assert.equal(app.guitarPlayButtons[0].getAttribute("aria-pressed"), undefined);
+  assert.match(app.guitarPlayButtons[0].textContent, /^▶/);
   context.sources[0].onended();
-  assert.equal(app.guitarPlayButtons[0].getAttribute("aria-pressed"), "false");
+  assert.match(app.guitarPlayButtons[0].textContent, /^▶/,
+    "A note naturally ending does not turn the momentary play button into a toggle");
   await app.guitarPlayButtons[0].click();
   await app.guitarPlayButtons[1].click();
-  assert.equal(context.sources[1].stopped, true);
-  assert.equal(app.guitarPlayButtons[1].getAttribute("aria-pressed"), "true");
+  assert.equal(context.sources[1].stopped, false, "A strum can ring over the previous pluck");
+  assert.equal(app.guitarPlayButtons[1].getAttribute("aria-pressed"), undefined);
   app.fire("modeSustain", "click");
   assert.equal(context.sources[2].stopped, true);
   app.sustainButtons[1].click(); // violin
