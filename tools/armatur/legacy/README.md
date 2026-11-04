@@ -16,10 +16,12 @@ This tool was first created many years ago at the request of my friend
 M. Purev-Erdene, to help with his work as chief engineer on many major
 construction projects. It is dedicated to his memory.
 
-## Credits and licensing status
+## Credits and license
 
 The original source is [gantemur/armatur at f937ba9](https://github.com/gantemur/armatur/tree/f937ba9ab252372858f2e81076f2663772f87fcb).
-That revision contains no explicit software license. This corrected reference
-does not establish a new license grant or relicense the historical material.
-Its historical licensing remains unconfirmed. No third-party runtime
-dependencies are bundled in this standalone subfolder.
+That historical revision did not include an explicit license. The owner
+approved the MIT License for this distributed Armatur package on 3 November
+2026. This corrected version and its accompanying documentation are licensed
+under the [MIT License](LICENSE), copyright (c) 2020, 2026 Tsogt Gantumur.
+The full license is included here so this subfolder remains standalone.
+No third-party runtime dependencies are bundled in this subfolder.

@@ -2,6 +2,8 @@
  * Armatur 1D cutting engine. No DOM or package dependencies.
  * Lengths are integer tenths of a millimetre throughout the solver.
  */
+/* SPDX-FileCopyrightText: 2026 Tsogt Gantumur
+ * SPDX-License-Identifier: MIT */
 (function (root, factory) {
   "use strict";
   var api = factory();
