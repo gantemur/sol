@@ -1,4 +1,4 @@
-/* Deterministic models of a membrane drum, feedback-plucked strings and piano.
+/* Deterministic models of percussion, feedback-plucked strings and piano.
  * Playback and explanatory plots use precisely the same model samples.
  * These are simplified physical teaching models, not instrument recordings.
  */
@@ -28,15 +28,22 @@
   const DRUM_MIN_TENSION = .5;
   const DRUM_MAX_TENSION = 2;
   const KICK_SIZES = Object.freeze({ large: 0.72, medium: 1, small: 1.4 });
-  // The three existing drum pads are reused across families. Steel-pan pads
-  // name three tuned notes; cymbal pads select distinct decay/size profiles.
-  const DRUM_VOICES = Object.freeze(["membrane", "snare", "cymbal", "steelpan"]);
+  // Reuse the three momentary pads across families: some choose a size or
+  // pitched pan note, while the jingle pads choose collision density.
+  const DRUM_VOICES = Object.freeze(["membrane", "snare", "cymbal", "steelpan", "jingles", "woodblock"]);
   const STEELPAN_PITCHES = Object.freeze({ large: 261.625565, medium: 329.627557,
     small: 391.995436 });
   const CYMBAL_MODES = Object.freeze([1, 1.42, 1.87, 2.31, 2.92, 3.55, 4.23, 5.04, 6.17]);
   const CYMBAL_WEIGHTS = Object.freeze([.6, .42, .37, .31, .24, .19, .17, .12, .10]);
   const PAN_MODES = Object.freeze([1, 2.005, 3.012, 4.16, 5.34, 6.08]);
   const PAN_WEIGHTS = Object.freeze([1, .67, .42, .18, .10, .07]);
+  const JINGLE_COUNTS = Object.freeze({ large: 5, medium: 9, small: 14 });
+  const JINGLE_SPANS = Object.freeze({ large: .18, medium: .28, small: .38 });
+  const JINGLE_MODES = Object.freeze([1, 1.53, 2.27, 3.14, 4.03]);
+  const JINGLE_WEIGHTS = Object.freeze([.78, .55, .40, .26, .16]);
+  const WOOD_BASES = Object.freeze({ large: 510, medium: 760, small: 1110 });
+  const WOOD_MODES = Object.freeze([1, 1.61, 2.38, 3.17]);
+  const WOOD_WEIGHTS = Object.freeze([.92, .48, .24, .12]);
 
   function validate(kind, pitchHz, decaySec, kickSize = "medium", options = {}) {
     if (!KINDS.includes(kind)) throw new RangeError("Unknown transient sound");
@@ -91,7 +98,7 @@
     if (!Object.hasOwn(KICK_SIZES, size) || !DRUM_VOICES.includes(voice)) {
       throw new RangeError("Unknown drum pad or sound family");
     }
-    if (voice === "cymbal") return null; // Cymbals have no single perceived fundamental.
+    if (["cymbal", "jingles", "woodblock"].includes(voice)) return null;
     if (voice === "steelpan") return STEELPAN_PITCHES[size];
     return kickFrequency(0, size, tension);
   }
@@ -120,7 +127,14 @@
       value += DRUM_WEIGHTS[i] * Math.exp(-time / modeDecay) * Math.sin(TAU * frequency * time);
     }
     const knock = .1 * Math.exp(-time / .007) * Math.sin(TAU * 2300 * time);
-    return (1 - Math.exp(-time / .0015)) * (value / 2.2 + knock);
+    // Very low membrane fundamentals are barely reproduced by phone speakers.
+    // A bass-drum beater also excites shorter-lived midrange/body components;
+    // show them without pretending the membrane itself has harmonic modes.
+    const bassBeater = size === "large" ?
+      .22 * Math.exp(-time / .030) * Math.sin(TAU * 350 * time) +
+      .21 * Math.exp(-time / .012) * Math.sin(TAU * 980 * time) : 0;
+    return (1 - Math.exp(-time / .0015)) *
+      (value * (size === "large" ? 1.13 : 1) / 2.2 + knock + bassBeater);
   }
 
   function snareAt(time, size, tension, decaySec) {
@@ -153,6 +167,48 @@
     return (1 - Math.exp(-time / .0015)) * (.38 * ringing + strike);
   }
 
+  // A very small deterministic collision model: successive tiny impacts
+  // excite inharmonic bell-like resonances and broadband jingle noise. This
+  // borrows the physical idea (not code or coefficients) of PhISEM shakers.
+  function jinglesAt(time, size, decaySec) {
+    const count = JINGLE_COUNTS[size];
+    const span = JINGLE_SPANS[size];
+    const strength = .44 / Math.sqrt(count / 5);
+    let sum = 0;
+    for (let hit = 0; hit < count; hit++) {
+      const offset = .004 + hit * span / (count - 1) + .005 * hash(hit * 13 + count);
+      const t = time - offset;
+      if (t <= 0 || t > .26) continue;
+      const amplitude = .75 + .22 * hash(hit * 29 + 17);
+      const ringDecay = (.030 + .050 * decaySec) * (0.83 + .24 * hash(hit * 7 + 9));
+      const base = 1240 + 170 * hash(hit * 19 + 31);
+      let ring = 0;
+      for (let mode = 0; mode < JINGLE_MODES.length; mode++) {
+        ring += JINGLE_WEIGHTS[mode] * Math.exp(-t / (ringDecay * (1 - .10 * mode))) *
+          Math.sin(TAU * base * JINGLE_MODES[mode] * t + hit * .67 + mode * .29);
+      }
+      const rattle = .38 * noiseAt(t + .013 * hit) * Math.exp(-t / .021);
+      sum += amplitude * (1 - Math.exp(-t / .0006)) * (ring + rattle);
+    }
+    // Soft limiting protects four concurrent hits, while retaining their
+    // individual envelopes and exactly the same spectrum/plot samples.
+    return .94 * Math.tanh(strength * sum);
+  }
+
+  // A dry struck wooden block: shorter, lower-Q inharmonic body modes plus
+  // a brief hard-contact click. Sizes are qualitative timbre choices, not notes.
+  function woodblockAt(time, size, decaySec) {
+    const base = WOOD_BASES[size];
+    const bodyDecay = .030 + .080 * decaySec;
+    let body = 0;
+    for (let mode = 0; mode < WOOD_MODES.length; mode++) {
+      body += WOOD_WEIGHTS[mode] * Math.exp(-time / (bodyDecay / (1 + mode * .34))) *
+        Math.sin(TAU * base * WOOD_MODES[mode] * time + mode * .18);
+    }
+    const tap = .22 * Math.exp(-time / .005) * noiseAt(time);
+    return (1 - Math.exp(-time / .00065)) * (.42 * body + tap);
+  }
+
   function sampleAt(kind, time, pitchHz, decaySec, kickSize = "medium", options = {}) {
     if (time <= 0) return 0;
     if (kind === "kick") {
@@ -160,6 +216,8 @@
       if (voice === "snare") return snareAt(time, kickSize, options.drumTension ?? 1, decaySec);
       if (voice === "cymbal") return cymbalAt(time, kickSize, decaySec);
       if (voice === "steelpan") return steelpanAt(time, kickSize, decaySec);
+      if (voice === "jingles") return jinglesAt(time, kickSize, decaySec);
+      if (voice === "woodblock") return woodblockAt(time, kickSize, decaySec);
       // Circular-membrane eigenfrequencies are Bessel zeros, not integer harmonics.
       return membraneAt(time, kickSize, options.drumTension ?? 1, decaySec);
     }

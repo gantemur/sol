@@ -32,9 +32,11 @@ test("membrane fundamentals depend on size and the square root of tension", () =
   }
 });
 
-test("four percussion families share bounded playback/plot samples and distinct frequency responses", () => {
-  assert.deepEqual(sound.DRUM_VOICES, ["membrane", "snare", "cymbal", "steelpan"]);
+test("six percussion families share bounded playback/plot samples and distinct frequency responses", () => {
+  assert.deepEqual(sound.DRUM_VOICES, ["membrane", "snare", "cymbal", "steelpan", "jingles", "woodblock"]);
   assert.equal(sound.drumReferenceHz("medium", 1, "cymbal"), null);
+  assert.equal(sound.drumReferenceHz("medium", 1, "jingles"), null);
+  assert.equal(sound.drumReferenceHz("small", 1, "woodblock"), null);
   assert.ok(Math.abs(sound.drumReferenceHz("large", 1, "steelpan") - 261.6256) < .001);
   assert.ok(Math.abs(sound.drumReferenceHz("medium", 1, "steelpan") - 329.6276) < .001);
   assert.ok(Math.abs(sound.drumReferenceHz("small", 1, "steelpan") - 391.9954) < .001);
@@ -43,7 +45,8 @@ test("four percussion families share bounded playback/plot samples and distinct 
   const sampleRate = 16000;
   const signatures = [];
   for (const voice of sound.DRUM_VOICES) {
-    const decay = { membrane: .3, snare: .33, cymbal: .55, steelpan: .8 }[voice];
+    const decay = { membrane: .3, snare: .33, cymbal: .55, steelpan: .8,
+      jingles: .38, woodblock: .24 }[voice];
     for (const size of Object.keys(sound.KICK_SIZES)) {
       const options = { drumVoice: voice, drumTension: 1 };
       const samples = sound.makeSamples("kick", 220, decay, sampleRate, size, options);
@@ -61,11 +64,47 @@ test("four percussion families share bounded playback/plot samples and distinct 
       if (size === "medium") signatures.push([samples[277], samples[1111], samples[4444]].join("|"));
     }
   }
-  assert.equal(new Set(signatures).size, 4, "All four families have distinct waveforms");
+  assert.equal(new Set(signatures).size, 6, "All six families have distinct waveforms");
   const pan = spectrum.spectrumAt(sound, { kind: "kick", pitchHz: 220, decaySec: .8,
     kickSize: "medium", options: { drumVoice: "steelpan" } }, .1);
   assert.ok(pan.magnitudes[Math.round(sound.STEELPAN_PITCHES.medium / pan.binHz)] > .1,
     "Steel pan produces a pitched Fourier component");
+});
+
+test("large membrane adds audible beater/body presence without clipping", () => {
+  const energyAbove300Hz = size => {
+    const spec = spectrum.spectrumAt(sound, { kind: "kick", pitchHz: 220,
+      decaySec: .3, kickSize: size, options: { drumVoice: "membrane" } }, .027);
+    return spec.magnitudes.reduce((energy, magnitude, i) =>
+      energy + (i * spec.binHz >= 300 && i * spec.binHz <= 1800 ? magnitude ** 2 : 0), 0);
+  };
+  assert.ok(energyAbove300Hz("large") > 2 * energyAbove300Hz("medium"),
+    "Beater gives the bass drum an audible upper-frequency attack for small speakers");
+  for (const size of ["large", "medium", "small"]) {
+    const samples = sound.makeSamples("kick", 220, .3, 48000, size);
+    assert.ok(samples.every(value => Number.isFinite(value) && Math.abs(value) <= 1));
+  }
+});
+
+test("jingle collision density differs from the woodblock's short dry strike", () => {
+  const rate = 16000;
+  const rms = (samples, start, end) => {
+    let energy = 0, count = 0;
+    for (let i = Math.floor(start * rate); i < Math.floor(end * rate); i++) {
+      energy += samples[i] ** 2;
+      count++;
+    }
+    return Math.sqrt(energy / count);
+  };
+  const few = sound.makeSamples("kick", 220, .38, rate, "large", { drumVoice: "jingles" });
+  const many = sound.makeSamples("kick", 220, .38, rate, "small", { drumVoice: "jingles" });
+  const block = sound.makeSamples("kick", 220, .24, rate, "medium", { drumVoice: "woodblock" });
+  assert.ok(rms(many, .24, .34) > 2 * rms(few, .24, .34),
+    "Many bells continue colliding after the few-bell shake has ended");
+  assert.ok(rms(block, 0, .02) > 3 * rms(block, .12, .16),
+    "Woodblock has a dry transient rather than sustained metallic ringing");
+  assert.ok(rms(many, .24, .34) > 2 * rms(block, .24, .34),
+    "Metallic shake retains energy after a woodblock hit fades");
 });
 
 test("invalid or unbounded transient recipes are rejected", () => {
