@@ -21,7 +21,7 @@
     return (seasonDeclinations[count] || seasonDeclinations[5]).map((delta,index) => {
       const special=events.find(e=>e.delta===delta);
       if(special)return special;
-      const abs=Math.abs(delta), sign=delta>0?'+':'−';
+      const abs=Math.abs(delta), sign=delta>0?'+':'-';
       return {id:'intermediate-'+index,delta,
         label:sign+abs.toFixed(2)+'°',
         color:delta>0?'#228363':'#a96636',
