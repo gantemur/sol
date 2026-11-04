@@ -45,9 +45,9 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-harmonics\.js"/);
   assert.match(html, /src="sound-noise\.js"/);
   assert.match(html, /src="sound-scales\.js\?v=s025"/);
-  assert.match(html, /src="sound-limit5\.js\?v=s026"/);
-  assert.match(html, /src="sound-lab\.js\?v=s029b"/);
-  assert.match(html, /href="sound-lab\.css\?v=s029"/);
+  assert.match(html, /src="sound-limit5\.js\?v=s030"/);
+  assert.match(html, /src="sound-lab\.js\?v=s030"/);
+  assert.match(html, /href="sound-lab\.css\?v=s030"/);
   assert.match(html, /id="scaleGapToggle" type="checkbox"/);
   assert.match(html, /id="scaleGapPanel" hidden/);
   assert.match(html, /src="sound-recorder\.js"/);
@@ -95,10 +95,18 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.ok(scaleMarkup.indexOf('id="scaleButton"') < scaleMarkup.indexOf('id="scalePresets"'),
     "Scale Play must be directly below its sub-tabs, before all settings");
   const limit5Markup = html.slice(html.indexOf('id="limit5Workspace"'), html.indexOf('id="harmonicWorkspace"'));
-  assert.ok(limit5Markup.indexOf('id="limit5Button"') < limit5Markup.indexOf('id="limit5Presets"'),
-    "5-limit Play must be directly below its sub-tabs, before all settings");
+  const limit5Order = ['id="limit5PresetSelect"', 'id="limit5PlaybackModes"', 'id="limit5BaseSlider"',
+    'id="limit5ShowRoutes"', 'id="limit5Volume"'];
+  assert.ok(limit5Order.every((item, i) => i === 0 || limit5Markup.indexOf(limit5Order[i - 1]) < limit5Markup.indexOf(item)),
+    "5-limit presets, playback toggles, frequency and advanced options follow the compact order");
+  assert.doesNotMatch(limit5Markup, /id="limit5Button"|id="limit5CompareButton"|id="limit5Presets"/);
+  assert.equal([...limit5Markup.matchAll(/data-limit5-play="/g)].length, 2);
+  assert.equal([...limit5Markup.matchAll(/<option value="(?:major|minor|gmajor|dminor|seven|fifths|commaE|commaD|diaschisma|custom)"/g)].length, 10);
   assert.match(limit5Markup, /id="limit5LatticeCanvas"/);
   assert.match(limit5Markup, /id="limit5OctaveCanvas"/);
+  assert.match(limit5Markup, /id="limit5FourierCanvas"/);
+  assert.match(limit5Markup, /id="limit5PointInfo"/);
+  assert.match(limit5Markup, /id="limit5CommaRuler"[^>]*hidden/);
   assert.match(html, /id="noiseWorkspace"[^>]*hidden/);
   assert.match(html, /id="harmonicChallenge"[^>]*hidden/);
   assert.match(html, /id="noiseChallenge"[^>]*hidden/);
@@ -245,9 +253,7 @@ function fakePage(search = "", supportWorklets = true) {
   const earHelpButtons = ["guided", "blind"].map(earHelp => element({ earHelp }));
   const earSoundButtons = earModel.SOUNDS.map(earSound => element({ earSound }));
   const earPlayButtons = earModel.PATTERNS.map(earPlay => element({ earPlay }));
-  const limit5PresetButtons = Object.keys(limit5Model.PRESETS).map(limit5Preset => element({ limit5Preset }));
-  const limit5ModeButtons = ["melody", "chord"].map(limit5Mode => element({ limit5Mode }));
-  const limit5CommaButtons = ["e", "d"].map(limit5Comma => element({ limit5Comma }));
+  const limit5PlayButtons = ["melody", "chord"].map(limit5Play => element({ limit5Play }));
   const scalePresetButtons = scaleModel.PRESETS.map(preset => element({ scalePreset: preset.id }));
   const scaleTonicButtons = Array.from({ length: scaleModel.MAX_NOTES }, (_, scaleTonic) =>
     element({ scaleTonic: String(scaleTonic) }));
@@ -288,9 +294,7 @@ function fakePage(search = "", supportWorklets = true) {
       if (selector === "[data-ear-play]") return earPlayButtons;
       if (selector === "[data-scale-preset]") return scalePresetButtons;
       if (selector === "[data-scale-tonic]") return scaleTonicButtons;
-      if (selector === "[data-limit5-preset]") return limit5PresetButtons;
-      if (selector === "[data-limit5-mode]") return limit5ModeButtons;
-      if (selector === "[data-limit5-comma]") return limit5CommaButtons;
+      if (selector === "[data-limit5-play]") return limit5PlayButtons;
       if (selector === "[data-interval-ratio]") return intervalRatioButtons;
       if (selector === "[data-interval-tuning]") return intervalTuningButtons;
       if (selector === "[data-interval-color]") return intervalColorButtons;
@@ -497,7 +501,7 @@ function fakePage(search = "", supportWorklets = true) {
     motionButtons, sirenPatternButtons, timbreButtons, vowelButtons, mixGapButtons, mixKindButtons,
     tuningKindButtons, scalePresetButtons, scaleTonicButtons,
     earHelpButtons, earSoundButtons, earPlayButtons, timers, animationFrames,
-    limit5PresetButtons, limit5ModeButtons, limit5CommaButtons,
+    limit5PlayButtons,
     intervalRatioButtons, intervalTuningButtons, intervalColorButtons,
     harmonicPresetButtons, harmonicLevelInputs, noiseColorButtons,
     hzLabels, objectUrls, revokedUrls,
@@ -1636,7 +1640,7 @@ test("S029 switching play choices during a pending start retires the first reque
   assert.equal(app.contexts[0].oscillators.every(osc => osc.stopped), true);
 });
 
-test("S026 5-limit presets, lattice selection, bilingual labels and 12-TET guides never autoplay", () => {
+test("S030 5-limit presets, layers, lattice inspection and 12-TET guides never autoplay", () => {
   const app = fakePage();
   app.fire("modeTuning", "click");
   app.tuningKindButtons[3].events.click();
@@ -1646,26 +1650,39 @@ test("S026 5-limit presets, lattice selection, bilingual labels and 12-TET guide
   assert.equal(app.elements.get("limit5Explanation").hidden, false);
   assert.equal(app.elements.get("pagePhase").textContent, "06 · 5-хязгаар");
   assert.equal(app.elements.get("limit5Count").textContent, "3 нот");
-  assert.equal(app.elements.get("limit5CommaFact").textContent.includes("21.51"), true);
+  assert.equal(app.elements.get("limit5CommaRuler").hidden, true,
+    "Commas are optional comparisons rather than decorations on every scale");
   assert.ok(app.elements.get("limit5LatticeCanvas").drawnArcs.length >= 28);
-  assert.ok(app.elements.get("limit5OctaveCanvas").drawnArcs.length >= 5);
+  assert.ok(app.elements.get("limit5OctaveCanvas").drawnArcs.length >= 3);
+  assert.ok(app.elements.get("limit5FourierCanvas").drawnText.length >= 3);
+  assert.match(app.elements.get("limit5FourierFact").textContent, /3 × 1\/1 = 2 × 3\/2 \(3:2\)/);
+  assert.match(app.elements.get("limit5FourierFact").textContent, /5 × 1\/1 = 4 × 5\/4 \(5:4\)/);
+  assert.match(app.elements.get("limit5PointInfo").textContent, /1\/1/);
   assert.equal(app.contexts.length, 0);
-  app.limit5PresetButtons[4].events.click();
+  app.fire("limit5PresetSelect", "change", { target: { value: "seven" } });
   assert.equal(app.elements.get("limit5Count").textContent, "7 нот");
-  app.limit5CommaButtons[1].events.click();
+  app.fire("limit5PresetSelect", "change", { target: { value: "commaD" } });
+  assert.equal(app.elements.get("limit5CommaRuler").hidden, false);
   assert.match(app.elements.get("limit5CommaFact").textContent, /10\/9.*9\/8/);
+  assert.match(app.elements.get("limit5RulerValue").textContent, /81:80/);
+  app.fire("limit5PresetSelect", "change", { target: { value: "diaschisma" } });
+  assert.match(app.elements.get("limit5RulerValue").textContent, /2048:2025/);
+  assert.match(app.elements.get("limit5RulerValue").textContent, /19\.55/);
   app.fire("limit5TetGuides", "change", { target: { checked: true } });
   app.fire("langEn", "click");
-  assert.equal(app.elements.get("limit5PlayLabel").textContent, "Hear the notes");
+  assert.equal(app.limit5PlayButtons[0].textContent, "▶ In sequence");
+  assert.equal(app.limit5PlayButtons[1].textContent, "▶ Together");
   assert.equal(app.elements.get("limit5RulerValue").textContent.includes("cents"), true);
   assert.equal(app.elements.get("pagePhase").textContent, "06 · 5-limit");
   assert.equal(app.contexts.length, 0);
   // Add an unselected point near the middle-left of the lattice.
-  app.fire("limit5LatticeCanvas", "click", { clientX: 710 * (.335 + .115 * (-2 + .5 * 0)), clientY: 210 * .55 });
-  assert.equal(app.elements.get("limit5Count").textContent, "8 notes");
+  app.fire("limit5LatticeCanvas", "click", { clientX: 710 * (.335 + .115 * (0 + .5 * 0)), clientY: 210 * .55 });
+  assert.equal(app.elements.get("limit5Count").textContent, "3 notes");
+  assert.equal(app.elements.get("limit5PresetSelect").value, "custom");
   app.fire("limit5Reset", "click");
   assert.equal(app.elements.get("limit5Count").textContent, "3 notes");
   assert.equal(app.elements.get("limit5TetGuides").checked, false);
+  assert.equal(app.elements.get("limit5CommaRuler").hidden, true);
   app.fire("limit5LatticeCanvas", "focus");
   app.fire("limit5LatticeCanvas", "keydown", { key: "ArrowRight" });
   app.fire("limit5LatticeCanvas", "keydown", { key: "Enter" });
@@ -1673,46 +1690,52 @@ test("S026 5-limit presets, lattice selection, bilingual labels and 12-TET guide
   app.fire("limit5LatticeCanvas", "blur");
 });
 
-test("S026 5-limit melody and chord use recorder bus and track highlighted note", async () => {
+test("S030 5-limit sequence and chord buttons switch/stop through the recorder bus", async () => {
   const app = fakePage();
   app.fire("modeTuning", "click");
   app.tuningKindButtons[3].events.click();
-  const start = app.fire("limit5Button", "click");
-  await start;
+  await app.limit5PlayButtons[0].events.click();
   const context = app.contexts[0];
   assert.equal(context.sources.length, 1);
   assert.equal(context.sources[0].buffer.length, Math.ceil(3 * limit5Model.STEP_SECONDS * context.sampleRate));
-  assert.equal(app.elements.get("limit5PlayIcon").textContent, "■");
+  assert.equal(app.limit5PlayButtons[0].getAttribute("aria-pressed"), "true");
+  assert.equal(app.limit5PlayButtons[1].getAttribute("aria-pressed"), "false");
   app.tick(.39);
   assert.match(app.elements.get("limit5Now").textContent, /5\/4/);
   assert.ok(app.elements.get("limit5OctaveCanvas").drawnArcs.some(arc => arc.fillStyle === "#ffe0a1"));
-  app.limit5ModeButtons[1].events.click();
-  assert.equal(app.elements.get("limit5PlayIcon").textContent, "▶");
-  await app.fire("limit5Button", "click");
+  await app.limit5PlayButtons[1].events.click();
   assert.equal(context.sources.length, 2);
+  assert.equal(context.sources[0].stopped, true);
+  assert.equal(app.limit5PlayButtons[0].getAttribute("aria-pressed"), "false");
+  assert.equal(app.limit5PlayButtons[1].getAttribute("aria-pressed"), "true");
   assert.equal(context.sources[1].buffer.length, Math.ceil(limit5Model.CHORD_SECONDS * context.sampleRate));
   assert.match(app.elements.get("limit5Now").textContent, /хамт/);
-  app.fire("stopAll", "click");
-  assert.equal(app.elements.get("limit5PlayIcon").textContent, "▶");
+  assert.equal(app.elements.get("limit5LatticeCanvas").drawnArcs.slice(-32)
+    .filter(arc => arc.radius === 13).length, 3,
+  "The final 28-point lattice render gives halos only to the three chosen chord notes");
+  await app.limit5PlayButtons[1].events.click();
+  assert.equal(app.limit5PlayButtons[1].getAttribute("aria-pressed"), "false");
   assert.equal(context.sources[1].stopped, true);
 });
 
-test("S026 comma comparison beats are explicit, cancel on navigation, and end naturally", async () => {
+test("S030 chosen comma pairs beat in chord mode, cancel on navigation, and end naturally", async () => {
   const app = fakePage();
   app.fire("modeTuning", "click");
   app.tuningKindButtons[3].events.click();
-  await app.fire("limit5CompareButton", "click");
+  app.fire("limit5PresetSelect", "change", { target: { value: "commaE" } });
+  assert.match(app.elements.get("limit5BeatFact").textContent, /Гц/);
+  await app.limit5PlayButtons[1].events.click();
   const context = app.contexts[0];
   assert.equal(context.sources.length, 1);
-  assert.equal(context.sources[0].buffer.length, Math.ceil(limit5Model.COMPARE_SECONDS * context.sampleRate));
-  assert.equal(app.elements.get("limit5CompareButton").getAttribute("aria-pressed"), "true");
+  assert.equal(context.sources[0].buffer.length, Math.ceil(limit5Model.CHORD_SECONDS * context.sampleRate));
+  assert.equal(app.limit5PlayButtons[1].getAttribute("aria-pressed"), "true");
   app.tuningKindButtons[0].events.click();
   assert.equal(context.sources[0].stopped, true);
-  assert.equal(app.elements.get("limit5CompareButton").getAttribute("aria-pressed"), "false");
+  assert.equal(app.limit5PlayButtons[1].getAttribute("aria-pressed"), "false");
   app.tuningKindButtons[3].events.click();
-  await app.fire("limit5CompareButton", "click");
+  await app.limit5PlayButtons[1].events.click();
   context.sources[1].onended();
-  assert.equal(app.elements.get("limit5CompareButton").getAttribute("aria-pressed"), "false");
+  assert.equal(app.limit5PlayButtons[1].getAttribute("aria-pressed"), "false");
   assert.equal(app.elements.get("limit5Now").textContent.includes("тоглуулахад"), true);
   assert.equal(context.sources.length, 2);
 });

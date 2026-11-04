@@ -236,18 +236,17 @@ h1, h2, p { margin-top: 0; }
 .chart-panel .scale-gap-panel canvas { display: block; height: 126px; margin: 11px 0 2px; }
 .scale-now { margin: 10px 0 0; min-height: 19px; font-size: 12px; font-weight: 750; color: #235d90; text-align: center; }
 .scale-now.active { color: #117c71; }
-.limit5-presets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
-.limit5-presets button { border: 1px solid #cee0f1; border-radius: 9px; min-height: 42px;
-  padding: 7px 4px; font-weight: 750; font-size: 11px; background: #f3f8ff; color: #315b8c; }
-.limit5-presets button:hover { background: #e5f0ff; }
-.limit5-presets button.selected { background: #e2f5f0; border-color: #2e9e93; color: #16716c; }
-.limit5-compare { width: 100%; margin-top: 11px; padding: 10px; border: 1px solid #d6a254; border-radius: 9px;
-  background: #fff4df; color: #925d22; font-weight: 800; font-size: 12px; }
-.limit5-compare.playing { background: #fbd9ac; }
+.limit5-pick-hint { margin-top: -10px; }
+.limit5-details { border: 1px solid #d9e6f1; border-radius: 10px; background: #f6faff; padding: 10px 12px; }
+.limit5-details summary { cursor: pointer; color: #3d6284; font-size: 12px; font-weight: 800; }
+.limit5-details .check-label { display: flex; margin-top: 13px; }
+.limit5-point-info { border: 1px solid #c7e5df; border-radius: 9px; background: #effaf6; padding: 10px 13px;
+  color: #285e6b; font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .chart-panel #limit5LatticeCanvas { display: block; width: 100%; height: auto; aspect-ratio: 760 / 440;
   margin: 12px auto 4px; cursor: pointer; touch-action: manipulation; }
 .chart-panel #limit5OctaveCanvas { display: block; width: 100%; height: auto; aspect-ratio: 760 / 220;
   margin: 12px auto 4px; }
+.chart-panel #limit5FourierCanvas { display: block; width: 100%; height: 360px; margin: 12px auto 4px; }
 .limit5-comma-ruler { margin-top: 14px; padding: 12px 16px; background: #f4f9ff; border: 1px solid #dbe7f1;
   border-radius: 11px; text-align: center; color: #476781; font-size: 12px; }
 .limit5-comma-ruler strong { display: block; margin-bottom: 12px; }
@@ -414,7 +413,6 @@ h1, h2, p { margin-top: 0; }
   .experiment-switch { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .mix-experiment-switch { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .interval-facts, .scale-facts { grid-template-columns: 1fr; }
-  .limit5-presets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tuning-experiment-switch { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .scale-presets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .scale-directions { grid-template-columns: 1fr; }

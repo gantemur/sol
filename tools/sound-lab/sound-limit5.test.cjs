@@ -50,6 +50,38 @@ test("both routes E and D give exactly 81/80 syntonic comma", () => {
   assert.ok(Math.abs(m.comparison("d").beatHz - 3.05555555556) < 1e-8);
 });
 
+test("near-return detection is selection-driven, distinguishing syntonic comma and second-layer diaschisma", () => {
+  assert.deepEqual(m.closePairs(m.PRESETS.major), []);
+  for (const preset of ["commaE", "commaD"]) {
+    const [pair] = m.closePairs(m.PRESETS[preset], 261.63);
+    assert.equal(pair.numerator, 81);
+    assert.equal(pair.denominator, 80);
+    assert.ok(Math.abs(pair.cents - m.COMMA_CENTS) < 1e-8);
+    assert.ok(pair.beatHz > 2);
+    assert.equal(pair.thirdSteps, -1);
+  }
+  const [pair] = m.closePairs(m.PRESETS.diaschisma, 261.63);
+  assert.equal(pair.numerator, 2048);
+  assert.equal(pair.denominator, 2025);
+  assert.ok(Math.abs(pair.cents - 19.552568708) < 1e-5);
+  assert.equal(Math.abs(pair.thirdSteps), 2);
+  assert.ok(pair.beatHz > 0);
+  assert.deepEqual(m.closePairs([[0, 0], [1, 0]]), []);
+});
+
+test("octave shifts and harmonic coincidences explain the positions of lattice points", () => {
+  assert.equal(m.octaveShift(0, 0), 0);
+  assert.equal(m.octaveShift(2, 0), -1); // (3/2)^2 = 9/4 -> 9/8
+  assert.equal(m.octaveShift(-1, 0), 1); // 2/3 -> 4/3
+  assert.equal(m.octaveShift(0, 2), 0); // (5/4)^2 = 25/16
+  assert.throws(() => m.octaveShift(6, 0), RangeError);
+  assert.deepEqual(m.harmonicMatch(m.point(0, 0), m.point(1, 0)), { i: 3, j: 2, ratio: 3 });
+  assert.deepEqual(m.harmonicMatch(m.point(0, 0), m.point(0, 1)), { i: 5, j: 4, ratio: 5 });
+  assert.deepEqual(m.harmonicMatch(m.point(0, 1), m.point(1, 1)), { i: 3, j: 2, ratio: 3.75 });
+  assert.equal(m.harmonicMatch(m.point(0, 1), m.point(4, 0)), null);
+  assert.throws(() => m.harmonicMatch(m.point(0, 0), m.point(1, 0), 1), RangeError);
+});
+
 test("5-limit playback is silent until explicitly generated and bounded", () => {
   const notes = m.selected(m.PRESETS.major);
   const melody = m.makeSamples(notes, 16000, "melody");
