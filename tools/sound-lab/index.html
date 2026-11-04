@@ -26,7 +26,7 @@
   <script src="sound-score.js?v=s039" defer></script>
   <script src="sound-abc.js?v=s039" defer></script>
   <script src="sound-score-player.js?v=s039" defer></script>
-  <script src="sound-compose.js?v=s039b" defer></script>
+  <script src="sound-compose.js?v=s040" defer></script>
   <script src="sound-lab.js?v=s039a" defer></script>
 </head>
 <body>
@@ -1303,10 +1303,20 @@
         <div class="field-group">
           <label class="field-title" for="composeExample" data-compose-i18n="example">Жишээ ая</label>
           <select id="composeExample">
-            <option value="first" data-compose-i18n="exampleFirst">Энгийн аялгуу</option>
-            <option value="rests" data-compose-i18n="exampleRests">Нот ба завсарлага</option>
-            <option value="waltz" data-compose-i18n="exampleWaltz">Соль мажор вальс</option>
-            <option value="minor" data-compose-i18n="exampleMinor">Минор аялгуу</option>
+            <optgroup label="Нот бичих дасгал" data-compose-group-i18n="exampleStudies">
+              <option value="first" data-compose-i18n="exampleFirst">Энгийн аялгуу</option>
+              <option value="rests" data-compose-i18n="exampleRests">Нот ба завсарлага</option>
+              <option value="waltz" data-compose-i18n="exampleWaltz">Соль мажор вальс</option>
+              <option value="minor" data-compose-i18n="exampleMinor">Минор аялгуу</option>
+            </optgroup>
+            <optgroup label="Бүтэн ая болон сонгодог сэдэв" data-compose-group-i18n="exampleMelodies">
+              <option value="ode" data-compose-i18n="exampleOde">Бетховен · Баяр баясгалангийн магтуу (16 такт)</option>
+              <option value="minuetG" data-compose-i18n="exampleMinuetG">Петцольд · Соль мажор менуэт (16 такт)</option>
+              <option value="lightly" data-compose-i18n="exampleLightly">Lightly Row · ардын дуу (16 такт)</option>
+              <option value="mozart40" data-compose-i18n="exampleMozart40">Моцарт · 40-р симфони (эхлэл)</option>
+              <option value="frere" data-compose-i18n="exampleFrere">Фрэр Жак · ардын дуу (8 такт)</option>
+              <option value="twinkle" data-compose-i18n="exampleTwinkle">Гялалзах одод · ардын дуу (12 такт)</option>
+            </optgroup>
           </select>
         </div>
         <div class="compose-options">
