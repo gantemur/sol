@@ -1,63 +1,46 @@
-# Sundial · Нарны цаг
+# Sundial · Нарны цаг — P1 General planar receiver
 
-A standalone, Mongolian-first horizontal sundial pattern generator for printing, tracing, engraving and etching. English is available from the language selector or `?lang=en`. No external libraries, fonts, services or accounts are required. The main product is the dial face; the gnomon side profile is optional.
+Standalone Mongolian-first sundial pattern designer for printing, tracing, engraving or etching. English is available from the selector or `?lang=en`. No runtime dependencies, accounts, external fonts or backend. The dial face remains the primary output; polar style/rod construction sheets are optional.
 
-## Controls and outputs
+## Controls
 
-Choose a rectangle (initially 300 × 200 mm) or true semicircle (300 mm diameter, 150 mm height), signed latitude, hour subdivisions and 12-hour, 24-hour or Roman labels. For nonzero latitudes, the rectangular polar-style root is near the lower center; the semicircle's root lies at the center of its straight diameter. The previously supported `?shape=circle` bookmark automatically selects the new semicircle. The drawn border is exactly the requested face size. There is an additional 8 mm print margin and a scale/legend area outside the face. These margins are not part of the entered plate dimensions.
+Choose a **Horizontal** face, **Vertical wall**, or **Inclined plate**. Enter signed geographic latitude and the receiving plane's **outward normal azimuth** (`0°` north, `90°` east, `180°` south, `270°` west). The tilt β is measured from horizontal (`0°` horizontal, `90°` vertical); the vertical preset fixes β=90°, and the horizontal preset fixes β=0°. The tool supports upward or vertical-facing plates with tilt 0–90°; it does not model underside-facing overhangs yet.
 
-The preview is a white-backed SVG image, insulated from ordinary page dark-mode CSS. Enlarge/Fit changes only preview magnification. SVG, vector PDF and 300 dpi PNG are produced from one millimetre-based scene. PNG includes a physical-density pHYs chunk. Images above 20 megapixels are rejected; use vector formats for large fabrication patterns. PDF pages have custom physical sizes, not automatic A4/Letter scaling. Print at 100% and check the 100 mm (or 20 mm on a small face) calibration bar. Cutting/etching software should use the face border, not the outer page edge, as the plate boundary.
+Choose a rectangular or true semicircular boundary and physical dimensions in millimetres; set hour subdivision and 12-/24-hour/Roman labels. Optional seasonal lines provide 3, 5, or 7 **evenly spaced solar declinations**, not month dates. Set nodus distance **L along a rooted polar style** or **h perpendicular to the surface for a supported polar rod**. In automatic style mode the physical choice is determined by whether the polar axis intersects the receiving plane or lies parallel to it; manual raised-rod mode is also available. Enabling construction marks adds O and P where geometrically applicable. Seasonal lines always depend on the chosen nodus, never on an unspecified style edge.
 
-Seasonal lines are optional and off by default. The number of curves is selectable: three (solstices and equinox), five (default when enabled), or seven. Intermediate lines evenly subdivide solar declination between approximately ±23.44°, rather than representing specific calendar dates. Each intermediate declination normally occurs twice per year. June solstice (+23.44°), equinoxes (0°), and December solstice (−23.44°) remain present in every preset. Solid/dashed/dotted styles and declination legends work in monochrome; color is optional. Printed legends use calendar-month numerals VI, III/IX, XII and declination; the interface supplies the full translated names. The clean artwork uses numbers, SI units and N/S compass symbols, so it needs no language-specific font embedding. Construction marks add O (the polar-style root) and P (the point vertically below the nodus), joined by a dashed mounting guide.
+The image preview has an independent Enlarge/Fit zoom; this does not alter the printed scale. The optional interactive 3D diagram shows an hour plane, declination cone, nodus, polar axis, face and visible shadow ray, with time/declination/view-rotation controls. The schematic is **not a fabrication drawing**. The expandable mounting panel reports the polar angle to the face, plate azimuth/tilt and virtual latitude/longitude displacement.
 
-For nonzero latitudes, L is the distance along the elevated polar edge from its root to the nodus. Height is L sin|latitude|; poleward offset is L cos(latitude). It is independent of downloading a gnomon template. The optional SVG/PDF side profile uses that same L, with its upper tip G as nodus. A longer rod may instead carry a bead/notch at distance L. Material thickness, joints, supports and fold tabs are not modeled.
+## Coordinate model and equations
 
-## Geometry
+All geometry is three-dimensional in **east–north–up (ENU)** coordinates. Let actual latitude be φ, receiving-face tilt β, outward azimuth A, solar declination δ, and apparent solar hour angle H=15°×(solar hour−12), increasing after noon.
 
-The plate is horizontal. Coordinates are east, north, up. Apparent solar hour angle H = 15° × (solar hour − 12); solar declination is positive northward. The unit vector toward the Sun is
+The outward plane normal and north-pole direction are
 
-```
-s = (−cos(delta) sin(H),
-      cos(phi) sin(delta) − sin(phi) cos(delta) cos(H),
-      sin(phi) sin(delta) + cos(phi) cos(delta) cos(H)).
-```
+    n = (sin β sin A, sin β cos A, cos β),
+    p = (0, cos φ, sin φ).
 
-For sigma = sign(phi), nodus g = (0, sigma L cos(phi), L |sin(phi)|). The nodus shadow is g − (g_z/s_z)s; reject s_z ≤ 10⁻⁶ to exclude the horizon and its numerical singularity. The artwork has its top toward the elevated celestial pole. Thus north is up in the Northern Hemisphere and south is up in the Southern Hemisphere; the morning/afternoon sides reverse. A poleward arrow outside the face identifies installation orientation.
+The Sun direction is
 
-The ideal hour-ray direction for nonzero latitude in artwork coordinates is proportional to `(sigma |sin(phi)| sin(H), −cos(H))`. Ordinary hour angles do not depend on L or declination. Rays start at one root and are trimmed slightly inside the face border. The semicircle is bounded by its upper circular arc and a straight baseline; no unused lower half is printed. Numerals have white knockouts; crowded labels may be omitted with a warning, but their lines and angle-table values remain. At the equator, the special raised-rod mode below replaces the singular radial fan.
+    s = (-cos δ sin H,
+          cos φ sin δ − sin φ cos δ cos H,
+          sin φ sin δ + cos φ cos δ cos H).
 
-Seasonal paths are sampled parametrically from 06:00 to 18:00, clipped segment-by-segment to the actual face, and split across the horizon or disconnected visible runs. Visible chords are adaptively refined to a 0.02 mm midpoint-sag criterion (maximum depth 12). The equinox path has constant poleward offset L/cos|phi|. With phi = 47.9°, L = 40 mm, noon offsets are approximately 40.3176, 59.6635 and 114.7020 mm for June, equinox and December respectively.
+The nodus N is either a point **L along the outward-directed polar style** through the physical root O (if n·p is nonzero), or a point at **h n above O** on a polar rod *parallel to* the receiving plane (or optionally intentionally supported). The shadow ray is N−ts, with t=(n·(N−O))/(n·s). A shadow is included only if the Sun is above the actual horizon (s_up>0), illuminates the outward receiving face (n·s>0), t>0, and the shadow falls inside the selected physical boundary.
 
-## Limits and practical use
+At fixed H, the hour plane is spanned by p and s(H,0) through the polar rod; its intersection with the receiving face is a straight hour line. For a rooted style it passes through O. For a raised polar rod, the hour planes intersect the face in lines through a generally *shifted* intersection point; **only if the polar rod is exactly parallel to the face** are those hour lines parallel. The tool uses the exact 3D plane intersection in both cases. At fixed δ, nodus shadows lie on the appropriate declination cone, and its intersection with the receiving face is a seasonal curve. The position and visible arc are computed by direct parametric projection. A numerical visibility scan selects the physically reachable half-line from the hour plane for each solar hour, and marks can be omitted if no day in the idealized annual declination range illuminates that face at the selected hour.
 
-This is local apparent solar time, not civil clock time. Longitude, time zones, daylight-saving changes, equation-of-time correction, refraction, terrain/building shading and finite shadow reach are not modeled. The 06:00–18:00 face does not imply all these hours are sunlit, and omits early/late summer hours. Equatorial latitude 0° is supported with a different physical construction: a horizontal polar rod parallel to true N-S at height h above the plate, or a nodus point at the same height. Here the UI field L denotes the **vertical height h**, not a length along a face-rooted polar gnomon. The equatorial hour lines are N-S parallel lines at signed offset `x = h tan(15° (hour−12))` from the central noon line, and 06:00/18:00 are at infinity (horizon). The nodus is placed over the printed center O, which is its ground projection, not the base of a polar style. The equatorial gnomon export shows a raised horizontal rod with a point marker; structural mounting details remain the user's responsibility. For a full year of equatorial seasonal curves choose **Rectangle**: the northern/poleward semicircle shows only one seasonal half. For near-equatorial nonzero latitudes, the traditional sloping style is exceptionally low and its hour lines crowd; the app warns users to consider a supported raised polar rod instead.
+The **virtual horizontal dial** provides a separate check: φ*=arcsin(n·p), and Δλ=atan2(n_east, n·q0), where q0=(0,−sin φ,cos φ). For example, a direct south-facing vertical wall at 45°N has φ*=45°S with Δλ=0, while an east-facing wall has φ*=0 and Δλ=90°. Virtual longitude is a solar-hour-angle displacement, not a change to the legal time zone.
 
-Near-polar latitudes through ±89° are supported mathematically; hour-line spacing approaches 15°, but 24-hour summer sunlight requires a full-day polar design. The app warns above |latitude|=85°. Exact ±90° are not supported, since there is no unique poleward meridian for a semicircular local dial. Low latitudes can yield crowded labels. Seasonal curves can leave the plate; no-visible-curve warnings are provided. The five- and seven-line options are geometric declination guides, not monthly date markers or an analemma.
+**Physical orientation warning:** the drawing's upper arrow is aligned with the outward polar axis projected onto the receiving plane. On a south-facing wall this can point **physically downward**, not upward. The exported technical note gives the angle from the printed arrow to true up (projected gravitational vertical) and the receiving normal azimuth/tilt. Align the actual receiving face and gnomon, not merely a north compass arrow. Magnetic north may differ from true north.
 
-Keep the plate level and the polar edge parallel to Earth's axis. Seasonal readings require the specified nodus position, not an arbitrary shadow edge. Geometric/printing checks are not an outdoor accuracy guarantee. Verify the printed scale and the mounting before irreversible fabrication.
+At the equator on a horizontal face, or on east/west-facing vertical walls, the polar axis is parallel to the face. A raised polar rod or nodus is required and the hour lines are parallel. Near-polar latitudes are supported through ±89°, but summer sunlight beyond 06:00–18:00 is omitted in this phase. Exact geographic poles (±90°), overhanging/underside receivers, and a true all-day polar dial are outside the scope. Dark or never illuminated portions of a face are not falsely presented as usable marks. Seasonal declinations are approximations ±23.44°, not precise astronomical calendar dates or equation-of-time-corrected clock curves.
 
-## Standalone use and checks
+## Export and validation
 
-Copy this directory with its LICENSE and open `index.html`, or serve it with any static server. The versioned asset URLs and the badge identify release R01.3. URL parameters retain the design; unavailable local storage/history must not prevent operation.
+SVG, vector PDF, and nominal **300-dpi PNG with physical-density metadata** all render one physical-millimetre scene. The exported PDF page includes margins, physical scale bar, face dimensions, installation direction notes and a legend outside the fabrication boundary. Print at 100% and measure the calibration bar—do not fit to A4/Letter if it changes scale. For oversized metal/wood designs, use vector SVG/PDF in fabrication software and verify the measured dimensions. PNG has a 20-megapixel safety limit. The optional gnomon side profile supplies a rooted triangular section or supported polar-rod elevation; actual joints/support design remains the maker's responsibility.
 
-```
-node --check tools/sundial/sundial.js
-node --check tools/sundial/ui.js
-node tools/sundial/test-sundial.cjs
-node scripts/check-static.js
-node scripts/test-static-check.js
-```
-
-The numerical tests check independent analytic limits/reference values, both hemispheres, all subdivision settings, horizon rejection, shape clipping and hour-line independence of nodus length. They are not an independent external audit or physical calibration.
+Checks: `node --check tools/sundial/{planar3d,sundial,diagram3d,ui}.js`, `node tools/sundial/test-sundial.cjs`, `node scripts/check-static.js`, `node scripts/test-static-check.js`. The geometry tests independently check unit vectors, plane incidence, ray shadows, solstice/equinox reference values, virtual horizontal reduction, north/south hemispheres, arbitrary tilt/azimuth and physically illuminated hour ranges. Browser visual and PDF/PNG inspections should supplement them. Field alignment, printer/engraver tolerances, and actual outdoor precision have not been physically verified. The tool does not promise minute-level accuracy.
 
 ## Provenance and license
 
-Newly authored JavaScript and ordinary documentation are MIT-licensed; the complete license travels with the tool in LICENSE. The geometric implementation is independently written from vector projection, not copied or translated from notebook source. No third-party artwork or runtime dependencies are bundled. Users may use their generated geometric patterns for fabrication; no additional visible-credit requirement is imposed on those outputs.
-
-Scientific background: the author's [Нарны цаг](https://t8m8r.wordpress.com/2020/05/05/sundial/) and [USNO's solar-time definitions](https://aa.usno.navy.mil/faq/eqtime). The original blog's differing declination convention is not used here. Surface tint handling follows [CSS color-scheme](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/color-scheme); an extension or system accessibility filter that forcibly transforms images can still override visual appearance.
-
-## Meridian-plane inclination: exact geometric reduction, not yet a UI mode
-
-The same hour-plane construction applies to a plane whose outward normal lies in the local north-south vertical plane. If the plate is inclined through a **signed angle β toward south** from horizontal, rotate the local coordinate frame around the east-west axis; the projected solar geometry is that of a horizontal dial at effective signed latitude `phi_eff = phi − beta`. In particular, a **direct south-facing vertical wall at 45° N** has `phi_eff = −45°`, so its ideal hour-line angles agree with those of a horizontal dial at 45° S (with the corresponding reversal of the physical up/down and east/west directions). This is a rotation-equivalence for the plane's hour-line geometry and nodus projections; wall illumination must still be intersected with the true local solar horizon, and the mounted gnomon must project outward from the wall.
-
-The existing interface does **not** yet let users enter a wall or plate inclination. One cannot simply install a printed horizontal face on a wall without verifying orientation, mounting, and daylight visibility. A future meridian-plane tilt control can reuse the effective-latitude geometry, followed by the full azimuth/tilt plane model for arbitrary wall directions. When phi_eff is zero, the polar style lies parallel to the plane and needs a raised parallel rod or nodus, exactly as in the equatorial horizontal special case.
+New geometry implementation using elementary vector/celestial mechanics. No older notebook code or third-party art was copied. Background: the author's [Нарны цаг](https://t8m8r.wordpress.com/2020/05/05/sundial/) article, [USNO solar time terminology](https://aa.usno.navy.mil/faq/eqtime), and standard gnomonics. Software and ordinary tool documentation use the tool-local **MIT** license (see `LICENSE`). Users may fabricate their own patterns without an additional mandatory visible-credit notice imposed by the tool.

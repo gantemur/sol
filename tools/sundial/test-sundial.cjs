@@ -1,132 +1,140 @@
-/* SPDX-FileCopyrightText: 2026 Tsogt Gantumur; SPDX-License-Identifier: MIT */
+/* SPDX-FileCopyrightText: 2026 Tsogt Gantumur
+ * SPDX-License-Identifier: MIT */
 'use strict';
-const assert=require('node:assert/strict'),fs=require('node:fs'),S=require('./sundial.js');
-let count=0;
-const close=(a,b,tol=1e-7)=>{count++;assert.ok(Math.abs(a-b)<=tol,`${a} != ${b}`);};
-for(const [k,expected] of [[3,[23.44,0,-23.44]],[5,[23.44,11.72,0,-11.72,-23.44]],[7,[23.44,15.6267,7.8133,0,-7.8133,-15.6267,-23.44]]]){
-  const selected=S.seasonEvents(k);assert.equal(selected.length,k);count++;
-  selected.forEach((e,i)=>close(e.delta,expected[i],1e-8));
-  assert.ok(selected.every((e,i)=>i===0||e.delta<selected[i-1].delta));count++;
-  for(const shape of ['rectangle','semicircle']){
-    const p={...S.defaults,shape,seasons:true,seasonCount:k},s=S.build(p);
-    assert.equal(s.events.length,k);count++;
-    assert.ok(s.items.filter(q=>q.role==='season').length>=k-1);count++;
-    assert.deepEqual(S.build({...p,seasons:false}).items.filter(q=>q.role==='hour'),s.items.filter(q=>q.role==='hour'));count++;
-    const descriptions=s.items.filter(q=>q.type==='text').map(q=>q.value);
-    for(const e of selected){assert.ok(descriptions.includes(e.label));assert.ok([...e.label].every(ch=>ch.charCodeAt(0)<=255));count+=2;}
+const assert=require('node:assert/strict');
+const S=require('./sundial.js'),G=require('./planar3d.js'),D=require('./diagram3d.js');
+let checks=0;const R=Math.PI/180;
+function yes(x,msg){checks++;assert.ok(x,msg||'assertion failed');}
+function eq(a,b,tol=1e-8,msg){checks++;assert.ok(Number.isFinite(a)&&Number.isFinite(b)&&Math.abs(a-b)<=tol,`${msg||'values'} ${a} != ${b}`);}
+function vec(a,b,tol=1e-9){yes(a.length===b.length);for(let i=0;i<a.length;i++)eq(a[i],b[i],tol);}
+function norm(v){return Math.hypot(...v)}
+// API and validation, including old bookmarked circle links.
+assert.equal(S.VERSION,'P1.0');checks++;
+for(const [key,value] of [['lat',90],['lat',-90],['tilt',91],['tilt',-1],['azimuth',361],['azimuth',-1],['length',0],['surface','cone'],['style','floating'],['shape','ellipse'],['seasonCount',4]]){
+  assert.throws(()=>S.build({...S.defaults,[key]:value}),undefined,key);checks++;
+}
+eq(S.build({...S.defaults,shape:'circle'}).face.h,150);
+for(const [count,expected] of [[3,[23.44,0,-23.44]],[5,[23.44,11.72,0,-11.72,-23.44]],[7,[23.44,15.6267,7.8133,0,-7.8133,-15.6267,-23.44]]]){
+  const sel=S.seasonEvents(count);eq(sel.length,count);
+  sel.forEach((e,i)=>eq(e.delta,expected[i]));
+}
+// Local ENU and the virtual-horizontal transformation are independent ways
+// to check the receiver geometry. All basis vectors must be orthonormal.
+for(const lat of [-89,-66,-45,-20,0,20,45,66,89]){
+  for(const tilt of [0,15,45,75,90])for(const azimuth of [0,45,90,135,180,225,270,315]){
+    const f=G.frame(lat,tilt,azimuth),q0=G.sun(lat,0,12),lon=f.virtualLon*R,fp=f.virtualPhi*R;
+    for(const v of [f.n,f.u,f.v,f.p,f.k])eq(norm(v),1,2e-12);
+    eq(G.dot(f.n,f.u),0,2e-12);eq(G.dot(f.n,f.v),0,2e-12);
+    eq(G.dot(f.u,f.v),0,2e-12);
+    vec(G.cross(f.v,f.n),f.u,2e-12);
+    eq(G.dot(f.n,f.p),Math.sin(fp),2e-12);
+    eq(f.n[0],Math.cos(fp)*Math.sin(lon),2e-12);
+    eq(G.dot(f.n,q0),Math.cos(fp)*Math.cos(lon),2e-12);
+    for(const delta of [-23.44,0,23.44])for(const hour of [6,9,12,15,18]){
+      eq(norm(G.sun(lat,delta,hour)),1,2e-12);
+    }
   }
 }
-assert.throws(()=>S.build({seasonCount:4}));
-for(const phi of [-89,-80,-47.9,-23,-10,-1,1,10,23,47.9,80,89]) {
-  for(const d of [-23.44,0,23.44])for(let h=6;h<=18;h+=.5) {
-    const v=S.sunVector(phi,d,h);close(Math.hypot(...v),1);
-    const q=S.shadow(phi,d,h,40);if(!q)continue;
-    const u=S.direction(phi,h),sx=Math.sign(phi)*q[0],sy=-Math.sign(phi)*q[1];
-    close((sx*u[1]-sy*u[0])/Math.max(1,Math.hypot(sx,sy)),0);
-    if(d===0)close(Math.sign(phi)*q[1],40/Math.cos(phi*Math.PI/180),1e-6);
-  }
-  for(const shape of ['rectangle','semicircle'])for(const interval of [15,30,60]) {
-    const p={...S.defaults,lat:phi,shape,interval,seasons:true},a=S.build(p),lines=a.items.filter(q=>q.role==='hour');
-    assert.equal(lines.length,720/interval+1);count++;
-    assert.equal(lines[0].hour,6);assert.equal(lines.at(-1).hour,18);
-    for(const item of lines)for(const v of item.pts)assert.ok(S.inside([v[0]-8,v[1]-8],a.face));
-    for(const event of a.events)for(const path of event.paths)for(const v of path){assert.ok(v.every(Number.isFinite));assert.ok(S.inside(v,a.face));count++;}
-    const b=S.build({...p,length:73});assert.deepEqual(lines,b.items.filter(q=>q.role==='hour'));count++;
-  }
+let f=G.frame(45,90,180);eq(f.virtualPhi,-45);eq(f.virtualLon,0);
+f=G.frame(45,90,90);eq(f.virtualPhi,0);eq(f.virtualLon,90);yes(f.raised && f.parallel);
+f=G.frame(45,90,270);eq(f.virtualPhi,0);eq(f.virtualLon,-90);yes(f.raised && f.parallel);
+f=G.frame(45,45,180);eq(f.virtualPhi,0);eq(f.virtualLon,0);
+// Rotating a south-facing wall at 45 N gives the same (visible) hour angles
+// as the horizontal dial at -45, with opposite original coordinates.
+const wall=G.frame(45,90,180),south=G.frame(-45,0,180),b={shape:'rectangle',w:300,h:200,root:[150,180]};
+for(let h=7;h<=17;h++){
+  const w=G.hourLine(wall,45,h,40,b.root,S.clipSegment,b),q=G.hourLine(south,-45,h,40,b.root,S.clipSegment,b);
+  yes(w!==null&&q!==null,`wall/horizontal counterpart at ${h}`);
+  eq(w.angle,q.angle,1e-7);
 }
-// The semicircle's flat diameter is a real fabrication edge, not a full disk.
-const semi=S.layout({...S.defaults,shape:'semicircle'});
-assert.equal(semi.w,300);assert.equal(semi.h,150);count+=2;
-close(semi.root[0],150);close(semi.root[1],150);
-assert.ok(S.inside([150,0],semi));count++;
-assert.ok(S.inside([50,140],semi));count++;
-assert.ok(!S.inside([150,151],semi));count++;
-assert.ok(!S.inside([0,-10],semi));count++;
-const base=S.clipSegment([-100,semi.h],[semi.w+100,semi.h],semi);
-close(base[0][0],0);close(base[1][0],300);
-assert.equal(S.clipSegment([100,semi.h+1],[200,semi.h+1],semi),null);count++;
-const clipped=S.clipSegment([150,-100],[150,300],semi);
-close(clipped[0][1],0);close(clipped[1][1],150);
-const outline=S.build({...S.defaults,shape:'semicircle',seasons:true,guides:true});
-assert.equal(outline.items.filter(q=>q.type==='semicircle').length,1);count++;
-assert.equal(outline.items.filter(q=>q.type==='circle').length<=1,true);count++;
-assert.ok(S.svg(outline).includes(' A 150 150 0 0 1 '));count++;
-assert.ok(Buffer.from(S.pdf(outline)).toString('latin1').includes(' c '));count++;
-const alias=S.build({...S.defaults,shape:'circle'});
-assert.equal(alias.face.shape,'semicircle');count++;
-
-// At the equator use an elevated horizontal polar rod or an elevated point nodus.
-// Its hour lines are parallel N-S lines x = h tan(H), not a collapsed fan.
-for(const shape of ['rectangle','semicircle'])for(const step of [15,30,60]){
-  const p={...S.defaults,lat:0,shape,interval:step,length:40,seasons:true};
-  const out=S.build(p),hour=out.items.filter(q=>q.role==='hour');
-  assert.ok(hour.every(q=>q.pts[0][0]===q.pts.at(-1)[0]));count++;
-  assert.ok(!hour.some(q=>q.hour===6||q.hour===18));count++;
-  assert.ok(out.warnings.includes('equator'));count++;
-  if(shape==='semicircle'){assert.ok(out.warnings.includes('equatorHalf'));count++;}
-  for(const e of out.events)for(const path of e.paths)for(const v of path){assert.ok(S.inside(v,out.face));count++;}
-  const noSeasons=S.build({...p,seasons:false,length:40});
-  assert.deepEqual(noSeasons.items.filter(q=>q.role==='hour'),hour);count++;
-}
-for(const hour of [7,8,9,10,11,12,13,14,15,16,17]){
-  const q=S.shadow(0,0,hour,40),H=(hour-12)*15*Math.PI/180;
-  close(q[0],40*Math.tan(H),1e-8);close(q[1],0,1e-8);
-}
-for(const delta of [-23.44,-11.72,0,11.72,23.44]){
-  const q=S.shadow(0,delta,12,40);
-  close(q[0],0,1e-8);close(q[1],-40*Math.tan(delta*Math.PI/180),1e-8);
-}
-const eqProfile=S.profile({...S.defaults,lat:0,length:40});
-assert.ok(eqProfile.items.some(q=>q.type==='text'&&q.value.includes('horizontal rod')));count++;
-assert.ok(eqProfile.items.some(q=>q.type==='circle'));count++;
-const eqLines=S.build({...S.defaults,lat:0,shape:'rectangle',length:40});
-const noon=eqLines.items.filter(q=>q.role==='hour').find(q=>q.hour===12);
-close(noon.pts[0][0],noon.pts[1][0]);close(noon.pts[0][0],158);
-assert.equal(S.direction(0,12),null);count++;
-
-// Near poles, hour-line separation tends to fifteen degrees. A full polar
-// construction needs a 24-hour dial: this half-dial warns instead.
-for(const phi of [-89,89]){
-  const b=S.build({...S.defaults,lat:phi,shape:'semicircle'});
-  assert.ok(b.warnings.includes('nearPole'));count++;
-  const a=S.direction(phi,12),c=S.direction(phi,13);
-  close(Math.abs(Math.atan2(c[0],-c[1]))*180/Math.PI,15,.01);
-  assert.ok(b.items.filter(q=>q.role==='hour').every(q=>q.pts.every(p=>S.inside([p[0]-8,p[1]-8],b.face))));count++;
-}
-// Equator-facing wall at latitude +45° has the same ideal hour angles as
-// a horizontal south-hemisphere dial at -45° (geometric only).
-for(const h of [7,8,9,10,11,13,14,15,16,17]){
-  const H=(h-12)*Math.PI/12,theta=Math.atan2(Math.cos(45*Math.PI/180)*Math.sin(H),Math.cos(H));
-  const e=S.direction(-45,h);close(Math.abs(Math.atan2(e[0],-e[1])),Math.abs(theta));
-}
-// Rigid rotation about the east-west axis gives effective latitude phi-beta
-// for a meridian-plane receiver tilted southward by signed beta. This
-// confirms the wall geometry reduction, not a physically mounted wall dial.
-for(const [phi,beta] of [[45,90],[30,45],[-30,-45],[60,-20]]){
-  const be=beta*Math.PI/180,eff=phi-beta;
-  for(const delta of [-23.44,0,23.44])for(const h of [7,9,12,15,17]){
-    const v=S.sunVector(phi,delta,h),e=S.sunVector(eff,delta,h);
-    close(e[0],v[0],1e-10);
-    close(e[1],v[1]*Math.cos(be)+v[2]*Math.sin(be),1e-10);
-    close(e[2],-v[1]*Math.sin(be)+v[2]*Math.cos(be),1e-10);
+// Hour-plane geometry: both nodus and projected shadow point belong to the
+// same plane through the polar axis; shadow points lie in the receiver.
+for(const [lat,tilt,azimuth,style] of [[47.9,0,180,'auto'],[-47.9,0,180,'auto'],[47.9,90,180,'auto'],[47.9,90,0,'auto'],[47.9,90,90,'auto'],[47.9,90,270,'auto'],[45,30,135,'auto'],[60,55,210,'auto'],[0,0,180,'auto'],[45,30,180,'raised'],[-40,50,110,'raised'],[80,80,30,'auto']]){
+  const f=G.frame(lat,tilt,azimuth,style),origin=[150,100],N=G.nodus(f,40);
+  eq(G.dot(N,f.n),f.raised?40:40*Math.abs(f.pn),1e-9);
+  for(const delta of [-23.44,-12,0,12,23.44])for(let hour=6;hour<=18;hour+=.5){
+    const sun=G.sun(lat,delta,hour),q=G.project(f,lat,delta,hour,40,origin);
+    if(!q)continue;
+    eq(G.dot(q.world,f.n),0,2e-8);
+    vec(G.sub(q.world,N),G.mul(sun,-q.t),2e-7);
+    const hourNormal=G.cross(f.p,G.sun(lat,0,hour));
+    eq(G.dot(hourNormal,G.sub(q.world,N)),0,2e-7);
+    eq(q.x,origin[0]+G.dot(q.world,f.u),1e-8);
+    eq(q.y,origin[1]-G.dot(q.world,f.v),1e-8);
+    yes(q.alt>0 && q.face>0);
   }
 }
-for(const [delta,expect] of [[23.44,40.31756447043766],[0,59.66350211768394],[-23.44,114.70197869922612]]) {
-  const q=S.shadow(47.9,delta,12,40);close(q[0],0);close(q[1],expect);
-  const south=S.shadow(-47.9,-delta,12,40);close(south[0],0);close(south[1],-expect);
+// Current 06–18 convention, real face lighting, and finite gnomon cases.
+for(const [az,first,last] of [[90,6,11],[270,13,18],[180,7,17],[0,6,18]]){
+  const s=S.build({...S.defaults,lat:47.9,surface:'vertical',azimuth:az});
+  yes(s.hours.length>0);
+  yes(s.hours.every(x=>x.hour>=first&&x.hour<=last));
+  if(az===90||az===270)yes(s.frame.raised&&s.frame.parallel);
 }
-close(S.direction(47.9,6)[0],-1);close(S.direction(47.9,18)[0],1);
-close(S.direction(-47.9,6)[0],1);close(S.direction(-47.9,18)[0],-1);
-close(Math.atan2(S.direction(45,15)[0],-S.direction(45,15)[1]),Math.atan(Math.sin(Math.PI/4)));
-for(const phi of [NaN,90,-90,Infinity])assert.throws(()=>S.build({lat:phi}));
-for(const length of [NaN,0,1001])assert.throws(()=>S.build({length}));
-assert.equal(S.shadow(80,-23.44,12,40),null);
-for(const shape of ['rectangle','semicircle']) {
-  const b=S.layout({...S.defaults,shape});const c=S.clipSegment([-10,b.h/2],[b.w+10,b.h/2],b);
-  close(c[0][0],shape==='semicircle'?b.w/2*(1-Math.sqrt(3)/2):0);close(c[1][0],shape==='semicircle'?b.w/2*(1+Math.sqrt(3)/2):b.w);assert.equal(S.clipSegment([-10,-10],[-5,-5],b),null);
+for(const [lat,shape] of [[0,'rectangle'],[0,'semicircle'],[47.9,'rectangle'],[-47.9,'semicircle'],[89,'semicircle'],[-89,'rectangle']]){
+  const s=S.build({...S.defaults,lat,shape,seasons:true,guides:true}),b=s.face;
+  yes(s.events.length===5);
+  for(const q of s.items.filter(q=>q.role==='hour'||q.role==='season')){
+    for(const pt of q.pts)yes(S.inside(pt.map(x=>x-8),b,0),`${lat}/${shape}: ${q.role} outside face ${pt}`);
+  }
+  for(const e of s.events)for(const path of e.paths)for(const pt of path)yes(S.inside(pt,b));
+  yes(s.items.some(x=>x.type===shape || (shape==='rectangle'&&x.role==='guide')));
+  yes(S.svg(s).startsWith('<svg'));
+  yes(S.pdf(s).byteLength>1000);
 }
-const s=S.build({...S.defaults,seasons:true,guides:true});
-assert.ok(S.svg(s).includes('fill="#ffffff"'));assert.ok(S.svg(s).includes('viewBox="0 0 316 261"'));
-assert.ok(Buffer.from(S.pdf(s)).toString('latin1').startsWith('%PDF-1.4'));
-if(process.env.SUNDIAL_TEST_OUTPUT){fs.mkdirSync(process.env.SUNDIAL_TEST_OUTPUT,{recursive:true});for(const shape of ['rectangle','semicircle']){const a=S.build({...S.defaults,shape,seasons:true,guides:true,color:true});fs.writeFileSync(`${process.env.SUNDIAL_TEST_OUTPUT}/${shape}.svg`,S.svg(a));fs.writeFileSync(`${process.env.SUNDIAL_TEST_OUTPUT}/${shape}.pdf`,S.pdf(a));}}
-console.log(`PASS: ${count} numerical/geometry assertions; semicircle boundary, equatorial rod/nodus, southern hemisphere, near poles, and 3/5/7 seasons.`);
+// Equator: rod offset x=h tan(H), no finite 06/18 markings.
+for(const shape of ['rectangle','semicircle']){
+  const s=S.build({...S.defaults,lat:0,shape,length:40});
+  yes(s.frame.raised&&s.frame.parallel);
+  yes(!s.hours.some(q=>q.hour===6||q.hour===18));
+  for(const q of s.hours){
+    const H=(q.hour-12)*15*R;
+    eq(q.offset,40*Math.tan(H),2e-8);
+    eq(q.pts[0][0],q.pts[1][0],1e-7);
+  }
+}
+// The straight equinox seasonal line and independent nodus-length scaling.
+for(const lat of [-60,-47.9,0,47.9,60]){
+  const f=G.frame(lat,0,180),c=[150,100],a=[];
+  for(let hour=8;hour<=16;hour++){
+    const q=G.project(f,lat,0,hour,40,c);yes(q!==null);
+    const target=lat===0?c[1]:c[1]-40/Math.cos(Math.abs(lat)*R);
+    eq(q.y,target,2e-7);a.push(q);
+  }
+  const old=S.build({...S.defaults,lat,seasons:false});
+  const newLen=S.build({...S.defaults,lat,length:90,seasons:false});
+  if(lat!==0) {assert.deepEqual(old.items.filter(x=>x.role==='hour'),newLen.items.filter(x=>x.role==='hour'));checks++;}
+  else {yes(old.hours[0].offset!==newLen.hours[0].offset);
+    yes(old.hours.every(x=>x.raised)&&newLen.hours.every(x=>x.raised));}
+}
+for(const [delta,offset] of [[-23.44,114.70197869922612],[0,59.66350211768394],[23.44,40.31756447043766]]){
+  const f=G.frame(47.9,0,180),q=G.project(f,47.9,delta,12,40,[150,180]);
+  yes(q!==null);eq(180-q.y,offset,2e-6);
+}
+for(const p of [S.defaults,{...S.defaults,surface:'vertical',azimuth:180},{...S.defaults,surface:'vertical',azimuth:90},{...S.defaults,surface:'inclined',tilt:45,azimuth:135},{...S.defaults,surface:'inclined',tilt:60,azimuth:235,style:'raised'}]){
+  const s=S.build(p),pro=S.profile(p);
+  yes(S.svg(pro).includes('<svg'));yes(S.pdf(pro).byteLength>400);
+  yes(D.draw(s,11,23.44,35,'en').includes('Declination cone'));
+  yes(D.draw(s,11,0,-70,'mn').includes('Цагийн хавтгай'));
+}
+// A deliberately raised rod on an oblique plane has a shifted hour-plane
+// intersection, which is generally NOT parallel (only exact parallel-axis
+// faces generate parallel lines). Check every clipped hour-line endpoint.
+const shifted={...S.defaults,surface:'inclined',tilt:55,azimuth:140,style:'raised',length:50};
+const shiftScene=S.build(shifted),shiftFrame=shiftScene.frame,shiftN=G.nodus(shiftFrame,50);
+yes(shiftScene.hours.length>4);yes(!shiftFrame.parallel);
+for(const h of shiftScene.hours){
+  const m=G.cross(shiftFrame.p,G.sun(shifted.lat,0,h.hour));
+  for(const pt of h.pts){
+    const du=pt[0]-shiftScene.face.root[0],dv=shiftScene.face.root[1]-pt[1];
+    const world=G.add(G.mul(shiftFrame.u,du),G.mul(shiftFrame.v,dv));
+    eq(G.dot(m,G.sub(world,shiftN)),0,1e-7);
+  }
+  yes(h.offset===null);
+}
+const semi=S.build({...S.defaults,shape:'semicircle'});
+eq(semi.face.w,300);eq(semi.face.h,150);
+yes(semi.items.some(x=>x.type==='semicircle'));
+yes(!semi.items.some(x=>x.type==='circle'&&x.r===150));
+const pdfText=Buffer.from(S.pdf(semi)).toString('latin1');yes(pdfText.includes('/MediaBox'));
+console.log(`PASS: ${checks} numerical/geometry/export assertions; P1 arbitrary planes, visibility, roots, raised rods and legacy horizontal cases.`);

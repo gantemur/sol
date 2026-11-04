@@ -2,9 +2,10 @@
  * SPDX-License-Identifier: MIT */
 (function (root) {
   'use strict';
-  const VERSION = 'R01.3', DEG = Math.PI / 180;
+  const VERSION = 'P1.0', DEG = Math.PI / 180;
+  const G = (typeof module!=='undefined'&&module.exports)?require('./planar3d.js'):root.Sundial3D;
   const defaults = Object.freeze({lat:47.9, shape:'rectangle', width:300, height:200,
-    diameter:300, interval:60, numerals:'24', seasons:false, seasonCount:5, length:40, guides:false, color:false});
+    diameter:300, interval:60, numerals:'24', seasons:false, seasonCount:5, length:40, guides:false, color:false, surface:'horizontal', tilt:45, azimuth:180, style:'auto'});
   const events = Object.freeze([
     {id:'june', delta:23.44, label:'VI  +23.44°', color:'#08764d', dash:[]},
     {id:'equinox', delta:0, label:'III / IX  0°', color:'#185da8', dash:[3,1.5]},
@@ -34,10 +35,11 @@
     const p = {...defaults, ...input};
     // URLs from R01.2 used 'circle'; preserve those links with a real semicircle.
     if (p.shape==='circle') p.shape='semicircle';
-    if (!['rectangle','semicircle'].includes(p.shape) || !['12','24','roman'].includes(p.numerals)) throw Error('invalid');
-    for (const k of ['lat','width','height','diameter','length','interval']) if (!Number.isFinite(p[k])) throw Error('invalid');
+    if (!['rectangle','semicircle'].includes(p.shape) || !['12','24','roman'].includes(p.numerals) ||
+        !['horizontal','vertical','inclined'].includes(p.surface) || !['auto','raised'].includes(p.style)) throw Error('invalid');
+    for (const k of ['lat','width','height','diameter','length','interval','tilt','azimuth']) if (!Number.isFinite(p[k])) throw Error('invalid');
     if (Math.abs(p.lat)>89 || ![15,30,60].includes(p.interval) || ![3,5,7].includes(p.seasonCount)) throw Error('invalid');
-    if ([p.width,p.height,p.diameter].some(x=>x<80||x>1500) || p.length<1 || p.length>1000) throw Error('invalid');
+    if ([p.width,p.height,p.diameter].some(x=>x<80||x>1500) || p.length<1 || p.length>1000 || p.tilt<0 || p.tilt>90 || p.azimuth<0 || p.azimuth>360) throw Error('invalid');
     return p;
   }
   // ENU: east, north, up. Hour angle is positive after apparent solar noon.
@@ -125,101 +127,137 @@
     }
     return paths.filter(a=>a.length>1);
   }
+  function planeFrame(p) {
+    const tilt=p.surface==='horizontal'?0:p.surface==='vertical'?90:p.tilt;
+    return G.frame(p.lat,tilt,p.azimuth,p.style);
+  }
+  function planarLayout(p,frame) {
+    const w=p.shape==='semicircle'?p.diameter:p.width;
+    const h=p.shape==='semicircle'?p.diameter/2:p.height;
+    const root=[w/2,p.shape==='semicircle'?h:
+      (frame.raised?h/2:h-Math.max(12,Math.min(20,h*.1)))];
+    return {shape:p.shape,w,h,root};
+  }
+  function planarSeasonalPaths(p,b,frame,delta) {
+    const paths=[];let run=null,previous=null;
+    const at=hour=>{const q=G.project(frame,p.lat,delta,hour,p.length,b.root);
+      return q?[q.x,q.y]:null;};
+    function segment(a,z,depth=0){
+      const c=clipSegment(a.q,z.q,b);
+      const h=(a.h+z.h)/2,m=at(h);
+      if(m && c && depth<12 && Math.hypot(m[0]-(a.q[0]+z.q[0])/2,m[1]-(a.q[1]+z.q[1])/2)>.025){
+        segment(a,{h,q:m},depth+1);segment({h,q:m},z,depth+1);return;
+      }
+      if(!c){run=null;return;}
+      if(!run||Math.hypot(run.at(-1)[0]-c[0][0],run.at(-1)[1]-c[0][1])>1e-5){run=[c[0]];paths.push(run);}
+      run.push(c[1]);
+    }
+    for(let i=0;i<=1440;i++){
+      const hour=6+i/120,q=at(hour);
+      if(q&&previous)segment(previous,{h:hour,q});else run=null;
+      previous=q?{h:hour,q}:null;
+    }
+    return paths.filter(path=>path.length>1);
+  }
   function build(input) {
-    const p=validate(input),b=layout(p),margin=8,selected=seasonEvents(p.seasonCount),footer=p.seasons?25+10*Math.ceil(selected.length/3):15;
-    const s={w:b.w+2*margin,h:b.h+2*margin+footer,face:b,p,items:[],warnings:[],events:[],version:VERSION};
-    const items=s.items;
-    const line=(pts,width=.3,color='#111111',dash=[],role='guide')=>items.push({type:'path',pts:pts.map(q=>[q[0]+margin,q[1]+margin]),width,color,dash,role});
-    const text=(x,y,value,size=3.2,role='caption')=>items.push({type:'text',x:x+margin,y:y+margin,value,size,role});
+    const p=validate(input),frame=planeFrame(p),b=planarLayout(p,frame),margin=8,
+      selected=seasonEvents(p.seasonCount),footer=p.seasons?32+10*Math.ceil(selected.length/3):24;
+    const scene={w:b.w+2*margin,h:b.h+2*margin+footer,face:b,p,frame,
+      items:[],warnings:[],events:[],hours:[],version:VERSION};
+    const items=scene.items;
+    const line=(pts,width=.3,color='#111111',dash=[],role='guide')=>
+      items.push({type:'path',pts:pts.map(q=>[q[0]+margin,q[1]+margin]),width,color,dash,role});
+    const text=(x,y,value,size=3.2,role='caption')=>
+      items.push({type:'text',x:x+margin,y:y+margin,value,size,role});
     if(b.shape==='semicircle')items.push({type:'semicircle',x:b.w/2+margin,y:b.h+margin,r:b.w/2,width:.35,color:'#111111'});
     else line([[0,0],[b.w,0],[b.w,b.h],[0,b.h],[0,0]],.35);
-    const labels=[],font=Math.max(2.6,Math.min(7,Math.min(b.w,b.h)*.026));
-    for(let m=360;m<=1080;m+=p.interval) {
-      const hour=m/60,major=m%60===0;
-      if(p.lat===0){
-        // An elevated N-S polar rod casts parallel N-S hour lines at
-        // x = x0 + height * tan(H), independent of solar declination.
-        // At 06:00 and 18:00 the sun is on the horizon: no finite line.
-        if(m===360||m===1080)continue;
-        const x=b.root[0]+p.length*Math.tan((hour-12)*15*DEG);
-        if(!Number.isFinite(x))continue;
-        const seg=clipSegment([x,-b.w*3],[x,b.h+b.w*3],b);
-        if(!seg||Math.hypot(seg[1][0]-seg[0][0],seg[1][1]-seg[0][1])<1)continue;
-        line(seg,major?.32:.16,'#111111',[],'hour');items.at(-1).hour=hour;
-        if(major){const pos=[x,seg[0][1]+font*1.8+1],value=p.numerals==='roman'?roman[hour%12]:String(p.numerals==='12'?(hour%12||12):hour);
-          if(inside(pos,b,font*1.2))labels.push({pos,value,hour});else s.warnings.push('crowded');}
-      }else{
-        const d=direction(p.lat,hour),end=rayEnd(b,d,.6);
-        line([b.root,end],major?.32:.16,'#111111',[],'hour');items.at(-1).hour=hour;
-        if(major){const pos=rayEnd(b,d,font*1.6+1),value=p.numerals==='roman'?roman[hour%12]:String(p.numerals==='12'?(hour%12||12):hour);
-          if(b.shape==='semicircle'&&Math.abs(d[1])<.15)pos[1]-=font*.75;
-          labels.push({pos,value,hour});}
+    const font=Math.max(2.6,Math.min(7,Math.min(b.w,b.h)*.026)),labels=[];
+    for(let minute=360;minute<=1080;minute+=p.interval){
+      const hour=minute/60,major=minute%60===0;
+      const q=G.hourLine(frame,p.lat,hour,p.length,b.root,clipSegment,b);
+      if(!q){if(major)scene.warnings.push('unlitHours');continue;}
+      scene.hours.push(q);
+      line(q.pts,major?.32:.16,'#111111',[],'hour');items.at(-1).hour=hour;
+      if(major){
+        const value=p.numerals==='roman'?roman[hour%12]:String(p.numerals==='12'?(hour%12||12):hour);
+        // Rooted rays end at the physical rim. Raised-rod hour lines are
+        // parallel and have labels near the upper edge of their line segment.
+        const anchor=frame.raised?q.pts.reduce((a,z)=>a[1]<z[1]?a:z):q.pts.at(-1);
+        const pos=frame.raised?[anchor[0],anchor[1]+font*1.6+1]:
+          [anchor[0]-q.direction[0]*(font*1.7+1),anchor[1]-q.direction[1]*(font*1.7+1)];
+        if(inside(pos,b,Math.max(1,font*.55)))labels.push({pos,value,hour});else scene.warnings.push('crowded');
       }
     }
-    if(p.lat===0){s.warnings.push('equator');if(b.shape==='semicircle')s.warnings.push('equatorHalf');}
-    else if(Math.abs(p.lat)<5)s.warnings.push('nearEquator');
-    if(Math.abs(p.lat)>=85)s.warnings.push('nearPole');
-    if(p.seasons)for(const e of selected) {
-      const paths=seasonalPaths(p,b,e.delta);s.events.push({...e,paths});
+    if(frame.raised)scene.warnings.push('raisedStyle');
+    if(!frame.raised&&Math.abs(frame.pn)<Math.sin(3*DEG))scene.warnings.push('nearParallel');
+    if(Math.abs(p.lat)>=85)scene.warnings.push('nearPole');
+    if(frame.parallel && b.shape==='semicircle')scene.warnings.push('parallelHalf');
+    if(p.seasons)for(const e of selected){
+      const paths=planarSeasonalPaths(p,b,frame,e.delta);
+      scene.events.push({...e,paths});
       for(const path of paths)line(path,.38,p.color?e.color:'#333333',e.dash,'season');
-      if(!paths.length)s.warnings.push('off:'+e.id);
+      if(!paths.length)scene.warnings.push('off:'+e.id);
     }
-    // Labels have white knockouts shared by ALL renderers, not screen-only styling.
     const placed=[];
-    for(const l of labels.sort((a,z)=>(a.hour===12?-1:z.hour===12?1:a.hour-z.hour))) {
-      const width=l.value.length*font*.65+1.4,height=font*1.2;
-      const x=l.pos[0],y=l.pos[1];
-      if(placed.some(q=>Math.abs(q.x-x)<(q.w+width)/2 && Math.abs(q.y-y)<height)){s.warnings.push('crowded');continue;}
-      placed.push({x,y,w:width});
+    for(const q of labels.sort((a,z)=>a.hour===12?-1:z.hour===12?1:a.hour-z.hour)){
+      const width=q.value.length*font*.65+1.4,height=font*1.2,x=q.pos[0],y=q.pos[1];
+      if(placed.some(t=>Math.abs(t.x-x)<(t.width+width)/2&&Math.abs(t.y-y)<height)){scene.warnings.push('crowded');continue;}
+      placed.push({x,y,width});
       items.push({type:'rect',x:x-width/2+margin,y:y-height/2+margin,w:width,h:height,fill:'#ffffff'});
-      text(x,y+font*.34,l.value,font,'hour-label');
+      text(x,y+font*.34,q.value,font,'hour-label');
     }
     const [ox,oy]=b.root;
-    line([[ox-1,oy],[ox+1,oy]],.25);
-    line([[ox,oy-1],[ox,oy+(b.shape==='semicircle'?0:1)]],.25);
-    // A small poleward arrow is outside the fabrication boundary.
+    line([[ox-1,oy],[ox+1,oy]],.25);line([[ox,oy-1],[ox,oy+(b.shape==='semicircle'?0:1)]],.25);
+    // The top arrow is the projection of the outward polar edge when it
+    // exists. For tilted plates it may point physically DOWN on a wall.
     line([[b.w/2,-1],[b.w/2,-5]],.25);line([[b.w/2-1,-3.5],[b.w/2,-5],[b.w/2+1,-3.5]],.25);
-    text(b.w/2+5,-2, p.lat>=0?'N':'S',3);
-    const scale=b.w>=160?100:20, sy=b.h+8;
+    text(b.w/2+8,-2,p.surface==='horizontal'?(p.lat>=0?'N':'S'):'AXIS',3);
+    const scale=b.w>=160?100:20,sy=b.h+8;
     line([[1,sy],[1+scale,sy]],.25);line([[1,sy-1],[1,sy+1]],.25);line([[1+scale,sy-1],[1+scale,sy+1]],.25);
     text(1+scale/2,sy-1.8,scale+' mm',3);
-    text(b.w*.76,sy+.5,b.shape==='semicircle'?'D = '+n(b.w)+' mm':n(b.w)+' x '+n(b.h)+' mm',3);
-    if(p.guides) {
+    text(b.w*.79,sy+.5,b.shape==='semicircle'?'D = '+n(b.w)+' mm':n(b.w)+' x '+n(b.h)+' mm',3);
+    if(p.surface!=='horizontal'){
+      const orient=frame.upAngle===null?'UP REF N/A':'UP '+n(frame.upAngle)+' deg FROM AXIS';
+      text(b.w*.50,b.h+14,orient,3,'orientation');
+      text(b.w*.5,b.h+19,'TILT '+n(frame.tilt)+' deg / FACE '+n(frame.azimuth)+' deg',3,'orientation');
+    }
+    if(p.guides){
       text(ox-4,oy+4,'O',3);
-      const offset=p.lat===0?0:p.length*Math.cos(p.lat*DEG),P=[ox,oy-offset];
-      const clipped=clipSegment(b.root,P,b);if(clipped)line(clipped,.25,'#777777',[2,1]);
-      if(p.lat===0) text(P[0]+5,P[1]-2,'O=P',3);
-      else if(inside(P,b,4)) {items.push({type:'circle',x:P[0]+margin,y:P[1]+margin,r:.9,width:.25,color:'#555555'});text(P[0]+4,P[1]+1,'P',3);}
-      else if(!inside(P,b))s.warnings.push('nodusOutside');
+      const N=G.nodus(frame,p.length),P=[ox+G.dot(N,frame.u),oy-G.dot(N,frame.v)];
+      if(!frame.raised){const clipped=clipSegment(b.root,P,b);if(clipped)line(clipped,.25,'#777777',[2,1]);}
+      if(frame.raised)text(P[0]+5,P[1]-2,'O=P',3);
+      else if(inside(P,b,4)){
+        items.push({type:'circle',x:P[0]+margin,y:P[1]+margin,r:.9,width:.25,color:'#555555'});
+        text(P[0]+4,P[1]+1,'P',3);
+      }else scene.warnings.push('nodusOutside');
     }
     if(p.seasons)selected.forEach((e,i)=>{
-      const row=Math.floor(i/3),first=3*row,count=Math.min(3,selected.length-first);
-      const x=b.w*(i-first+.5)/count,y=b.h+20+row*10;
+      const row=Math.floor(i/3),first=3*row,count=Math.min(3,selected.length-first),x=b.w*(i-first+.5)/count,y=b.h+27+row*10;
       line([[x-6,y-3],[x+6,y-3]],.38,p.color?e.color:'#333333',e.dash);
       text(x,y+1,e.label,Math.min(3.2,Math.max(2.3,b.w/80)));
     });
-    s.warnings=[...new Set(s.warnings)];return s;
+    scene.warnings=[...new Set(scene.warnings)];return scene;
   }
   function profile(input) {
-    const p=validate(input);
-    if(p.lat===0){
-      // Side elevation: an N-S rod held horizontally at height h, or a
-      // single point at G. This replaces the degenerate triangular gnomon.
-      const H=p.length,w=140,h=H+32,y=16,x=20,items=[];
+    const p=validate(input),f=planeFrame(p),H=p.length;
+    if(f.raised){
+      // A supported rod lies parallel to the receiving surface; its nodus
+      // is at normal distance h above the reference point O.
+      const w=150,h=Math.max(H+30,65),y=14,x=18,items=[];
       items.push({type:'path',pts:[[10,y+H],[w-10,y+H]],width:.35,color:'#111111',dash:[]});
-      items.push({type:'path',pts:[[x,y],[w-20,y]],width:1.0,color:'#111111',dash:[]});
+      items.push({type:'path',pts:[[x,y],[w-20,y]],width:1,color:'#111111',dash:[]});
       items.push({type:'path',pts:[[x,y],[x,y+H]],width:.25,color:'#777777',dash:[2,1]});
       items.push({type:'circle',x:w/2,y,r:1,width:.3,color:'#111111'});
-      items.push({type:'text',x:w/2,y:8,value:'N-S horizontal rod / point G',size:3.2});
-      items.push({type:'text',x:w-35,y:y+H/2,value:'h = '+H+' mm',size:3.2});
+      items.push({type:'text',x:w/2,y:7,value:'POLAR ROD / POINT G',size:3.2});
+      items.push({type:'text',x:w/2,y:y+H/2,value:'h = '+n(H)+' mm',size:3.2});
       return {w,h,items,p,version:VERSION};
     }
-    const a=Math.abs(p.lat)*DEG,L=p.length,B=L*Math.cos(a),H=L*Math.sin(a);
-    const w=Math.max(B+32,100),h=Math.max(H+30,65),x=16,y=h-14,items=[];
-    items.push({type:'path',pts:[[x,y],[x+B,y],[x+B,y-H],[x,y]],width:.35,color:'#111111',dash:[]});
+    const alpha=f.polarAngle*DEG,B=H*Math.cos(alpha),z=H*Math.sin(alpha),
+      w=Math.max(B+32,100),h=Math.max(z+30,65),x=16,y=h-14,items=[];
+    items.push({type:'path',pts:[[x,y],[x+B,y],[x+B,y-z],[x,y]],width:.35,color:'#111111',dash:[]});
     const add=(xx,yy,value)=>items.push({type:'text',x:xx,y:yy,value,size:3.2});
-    add(x-3,y+5,'O');add(x+B+4,y-H,'G');add(x+B/2,y+6,'b = '+n(B)+' mm');
-    add(w/2,7,'L = '+L+' mm; h = '+n(H)+' mm');add(w/2,12,'|phi| = '+Math.abs(p.lat)+'°');
+    add(x-3,y+5,'O');add(x+B+4,y-z,'G');add(x+B/2,y+6,'b = '+n(B)+' mm');
+    add(w/2,7,'L = '+H+' mm; h = '+n(z)+' mm');add(w/2,12,'alpha = '+n(f.polarAngle)+' deg');
     return {w,h,items,p,version:VERSION};
   }
   const xml=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
@@ -280,6 +318,6 @@
       if(type!=='pHYs')parts.push(data.slice(pos,end));if(type==='IHDR')parts.push(chunk);pos=end;}
     const out=new Uint8Array(parts.reduce((a,b)=>a+b.length,0));let at=0;for(const p of parts){out.set(p,at);at+=p.length;}return out;
   }
-  const api={VERSION,defaults,events,seasonEvents,validate,sunVector,shadow,direction,layout,inside,rayEnd,clipSegment,seasonalPaths,build,profile,svg,pdf,pngDensity};
+  const api={VERSION,defaults,events,seasonEvents,validate,sunVector,shadow,direction,layout,inside,rayEnd,clipSegment,seasonalPaths,planeFrame,planarLayout,planarSeasonalPaths,build,profile,svg,pdf,pngDensity,geom:G};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.Sundial=api;
 })(typeof globalThis!=='undefined'?globalThis:this);
