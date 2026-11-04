@@ -13,7 +13,7 @@ for(const [k,expected] of [[3,[23.44,0,-23.44]],[5,[23.44,11.72,0,-11.72,-23.44]
     assert.ok(s.items.filter(q=>q.role==='season').length>=k-1);count++;
     assert.deepEqual(S.build({...p,seasons:false}).items.filter(q=>q.role==='hour'),s.items.filter(q=>q.role==='hour'));count++;
     const descriptions=s.items.filter(q=>q.type==='text').map(q=>q.value);
-    for(const e of selected){assert.ok(descriptions.includes(e.label));count++;}
+    for(const e of selected){assert.ok(descriptions.includes(e.label));assert.ok([...e.label].every(ch=>ch.charCodeAt(0)<=255));count+=2;}
   }
 }
 assert.throws(()=>S.build({seasonCount:4}));
