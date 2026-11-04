@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#192d49">
   <meta name="description" content="Explore sound waves, plucked and held instrument models, harmonic synthesis, noise, a theremin and sirens with interactive plots and bilingual controls.">
   <title>Sound Lab · Sol</title>
-  <link rel="stylesheet" href="sound-lab.css?v=s028">
+  <link rel="stylesheet" href="sound-lab.css?v=s029">
   <script src="sound-model.js" defer></script>
   <script src="sound-string.js?v=s017" defer></script>
   <script src="sound-piano.js?v=s019" defer></script>
@@ -22,7 +22,7 @@
   <script src="sound-harmonics.js" defer></script>
   <script src="sound-noise.js" defer></script>
   <script src="sound-recorder.js" defer></script>
-  <script src="sound-lab.js?v=s028" defer></script>
+  <script src="sound-lab.js?v=s029" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -638,7 +638,7 @@
         </div>
         <div class="experiment-switch tuning-experiment-switch" role="group" aria-label="Хөгийн туршилтууд" data-i18n-aria="tuningExperimentsAria">
           <button type="button" data-tuning-kind="intervals" class="selected" aria-pressed="true" data-i18n="intervalExperiment">Харьцаа</button>
-          <button type="button" data-tuning-kind="ear" aria-pressed="false" data-i18n="earExperiment">Чихээр тааруулах</button>
+          <button type="button" data-tuning-kind="ear" aria-pressed="false" data-i18n="earExperiment">Тааруулах</button>
           <button type="button" data-tuning-kind="scales" aria-pressed="false" data-i18n="scaleExperiment">3-хязгаар</button>
           <button type="button" data-tuning-kind="limit5" aria-pressed="false" data-i18n="limit5Experiment">5-хязгаар</button>
         </div>
@@ -717,33 +717,37 @@
     <div class="workspace" id="earWorkspace" hidden>
       <section class="panel controls" aria-labelledby="ear-controls-title">
         <div class="section-top">
-          <h2 id="ear-controls-title" data-i18n="earChoose">Сонсож байгаад нот тааруулах</h2>
-          <p class="description" data-i18n="earDescription">Нэг харьцааг сонгоод дараагийн нотыг чихээр тааруул. Доош үржүүлэх, октаваар буцаахыг турш. Дараа нь эдгээр алхмыг 3-хязгаар ба 5-хязгаарт давтана.</p>
+          <h2 id="ear-controls-title" data-i18n="earChoose">Нот тааруулах</h2>
+          <p class="description" data-i18n="earDescription">Харьцаагаа сонгоод хоёр дахь нотыг чихээр тааруул. Доош алхам, октаваар шилжүүлэхийг ч бас туршаарай.</p>
         </div>
         <div class="experiment-switch tuning-experiment-switch" role="group" data-i18n-aria="tuningExperimentsAria" aria-label="Хөгийн туршилтууд">
           <button type="button" data-tuning-kind="intervals" aria-pressed="false" data-i18n="intervalExperiment">Харьцаа</button>
-          <button type="button" data-tuning-kind="ear" class="selected" aria-pressed="true" data-i18n="earExperiment">Чихээр тааруулах</button>
+          <button type="button" data-tuning-kind="ear" class="selected" aria-pressed="true" data-i18n="earExperiment">Тааруулах</button>
           <button type="button" data-tuning-kind="scales" aria-pressed="false" data-i18n="scaleExperiment">3-хязгаар</button>
           <button type="button" data-tuning-kind="limit5" aria-pressed="false" data-i18n="limit5Experiment">5-хязгаар</button>
         </div>
         <div class="field-group">
-          <div class="field-title"><span data-i18n="earTasksTitle">Даалгавар</span></div>
-          <div id="earTasks" class="ear-task-presets" role="group" data-i18n-aria="earTasksAria">
-            <button type="button" data-ear-task="fifth" class="selected" aria-pressed="true" data-i18n="earTaskFifth">3:2 · Квинт</button>
-            <button type="button" data-ear-task="third" aria-pressed="false" data-i18n="earTaskThird">5:4 · Терц</button>
-            <button type="button" data-ear-task="fourth" aria-pressed="false" data-i18n="earTaskFourth">4:3 · Дөрөвт</button>
-            <button type="button" data-ear-task="octaveUp" aria-pressed="false" data-i18n="earTaskOctaveUp">2:1 · Дээш октав</button>
-            <button type="button" data-ear-task="downFourth" aria-pressed="false" data-i18n="earTaskDownFourth">3:4 · Доош дөрөвт</button>
-            <button type="button" data-ear-task="downFifth" aria-pressed="false" data-i18n="earTaskDownFifth">2:3 · Доош квинт</button>
-            <button type="button" data-ear-task="octaveDown" aria-pressed="false" data-i18n="earTaskOctaveDown">1:2 · Доош октав</button>
-          </div>
-          <p class="field-help" id="earInstruction" aria-live="polite">До-оос Соль-г сонсож тааруулна.</p>
+          <div class="field-title"><label for="earTaskSelect" data-i18n="earTasksTitle">Даалгавар</label></div>
+          <select id="earTaskSelect" class="ear-task-select" data-i18n-aria="earTasksAria">
+            <option value="fifth" selected data-i18n="earTaskFifth">3:2 · Квинт</option>
+            <option value="third" data-i18n="earTaskThird">5:4 · Терц</option>
+            <option value="fourth" data-i18n="earTaskFourth">4:3 · Дөрөвт</option>
+            <option value="octaveUp" data-i18n="earTaskOctaveUp">2:1 · Дээш октав</option>
+            <option value="downFourth" data-i18n="earTaskDownFourth">3:4 · Доош дөрөвт</option>
+            <option value="downFifth" data-i18n="earTaskDownFifth">2:3 · Доош квинт</option>
+            <option value="octaveDown" data-i18n="earTaskOctaveDown">1:2 · Доош октав</option>
+          </select>
+        </div>
+        <div id="earPlayModes" class="ear-play-controls" role="group" data-i18n-aria="earCompareAria">
+          <button type="button" data-ear-play="alternating" aria-pressed="false">▶ Ээлжлэн</button>
+          <button type="button" data-ear-play="together" aria-pressed="false">▶ Хамт</button>
         </div>
         <div class="field-group ear-slider-group">
           <div class="field-title"><label for="earAdjust" data-i18n="earAdjustTitle">Хоёр дахь нотыг тааруулах</label><output id="earAdjustLabel">← нам · өндөр →</output></div>
           <input id="earAdjust" type="range" min="-60" max="60" step="0.5" value="0" data-i18n-aria="earAdjustAria">
-          <p class="field-help" data-i18n="earAdjustHint">Хоёр дахь нот зориуд бага зэрэг зөрүүтэй. Чихээр тааруулаад «Шалгах» дар.</p>
+          <p class="field-help" id="earInstruction" aria-live="polite">До-оос Соль-г сонсож тааруулна.</p>
         </div>
+        <p id="earStatus" class="audio-status" role="status" aria-live="polite">Дууг эхлүүлэхийн тулд дарна уу.</p>
         <div class="field-group">
           <div class="field-title"><span data-i18n="earSoundTitle">Авианы өнгө</span></div>
           <div id="earSounds" class="ear-task-presets" role="group" data-i18n-aria="earSoundAria">
@@ -754,19 +758,6 @@
           </div>
           <p class="field-help" data-i18n="earSoundHint">Синусад дээд гармоник байхгүй. Гитар, төгөлдөр хуурын цохилтууд нь хялбаршуулсан загвар.</p>
         </div>
-        <div class="field-group">
-          <div class="field-title"><span data-i18n="earCompareTitle">Хэрхэн сонсох вэ?</span></div>
-          <div id="earPatterns" class="interval-toggles" role="group" data-i18n-aria="earCompareAria">
-            <button type="button" data-ear-pattern="alternating" class="selected" aria-pressed="true" data-i18n="earAlternating">Ээлжлэн</button>
-            <button type="button" data-ear-pattern="together" aria-pressed="false" data-i18n="earTogether">Хамт</button>
-          </div>
-        </div>
-        <button id="earButton" type="button" class="play-button" aria-pressed="false">
-          <span class="play-icon" id="earPlayIcon" aria-hidden="true">▶</span>
-          <span id="earPlayLabel" data-i18n="earPlay">Хоёр нотыг сонсох</span>
-          <span class="play-caption" id="earPlayCaption" data-i18n="earPlayCaption">Ээлжлэн эсвэл хамт сонсоорой</span>
-        </button>
-        <p id="earStatus" class="audio-status" role="status" aria-live="polite">Дууг эхлүүлэхийн тулд дарна уу.</p>
         <div class="field-group">
           <div class="field-title"><span data-i18n="earHelpTitle">Тусламж</span></div>
           <div id="earHelpModes" class="interval-toggles" role="group" data-i18n-aria="earHelpAria">
@@ -792,13 +783,13 @@
           <canvas id="earHarmonicsCanvas" width="760" height="240" role="img" aria-label="Хоёр нотын гармоникуудын хоорондох зай"></canvas>
           <div class="chart-foot"><span id="earHarmonicsFoot">Гармоникийн шугамуудыг ажиглаж эсвэл чихээрээ тааруул.</span><span data-i18n="frequencyAxis">давтамж →</span></div>
         </section>
-        <section class="panel chart-panel" aria-labelledby="ear-octave-title">
+        <section class="panel chart-panel" id="earOctavePanel" aria-labelledby="ear-octave-title" hidden>
           <div class="chart-heading"><div>
-            <h2 id="ear-octave-title" data-i18n="earOctaveTitle">До4–До5: нэг октав</h2>
-            <p data-i18n="earOctaveHint">До3–До5 завсарт тааруулсан давтамжийг «Шалгах»-ын дараа харна. До4–До5 октавт шилжүүлж харьцуул.</p>
+            <h2 id="ear-octave-title" data-i18n="earOctaveTitle">Нэг октавт буцаах</h2>
+            <p data-i18n="earOctaveHint">Улбар цэг нь тааруулсан нот; ногоон цэг нь түүнийг 2-оор үржүүлж эсвэл хувааж До4–До5 октавт оруулсан байрлал.</p>
           </div><span class="chart-badge" id="earOctaveBadge">До4 · ?</span></div>
           <canvas id="earOctaveCanvas" width="760" height="240" role="img" aria-label="Октавын дотор болон гаднах нотын байрлал"></canvas>
-          <div class="chart-foot"><span id="earOctaveFoot">Нотын байрлал шалгасны дараа харагдана.</span><span data-i18n="earOctaveAxis">До3 · До4 · До5 →</span></div>
+          <div class="chart-foot"><span id="earOctaveFoot">Тасархай шугам нь нэг нотын октавын холбоо.</span><span data-i18n="earOctaveAxis">До3 · До4 · До5 →</span></div>
         </section>
       </div>
     </div>
@@ -811,7 +802,7 @@
         </div>
         <div class="experiment-switch tuning-experiment-switch" role="group" aria-label="Хөгийн туршилтууд" data-i18n-aria="tuningExperimentsAria">
           <button type="button" data-tuning-kind="intervals" aria-pressed="false" data-i18n="intervalExperiment">Харьцаа</button>
-          <button type="button" data-tuning-kind="ear" aria-pressed="false" data-i18n="earExperiment">Чихээр тааруулах</button>
+          <button type="button" data-tuning-kind="ear" aria-pressed="false" data-i18n="earExperiment">Тааруулах</button>
           <button type="button" data-tuning-kind="scales" class="selected" aria-pressed="true" data-i18n="scaleExperiment">3-хязгаар</button>
           <button type="button" data-tuning-kind="limit5" aria-pressed="false" data-i18n="limit5Experiment">5-хязгаар</button>
         </div>
@@ -919,7 +910,7 @@
         </div>
         <div class="experiment-switch tuning-experiment-switch" role="group" data-i18n-aria="tuningExperimentsAria" aria-label="Хөгийн туршилтууд">
           <button type="button" data-tuning-kind="intervals" aria-pressed="false" data-i18n="intervalExperiment">Харьцаа</button>
-          <button type="button" data-tuning-kind="ear" aria-pressed="false" data-i18n="earExperiment">Чихээр тааруулах</button>
+          <button type="button" data-tuning-kind="ear" aria-pressed="false" data-i18n="earExperiment">Тааруулах</button>
           <button type="button" data-tuning-kind="scales" aria-pressed="false" data-i18n="scaleExperiment">3-хязгаар</button>
           <button type="button" data-tuning-kind="limit5" class="selected" aria-pressed="true" data-i18n="limit5Experiment">5-хязгаар</button>
         </div>
