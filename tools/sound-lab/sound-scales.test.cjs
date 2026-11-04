@@ -128,6 +128,25 @@ test("scale melody starts and ends on the selected tonic and synthesizes bounded
   assert.ok(audio.some(sample => Math.abs(sample) > .5));
 });
 
+test("3-limit Together mode renders all pitch classes without clipping", () => {
+  for (const options of [{ down: 0, up: 4 }, { down: 1, up: 5 }, { down: 5, up: 6 }]) {
+    const scale = scales.build(options);
+    const rate = 22050;
+    const samples = scales.makeChordSamples(scale, rate);
+    assert.equal(samples.length, Math.ceil(scales.CHORD_SECONDS * rate));
+    assert.equal(samples[0], 0);
+    assert.ok(samples.every(value => Number.isFinite(value) && Math.abs(value) <= .75 + 1e-6));
+    const index = Math.floor(.053 * rate);
+    const t = index / rate;
+    const expected = scale.ordered.reduce((sum, note) => sum + .75 / scale.count *
+      (.88 * Math.sin(2 * Math.PI * note.playingHz * t) +
+       .12 * Math.sin(4 * Math.PI * note.playingHz * t)), 0);
+    close(samples[index], expected, 1e-6);
+    assert.ok(Math.abs(samples.at(-1)) < .02, "The chord fades at its end");
+  }
+  assert.throws(() => scales.makeChordSamples(scales.build(), 1000), RangeError);
+});
+
 test("the spiral turn and adjacent Fourier partials come from exact fifths", () => {
   close(scales.FIFTH_TURN_DEGREES, 210.586500259, 1e-6);
   const scale = scales.build({ down: 3, up: 4 });

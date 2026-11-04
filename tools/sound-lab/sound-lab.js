@@ -126,6 +126,7 @@
       scaleChoose: "Build a scale with 3:2", scaleDescription: "Walk upward or downward by exact 3:2 steps. Fold the notes into one octave, then choose which note acts as the tonic.",
       scalePlay: "Hear the scale", scaleStop: "Stop", scalePlayCaption: "Play ascending and descending",
       scalePresetsTitle: "Scale patterns", scalePresetsAria: "Fifth-chain patterns",
+      scaleCustom: "Custom chain", scalePlaybackAria: "Play the fifth-chain notes in sequence or together",
       scaleFiveUp: "5 · Up", scaleFiveCenter: "5 · Both", scaleFiveDown: "5 · Down",
       scaleSeven: "7 notes", scaleTwelve: "12 notes", scaleNotesUnit: "notes",
       scaleGapToggle: "Show the return gap", scaleGapTitle: "How close is the ghost return?",
@@ -162,7 +163,8 @@
       scaleLessonOne: "Repeated exact 3:2 ratios create a chain of fifths. Dividing or multiplying by powers of two puts every generated pitch into one octave. A sequence of five consecutive fifths produces a pentatonic collection; seven produces a diatonic one.",
       scaleLessonTwo: "The tonic is a choice of musical center, not a new frequency ratio. For example, C–D–E–G–A is C major pentatonic, while the same pitches starting and ending on A form A minor pentatonic. Twelve exact fifths miss seven octaves by about 23.46 cents: the Pythagorean comma.",
       scaleReady: "Ready. Play the scale, or change its notes.", scaleStarting: "Preparing the melody…",
-      scalePlaying: "Playing up and down. Press the large button to stop.",
+      scalePlaying: "Playing in sequence. Tap the same button to stop.",
+      scaleChordPlaying: "Playing all notes together. Tap Together again to stop.",
       scaleGapPlaying: "Playing the starting pitch and ghost return together.",
       scaleGapDone: "Comparison finished. Change the number of fifths to hear another gap.",
       scaleStopped: "Stopped. Try another tonic or direction.", scaleHidden: "Melody stopped when you left the page.",
@@ -233,8 +235,8 @@
       intervalLearnMore: "How does a two-note ratio differ from one note's overtones?",
       intervalLessonOne: "A ratio such as 3:2 compares the fundamental frequencies of two separate notes. The overtones of one note instead occur at 2, 3, 4… times its own fundamental.",
       intervalLessonTwo: "At 3:2 the lower note's third harmonic equals the upper note's second harmonic. In 12-TET the frequencies differ slightly; with Rich tones the nearby harmonics may beat. Pleasantness is not determined by ratios alone.",
-      intervalReady: "Ready. Play the two notes together.", intervalStarting: "Starting two notes…",
-      intervalPlaying: "Playing. Compare ratios and tunings while the notes sound.",
+      intervalReady: "Ready. Choose In sequence or Together.", intervalStarting: "Starting two notes…",
+      intervalPlaying: "Playing. Tap the active button to stop or switch comparison.",
       intervalStopped: "Stopped. Try another ratio.", intervalHidden: "Sound stopped when you left the page.",
       intervalUnsupported: "This browser cannot synthesize interval tones.",
       intervalBlocked: "The tones could not start. Check your browser's audio settings.",
@@ -316,7 +318,7 @@
       pluck: "Guitar string", kick: "Drum", piano: "Piano", strikeGroupAria: "Transient sound model",
       strikeCaption: "Tap to sound; tap again to repeat",
       strikePluckButton: "Pluck", strikeStrumButton: "Strum", strikeKickButton: "Strike",
-      strikePianoButton: "Press", strikePianoTapButton: "Tap",
+      strikePianoButton: "Press a key", strikePianoTapButton: "Tap",
       strikePianoTouchTitle: "How to play", strikePianoPress: "Press", strikePianoTap: "Tap",
       strikePianoTouchHint: "Press models a held key with free decay. Tap is gentler and brings the damper back after a short press.",
       strikeGuitarPlay: "Play guitar", strikeSingle: "One string", strikeStrum: "Several strings",
@@ -356,7 +358,7 @@
       strikeLessonOne: "A plucked string vibrates at several frequencies. Its higher harmonics fade faster than its fundamental.",
       strikeLessonTwo: "A circular membrane has non-integer frequency ratios because its modes involve Bessel functions. Its size and tension change the frequencies, while a string produces nearly harmonic overtones. Compare their local spectra.",
       strikeReady: "Ready. Sound starts only when you tap the pad.",
-      strikeStarting: "Preparing the sound…", strikeDone: "Sound triggered. Tap again to repeat.",
+      strikeStarting: "Preparing the sound…", strikeDone: "Sound playing. Tap the active button to stop.",
       strikeStopped: "Stopped. Tap the pad to try again.",
       strikeHidden: "Sound stopped when you left the page.",
       strikeUnsupported: "This browser does not support synthesized sound playback.",
@@ -578,6 +580,7 @@
       scaleChoose: "3:2 харьцаагаар шатлал бүтээх", scaleDescription: "Эхлэх авианаас 3:2 алхмаар дээш, доош явж нот үүсгэ. Нэг октавт багтаагаад, дурын нотыг үндсэн нот болгон сонго.",
       scalePlay: "Шатлалыг сонсох", scaleStop: "Зогсоох", scalePlayCaption: "Өгсөж, уруудаж тоглоно",
       scalePresetsTitle: "Шатлалын жишээ", scalePresetsAria: "3:2 гинжийн жишээнүүд",
+      scaleCustom: "Өөрийн сонголт", scalePlaybackAria: "3:2 шатлалын нотуудыг ээлжлэн эсвэл хамт тоглуулах",
       scaleFiveUp: "5 · Дээш", scaleFiveCenter: "5 · Дундаас", scaleFiveDown: "5 · Доош",
       scaleSeven: "7 нот", scaleTwelve: "12 нот", scaleNotesUnit: "нот",
       scaleGapToggle: "Буцах зөрүүг харуулах", scaleGapTitle: "Буцах нот хэр ойр байна вэ?",
@@ -614,7 +617,8 @@
       scaleLessonOne: "3:2 харьцааг давтан хэрэглэвэл квинтийн гинж үүснэ. Нотуудыг 2-ын зэрэгт үржүүлж, хувааж нэг октавт оруулна. Дараалсан таван квинтээс таван нотын, долоон квинтээс долоон нотын шатлал үүснэ.",
       scaleLessonTwo: "Үндсэн нот бол шинэ давтамжийн харьцаа биш, аяны төвийг сонгож буй хэрэг. Жишээ нь C–D–E–G–A нотуудыг C-ээс тогловол мажор пентатоник, A-гаас тогловол минор пентатоник болно. Яг 3:2 харьцааг 12 удаа хэрэглэхэд 7 октаваас 23.46 центээр зөрнө: Пифагорын комма.",
       scaleReady: "Бэлэн. Шатлалыг сонсож, нотуудыг өөрчилж үзээрэй.", scaleStarting: "Аяыг бэлтгэж байна…",
-      scalePlaying: "Өгсөж, уруудаж тоглож байна. Том товчоор зогсооно.",
+      scalePlaying: "Нотууд ээлжлэн дуугарч байна. Идэвхтэй товчийг дахин дарж зогсооно.",
+      scaleChordPlaying: "Бүх нот хамт дуугарч байна. Хамт товчийг дахин дарж зогсооно.",
       scaleGapPlaying: "Эхлэх нот ба хийсвэр буцах нот хамт дуугарч байна.",
       scaleGapDone: "Харьцуулалт дууслаа. Өөр тооны квинтээр туршаарай.",
       scaleStopped: "Зогслоо. Өөр үндсэн нот, чиглэл туршаарай.", scaleHidden: "Хуудсаас гарахад ая зогслоо.",
@@ -685,8 +689,8 @@
       intervalLearnMore: "Хоёр нотын харьцаа ба нэг нотын гармоник юугаараа ялгаатай вэ?",
       intervalLessonOne: "3:2 бол хоёр тусдаа нотын үндсэн давтамжийн харьцаа. Харин нэг нотын дээд гармоникууд нь өөрийн үндсэн давтамжаас 2, 3, 4… дахин их давтамжтай.",
       intervalLessonTwo: "3:2 үед доод нотын 3 дахь, дээд нотын 2 дахь гармоник давхцана. 12-TET хөгтэй бол эдгээр нь ойртож, бага зэрэг зөрнө. «Гармониктай» үед биение үүсч болно. Таатай эсэхийг ганц харьцаагаар тодорхойлохгүй.",
-      intervalReady: "Бэлэн. Хоёр нотыг хамт сонсоорой.", intervalStarting: "Хоёр нот эхэлж байна…",
-      intervalPlaying: "Дуугарч байна. Харьцаа, хөг солиж сонсоорой.",
+      intervalReady: "Бэлэн. Ээлжлэн эсвэл Хамт сонсоорой.", intervalStarting: "Хоёр нот эхэлж байна…",
+      intervalPlaying: "Дуугарч байна. Идэвхтэй товчийг дахин дарж зогсооно, эсвэл нөгөө товч руу шилжинэ.",
       intervalStopped: "Зогслоо. Өөр харьцаа туршаарай.", intervalHidden: "Хуудсаас гарахад авиа зогслоо.",
       intervalUnsupported: "Энэ хөтөч хоёр нотын авиа үүсгэж чадахгүй байна.",
       intervalBlocked: "Авиа эхэлсэнгүй. Хөтчийн дууны тохиргоог шалгана уу.",
@@ -768,7 +772,7 @@
       pluck: "Гитарын чавхдас", kick: "Бөмбөр", piano: "Төгөлдөр хуур", strikeGroupAria: "Цохилтын дууны загвар",
       strikeCaption: "Дарж сонсоод, дахин дарж давтаарай",
       strikePluckButton: "Татах", strikeStrumButton: "Цохих", strikeKickButton: "Цохих",
-      strikePianoButton: "Дарах", strikePianoTapButton: "Товших",
+      strikePianoButton: "Товчлуур дарах", strikePianoTapButton: "Товших",
       strikePianoTouchTitle: "Тоглох арга", strikePianoPress: "Дарах", strikePianoTap: "Товших",
       strikePianoTouchHint: "Дарахад товчлуурыг барьсан үеийн авиа чөлөөтэй намдана. Товшиход алх зөөлөн цохиж, намжаагч удахгүй буцна.",
       strikeGuitarPlay: "Гитар тоглуулах", strikeSingle: "Нэг чавхдас", strikeStrum: "Олон чавхдас",
@@ -808,7 +812,7 @@
       strikeLessonOne: "Чавхдас олон давтамжаар хэлбэлзэнэ. Өндөр гармоникууд нь үндсэн давтамжаас хурдан намдана.",
       strikeLessonTwo: "Дугуй мембраны хэлбэлзлийн давтамжууд Бесселийн функцийн тэгүүдээс хамаардаг тул бүхэл тоон харьцаатай биш. Хэмжээ ба таталтыг өөрчлөхөд давтамжууд хувирна. Харин чавхдасны дээд гармоникууд үндсэн давтамжийн ойролцоогоор бүхэл тоон үржвэр байдаг.",
       strikeReady: "Бэлэн. Дарахад л дуу гарна.",
-      strikeStarting: "Дууг бэлтгэж байна…", strikeDone: "Дуугарлаа. Дахин дарж болно.",
+      strikeStarting: "Дууг бэлтгэж байна…", strikeDone: "Дуугарч байна. Идэвхтэй товчийг дахин дарж зогсооно.",
       strikeStopped: "Зогслоо. Дахин дарж сонсоорой.",
       strikeHidden: "Хуудсаас гарахад дуу зогслоо.",
       strikeUnsupported: "Энэ хөтөч дуу үүсгэж тоглуулах боломжгүй байна.",
@@ -944,6 +948,8 @@
     strikeChord: "em",
     strikePluckPosition: .22,
     strikePianoTouch: "press",
+    strikePlaying: false,
+    strikePlayback: null,
     strikeStrength: 55,
     strikeDecay: 0.65,
     strikeStatus: "strikeReady",
@@ -997,6 +1003,7 @@
     intervalBase: 220,
     intervalTuning: "just",
     intervalColor: "rich",
+    intervalPattern: "together",
     intervalVolume: 38,
     intervalPlaying: false,
     intervalStatus: "intervalReady",
@@ -1017,6 +1024,7 @@
     scaleTonicK: 0,
     scaleBase: 220,
     scaleVolume: 38,
+    scaleMode: "melody",
     scaleShowGap: false,
     scalePlaying: false,
     scaleGapPlaying: false,
@@ -1195,7 +1203,7 @@
       for (const voice of this.voices) this.stopVoice(voice, immediate);
     }
 
-    async trigger() {
+    async trigger(onEnded = null) {
       const ticket = this.generation;
       const context = await this.contextOwner.readyContext();
       if (ticket !== this.generation || state.mode !== "strike") return false;
@@ -1224,6 +1232,7 @@
         source.disconnect();
         gain.disconnect();
         this.voices.delete(voice);
+        if (onEnded) onEnded();
       };
       source.start(now);
       return { context, startedAt: now, duration: samples.length / context.sampleRate };
@@ -1680,6 +1689,7 @@
       this.voices = new Set();
       this.currentPair = null;
       this.generation = 0;
+      this.patternTimer = null;
     }
 
     gainForVolume() {
@@ -1717,30 +1727,63 @@
       gain.gain.setValueAtTime(0, now);
       gain.gain.linearRampToValueAtTime(this.gainForVolume(), now + 0.035);
       gain.connect(this.contextOwner.output);
-      const pair = { gain, oscillators: [], ended: 0, stopping: false };
+      const pair = { gain, oscillators: [], noteGains: [], ended: 0, stopping: false };
       const { real, imag } = intervalModel.coefficients("rich");
       const wave = this.color() === "rich" ?
         context.createPeriodicWave(real, imag, { disableNormalization: true }) : null;
       for (const hz of this.frequencies()) {
         const oscillator = context.createOscillator();
+        const noteGain = context.createGain();
+        noteGain.gain.setValueAtTime(0, now);
         if (wave) oscillator.setPeriodicWave(wave);
         else oscillator.type = "sine";
         oscillator.frequency.setValueAtTime(hz, now);
-        oscillator.connect(gain);
+        oscillator.connect(noteGain);
+        noteGain.connect(gain);
         oscillator.onended = () => {
           oscillator.disconnect();
           pair.ended++;
           if (pair.ended === pair.oscillators.length) {
+            pair.noteGains.forEach(node => node.disconnect());
             gain.disconnect();
             this.voices.delete(pair);
             if (this.currentPair === pair) this.currentPair = null;
           }
         };
+        pair.noteGains.push(noteGain);
         pair.oscillators.push(oscillator);
       }
       this.currentPair = pair;
       this.voices.add(pair);
       pair.oscillators.forEach(oscillator => oscillator.start(now));
+      this.startPattern(pair);
+    }
+
+    pulsePattern(pair) {
+      if (this.currentPair !== pair || !this.active() || state.intervalPattern !== "alternating") return;
+      const now = this.contextOwner.context.currentTime + .012;
+      pair.noteGains.forEach((node, index) => {
+        const start = now + index * .78;
+        const param = node.gain;
+        param.cancelScheduledValues(now);
+        param.setValueAtTime(0, now);
+        param.setValueAtTime(0, start);
+        param.linearRampToValueAtTime(1, start + .025);
+        param.setValueAtTime(1, start + .64);
+        param.linearRampToValueAtTime(0, start + .70);
+      });
+    }
+
+    startPattern(pair) {
+      if (this.patternTimer !== null) window.clearInterval(this.patternTimer);
+      this.patternTimer = null;
+      if (state.intervalPattern === "alternating") {
+        this.pulsePattern(pair);
+        this.patternTimer = window.setInterval(() => this.pulsePattern(pair), 1600);
+      } else {
+        const now = this.contextOwner.context.currentTime;
+        pair.noteGains.forEach(node => node.gain.setValueAtTime(1, now));
+      }
     }
 
     async start() {
@@ -1778,6 +1821,8 @@
 
     stop(immediate = false) {
       this.generation++;
+      if (this.patternTimer !== null) window.clearInterval(this.patternTimer);
+      this.patternTimer = null;
       for (const pair of this.voices) this.fadeAndStop(pair, immediate);
       this.currentPair = null;
     }
@@ -1915,13 +1960,14 @@
       catch (_) { /* The buffer may already have finished. */ }
     }
 
-    async startSampled(scale, comparison = false) {
+    async startSampled(scale, comparison = false, mode = "melody") {
       const ticket = ++this.generation;
       const context = await this.contextOwner.readyContext();
       if (ticket !== this.generation || state.mode !== "tuning" || state.tuningKind !== "scales") return false;
       for (const voice of this.voices) this.fadeAndStop(voice, true);
       const samples = comparison ? scaleModel.makeGapSamples(scale, context.sampleRate) :
-        scaleModel.makeSamples(scale, context.sampleRate);
+        mode === "chord" ? scaleModel.makeChordSamples(scale, context.sampleRate) :
+          scaleModel.makeSamples(scale, context.sampleRate);
       const buffer = context.createBuffer(1, samples.length, context.sampleRate);
       buffer.getChannelData(0).set(samples);
       const source = context.createBufferSource();
@@ -1933,7 +1979,7 @@
       source.connect(gain);
       gain.connect(this.contextOwner.output);
       const voice = { source, gain, stopping: false, startedAt: now,
-        steps: comparison ? [] : scaleModel.melodySteps(scale) };
+        steps: comparison || mode === "chord" ? [] : scaleModel.melodySteps(scale) };
       source.onended = () => {
         source.disconnect();
         gain.disconnect();
@@ -1957,7 +2003,7 @@
       return true;
     }
 
-    async start(scale) { return this.startSampled(scale); }
+    async start(scale, mode = "melody") { return this.startSampled(scale, false, mode); }
     async startGap(scale) { return this.startSampled(scale, true); }
 
     updateVolume() {
@@ -2343,8 +2389,10 @@
   let motionPointerId = null;
   let sustainPointerId = null;
   let sustainKeyboardHeld = false;
+  let sustainIgnoreHoldClick = false;
   let followFrame = null;
   let followInfo = null;
+  let strikeTicket = 0;
   let overallSpectrumCache = null;
   let lastAnimatedSpectrumTime = -1;
   let lastAnimatedWaveTime = -1;
@@ -2370,8 +2418,11 @@
   }
 
   function stopStrikeForEdit() {
+    strikeTicket++;
     transientAudio.stop(false);
     stopStrikeFollow();
+    state.strikePlaying = false;
+    state.strikePlayback = null;
     overallSpectrumCache = null;
     setStrikeStatus("strikeReady");
   }
@@ -2698,13 +2749,18 @@
       intervalPhrase("intervalEqualStatus", { cents, hz: hzText(data.discrepancyHz) });
     $("intervalVolume").value = String(state.intervalVolume);
     $("intervalVolumeValue").textContent = state.intervalVolume + "%";
-    $("intervalButton").classList.toggle("playing", state.intervalPlaying);
-    $("intervalButton").setAttribute("aria-pressed", String(state.intervalPlaying));
-    $("intervalPlayIcon").textContent = state.intervalPlaying ? "■" : "▶";
-    $("intervalPlayLabel").textContent = text(state.intervalPlaying ? "intervalStop" : "intervalPlay");
-    $("intervalPlayCaption").textContent = text(state.intervalPlaying ? "stopCaption" : "playCaption");
+    $("intervalRatioSelect").value = state.intervalRatio;
+    document.querySelectorAll("#intervalRatioSelect option").forEach(option => {
+      option.textContent = text("intervalNames")[option.value] + " · " + option.value;
+    });
+    document.querySelectorAll("[data-interval-play]").forEach(button => {
+      const active = state.intervalPlaying && button.dataset.intervalPlay === state.intervalPattern;
+      button.classList.toggle("playing", active);
+      button.setAttribute("aria-pressed", String(active));
+      button.textContent = (active ? "■ " : "▶ ") + text(button.dataset.intervalPlay === "alternating" ?
+        "earAlternating" : "earTogether");
+    });
     for (const [selector, attribute, active] of [
-      ["[data-interval-ratio]", "intervalRatio", state.intervalRatio],
       ["[data-interval-tuning]", "intervalTuning", state.intervalTuning],
       ["[data-interval-color]", "intervalColor", state.intervalColor]
     ]) {
@@ -2723,9 +2779,12 @@
     renderIntervalControls();
   }
 
-  async function toggleIntervalSound() {
-    if (state.intervalPlaying) { stopIntervalSound(); return; }
+  async function toggleIntervalSound(mode) {
+    if (!["alternating", "together"].includes(mode)) return;
+    if (state.intervalPlaying && state.intervalPattern === mode) { stopIntervalSound(); return; }
     if (state.mode !== "tuning" || state.tuningKind !== "intervals") return;
+    stopIntervalSound(true, "intervalReady");
+    state.intervalPattern = mode;
     setIntervalStatus("intervalStarting");
     try {
       if (await intervalAudio.start()) {
@@ -2783,6 +2842,7 @@
     state.intervalBase = 220;
     state.intervalTuning = "just";
     state.intervalColor = "rich";
+    state.intervalPattern = "together";
     state.intervalVolume = 38;
     setIntervalStatus("intervalReady");
     renderIntervalControls();
@@ -2998,21 +3058,19 @@
     $("scaleGapButton").classList.toggle("playing", state.scaleGapPlaying);
     $("scaleGapButton").setAttribute("aria-pressed", String(state.scaleGapPlaying));
     renderScaleNow();
-    $("scaleButton").classList.toggle("playing", state.scalePlaying);
-    $("scaleButton").setAttribute("aria-pressed", String(state.scalePlaying));
-    $("scalePlayIcon").textContent = state.scalePlaying ? "■" : "▶";
-    $("scalePlayLabel").textContent = text(state.scalePlaying ? "scaleStop" : "scalePlay");
-    $("scalePlayCaption").textContent = text(state.scalePlaying ? "stopCaption" : "scalePlayCaption");
+    document.querySelectorAll("[data-scale-play]").forEach(button => {
+      const active = state.scalePlaying && state.scaleMode === button.dataset.scalePlay;
+      button.classList.toggle("playing", active);
+      button.setAttribute("aria-pressed", String(active));
+      button.textContent = (active ? "■ " : "▶ ") + text(button.dataset.scalePlay === "melody" ?
+        "earAlternating" : "earTogether");
+    });
     $("scaleRemoveDown").disabled = state.scaleDown === 0;
     $("scaleRemoveUp").disabled = state.scaleUp === 0;
     $("scaleAddDown").disabled = scale.count >= scaleModel.MAX_NOTES || state.scaleDown >= 11;
     $("scaleAddUp").disabled = scale.count >= scaleModel.MAX_NOTES || state.scaleUp >= 11;
-    document.querySelectorAll("[data-scale-preset]").forEach(button => {
-      const preset = scaleModel.PRESETS.find(p => p.id === button.dataset.scalePreset);
-      const selected = preset.down === state.scaleDown && preset.up === state.scaleUp;
-      button.classList.toggle("selected", selected);
-      button.setAttribute("aria-pressed", String(selected));
-    });
+    const preset = scaleModel.PRESETS.find(p => p.down === state.scaleDown && p.up === state.scaleUp);
+    $("scalePresetSelect").value = preset ? preset.id : "custom";
     document.querySelectorAll("[data-scale-tonic]").forEach(button => {
       const index = Number(button.dataset.scaleTonic);
       const note = scale.notes[index];
@@ -3036,7 +3094,8 @@
         ratio: note.numerator + "/" + note.denominator,
         octave: current.octaveUp ? text("scaleNowUpperOctave") : ""
       });
-    } else label.textContent = text("scaleNowIdle");
+    } else label.textContent = state.scalePlaying && state.scaleMode === "chord" ?
+      text("scaleChordPlaying") : text("scaleNowIdle");
     label.classList.toggle("active", state.scalePlaying && Boolean(current));
   }
 
@@ -3073,17 +3132,19 @@
     renderScaleControls();
   }
 
-  async function toggleScaleSound() {
-    if (state.scalePlaying) { stopScaleSound(); return; }
+  async function toggleScaleSound(mode) {
+    if (!["melody", "chord"].includes(mode)) return;
+    if (state.scalePlaying && state.scaleMode === mode) { stopScaleSound(); return; }
     if (state.mode !== "tuning" || state.tuningKind !== "scales") return;
-    if (state.scaleGapPlaying) stopScaleSound(true, "scaleReady");
+    stopScaleSound(true, "scaleReady");
+    state.scaleMode = mode;
     setScaleStatus("scaleStarting");
     try {
-      if (await scaleAudio.start(scaleAnalysis())) {
+      if (await scaleAudio.start(scaleAnalysis(), mode)) {
         state.scalePlaying = true;
-        setScaleStatus("scalePlaying");
+        setScaleStatus(mode === "chord" ? "scaleChordPlaying" : "scalePlaying");
         renderScaleControls();
-        followScalePlayback();
+        if (mode === "melody") followScalePlayback();
       }
     } catch (error) {
       stopScaleSound(true, error.message === "unsupported" ? "scaleUnsupported" : "scaleBlocked");
@@ -3172,6 +3233,7 @@
     state.scaleTonicK = 0;
     state.scaleBase = 220;
     state.scaleVolume = 38;
+    state.scaleMode = "melody";
     state.scaleShowGap = false;
     setScaleStatus("scaleReady");
     renderScaleControls();
@@ -3817,7 +3879,7 @@
     $("strikeDrumSizes").setAttribute("aria-label", text("strikeDrumSize"));
     $("strikeSpectrumChoices").setAttribute("aria-label", text("strikeSpectrumModesAria"));
     $("sustainChoices").setAttribute("aria-label", text("sustainGroupAria"));
-    $("sustainGestures").setAttribute("aria-label", text("sustainGestureAria"));
+    $("sustainPlayModes").setAttribute("aria-label", text("sustainGestureAria"));
     $("sustainFrequencySlider").setAttribute("aria-label", text("sustainPitchSliderAria"));
     $("sustainFrequencyInput").setAttribute("aria-label", text("sustainPitchInputAria"));
     $("sustainEnvelopeCanvas").setAttribute("aria-label", text("sustainEnvelopeAria"));
@@ -3845,7 +3907,8 @@
     $("mixZoomValue").setAttribute("aria-label", text("mixZoomValueAria"));
     $("mixViewLeft").setAttribute("aria-label", text("mixLeftAria"));
     $("mixViewRight").setAttribute("aria-label", text("mixRightAria"));
-    $("intervalPresets").setAttribute("aria-label", text("intervalPresetsAria"));
+    $("intervalRatioSelect").setAttribute("aria-label", text("intervalPresetsAria"));
+    $("intervalPlayModes").setAttribute("aria-label", text("earCompareAria"));
     $("intervalTunings").setAttribute("aria-label", text("intervalTuningAria"));
     $("intervalColors").setAttribute("aria-label", text("intervalColorAria"));
     $("intervalBaseSlider").setAttribute("aria-label", text("intervalBaseSliderAria"));
@@ -3859,7 +3922,8 @@
     $("earSounds").setAttribute("aria-label", text("earSoundAria"));
     $("earPlayModes").setAttribute("aria-label", text("earCompareAria"));
     $("earHelpModes").setAttribute("aria-label", text("earHelpAria"));
-    $("scalePresets").setAttribute("aria-label", text("scalePresetsAria"));
+    $("scalePresetSelect").setAttribute("aria-label", text("scalePresetsAria"));
+    $("scalePlayModes").setAttribute("aria-label", text("scalePlaybackAria"));
     $("scaleTonicChoices").setAttribute("aria-label", text("scaleTonicAria"));
     $("scaleBaseSlider").setAttribute("aria-label", text("scaleBaseSliderAria"));
     $("scaleBaseInput").setAttribute("aria-label", text("scaleBaseInputAria"));
@@ -3943,8 +4007,10 @@
     $("strikeSnap").checked = state.strikeSnap;
     $("strikePitchGroup").hidden = state.strikeKind === "kick" ||
       (state.strikeKind === "pluck" && state.strikeGuitarPlay === "strum");
-    $("strikeGuitarGroup").hidden = state.strikeKind !== "pluck";
-    $("strikePianoTouchGroup").hidden = state.strikeKind !== "piano";
+    $("strikeGuitarPlayModes").hidden = state.strikeKind !== "pluck";
+    $("strikePianoPlayModes").hidden = state.strikeKind !== "piano";
+    $("strikePianoHint").hidden = state.strikeKind !== "piano";
+    $("strikeButton").hidden = state.strikeKind !== "kick";
     $("strikeChordGroup").hidden = state.strikeKind !== "pluck" || state.strikeGuitarPlay !== "strum";
     $("strikePluckPositionGroup").hidden = state.strikeKind !== "pluck";
     $("strikePluckPosition").value = String(Math.round(100 * state.strikePluckPosition));
@@ -3959,23 +4025,17 @@
     $("strikeDecay").value = String(state.strikeDecay);
     $("strikeDecayValue").textContent = secondsText(state.strikeDecay);
     $("strikeDescription").textContent = text("strikeDesc")[state.strikeKind];
-    $("strikeButtonLabel").textContent = text(state.strikeKind === "pluck" ?
-      state.strikeGuitarPlay === "strum" ? "strikeStrumButton" : "strikePluckButton" :
-      state.strikeKind === "piano" ?
-        state.strikePianoTouch === "tap" ? "strikePianoTapButton" : "strikePianoButton" :
-        "strikeKickButton");
-    document.querySelectorAll("[data-guitar-play]").forEach(button => {
-      const selected = button.dataset.guitarPlay === state.strikeGuitarPlay;
-      button.classList.toggle("selected", selected);
-      button.setAttribute("aria-pressed", String(selected));
+    $("strikeButtonLabel").textContent = text("strikeKickButton");
+    const strikePlayLabels = { single: "strikePluckButton", strum: "strikeStrumButton",
+      press: "strikePianoButton", tap: "strikePianoTapButton" };
+    document.querySelectorAll("[data-strike-play]").forEach(button => {
+      const active = state.strikePlaying && button.dataset.strikePlay === state.strikePlayback;
+      button.classList.toggle("playing", active);
+      button.setAttribute("aria-pressed", String(active));
+      button.textContent = (active ? "■ " : "▶ ") + text(strikePlayLabels[button.dataset.strikePlay]);
     });
     document.querySelectorAll("[data-guitar-chord]").forEach(button => {
       const selected = button.dataset.guitarChord === state.strikeChord;
-      button.classList.toggle("selected", selected);
-      button.setAttribute("aria-pressed", String(selected));
-    });
-    document.querySelectorAll("[data-piano-touch]").forEach(button => {
-      const selected = button.dataset.pianoTouch === state.strikePianoTouch;
       button.classList.toggle("selected", selected);
       button.setAttribute("aria-pressed", String(selected));
     });
@@ -4024,19 +4084,15 @@
       button.classList.toggle("selected", selected);
       button.setAttribute("aria-pressed", String(selected));
     });
-    document.querySelectorAll("[data-sustain-gesture]").forEach(button => {
-      const selected = button.dataset.sustainGesture === state.sustainGesture;
-      button.classList.toggle("selected", selected);
-      button.setAttribute("aria-pressed", String(selected));
-    });
-    $("sustainButton").classList.toggle("playing", state.sustainPlaying);
-    $("sustainButton").setAttribute("aria-pressed", String(state.sustainPlaying));
-    $("sustainPlayIcon").textContent = state.sustainPlaying ? "■" : "▶";
-    $("sustainPlayLabel").textContent = text(state.sustainGesture === "hold" ?
-      (state.sustainPlaying ? "sustainPressing" : "sustainPress") :
-      (state.sustainPlaying ? "sustainToggleStop" : "sustainTogglePlay"));
-    $("sustainPlayCaption").textContent = text(state.sustainGesture === "hold" ?
-      "sustainPressCaption" : "sustainToggleCaption");
+    for (const [id, gesture, label] of [["sustainHoldButton", "hold", "sustainHold"],
+      ["sustainToggleButton", "toggle", "sustainToggle"]]) {
+      const button = $(id);
+      const active = state.sustainPlaying && state.sustainGesture === gesture;
+      button.classList.toggle("playing", active);
+      button.setAttribute("aria-pressed", String(active));
+      button.textContent = (active ? "■ " : "▶ ") + text(active && gesture === "toggle" ?
+        "sustainToggleStop" : label);
+    }
   }
 
   function stopSustainSound(immediate = false, status = "sustainStopped") {
@@ -4133,8 +4189,12 @@
   }
 
   function stopAllAudio(immediate = false, message = "stopped") {
+    strikeTicket++;
     transientAudio.stop(immediate);
     stopStrikeFollow();
+    state.strikePlaying = false;
+    state.strikePlayback = null;
+    renderStrikeControls();
     stopSustainSound(immediate, message === "hidden" ? "sustainHidden" : "sustainStopped");
     stopMotionSound(immediate, message === "hidden" ? "motionHidden" : "motionStopped");
     stopMixSound(immediate, message === "hidden" ? "mixHidden" : "mixStopped");
@@ -4245,18 +4305,49 @@
     drawPlots();
   }
 
-  async function triggerStrike() {
+  async function triggerStrike(mode = "kick") {
+    const isGuitar = state.strikeKind === "pluck";
+    const isPiano = state.strikeKind === "piano";
+    if (isGuitar && !["single", "strum"].includes(mode) ||
+        isPiano && !["press", "tap"].includes(mode)) return;
+    if ((isGuitar || isPiano) && state.strikePlaying && state.strikePlayback === mode) {
+      stopStrikeForEdit();
+      setStrikeStatus("strikeStopped");
+      renderStrikeControls();
+      return;
+    }
+    if (isGuitar || isPiano) {
+      stopStrikeForEdit();
+      if (isGuitar) state.strikeGuitarPlay = mode;
+      else state.strikePianoTouch = mode;
+      state.strikePlaying = true; // Also lets the user cancel an audio-context start in progress.
+      state.strikePlayback = mode;
+    }
+    const ticket = ++strikeTicket;
     setStrikeStatus("strikeStarting");
+    renderStrikeControls();
+    drawPlots();
     try {
-      const info = await transientAudio.trigger();
-      if (info) {
+      const info = await transientAudio.trigger(() => {
+        if (ticket !== strikeTicket) return;
+        state.strikePlaying = false;
+        state.strikePlayback = null;
+        renderStrikeControls();
+      });
+      if (info && ticket === strikeTicket) {
         setStrikeStatus("strikeDone");
+        renderStrikeControls();
         startStrikeFollow(info);
       }
     } catch (error) {
+      if (ticket !== strikeTicket) return;
+      strikeTicket++;
       transientAudio.stop(true);
       stopStrikeFollow();
+      state.strikePlaying = false;
+      state.strikePlayback = null;
       setStrikeStatus(error.message === "unsupported" ? "strikeUnsupported" : "strikeBlocked", true);
+      renderStrikeControls();
     }
   }
 
@@ -5960,23 +6051,8 @@
   document.querySelectorAll("[data-strike]").forEach(button => {
     button.addEventListener("click", () => selectStrikeKind(button.dataset.strike));
   });
-  document.querySelectorAll("[data-guitar-play]").forEach(button => {
-    button.addEventListener("click", () => {
-      if (state.strikeGuitarPlay === button.dataset.guitarPlay) return;
-      stopStrikeForEdit();
-      state.strikeGuitarPlay = button.dataset.guitarPlay;
-      renderStrikeControls();
-      drawPlots();
-    });
-  });
-  document.querySelectorAll("[data-piano-touch]").forEach(button => {
-    button.addEventListener("click", () => {
-      if (state.strikePianoTouch === button.dataset.pianoTouch) return;
-      stopStrikeForEdit();
-      state.strikePianoTouch = button.dataset.pianoTouch;
-      renderStrikeControls();
-      drawPlots();
-    });
+  document.querySelectorAll("[data-strike-play]").forEach(button => {
+    button.addEventListener("click", () => triggerStrike(button.dataset.strikePlay));
   });
   document.querySelectorAll("[data-guitar-chord]").forEach(button => {
     button.addEventListener("click", () => {
@@ -5989,15 +6065,6 @@
   });
   document.querySelectorAll("[data-sustain]").forEach(button => {
     button.addEventListener("click", () => selectSustainKind(button.dataset.sustain));
-  });
-  document.querySelectorAll("[data-sustain-gesture]").forEach(button => {
-    button.addEventListener("click", () => {
-      if (state.sustainGesture === button.dataset.sustainGesture) return;
-      stopSustainSound();
-      state.sustainGesture = button.dataset.sustainGesture;
-      setSustainStatus("sustainReady");
-      renderSustainControls();
-    });
   });
   document.querySelectorAll("[data-drum-size]").forEach(button => {
     button.addEventListener("click", () => {
@@ -6055,9 +6122,7 @@
   });
   $("earCheck").addEventListener("click", checkEar);
   $("earReset").addEventListener("click", resetEar);
-  document.querySelectorAll("[data-scale-preset]").forEach(button => {
-    button.addEventListener("click", () => selectScalePreset(button.dataset.scalePreset));
-  });
+  $("scalePresetSelect").addEventListener("change", event => selectScalePreset(event.target.value));
   document.querySelectorAll("[data-scale-tonic]").forEach(button => {
     button.addEventListener("click", () => selectScaleTonic(Number(button.dataset.scaleTonic)));
   });
@@ -6068,8 +6133,12 @@
   document.querySelectorAll("[data-limit5-play]").forEach(button => {
     button.addEventListener("click", () => toggleLimit5Sound(button.dataset.limit5Play));
   });
-  document.querySelectorAll("[data-interval-ratio]").forEach(button => {
-    button.addEventListener("click", () => selectIntervalRatio(button.dataset.intervalRatio));
+  $("intervalRatioSelect").addEventListener("change", event => selectIntervalRatio(event.target.value));
+  document.querySelectorAll("[data-interval-play]").forEach(button => {
+    button.addEventListener("click", () => toggleIntervalSound(button.dataset.intervalPlay));
+  });
+  document.querySelectorAll("[data-scale-play]").forEach(button => {
+    button.addEventListener("click", () => toggleScaleSound(button.dataset.scalePlay));
   });
   document.querySelectorAll("[data-interval-tuning]").forEach(button => {
     button.addEventListener("click", () => selectIntervalTuning(button.dataset.intervalTuning));
@@ -6077,7 +6146,6 @@
   document.querySelectorAll("[data-interval-color]").forEach(button => {
     button.addEventListener("click", () => selectIntervalColor(button.dataset.intervalColor));
   });
-  $("scaleButton").addEventListener("click", toggleScaleSound);
   $("scaleGapButton").addEventListener("click", toggleScaleGapSound);
   $("scaleGapToggle").addEventListener("change", event => setScaleShowGap(event.target.checked));
   $("scaleBaseSlider").addEventListener("input", event => setScaleBase(event.target.value));
@@ -6195,7 +6263,6 @@
     renderNoiseControls();
   });
   $("noiseReset").addEventListener("click", resetNoise);
-  $("intervalButton").addEventListener("click", toggleIntervalSound);
   $("intervalBaseSlider").addEventListener("input", event => setIntervalBase(event.target.value));
   $("intervalBaseInput").addEventListener("change", event => setIntervalBase(event.target.value));
   $("intervalVolume").addEventListener("input", event => {
@@ -6288,11 +6355,12 @@
   $("modeMotion").addEventListener("click", () => selectMode("motion"));
   $("modeMix").addEventListener("click", () => selectMode("mix"));
   $("modeTuning").addEventListener("click", () => selectMode("tuning"));
-  const sustainPad = $("sustainButton");
+  const sustainPad = $("sustainHoldButton");
   sustainPad.addEventListener("pointerdown", event => {
-    if (state.mode !== "sustain" || state.sustainGesture !== "hold" || event.button > 0 ||
-        sustainPointerId !== null) return;
+    if (state.mode !== "sustain" || event.button > 0 || sustainPointerId !== null) return;
     event.preventDefault();
+    if (state.sustainGesture !== "hold" || state.sustainPlaying) stopSustainSound(true, "sustainReady");
+    state.sustainGesture = "hold";
     sustainPointerId = event.pointerId;
     if (sustainPad.setPointerCapture) sustainPad.setPointerCapture(event.pointerId);
     return startSustainSound();
@@ -6313,18 +6381,23 @@
     if (event.key === "Escape") {
       event.preventDefault();
       stopSustainSound();
-    } else if (state.sustainGesture === "hold" && (event.key === " " || event.key === "Enter")) {
+    } else if (event.key === " " || event.key === "Enter") {
       event.preventDefault();
+      sustainIgnoreHoldClick = true;
       if (!sustainKeyboardHeld) {
+        if (state.sustainGesture !== "hold" || state.sustainPlaying) stopSustainSound(true, "sustainReady");
+        state.sustainGesture = "hold";
         sustainKeyboardHeld = true;
         return startSustainSound();
       }
     }
   });
   sustainPad.addEventListener("keyup", event => {
-    if (state.sustainGesture !== "hold" || (event.key !== " " && event.key !== "Enter")) return;
+    if (event.key !== " " && event.key !== "Enter") return;
     event.preventDefault();
     if (sustainKeyboardHeld) { sustainKeyboardHeld = false; releaseSustainSound(); }
+    sustainIgnoreHoldClick = true;
+    window.setTimeout(() => { sustainIgnoreHoldClick = false; }, 0);
   });
   sustainPad.addEventListener("blur", () => {
     if (sustainKeyboardHeld) { sustainKeyboardHeld = false; releaseSustainSound(); }
@@ -6333,9 +6406,24 @@
     if (state.mode !== "sustain") return;
     // Pointer actions are handled by pointerdown/up in hold mode. A click from
     // assistive technology (detail = 0) can still toggle an accessible note.
-    if (state.sustainGesture !== "toggle" && event.detail !== 0) return;
-    if (state.sustainPlaying) releaseSustainSound();
-    else return startSustainSound();
+    if (event.detail !== 0) return;
+    if (sustainIgnoreHoldClick) { sustainIgnoreHoldClick = false; return; }
+    if (state.sustainGesture === "hold" && state.sustainPlaying) releaseSustainSound();
+    else {
+      stopSustainSound(true, "sustainReady");
+      state.sustainGesture = "hold";
+      return startSustainSound();
+    }
+  });
+  $("sustainToggleButton").addEventListener("click", () => {
+    if (state.mode !== "sustain") return;
+    if (state.sustainGesture === "toggle" && state.sustainPlaying) {
+      releaseSustainSound();
+    } else {
+      stopSustainSound(true, "sustainReady");
+      state.sustainGesture = "toggle";
+      return startSustainSound();
+    }
   });
   $("sustainFrequencySlider").addEventListener("input", event =>
     setSustainPitch(sustainModel.sliderToHz(Number(event.target.value))));
@@ -6375,7 +6463,7 @@
     renderSustainControls();
   });
   $("sustainReset").addEventListener("click", resetSustain);
-  $("strikeButton").addEventListener("click", triggerStrike);
+  $("strikeButton").addEventListener("click", () => triggerStrike("kick"));
   $("strikeFrequencySlider").addEventListener("input", event => {
     setStrikePitch(transientModel.sliderToHz(Number(event.target.value)));
   });

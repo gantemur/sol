@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#192d49">
   <meta name="description" content="Explore sound waves, plucked and held instrument models, harmonic synthesis, noise, a theremin and sirens with interactive plots and bilingual controls.">
   <title>Sound Lab · Sol</title>
-  <link rel="stylesheet" href="sound-lab.css?v=s030">
+  <link rel="stylesheet" href="sound-lab.css?v=s031">
   <script src="sound-model.js" defer></script>
   <script src="sound-string.js?v=s017" defer></script>
   <script src="sound-piano.js?v=s019" defer></script>
@@ -17,12 +17,12 @@
   <script src="sound-beats.js" defer></script>
   <script src="sound-intervals.js?v=s021" defer></script>
   <script src="sound-ear-tune.js?v=s028" defer></script>
-  <script src="sound-scales.js?v=s025" defer></script>
+  <script src="sound-scales.js?v=s031" defer></script>
   <script src="sound-limit5.js?v=s030" defer></script>
   <script src="sound-harmonics.js" defer></script>
   <script src="sound-noise.js" defer></script>
   <script src="sound-recorder.js" defer></script>
-  <script src="sound-lab.js?v=s030" defer></script>
+  <script src="sound-lab.js?v=s031" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -211,29 +211,21 @@
             <span aria-hidden="true" class="strike-glyph">🎹</span><span data-i18n="piano">Төгөлдөр хуур</span>
           </button>
         </div>
-        <button id="strikeButton" type="button" class="play-button strike-button">
+        <div id="strikeGuitarPlayModes" class="ear-play-controls" role="group" data-i18n-aria="strikeGuitarPlay">
+          <button type="button" data-strike-play="single" aria-pressed="false">▶ Татах</button>
+          <button type="button" data-strike-play="strum" aria-pressed="false">▶ Цохих</button>
+        </div>
+        <div id="strikePianoPlayModes" class="ear-play-controls" role="group" data-i18n-aria="strikePianoTouchTitle" hidden>
+          <button type="button" data-strike-play="press" aria-pressed="false">▶ Товчлуур дарах</button>
+          <button type="button" data-strike-play="tap" aria-pressed="false">▶ Товших</button>
+        </div>
+        <button id="strikeButton" type="button" class="play-button strike-button" hidden>
           <span class="play-icon" aria-hidden="true">✦</span>
-          <span id="strikeButtonLabel">Татах</span>
+          <span id="strikeButtonLabel">Цохих</span>
           <span class="play-caption" data-i18n="strikeCaption">Дарж сонсоод, дахин дарж давтаарай</span>
         </button>
         <p id="strikeStatus" class="audio-status" role="status" aria-live="polite">Бэлэн. Дарахад л дуу гарна.</p>
-
-        <div class="field-group" id="strikeGuitarGroup">
-          <div class="field-title"><span data-i18n="strikeGuitarPlay">Гитар тоглуулах</span></div>
-          <div class="drum-sizes guitar-modes" role="group" aria-label="Гитарын чавхдасны сонголт" data-i18n-aria="strikeGuitarPlay">
-            <button type="button" class="selected" data-guitar-play="single" aria-pressed="true" data-i18n="strikeSingle">Нэг чавхдас</button>
-            <button type="button" data-guitar-play="strum" aria-pressed="false" data-i18n="strikeStrum">Олон чавхдас</button>
-          </div>
-        </div>
-
-        <div class="field-group" id="strikePianoTouchGroup" hidden>
-          <div class="field-title"><span data-i18n="strikePianoTouchTitle">Тоглох арга</span></div>
-          <div class="drum-sizes guitar-modes" role="group" data-i18n-aria="strikePianoTouchTitle" aria-label="Тоглох арга">
-            <button type="button" class="selected" data-piano-touch="press" aria-pressed="true" data-i18n="strikePianoPress">Дарах</button>
-            <button type="button" data-piano-touch="tap" aria-pressed="false" data-i18n="strikePianoTap">Товших</button>
-          </div>
-          <p class="field-help" data-i18n="strikePianoTouchHint">Дарах нь товчлуурыг барьсан үеийн чөлөөт намдлыг, товших нь зөөлөн богино даралт ба намжаагч эрт буцахыг загварчилна.</p>
-        </div>
+        <p id="strikePianoHint" class="field-help" data-i18n="strikePianoTouchHint" hidden>Дарах нь товчлуурыг барьсан үеийн чөлөөт намдлыг, товших нь зөөлөн богино даралт ба намжаагч эрт буцахыг загварчилна.</p>
 
         <div class="field-group" id="strikeChordGroup" hidden>
           <div class="field-title"><span data-i18n="strikeChord">Аккорд сонгох</span></div>
@@ -370,18 +362,10 @@
           <button class="strike-choice" type="button" data-sustain="violin" aria-pressed="false"><span class="strike-glyph" aria-hidden="true">🎻</span><span data-i18n="sustainViolin">Хийл</span></button>
           <button class="strike-choice" type="button" data-sustain="morin" aria-pressed="false"><span class="strike-glyph" aria-hidden="true">♬</span><span data-i18n="sustainMorin">Морин хуур</span></button>
         </div>
-        <div class="field-group">
-          <div class="field-title"><span data-i18n="sustainGestureTitle">Дуугаргах арга</span></div>
-          <div class="motion-choices" id="sustainGestures" role="group" aria-label="Дуугаргах арга">
-            <button type="button" class="motion-choice selected" data-sustain-gesture="hold" aria-pressed="true" data-i18n="sustainHold">Дарж барих</button>
-            <button type="button" class="motion-choice" data-sustain-gesture="toggle" aria-pressed="false" data-i18n="sustainToggle">Товшиж асаах</button>
-          </div>
+        <div id="sustainPlayModes" class="ear-play-controls" role="group" data-i18n-aria="sustainGestureAria">
+          <button id="sustainHoldButton" class="sustain-button" type="button" aria-pressed="false">▶ Дарж барих</button>
+          <button id="sustainToggleButton" type="button" aria-pressed="false">▶ Товшиж асаах</button>
         </div>
-        <button id="sustainButton" type="button" class="play-button sustain-button" aria-pressed="false">
-          <span id="sustainPlayIcon" class="play-icon" aria-hidden="true">▶</span>
-          <span id="sustainPlayLabel">Дарж дуугаргах</span>
-          <span id="sustainPlayCaption" class="play-caption">Дараад барина, тавихад аажмаар намдана.</span>
-        </button>
         <p id="sustainStatus" class="audio-status" role="status" aria-live="polite">Бэлэн. Хуруу эсвэл товчлуур дээр дарж дуугаргана.</p>
 
         <div class="field-group">
@@ -642,23 +626,19 @@
           <button type="button" data-tuning-kind="scales" aria-pressed="false" data-i18n="scaleExperiment">3-хязгаар</button>
           <button type="button" data-tuning-kind="limit5" aria-pressed="false" data-i18n="limit5Experiment">5-хязгаар</button>
         </div>
-        <button id="intervalButton" type="button" class="play-button" aria-pressed="false">
-          <span class="play-icon" id="intervalPlayIcon" aria-hidden="true">▶</span>
-          <span id="intervalPlayLabel" data-i18n="intervalPlay">Тоглуулах</span>
-          <span class="play-caption" id="intervalPlayCaption" data-i18n="playCaption">Сонсохын тулд товшино уу</span>
-        </button>
-        <p id="intervalStatus" class="audio-status" role="status" aria-live="polite">Бэлэн. Хоёр нотыг хамт сонсоорой.</p>
         <div class="field-group">
-          <div class="field-title"><span data-i18n="intervalPresetsTitle">Давтамжийн харьцаа (дээд:доод)</span><output id="intervalName">Квинт · 3:2</output></div>
-          <div class="interval-presets" id="intervalPresets" role="group" aria-label="Хоёр нотын энгийн харьцаа" data-i18n-aria="intervalPresetsAria">
-            <button type="button" data-interval-ratio="1:1" aria-pressed="false">1:1</button>
-            <button type="button" data-interval-ratio="2:1" aria-pressed="false">2:1</button>
-            <button type="button" data-interval-ratio="3:2" class="selected" aria-pressed="true">3:2</button>
-            <button type="button" data-interval-ratio="4:3" aria-pressed="false">4:3</button>
-            <button type="button" data-interval-ratio="5:4" aria-pressed="false">5:4</button>
-            <button type="button" data-interval-ratio="6:5" aria-pressed="false">6:5</button>
-          </div>
+          <div class="field-title"><label for="intervalRatioSelect" data-i18n="intervalPresetsTitle">Давтамжийн харьцаа (дээд:доод)</label><output id="intervalName">Квинт · 3:2</output></div>
+          <select id="intervalRatioSelect" class="ear-task-select" data-i18n-aria="intervalPresetsAria">
+            <option value="1:1">Унисон · 1:1</option><option value="2:1">Октав · 2:1</option>
+            <option value="3:2" selected>Квинт · 3:2</option><option value="4:3">Кварт · 4:3</option>
+            <option value="5:4">Их терц · 5:4</option><option value="6:5">Бага терц · 6:5</option>
+          </select>
         </div>
+        <div id="intervalPlayModes" class="ear-play-controls" role="group" data-i18n-aria="earCompareAria">
+          <button type="button" data-interval-play="alternating" aria-pressed="false">▶ Ээлжлэн</button>
+          <button type="button" data-interval-play="together" aria-pressed="false">▶ Хамт</button>
+        </div>
+        <p id="intervalStatus" class="audio-status" role="status" aria-live="polite">Бэлэн. Хоёр нотыг хамт сонсоорой.</p>
         <div class="field-group">
           <div class="field-title"><label for="intervalBaseInput" data-i18n="intervalBase">Доод нотын давтамж</label><output id="intervalBaseValue">220 Гц</output></div>
           <div class="frequency-controls">
@@ -806,22 +786,23 @@
           <button type="button" data-tuning-kind="scales" class="selected" aria-pressed="true" data-i18n="scaleExperiment">3-хязгаар</button>
           <button type="button" data-tuning-kind="limit5" aria-pressed="false" data-i18n="limit5Experiment">5-хязгаар</button>
         </div>
-        <button id="scaleButton" type="button" class="play-button" aria-pressed="false">
-          <span class="play-icon" id="scalePlayIcon" aria-hidden="true">▶</span>
-          <span id="scalePlayLabel" data-i18n="scalePlay">Шатлалыг сонсох</span>
-          <span class="play-caption" id="scalePlayCaption" data-i18n="scalePlayCaption">Өгсөж, уруудаж тоглоно</span>
-        </button>
-        <p id="scaleStatus" class="audio-status" role="status" aria-live="polite">Бэлэн. Шатлалыг сонсоорой.</p>
-
         <div class="field-group">
-          <div class="field-title"><span data-i18n="scalePresetsTitle">Шатлалын жишээ</span><output id="scaleCountValue">5 нот</output></div>
-          <div class="scale-presets" id="scalePresets" role="group" data-i18n-aria="scalePresetsAria" aria-label="Шатлалын жишээ">
-            <button type="button" data-scale-preset="five-up" class="selected" aria-pressed="true" data-i18n="scaleFiveUp">5 · Дээш</button>
-            <button type="button" data-scale-preset="five-center" aria-pressed="false" data-i18n="scaleFiveCenter">5 · Дундаас</button>
-            <button type="button" data-scale-preset="five-down" aria-pressed="false" data-i18n="scaleFiveDown">5 · Доош</button>
-            <button type="button" data-scale-preset="seven" aria-pressed="false" data-i18n="scaleSeven">7 нот</button>
-            <button type="button" data-scale-preset="twelve" aria-pressed="false" data-i18n="scaleTwelve">12 нот</button>
-          </div>
+          <div class="field-title"><label for="scalePresetSelect" data-i18n="scalePresetsTitle">Шатлалын жишээ</label><output id="scaleCountValue">5 нот</output></div>
+          <select id="scalePresetSelect" class="ear-task-select" data-i18n-aria="scalePresetsAria">
+            <option value="five-up" selected data-i18n="scaleFiveUp">5 · Дээш</option>
+            <option value="five-center" data-i18n="scaleFiveCenter">5 · Дундаас</option>
+            <option value="five-down" data-i18n="scaleFiveDown">5 · Доош</option>
+            <option value="seven" data-i18n="scaleSeven">7 нот</option>
+            <option value="twelve" data-i18n="scaleTwelve">12 нот</option>
+            <option value="custom" data-i18n="scaleCustom" disabled>Өөрийн сонголт</option>
+          </select>
+        </div>
+        <div id="scalePlayModes" class="ear-play-controls" role="group" data-i18n-aria="scalePlaybackAria">
+          <button type="button" data-scale-play="melody" aria-pressed="false">▶ Ээлжлэн</button>
+          <button type="button" data-scale-play="chord" aria-pressed="false">▶ Хамт</button>
+        </div>
+        <p id="scaleStatus" class="audio-status" role="status" aria-live="polite">Бэлэн. Шатлалыг сонсоорой.</p>
+        <div class="field-group">
           <label class="check-label scale-gap-switch" for="scaleGapToggle">
             <input id="scaleGapToggle" type="checkbox">
             <span data-i18n="scaleGapToggle">Буцах зөрүүг харуулах</span>
@@ -966,6 +947,15 @@
           <div class="chart-foot"><span data-i18n="limit5LatticeFoot">Давхар бүр 5:4-ийн нэмэлт алхам; цэгийг дарахад түүний октав дахь байрлал гарна.</span><span data-i18n="limit5GridAxis">→ 3:2 · ↗ 5:4</span></div>
           <p class="scale-now" id="limit5Now">Нотуудын эгшиглэх ээлжийг тоглуулахад харна.</p>
         </section>
+        <section class="panel chart-panel" aria-labelledby="limit5-fourier-title">
+          <div class="chart-heading"><div>
+            <h2 id="limit5-fourier-title" data-i18n="limit5FourierTitle">Нот ба гармоникийн мөрүүд</h2>
+            <p data-i18n="limit5FourierHint">Мөр бүр нэг сонгосон нот. Ногоон зурваст октавт оруулсан үндсэн давтамж, баруун талд гармоникууд.</p>
+          </div><span class="chart-badge" data-i18n="limit5FourierBadge">3:2 · 5:4</span></div>
+          <canvas id="limit5FourierCanvas" width="760" height="360" role="img" aria-label="Нот бүрийн гармоник болон давхцах цэгүүд"></canvas>
+          <div class="chart-foot"><span id="limit5FourierFact"></span><span data-i18n="scaleFourierAxis">log₂ f →</span></div>
+          <p class="field-help" data-i18n="limit5FourierFoot">Цэнхэр холбоос 3:2, ногоон холбоос 5:4-өөс үүдсэн гармоникийн давхцал. Саарал цэг нь октаваар шилжүүлсэн хувилбар бөгөөд шинэ гармоник биш.</p>
+        </section>
         <section class="panel chart-panel" aria-labelledby="limit5-octave-title">
           <div class="chart-heading"><div>
             <h2 id="limit5-octave-title" data-i18n="limit5OctaveTitle">Нэг октав дахь нотын эрэмбэ</h2>
@@ -980,15 +970,6 @@
             <p id="limit5RulerValue">81:80 ≈ 21.51 цент</p>
             <p id="limit5BeatFact" class="field-help"></p>
           </div>
-        </section>
-        <section class="panel chart-panel" aria-labelledby="limit5-fourier-title">
-          <div class="chart-heading"><div>
-            <h2 id="limit5-fourier-title" data-i18n="limit5FourierTitle">Нот ба гармоникийн мөрүүд</h2>
-            <p data-i18n="limit5FourierHint">Мөр бүр нэг сонгосон нот. Ногоон зурваст октавт оруулсан үндсэн давтамж, баруун талд гармоникууд.</p>
-          </div><span class="chart-badge" data-i18n="limit5FourierBadge">3:2 · 5:4</span></div>
-          <canvas id="limit5FourierCanvas" width="760" height="360" role="img" aria-label="Нот бүрийн гармоник болон давхцах цэгүүд"></canvas>
-          <div class="chart-foot"><span id="limit5FourierFact"></span><span data-i18n="scaleFourierAxis">log₂ f →</span></div>
-          <p class="field-help" data-i18n="limit5FourierFoot">Цэнхэр холбоос 3:2, ногоон холбоос 5:4-өөс үүдсэн гармоникийн давхцал. Саарал цэг нь октаваар шилжүүлсэн хувилбар бөгөөд шинэ гармоник биш.</p>
         </section>
       </div>
     </div>
