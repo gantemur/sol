@@ -2,21 +2,39 @@
  * SPDX-License-Identifier: MIT */
 (function (root) {
   'use strict';
-  const VERSION = 'R01.1', DEG = Math.PI / 180;
+  const VERSION = 'R01.2', DEG = Math.PI / 180;
   const defaults = Object.freeze({lat:47.9, shape:'rectangle', width:300, height:200,
-    diameter:300, interval:60, numerals:'24', seasons:false, length:40, guides:false, color:false});
+    diameter:300, interval:60, numerals:'24', seasons:false, seasonCount:5, length:40, guides:false, color:false});
   const events = Object.freeze([
     {id:'june', delta:23.44, label:'VI  +23.44°', color:'#08764d', dash:[]},
     {id:'equinox', delta:0, label:'III / IX  0°', color:'#185da8', dash:[3,1.5]},
     {id:'december', delta:-23.44, label:'XII  -23.44°', color:'#a04a12', dash:[0.8,1.3]}
   ]);
+  // A declination scale, not calendar months: a given intermediate declination
+  // generally recurs twice per solar year. Keep solstices/equinoxes exact in every preset.
+  const seasonDeclinations = Object.freeze({
+    3: [23.44, 0, -23.44],
+    5: [23.44, 11.72, 0, -11.72, -23.44],
+    7: [23.44, 15.6267, 7.8133, 0, -7.8133, -15.6267, -23.44]
+  });
+  function seasonEvents(count=5) {
+    return (seasonDeclinations[count] || seasonDeclinations[5]).map((delta,index) => {
+      const special=events.find(e=>e.delta===delta);
+      if(special)return special;
+      const abs=Math.abs(delta), sign=delta>0?'+':'−';
+      return {id:'intermediate-'+index,delta,
+        label:sign+abs.toFixed(2)+'°',
+        color:delta>0?'#228363':'#a96636',
+        dash:abs>12?[4.5,1.4]:[1.2,1.7]};
+    });
+  }
   const n = x => +x.toFixed(4);
   const roman = ['XII','I','II','III','IV','V','VI','VII','VIII','IX','X','XI'];
   function validate(input) {
     const p = {...defaults, ...input};
     if (!['rectangle','circle'].includes(p.shape) || !['12','24','roman'].includes(p.numerals)) throw Error('invalid');
     for (const k of ['lat','width','height','diameter','length','interval']) if (!Number.isFinite(p[k])) throw Error('invalid');
-    if (Math.abs(p.lat)<0.1 || Math.abs(p.lat)>89 || ![15,30,60].includes(p.interval)) throw Error('invalid');
+    if (Math.abs(p.lat)<0.1 || Math.abs(p.lat)>89 || ![15,30,60].includes(p.interval) || ![3,5,7].includes(p.seasonCount)) throw Error('invalid');
     if ([p.width,p.height,p.diameter].some(x=>x<80||x>1500) || p.length<1 || p.length>1000) throw Error('invalid');
     return p;
   }
@@ -94,7 +112,7 @@
     return paths.filter(a=>a.length>1);
   }
   function build(input) {
-    const p=validate(input),b=layout(p),margin=8,footer=p.seasons?30:15;
+    const p=validate(input),b=layout(p),margin=8,selected=seasonEvents(p.seasonCount),footer=p.seasons?25+10*Math.ceil(selected.length/3):15;
     const s={w:b.w+2*margin,h:b.h+2*margin+footer,face:b,p,items:[],warnings:[],events:[],version:VERSION};
     const items=s.items;
     const line=(pts,width=.3,color='#111111',dash=[],role='guide')=>items.push({type:'path',pts:pts.map(q=>[q[0]+margin,q[1]+margin]),width,color,dash,role});
@@ -108,8 +126,8 @@
       if(major){const pos=rayEnd(b,d,font*1.6+1),value=p.numerals==='roman'?roman[hour%12]:String(p.numerals==='12'?(hour%12||12):hour);
         labels.push({pos,value,hour});}
     }
-    if(p.seasons)for(const e of events) {
-      const paths=seasonalPaths(p,b,e.delta);s.events.push({id:e.id,paths});
+    if(p.seasons)for(const e of selected) {
+      const paths=seasonalPaths(p,b,e.delta);s.events.push({...e,paths});
       for(const path of paths)line(path,.38,p.color?e.color:'#333333',e.dash,'season');
       if(!paths.length)s.warnings.push('off:'+e.id);
     }
@@ -139,10 +157,11 @@
       if(inside(P,b,4)) {items.push({type:'circle',x:P[0]+margin,y:P[1]+margin,r:.9,width:.25,color:'#555555'});text(P[0]+4,P[1]+1,'P',3);}
       else s.warnings.push('nodusOutside');
     }
-    if(p.seasons)events.forEach((e,i)=>{
-      const x=b.w*(i+.5)/3,y=b.h+20;
+    if(p.seasons)selected.forEach((e,i)=>{
+      const row=Math.floor(i/3),first=3*row,count=Math.min(3,selected.length-first);
+      const x=b.w*(i-first+.5)/count,y=b.h+20+row*10;
       line([[x-6,y-3],[x+6,y-3]],.38,p.color?e.color:'#333333',e.dash);
-      text(x,y+1,e.label,Math.min(3.2,b.w/80));
+      text(x,y+1,e.label,Math.min(3.2,Math.max(2.3,b.w/80)));
     });
     s.warnings=[...new Set(s.warnings)];return s;
   }
@@ -207,6 +226,6 @@
       if(type!=='pHYs')parts.push(data.slice(pos,end));if(type==='IHDR')parts.push(chunk);pos=end;}
     const out=new Uint8Array(parts.reduce((a,b)=>a+b.length,0));let at=0;for(const p of parts){out.set(p,at);at+=p.length;}return out;
   }
-  const api={VERSION,defaults,events,validate,sunVector,shadow,direction,layout,inside,rayEnd,clipSegment,seasonalPaths,build,profile,svg,pdf,pngDensity};
+  const api={VERSION,defaults,events,seasonEvents,validate,sunVector,shadow,direction,layout,inside,rayEnd,clipSegment,seasonalPaths,build,profile,svg,pdf,pngDensity};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.Sundial=api;
 })(typeof globalThis!=='undefined'?globalThis:this);
