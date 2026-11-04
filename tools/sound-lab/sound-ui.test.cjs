@@ -46,7 +46,7 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-noise\.js"/);
   assert.match(html, /src="sound-scales\.js\?v=s025"/);
   assert.match(html, /src="sound-limit5\.js\?v=s026"/);
-  assert.match(html, /src="sound-lab\.js\?v=s029"/);
+  assert.match(html, /src="sound-lab\.js\?v=s029b"/);
   assert.match(html, /href="sound-lab\.css\?v=s029"/);
   assert.match(html, /id="scaleGapToggle" type="checkbox"/);
   assert.match(html, /id="scaleGapPanel" hidden/);
@@ -1521,6 +1521,8 @@ test("S029 ear tuning: compact controls, no target dots, and live notes never bu
   assert.equal(app.elements.get("pagePhase").textContent, "06 · Тааруулах");
   assert.equal(app.contexts.length, 0);
   assert.equal(app.elements.get("earTaskSelect").value, "fifth");
+  assert.match(app.elements.get("earStatus").textContent, /«Ээлжлэн» эсвэл «Хамт»/);
+  assert.match(app.elements.get("earHarmonicsCanvas").getAttribute("aria-label"), /гармоникуудын/);
   assert.equal(app.elements.get("earHarmonicsCanvas").drawnArcs.length, 0,
     "The matching harmonics are never singled out by moving circles");
   assert.equal(app.elements.get("earOctavePanel").hidden, true,
@@ -1558,6 +1560,9 @@ test("S029 ear tuning: compact controls, no target dots, and live notes never bu
   app.fire("langEn", "click");
   assert.equal(app.earPlayButtons[0].textContent, "▶ In sequence");
   assert.equal(app.earPlayButtons[1].textContent, "▶ Together");
+  assert.match(app.elements.get("earStatus").textContent, /In sequence or Together/);
+  assert.match(app.elements.get("earHarmonicsCanvas").getAttribute("aria-label"), /Modeled harmonic lines/);
+  assert.match(app.elements.get("earOctaveCanvas").getAttribute("aria-label"), /octave-equivalent copy/);
   assert.match(app.elements.get("earInstruction").textContent, /C4 → E4/);
 });
 
