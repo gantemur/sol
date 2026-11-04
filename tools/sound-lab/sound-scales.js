@@ -11,6 +11,7 @@
   const MAX_NOTES = 12;
   const STEP_SECONDS = 0.31;
   const NOTE_SECONDS = 0.275;
+  const CHORD_SECONDS = 3.2;
   const GAP_SECONDS = 3.2;
   const FIFTH_CENTS = 1200 * Math.log2(3 / 2);
   const FIFTH_TURN_DEGREES = 360 * Math.log2(3 / 2);
@@ -134,7 +135,30 @@
     return data;
   }
 
+  // All selected pitch classes sound together, with a shared fade and a
+  // per-note amplitude bound so even a twelve-note chord cannot clip.
+  function makeChordSamples(scale, sampleRate) {
+    if (!Number.isFinite(sampleRate) || sampleRate < 8000 || sampleRate > 192000) {
+      throw new RangeError("Unsupported sample rate");
+    }
+    const frequencies = scale.ordered.map(note => note.playingHz);
+    if (!frequencies.length || frequencies.length > MAX_NOTES) {
+      throw new RangeError("Scale must contain 1–12 notes");
+    }
+    const samples = new Float32Array(Math.ceil(CHORD_SECONDS * sampleRate));
+    const amplitude = 0.75 / frequencies.length;
+    for (let i = 0; i < samples.length; i++) {
+      const t = i / sampleRate;
+      const envelope = Math.max(0, Math.min(1, t / .035, (CHORD_SECONDS - t) / .10));
+      for (const hz of frequencies) {
+        const phase = 2 * Math.PI * hz * t;
+        samples[i] += amplitude * envelope * (.88 * Math.sin(phase) + .12 * Math.sin(2 * phase));
+      }
+    }
+    return samples;
+  }
+
   return Object.freeze({ MIN_BASE_HZ, MAX_BASE_HZ, MAX_NOTES, PRESETS, FIFTH_CENTS,
-    FIFTH_TURN_DEGREES, STEP_SECONDS, NOTE_SECONDS, GAP_SECONDS, octaveFraction, build,
-    returnGap, melodySteps, melody, makeSamples, makeGapSamples });
+    FIFTH_TURN_DEGREES, STEP_SECONDS, NOTE_SECONDS, CHORD_SECONDS, GAP_SECONDS, octaveFraction, build,
+    returnGap, melodySteps, melody, makeSamples, makeChordSamples, makeGapSamples });
 });
