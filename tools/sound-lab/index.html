@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#192d49">
   <meta name="description" content="Explore sound waves, plucked and held instrument models, harmonic synthesis, noise, a theremin and sirens with interactive plots and bilingual controls.">
   <title>Sound Lab · Sol</title>
-  <link rel="stylesheet" href="sound-lab.css?v=s034">
+  <link rel="stylesheet" href="sound-lab.css?v=s035">
   <script src="sound-model.js" defer></script>
   <script src="sound-string.js?v=s017" defer></script>
   <script src="sound-piano.js?v=s019" defer></script>
@@ -23,7 +23,7 @@
   <script src="sound-harmonics.js" defer></script>
   <script src="sound-noise.js" defer></script>
   <script src="sound-recorder.js" defer></script>
-  <script src="sound-lab.js?v=s034c" defer></script>
+  <script src="sound-lab.js?v=s035" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -1061,14 +1061,14 @@
             <h2 id="temp-lattice-title" data-i18n="tempLatticeTitle">3:2 ба 5:4-ийн гурвалжин тор</h2>
             <p data-i18n="tempLatticeHint">Цайвар цэгүүд нь цэвэр харьцааны тор. Өнгөт цэгүүд нь сонгосон хөгийн нотыг түүний Пифагорын жишигтэй харьцуулсан байрлал; зөрөөг харагдуулахын тулд томруулсан.</p>
           </div><span class="chart-badge" id="tempLatticeBadge">C · E · G</span></div>
-          <canvas id="tempLatticeCanvas" width="920" height="510" role="button" tabindex="0" aria-label="Гурвалжин тор болон 12 нотын сонголт"></canvas>
+          <canvas id="tempLatticeCanvas" width="920" height="300" role="button" tabindex="0" aria-label="Гурвалжин тор болон 12 нотын сонголт"></canvas>
           <div class="temp-lattice-legend">
             <span><i class="temp-grid-dot"></i><span data-i18n="tempExactLegend">Яг цэвэр тор</span></span>
             <span><i class="temp-tuned-dot"></i><span data-i18n="tempTunedLegend">Сонгосон хөг</span></span>
             <span><i class="temp-ideal-line"></i><span data-i18n="tempTriangleLegend">Цэвэр аккордын гурвалжин</span></span>
           </div>
           <p id="tempLatticeFact" class="temp-feature-fact"></p>
-          <p id="tempLatticeClosureFact" class="field-help"></p>
+          <p id="tempLatticeConstructionFact" class="field-help"></p>
           <div class="chart-foot"><span data-i18n="tempLatticeFoot">→ 3:2 · ↗ 5:4. Нэг нэртэй нотын өөр замууд нь 81:80, харин 12 квинтийн төгсгөл 23.46 центээр зөрнө.</span><span data-i18n="tempLatticeScale">Зөрөөг дүрслэлд ×8 томруулав</span></div>
         </section>
         <div class="temp-lower-visuals">
