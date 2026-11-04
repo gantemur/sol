@@ -376,6 +376,8 @@ h1, h2, p { margin-top: 0; }
   #mixWorkspace .visuals, #harmonicWorkspace .visuals, #noiseWorkspace .visuals,
   #sustainWorkspace .visuals, #scaleWorkspace .visuals, #limit5Workspace .visuals,
   #temperamentWorkspace .visuals { grid-template-columns: 1fr; }
+  #temperamentWorkspace .chart-heading { display: block; }
+  #temperamentWorkspace .chart-badge { display: inline-block; margin-top: 8px; }
   .chart-panel canvas { height: 188px; }
   .chart-panel #spectrumCanvas { height: 188px; }
   .chart-panel #strikeSpectrumCanvas { height: 188px; }
