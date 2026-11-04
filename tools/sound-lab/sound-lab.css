@@ -51,7 +51,7 @@ h1, h2, p { margin-top: 0; }
 .mode-button.active { background: #2769ba; color: white; border-color: #2769ba; box-shadow: 0 3px 10px #2769ba25; }
 .experiment-switch { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; }
 .mix-experiment-switch { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.tuning-experiment-switch { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.tuning-experiment-switch { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .experiment-switch button { min-height: 52px; border: 1px solid #c7d8ed; border-radius: 10px; padding: 8px 5px; background: #fff; color: #486b88; font-size: 12px; font-weight: 800; line-height: 1.25; }
 .tuning-experiment-switch button { font-size: 11px; padding: 9px 3px; min-height: 52px; overflow-wrap: anywhere; }
 .experiment-switch button:hover { border-color: #74aaa8; }
@@ -264,6 +264,29 @@ h1, h2, p { margin-top: 0; }
 .limit5-ruler-line > span:first-child::before { left: 0; }
 .limit5-ruler-line > span:last-child::before { right: 0; }
 .limit5-comma-ruler p { margin: 8px 0 0; font-variant-numeric: tabular-nums; }
+.temp-key-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .86fr); gap: 10px; }
+.temp-key-row .field-group { min-width: 0; }
+.temp-legend { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 8px 16px; font-size: 12px; font-weight: 700; color: #496581; margin-top: 7px; }
+.temp-legend > span { display: inline-flex; align-items: center; gap: 6px; }
+.temp-legend i { display: inline-block; width: 21px; border-top: 4px solid; border-radius: 3px; }
+.temp-legend-pure { border-color: #6c9c83 !important; }
+.temp-legend-narrow { border-color: #378acc !important; }
+.temp-legend-wolf { border-color: #db9238 !important; }
+.chart-panel #tempCircleCanvas { display: block; width: 100%; height: auto; aspect-ratio: 760 / 440; cursor: pointer; touch-action: manipulation; }
+.chart-panel #tempFifthsCanvas { display: block; width: 100%; height: auto; aspect-ratio: 760 / 240; }
+.temp-feature-fact { color: #335975; font-size: 12px; font-weight: 700; line-height: 1.5; margin: 12px 0 2px; }
+.temp-fifths-details { margin-top: 8px; font-size: 12px; color: #315e87; }
+.temp-fifths-details summary { cursor: pointer; font-weight: 800; padding: 7px 0; }
+.temp-table-scroll { overflow-x: auto; }
+.temp-table { width: 100%; border-collapse: collapse; text-align: left; font-variant-numeric: tabular-nums; font-size: 12px; }
+.temp-table th, .temp-table td { padding: 6px 8px; border-bottom: 1px solid #e4eaf0; }
+.temp-table th:nth-child(n+2), .temp-table td:nth-child(n+2) { text-align: right; }
+.temp-table tr.wolf-row { background: #fff1dd; color: #9b601e; font-weight: 800; }
+.temp-note-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+.temp-note-grid > div { min-width: 0; padding: 12px 8px; border: 1px solid #c7ddec; border-radius: 10px; background: #f3f9fe; text-align: center; }
+.temp-note-grid strong { display: block; font-size: 20px; color: #226ba6; }
+.temp-note-grid span { display: block; font-size: 12px; color: #365f7a; margin: 7px 0 4px; }
+.temp-note-grid small { display: block; font-size: 11px; color: #93621c; font-variant-numeric: tabular-nums; }
 .harmonic-presets, .noise-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .harmonic-presets button, .noise-choices button { min-height: 44px; padding: 8px 5px; border: 1px solid #cee0f1; border-radius: 9px; background: #f3f8ff; color: #315b8c; font-size: 12px; font-weight: 750; }
 .harmonic-presets button:hover, .noise-choices button:hover { background: #e5f0ff; }
@@ -351,7 +374,8 @@ h1, h2, p { margin-top: 0; }
   .description { min-height: 0; }
   .visuals { grid-template-columns: 1fr 1fr; }
   #mixWorkspace .visuals, #harmonicWorkspace .visuals, #noiseWorkspace .visuals,
-  #sustainWorkspace .visuals, #scaleWorkspace .visuals, #limit5Workspace .visuals { grid-template-columns: 1fr; }
+  #sustainWorkspace .visuals, #scaleWorkspace .visuals, #limit5Workspace .visuals,
+  #temperamentWorkspace .visuals { grid-template-columns: 1fr; }
   .chart-panel canvas { height: 188px; }
   .chart-panel #spectrumCanvas { height: 188px; }
   .chart-panel #strikeSpectrumCanvas { height: 188px; }
@@ -419,6 +443,7 @@ h1, h2, p { margin-top: 0; }
   .mix-experiment-switch { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .interval-facts, .scale-facts { grid-template-columns: 1fr; }
   .tuning-experiment-switch { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .temp-key-row { grid-template-columns: 1fr 1fr; }
   .scale-presets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .scale-directions { grid-template-columns: 1fr; }
   .scale-row { font-size: 9px; }
