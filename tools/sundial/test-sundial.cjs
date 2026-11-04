@@ -3,6 +3,20 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),S=require('./sundial.js');
 let count=0;
 const close=(a,b,tol=1e-7)=>{count++;assert.ok(Math.abs(a-b)<=tol,`${a} != ${b}`);};
+for(const [k,expected] of [[3,[23.44,0,-23.44]],[5,[23.44,11.72,0,-11.72,-23.44]],[7,[23.44,15.6267,7.8133,0,-7.8133,-15.6267,-23.44]]]){
+  const selected=S.seasonEvents(k);assert.equal(selected.length,k);count++;
+  selected.forEach((e,i)=>close(e.delta,expected[i],1e-8));
+  assert.ok(selected.every((e,i)=>i===0||e.delta<selected[i-1].delta));count++;
+  for(const shape of ['rectangle','circle']){
+    const p={...S.defaults,shape,seasons:true,seasonCount:k},s=S.build(p);
+    assert.equal(s.events.length,k);count++;
+    assert.ok(s.items.filter(q=>q.role==='season').length>=k-1);count++;
+    assert.deepEqual(S.build({...p,seasons:false}).items.filter(q=>q.role==='hour'),s.items.filter(q=>q.role==='hour'));count++;
+    const descriptions=s.items.filter(q=>q.type==='text').map(q=>q.value);
+    for(const e of selected){assert.ok(descriptions.includes(e.label));assert.ok([...e.label].every(ch=>ch.charCodeAt(0)<=255));count+=2;}
+  }
+}
+assert.throws(()=>S.build({seasonCount:4}));
 for(const phi of [-89,-80,-47.9,-23,-10,-1,1,10,23,47.9,80,89]) {
   for(const d of [-23.44,0,23.44])for(let h=6;h<=18;h+=.5) {
     const v=S.sunVector(phi,d,h);close(Math.hypot(...v),1);
@@ -35,7 +49,7 @@ for(const shape of ['rectangle','circle']) {
   close(c[0][0],0);close(c[1][0],b.w);assert.equal(S.clipSegment([-10,-10],[-5,-5],b),null);
 }
 const s=S.build({...S.defaults,seasons:true,guides:true});
-assert.ok(S.svg(s).includes('fill="#ffffff"'));assert.ok(S.svg(s).includes('viewBox="0 0 316 246"'));
+assert.ok(S.svg(s).includes('fill="#ffffff"'));assert.ok(S.svg(s).includes('viewBox="0 0 316 261"'));
 assert.ok(Buffer.from(S.pdf(s)).toString('latin1').startsWith('%PDF-1.4'));
 if(process.env.SUNDIAL_TEST_OUTPUT){fs.mkdirSync(process.env.SUNDIAL_TEST_OUTPUT,{recursive:true});for(const shape of ['rectangle','circle']){const a=S.build({...S.defaults,shape,seasons:true,guides:true,color:true});fs.writeFileSync(`${process.env.SUNDIAL_TEST_OUTPUT}/${shape}.svg`,S.svg(a));fs.writeFileSync(`${process.env.SUNDIAL_TEST_OUTPUT}/${shape}.pdf`,S.pdf(a));}}
-console.log(`PASS: ${count} numerical/geometry assertions, visibility, both hemispheres, all intervals, shape clipping and shared exports.`);
+console.log(`PASS: ${count} numerical/geometry assertions, 3/5/7 seasonal presets, both hemispheres, all intervals, shape clipping and shared exports.`);
