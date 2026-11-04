@@ -52,7 +52,7 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-score\.js\?v=s039"/);
   assert.match(html, /src="sound-abc\.js\?v=s039"/);
   assert.match(html, /src="sound-score-player\.js\?v=s039"/);
-  assert.match(html, /src="sound-compose\.js\?v=s039a"/);
+  assert.match(html, /src="sound-compose\.js\?v=s039b"/);
   assert.match(html, /src="sound-lab\.js\?v=s039a"/);
   assert.match(html, /href="sound-lab\.css\?v=s039"/);
   assert.match(html, /id="scaleGapToggle" type="checkbox"/);
@@ -2511,6 +2511,8 @@ test("Compose C1 validates edits and loads local ABC scores without autoplay", a
   app.fire("langEn", "click");
   assert.match(app.elements.get("composeStatus").textContent, /Score error/,
     "An invalid ABC score must remain visibly invalid when switching language");
+  assert.equal(app.elements.get("composeStop").textContent, "■ Stop");
+  assert.equal(app.elements.get("composeNow").textContent, "No valid score yet");
   app.fire("langMn", "click");
 
   const source = composeModel.EXAMPLES.minor;

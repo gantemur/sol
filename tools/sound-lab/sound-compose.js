@@ -137,11 +137,13 @@
       }
       this.$("composePlayPause").textContent = this.t(this.player.status === "playing" ? "pause" :
         this.player.status === "paused" ? "resume" : "play");
+      this.$("composeStop").textContent = this.t("stop");
       this.$("composeVolumeValue").textContent = this.$("composeVolume").value + "%";
       this.$("composeStatus").textContent = this.lastError ?
         this.errorText(this.lastError) : this.t(this.lastStatus) || this.t("ready");
       this.$("composeStatus").classList.toggle("error", Boolean(this.lastError));
       this.$("composeScoreSvg").setAttribute("aria-label", this.t("staff"));
+      if (!this.score) this.$("composeNow").textContent = this.t("empty");
       this.renderMeta();
       this.lastHighlighted = -2;
       this.highlight(this.player.currentBeat);
