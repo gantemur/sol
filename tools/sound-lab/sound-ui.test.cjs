@@ -683,7 +683,7 @@ test("held note toggle, keyboard access, pitch snap, language and mode cleanup",
   await app.fire("sustainToggleButton", "click");
   const context = app.contexts[0];
   assert.equal(app.elements.get("sustainToggleButton").getAttribute("aria-pressed"), "true");
-  assert.match(app.elements.get("sustainToggleButton").textContent, /Зогсоох/);
+  assert.match(app.elements.get("sustainToggleButton").textContent, /^■ Товшиж асаах$/);
   app.elements.get("sustainFrequencyInput").value = "437";
   app.fire("sustainFrequencyInput", "change");
   assert.equal(context.oscillators[0].frequency.value, 437);
@@ -694,7 +694,7 @@ test("held note toggle, keyboard access, pitch snap, language and mode cleanup",
   app.fire("sustainVolume", "input");
   assert.equal(app.elements.get("sustainVolumeValue").textContent, "70%");
   app.fire("langEn", "click");
-  assert.match(app.elements.get("sustainToggleButton").textContent, /Stop/);
+  assert.match(app.elements.get("sustainToggleButton").textContent, /^■ Tap to toggle$/);
   assert.match(app.elements.get("sustainEnvelopeBadge").textContent, /s/);
   await app.fire("sustainToggleButton", "click");
   assert.equal(context.oscillators[0].stopped, true);
