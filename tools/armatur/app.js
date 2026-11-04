@@ -29,7 +29,7 @@
       legacyLink: "Засварласан хуучин хувилбар",
       footer: "Дотооддоо тооцоолно · сүлжээ, бүртгэл шаардлагагүй",
       sourceLink: "Эх код", licenseLink: "MIT лиценз", creditsLink: "Түүх ба талархал",
-      dedicationHistory: "Энэ хэрэгслийг олон жилийн өмнө миний найз М. Пүрэв-Эрдэнийн хүсэлтээр, түүний ажилд туслах зорилгоор бүтээсэн. Тэрээр олон томоохон барилгын төслийн ерөнхий инженерээр ажиллаж байв.",
+      dedicationHistory: "Энэ хэрэгслийг олон жилийн өмнө найз М. Пүрэв-Эрдэнийн хүсэлтээр, түүний ажилд туслах зорилгоор бүтээсэн юм. Тэрээр олон томоохон барилгын төслийн ерөнхий инженерээр ажиллаж байв.",
       dedicationMemory: "Түүний гэгээн дурсгалд зориулав.",
       duplicate: "Хуулах", remove: "Арилгах",
       rods: "Нийт саваа", waste: "Нийт хаягдал", weight: "Нийт жин (ойролцоо)",
@@ -371,7 +371,7 @@
     }
     if (typeof Worker === "function") {
       try {
-        worker = new Worker("optimizer-worker.js?v=20261103-r2");
+        worker = new Worker("optimizer-worker.js?v=20261103-r3");
         worker.onmessage = function (event) {
           if (event.data.id !== id) return;
           if (event.data.error) {
