@@ -1,13 +1,13 @@
 <!doctype html>
 <!-- SPDX-FileCopyrightText: 2026 Tsogt Gantumur; SPDX-License-Identifier: MIT -->
 <html lang="mn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light">
-<title>Нарны цаг · Sol</title><link rel="stylesheet" href="style.css?v=R01.2">
-<script defer src="sundial.js?v=R01.2"></script><script defer src="ui.js?v=R01.2"></script></head>
+<title>Нарны цаг · Sol</title><link rel="stylesheet" href="style.css?v=R01.3">
+<script defer src="sundial.js?v=R01.3"></script><script defer src="ui.js?v=R01.3"></script></head>
 <body><main><header><a href="../../">← Sol</a><div><span id="version" class="badge">…</span> <select id="lang" aria-label="Language / Хэл"><option value="mn">Монгол</option><option value="en">English</option></select></div></header>
 <h1 data-i="title">Нарны цаг</h1><p class="intro" data-i="intro">Хэвлэх, сийлэх, гадаргуу дээр шилжүүлэх хэвтээ нарны цагийн загвар.</p>
 <section class="controls" aria-label="Design">
 <label><span data-i="latitude">Өргөрөг (хойд +, өмнөд −)</span><input id="lat" type="number" min="-89" max="89" step="0.1" value="47.9"></label>
-<label><span data-i="shape">Хэлбэр</span><select id="shape"><option value="rectangle" data-i="rectangle">Тэгш өнцөгт</option><option value="circle" data-i="circle">Дугуй</option></select></label>
+<label><span data-i="shape">Хэлбэр</span><select id="shape"><option value="rectangle" data-i="rectangle">Тэгш өнцөгт</option><option value="semicircle" data-i="semicircle">Хагас дугуй</option></select></label>
 <label class="rect-control"><span data-i="width">Өргөн (мм)</span><input id="width" type="number" min="80" max="1500" step="1" value="300"></label>
 <label class="rect-control"><span data-i="height">Өндөр (мм)</span><input id="height" type="number" min="80" max="1500" step="1" value="200"></label>
 <label id="diameter-control" hidden><span data-i="diameter">Диаметр (мм)</span><input id="diameter" type="number" min="80" max="1500" step="1" value="300"></label>
@@ -24,6 +24,6 @@
 <p class="note" data-i="time">Энэ загвар 06:00–18:00 жинхэнэ нарны цагийг заана. Цагийн бүс, уртраг, цагийн тэгшитгэлийн засвар ороогүй.</p>
 <details><summary data-i="table">Цагийн шугамын өнцөг</summary><p data-i="angleHelp">Зураг дээрх үдийн чиглэлээс хэмжинэ: баруун тийш эерэг. Өмнөд хагас бөмбөрцөгт өглөө, оройн тал солигдоно.</p><div id="angles"></div></details>
 <details><summary data-i="gnomon">Нэмэлт: гномоны хажуугийн загвар</summary><p data-i="gnomonHelp">Мод, металл эсвэл хатуу картоноор хийх гурвалжин. Налуу ирмэг O–G нь дэлхийн тэнхлэгтэй параллель; үзүүр G нь улирлын шугамын цэг болно. Угсрах холбоос, нугалах хавтас ороогүй.</p><label><span data-i="length">Гномоны ирмэг дагуух үзүүрийн зай L (мм)</span><input id="profileLength" type="number" min="1" max="1000" step="1" value="40"></label><p id="profileDimensions"></p><div class="actions"><button id="profileSvg" data-i="profileSvg">Гномоны SVG</button><button id="profilePdf" data-i="profilePdf">Гномоны PDF</button></div></details>
-<section class="help"><h2 data-i="installation">Байрлуулах нь</h2><p id="orientation"></p><p data-i="install">Хавтгайг тэгшилж, сумыг жинхэнэ туйлын чиглэлд тааруулна. O нь налуу ирмэгийн суурь, P нь үзүүрийн доорх босоо тусгал. Улирлын шугамыг ашиглах бол L ба үзүүрийн өндрийг яг тааруулах хэрэгтэй. Компасын соронзон хойд зүг жинхэнэ хойд зүгтэй заавал давхцахгүй.</p><p data-i="limits">Нарны хэлбийлтийн −23.44°-ээс +23.44° хүртэлх 3, 5 эсвэл 7 шугамыг зурна. Сүүдэр хавтангаас гарч болно; тухайн цагт нар заавал мандсан байхгүй. Экватор, туйлын тусгай хийц болон минутын нарийвчлалын баталгаа энэ хувилбарт байхгүй.</p></section>
+<section class="help"><h2 data-i="installation">Байрлуулах нь</h2><p id="orientation"></p><p data-i="install">Хавтгайг тэгшилж, сумыг жинхэнэ туйлын чиглэлд тааруулна. O нь налуу ирмэгийн суурь, P нь үзүүрийн доорх босоо тусгал. Улирлын шугамыг ашиглах бол L ба үзүүрийн өндрийг яг тааруулах хэрэгтэй. Компасын соронзон хойд зүг жинхэнэ хойд зүгтэй заавал давхцахгүй.</p><p data-i="limits">Нарны хэлбийлтийн −23.44°-ээс +23.44° хүртэлх 3, 5 эсвэл 7 шугамыг зурна. Сүүдэр хавтангаас гарч болно; тухайн цагт нар заавал мандсан байхгүй. Экваторт энгийн налуу гномон хэрэглэх боломжгүй: хэвтээ туйлын саваа буюу өндөрт байрлах цэг хэрэглэнэ. Туйлд 24 цагийн тусгай хийц хэрэгтэй. Минутын нарийвчлалын баталгаа байхгүй.</p></section>
 <footer>© 2026 Tsogt Gantumur · <a href="https://github.com/gantemur/sol/tree/main/tools/sundial/" data-i="source">Эх код</a> · <a href="LICENSE">MIT License</a> · <a href="README.md" data-i="credits">Тайлбар</a></footer>
 <noscript>JavaScript is required. / JavaScript-ийг идэвхжүүлнэ үү.</noscript></main></body></html>

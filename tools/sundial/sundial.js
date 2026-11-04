@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: MIT */
 (function (root) {
   'use strict';
-  const VERSION = 'R01.2', DEG = Math.PI / 180;
+  const VERSION = 'R01.3', DEG = Math.PI / 180;
   const defaults = Object.freeze({lat:47.9, shape:'rectangle', width:300, height:200,
     diameter:300, interval:60, numerals:'24', seasons:false, seasonCount:5, length:40, guides:false, color:false});
   const events = Object.freeze([
@@ -32,9 +32,11 @@
   const roman = ['XII','I','II','III','IV','V','VI','VII','VIII','IX','X','XI'];
   function validate(input) {
     const p = {...defaults, ...input};
-    if (!['rectangle','circle'].includes(p.shape) || !['12','24','roman'].includes(p.numerals)) throw Error('invalid');
+    // URLs from R01.2 used 'circle'; preserve those links with a real semicircle.
+    if (p.shape==='circle') p.shape='semicircle';
+    if (!['rectangle','semicircle'].includes(p.shape) || !['12','24','roman'].includes(p.numerals)) throw Error('invalid');
     for (const k of ['lat','width','height','diameter','length','interval']) if (!Number.isFinite(p[k])) throw Error('invalid');
-    if (Math.abs(p.lat)<0.1 || Math.abs(p.lat)>89 || ![15,30,60].includes(p.interval) || ![3,5,7].includes(p.seasonCount)) throw Error('invalid');
+    if (Math.abs(p.lat)>89 || ![15,30,60].includes(p.interval) || ![3,5,7].includes(p.seasonCount)) throw Error('invalid');
     if ([p.width,p.height,p.diameter].some(x=>x<80||x>1500) || p.length<1 || p.length>1000) throw Error('invalid');
     return p;
   }
@@ -47,25 +49,33 @@
   function shadow(phi, delta, hour, L) {
     const s=sunVector(phi,delta,hour), sign=Math.sign(phi), p=phi*DEG;
     if (s[2]<=1e-6) return null;
-    const z=L*Math.abs(Math.sin(p)), north=sign*L*Math.cos(p);
+    // At latitude 0 the polar style lies in the plate. Raise the rod/nodus
+    // to physical height L; an ordinary triangular polar gnomon collapses.
+    const z=phi===0?L:L*Math.abs(Math.sin(p)), north=phi===0?0:sign*L*Math.cos(p);
     return [-z*s[0]/s[2], north-z*s[1]/s[2]];
   }
   // Top of artwork is poleward in BOTH hemispheres. In the south, right is west.
   function direction(phi, hour) {
+    if(phi===0)return null; // parallel hour lines: there is no common root
     const H=(hour-12)*15*DEG, x=Math.sign(phi)*Math.abs(Math.sin(phi*DEG))*Math.sin(H), y=-Math.cos(H);
     const r=Math.hypot(x,y); return [x/r,y/r];
   }
   function layout(p) {
-    const w=p.shape==='circle'?p.diameter:p.width, h=p.shape==='circle'?p.diameter:p.height;
-    return {shape:p.shape,w,h,root:[w/2,p.shape==='circle'?h/2:h-Math.max(12,Math.min(20,h*.1))]};
+    const w=p.shape==='semicircle'?p.diameter:p.width, h=p.shape==='semicircle'?p.diameter/2:p.height;
+    // Semicircle is the northern/poleward half: its flat baseline contains O.
+    // The equatorial nodus is raised straight above its ground projection;
+    // center a rectangular equatorial face to allow both seasonal halves.
+    const root=[w/2,p.shape==='semicircle'?h:(p.lat===0?h/2:h-Math.max(12,Math.min(20,h*.1)))];
+    return {shape:p.shape,w,h,root};
   }
   function inside(q,b,inset=0) {
-    if (b.shape==='circle') return Math.hypot(q[0]-b.w/2,q[1]-b.h/2)<=b.w/2-inset+1e-7;
+    if (b.shape==='semicircle') return q[1]<=b.h-inset+1e-7 &&
+      Math.hypot(q[0]-b.w/2,q[1]-b.h)<=b.w/2-inset+1e-7;
     return q[0]>=inset-1e-7 && q[0]<=b.w-inset+1e-7 && q[1]>=inset-1e-7 && q[1]<=b.h-inset+1e-7;
   }
   function rayEnd(b,d,inset=0) {
     const o=b.root;
-    if (b.shape==='circle') return [o[0]+d[0]*(b.w/2-inset),o[1]+d[1]*(b.w/2-inset)];
+    if (b.shape==='semicircle') return [o[0]+d[0]*(b.w/2-inset),o[1]+d[1]*(b.w/2-inset)];
     let t=Infinity;
     if (d[0]>1e-12) t=Math.min(t,(b.w-inset-o[0])/d[0]);
     if (d[0]<-1e-12) t=Math.min(t,(inset-o[0])/d[0]);
@@ -75,12 +85,16 @@
   }
   function clipSegment(a,z,b) {
     const dx=z[0]-a[0],dy=z[1]-a[1]; let lo=0,hi=1;
-    if (b.shape==='circle') {
-      const ax=a[0]-b.w/2,ay=a[1]-b.h/2,A=dx*dx+dy*dy;
+    if (b.shape==='semicircle') {
+      const ax=a[0]-b.w/2,ay=a[1]-b.h,A=dx*dx+dy*dy;
       if (A<1e-20) return inside(a,b)?[a,z]:null;
       const B=2*(ax*dx+ay*dy),C=ax*ax+ay*ay-b.w*b.w/4,disc=B*B-4*A*C;
       if (disc<0) return null;
       lo=Math.max(0,(-B-Math.sqrt(disc))/(2*A)); hi=Math.min(1,(-B+Math.sqrt(disc))/(2*A));
+      // The flat semicircle diameter clips away the unused lower hemisphere.
+      if(Math.abs(dy)<1e-14){if(a[1]>b.h+1e-9)return null;}
+      else if(dy>0)hi=Math.min(hi,(b.h-a[1])/dy);
+      else lo=Math.max(lo,(b.h-a[1])/dy);
     } else {
       for (const [v,q] of [[-dx,a[0]],[dx,b.w-a[0]],[-dy,a[1]],[dy,b.h-a[1]]]) {
         if (Math.abs(v)<1e-15) {if(q<0)return null;continue;}
@@ -92,7 +106,7 @@
   }
   function seasonalPaths(p,b,delta) {
     const paths=[]; let run=null, previous=null;
-    const project=h=>{const q=shadow(p.lat,delta,h,p.length);return q?[b.root[0]+Math.sign(p.lat)*q[0],b.root[1]-Math.sign(p.lat)*q[1]]:null;};
+    const project=h=>{const q=shadow(p.lat,delta,h,p.length),sign=p.lat<0?-1:1;return q?[b.root[0]+sign*q[0],b.root[1]-sign*q[1]]:null;};
     function add(a,z,depth=0) {
       const c=clipSegment(a.q,z.q,b);
       const h=(a.h+z.h)/2,mid=project(h);
@@ -117,15 +131,34 @@
     const items=s.items;
     const line=(pts,width=.3,color='#111111',dash=[],role='guide')=>items.push({type:'path',pts:pts.map(q=>[q[0]+margin,q[1]+margin]),width,color,dash,role});
     const text=(x,y,value,size=3.2,role='caption')=>items.push({type:'text',x:x+margin,y:y+margin,value,size,role});
-    if(b.shape==='circle')items.push({type:'circle',x:b.w/2+margin,y:b.h/2+margin,r:b.w/2,width:.35,color:'#111111'});
+    if(b.shape==='semicircle')items.push({type:'semicircle',x:b.w/2+margin,y:b.h+margin,r:b.w/2,width:.35,color:'#111111'});
     else line([[0,0],[b.w,0],[b.w,b.h],[0,b.h],[0,0]],.35);
     const labels=[],font=Math.max(2.6,Math.min(7,Math.min(b.w,b.h)*.026));
     for(let m=360;m<=1080;m+=p.interval) {
-      const hour=m/60,d=direction(p.lat,hour),end=rayEnd(b,d,.6),major=m%60===0;
-      line([b.root,end],major?.32:.16,'#111111',[],'hour');items.at(-1).hour=hour;
-      if(major){const pos=rayEnd(b,d,font*1.6+1),value=p.numerals==='roman'?roman[hour%12]:String(p.numerals==='12'?(hour%12||12):hour);
-        labels.push({pos,value,hour});}
+      const hour=m/60,major=m%60===0;
+      if(p.lat===0){
+        // An elevated N-S polar rod casts parallel N-S hour lines at
+        // x = x0 + height * tan(H), independent of solar declination.
+        // At 06:00 and 18:00 the sun is on the horizon: no finite line.
+        if(m===360||m===1080)continue;
+        const x=b.root[0]+p.length*Math.tan((hour-12)*15*DEG);
+        if(!Number.isFinite(x))continue;
+        const seg=clipSegment([x,-b.w*3],[x,b.h+b.w*3],b);
+        if(!seg||Math.hypot(seg[1][0]-seg[0][0],seg[1][1]-seg[0][1])<1)continue;
+        line(seg,major?.32:.16,'#111111',[],'hour');items.at(-1).hour=hour;
+        if(major){const pos=[x,seg[0][1]+font*1.8+1],value=p.numerals==='roman'?roman[hour%12]:String(p.numerals==='12'?(hour%12||12):hour);
+          if(inside(pos,b,font*1.2))labels.push({pos,value,hour});else s.warnings.push('crowded');}
+      }else{
+        const d=direction(p.lat,hour),end=rayEnd(b,d,.6);
+        line([b.root,end],major?.32:.16,'#111111',[],'hour');items.at(-1).hour=hour;
+        if(major){const pos=rayEnd(b,d,font*1.6+1),value=p.numerals==='roman'?roman[hour%12]:String(p.numerals==='12'?(hour%12||12):hour);
+          if(b.shape==='semicircle'&&Math.abs(d[1])<.15)pos[1]-=font*.75;
+          labels.push({pos,value,hour});}
+      }
     }
+    if(p.lat===0){s.warnings.push('equator');if(b.shape==='semicircle')s.warnings.push('equatorHalf');}
+    else if(Math.abs(p.lat)<5)s.warnings.push('nearEquator');
+    if(Math.abs(p.lat)>=85)s.warnings.push('nearPole');
     if(p.seasons)for(const e of selected) {
       const paths=seasonalPaths(p,b,e.delta);s.events.push({...e,paths});
       for(const path of paths)line(path,.38,p.color?e.color:'#333333',e.dash,'season');
@@ -142,20 +175,22 @@
       text(x,y+font*.34,l.value,font,'hour-label');
     }
     const [ox,oy]=b.root;
-    line([[ox-1,oy],[ox+1,oy]],.25);line([[ox,oy-1],[ox,oy+1]],.25);
+    line([[ox-1,oy],[ox+1,oy]],.25);
+    line([[ox,oy-1],[ox,oy+(b.shape==='semicircle'?0:1)]],.25);
     // A small poleward arrow is outside the fabrication boundary.
     line([[b.w/2,-1],[b.w/2,-5]],.25);line([[b.w/2-1,-3.5],[b.w/2,-5],[b.w/2+1,-3.5]],.25);
-    text(b.w/2+5,-2, p.lat>0?'N':'S',3);
+    text(b.w/2+5,-2, p.lat>=0?'N':'S',3);
     const scale=b.w>=160?100:20, sy=b.h+8;
     line([[1,sy],[1+scale,sy]],.25);line([[1,sy-1],[1,sy+1]],.25);line([[1+scale,sy-1],[1+scale,sy+1]],.25);
     text(1+scale/2,sy-1.8,scale+' mm',3);
-    text(b.w*.76,sy+.5,n(b.w)+' x '+n(b.h)+' mm',3);
+    text(b.w*.76,sy+.5,b.shape==='semicircle'?'D = '+n(b.w)+' mm':n(b.w)+' x '+n(b.h)+' mm',3);
     if(p.guides) {
       text(ox-4,oy+4,'O',3);
-      const offset=p.length*Math.cos(p.lat*DEG),P=[ox,oy-offset];
+      const offset=p.lat===0?0:p.length*Math.cos(p.lat*DEG),P=[ox,oy-offset];
       const clipped=clipSegment(b.root,P,b);if(clipped)line(clipped,.25,'#777777',[2,1]);
-      if(inside(P,b,4)) {items.push({type:'circle',x:P[0]+margin,y:P[1]+margin,r:.9,width:.25,color:'#555555'});text(P[0]+4,P[1]+1,'P',3);}
-      else s.warnings.push('nodusOutside');
+      if(p.lat===0) text(P[0]+5,P[1]-2,'O=P',3);
+      else if(inside(P,b,4)) {items.push({type:'circle',x:P[0]+margin,y:P[1]+margin,r:.9,width:.25,color:'#555555'});text(P[0]+4,P[1]+1,'P',3);}
+      else if(!inside(P,b))s.warnings.push('nodusOutside');
     }
     if(p.seasons)selected.forEach((e,i)=>{
       const row=Math.floor(i/3),first=3*row,count=Math.min(3,selected.length-first);
@@ -166,7 +201,20 @@
     s.warnings=[...new Set(s.warnings)];return s;
   }
   function profile(input) {
-    const p=validate(input),a=Math.abs(p.lat)*DEG,L=p.length,B=L*Math.cos(a),H=L*Math.sin(a);
+    const p=validate(input);
+    if(p.lat===0){
+      // Side elevation: an N-S rod held horizontally at height h, or a
+      // single point at G. This replaces the degenerate triangular gnomon.
+      const H=p.length,w=140,h=H+32,y=16,x=20,items=[];
+      items.push({type:'path',pts:[[10,y+H],[w-10,y+H]],width:.35,color:'#111111',dash:[]});
+      items.push({type:'path',pts:[[x,y],[w-20,y]],width:1.0,color:'#111111',dash:[]});
+      items.push({type:'path',pts:[[x,y],[x,y+H]],width:.25,color:'#777777',dash:[2,1]});
+      items.push({type:'circle',x:w/2,y,r:1,width:.3,color:'#111111'});
+      items.push({type:'text',x:w/2,y:8,value:'N-S horizontal rod / point G',size:3.2});
+      items.push({type:'text',x:w-35,y:y+H/2,value:'h = '+H+' mm',size:3.2});
+      return {w,h,items,p,version:VERSION};
+    }
+    const a=Math.abs(p.lat)*DEG,L=p.length,B=L*Math.cos(a),H=L*Math.sin(a);
     const w=Math.max(B+32,100),h=Math.max(H+30,65),x=16,y=h-14,items=[];
     items.push({type:'path',pts:[[x,y],[x+B,y],[x+B,y-H],[x,y]],width:.35,color:'#111111',dash:[]});
     const add=(xx,yy,value)=>items.push({type:'text',x:xx,y:yy,value,size:3.2});
@@ -180,6 +228,7 @@
     for(const q of scene.items) {
       if(q.type==='path')body+='<path d="'+q.pts.map((p,i)=>(i?'L':'M')+n(p[0])+' '+n(p[1])).join(' ')+'" fill="none" stroke="'+q.color+'" stroke-width="'+q.width+'" stroke-dasharray="'+q.dash.join(' ')+'"/>';
       if(q.type==='circle')body+='<circle cx="'+n(q.x)+'" cy="'+n(q.y)+'" r="'+n(q.r)+'" fill="none" stroke="'+q.color+'" stroke-width="'+q.width+'"/>';
+      if(q.type==='semicircle')body+='<path d="M '+n(q.x-q.r)+' '+n(q.y)+' A '+n(q.r)+' '+n(q.r)+' 0 0 1 '+n(q.x+q.r)+' '+n(q.y)+' L '+n(q.x-q.r)+' '+n(q.y)+'" fill="none" stroke="'+q.color+'" stroke-width="'+q.width+'"/>';
       if(q.type==='rect')body+='<rect x="'+n(q.x)+'" y="'+n(q.y)+'" width="'+n(q.w)+'" height="'+n(q.h)+'" fill="'+q.fill+'"/>';
       if(q.type==='text')body+='<text x="'+n(q.x)+'" y="'+n(q.y)+'" text-anchor="middle" font-size="'+q.size+'" font-family="Helvetica,Arial,sans-serif" fill="#111111">'+xml(q.value)+'</text>';
     }
@@ -193,11 +242,16 @@
     const xy=p=>f(p[0]*k)+' '+f(h-p[1]*k);
     let stream='1 1 1 rg 0 0 '+f(w)+' '+f(h)+' re f\n';
     for(const q of scene.items) {
-      if(q.type==='path'||q.type==='circle')stream+=rgb(q.color)+' RG '+f(q.width*k)+' w ['+(q.dash||[]).map(x=>f(x*k)).join(' ')+'] 0 d\n';
+      if(q.type==='path'||q.type==='circle'||q.type==='semicircle')stream+=rgb(q.color)+' RG '+f(q.width*k)+' w ['+(q.dash||[]).map(x=>f(x*k)).join(' ')+'] 0 d\n';
       if(q.type==='path')stream+=q.pts.map((p,i)=>xy(p)+(i?' l':' m')).join(' ')+' S\n';
       if(q.type==='circle') {
         const {x,y,r}=q,t=r*.5522847498307936;
         stream+=xy([x+r,y])+' m '+[[x+r,y+t,x+t,y+r,x,y+r],[x-t,y+r,x-r,y+t,x-r,y],[x-r,y-t,x-t,y-r,x,y-r],[x+t,y-r,x+r,y-t,x+r,y]].map(a=>xy(a.slice(0,2))+' '+xy(a.slice(2,4))+' '+xy(a.slice(4,6))+' c').join(' ')+' S\n';
+      }
+      if(q.type==='semicircle') {
+        const {x,y,r}=q,t=r*.5522847498307936;
+        stream+=xy([x-r,y])+' m '+xy([x-r,y-t])+' '+xy([x-t,y-r])+' '+xy([x,y-r])+' c '+
+          xy([x+t,y-r])+' '+xy([x+r,y-t])+' '+xy([x+r,y])+' c '+xy([x-r,y])+' l S\n';
       }
       if(q.type==='rect')stream+=rgb(q.fill)+' rg '+f(q.x*k)+' '+f(h-(q.y+q.h)*k)+' '+f(q.w*k)+' '+f(q.h*k)+' re f\n';
       if(q.type==='text') {
