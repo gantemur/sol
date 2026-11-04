@@ -52,7 +52,7 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-score\.js\?v=s039"/);
   assert.match(html, /src="sound-abc\.js\?v=s039"/);
   assert.match(html, /src="sound-score-player\.js\?v=s039"/);
-  assert.match(html, /src="sound-compose\.js\?v=s039b"/);
+  assert.match(html, /src="sound-compose\.js\?v=s040"/);
   assert.match(html, /src="sound-lab\.js\?v=s039a"/);
   assert.match(html, /href="sound-lab\.css\?v=s039"/);
   assert.match(html, /id="scaleGapToggle" type="checkbox"/);
@@ -2531,6 +2531,26 @@ test("Compose C1 validates edits and loads local ABC scores without autoplay", a
   app.fire("modeStrike", "click");
   assert.equal(app.elements.get("composeWorkspace").hidden, true);
   assert.ok(![...app.timers.values()].some(timer => timer.delay === 35));
+});
+
+test("S040 published melody choices load full phrases silently and remain bilingual", async () => {
+  const app = fakePage();
+  app.fire("modeCompose", "click");
+  for (const [choice, bars] of [["ode", 16], ["minuetG", 16], ["lightly", 16],
+    ["mozart40", 13], ["frere", 8], ["twinkle", 12]]) {
+    app.elements.get("composeExample").value = choice;
+    app.fire("composeExample", "change");
+    assert.equal(app.elements.get("composeText").value, composeModel.EXAMPLES[choice], choice);
+    assert.match(app.elements.get("composeMeta").textContent, new RegExp(`${bars} такт`), choice);
+    assert.equal(app.elements.get("composePlayPause").disabled, false, choice);
+    assert.equal(app.contexts.length, 0, `${choice} loads without autoplay`);
+  }
+  app.fire("langEn", "click");
+  assert.match(app.elements.get("composeMeta").textContent, /12 bars/);
+  app.elements.get("composeExample").value = "mozart40";
+  app.fire("composeExample", "change");
+  assert.match(app.elements.get("composeMeta").textContent, /13 bars/);
+  assert.equal(app.contexts.length, 0);
 });
 
 test("harmonic builder is an interactive eight-partial synthesis without autoplay", async () => {
