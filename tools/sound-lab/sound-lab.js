@@ -4090,8 +4090,7 @@
       const active = state.sustainPlaying && state.sustainGesture === gesture;
       button.classList.toggle("playing", active);
       button.setAttribute("aria-pressed", String(active));
-      button.textContent = (active ? "■ " : "▶ ") + text(active && gesture === "toggle" ?
-        "sustainToggleStop" : label);
+      button.textContent = (active ? "■ " : "▶ ") + text(label);
     }
   }
 
