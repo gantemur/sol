@@ -130,6 +130,11 @@ h1, h2, p { margin-top: 0; }
 .guitar-modes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .drum-sizes button { min-height: 44px; padding: 9px 5px; border: 1px solid #d2e2ef; border-radius: 9px; color: #3b698f; background: #f5f9ff; font-size: 12px; font-weight: 750; }
 .drum-sizes button.selected { border: 2px solid #248a91; padding: 8px 4px; background: #e4f6f2; color: #176b72; }
+.strike-pads button { min-height: 50px; background: #eaf3ff; color: #27558c; border-color: #aec9e6; font-size: 13px; cursor: pointer; }
+.strike-pads button::before { content: "▶ "; font-size: 11px; }
+.strike-pads button.selected { background: #d9edf9; border-color: #298c9c; color: #155e6d; }
+.strike-pads button:hover { background: #d1e8ff; }
+.strike-pads button:active { background: #aedaf7; transform: translateY(1px); }
 .strike-glyph { font-size: 25px; flex: none; }
 .strike-button { background: linear-gradient(130deg, #18969b, #19727e); }
 .strike-button:hover { background: linear-gradient(130deg, #17878e, #126671); }

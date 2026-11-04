@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#192d49">
   <meta name="description" content="Explore sound waves, plucked and held instrument models, harmonic synthesis, noise, a theremin and sirens with interactive plots and bilingual controls.">
   <title>Sound Lab · Sol</title>
-  <link rel="stylesheet" href="sound-lab.css?v=s031">
+  <link rel="stylesheet" href="sound-lab.css?v=s032">
   <script src="sound-model.js" defer></script>
   <script src="sound-string.js?v=s017" defer></script>
   <script src="sound-piano.js?v=s019" defer></script>
@@ -22,7 +22,7 @@
   <script src="sound-harmonics.js" defer></script>
   <script src="sound-noise.js" defer></script>
   <script src="sound-recorder.js" defer></script>
-  <script src="sound-lab.js?v=s031a" defer></script>
+  <script src="sound-lab.js?v=s032" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -212,12 +212,12 @@
           </button>
         </div>
         <div id="strikeGuitarPlayModes" class="ear-play-controls" role="group" data-i18n-aria="strikeGuitarPlay">
-          <button type="button" data-strike-play="single" aria-pressed="false">▶ Татах</button>
-          <button type="button" data-strike-play="strum" aria-pressed="false">▶ Цохих</button>
+          <button type="button" data-strike-play="single">▶ Татах</button>
+          <button type="button" data-strike-play="strum">▶ Цохих</button>
         </div>
         <div id="strikePianoPlayModes" class="ear-play-controls" role="group" data-i18n-aria="strikePianoTouchTitle" hidden>
-          <button type="button" data-strike-play="press" aria-pressed="false">▶ Товчлуур дарах</button>
-          <button type="button" data-strike-play="tap" aria-pressed="false">▶ Товших</button>
+          <button type="button" data-strike-play="press">▶ Товчлуур дарах</button>
+          <button type="button" data-strike-play="tap">▶ Товших</button>
         </div>
         <button id="strikeButton" type="button" class="play-button strike-button" hidden>
           <span class="play-icon" aria-hidden="true">✦</span>
@@ -228,13 +228,13 @@
         <p id="strikePianoHint" class="field-help" data-i18n="strikePianoTouchHint" hidden>Дарах нь товчлуурыг барьсан үеийн чөлөөт намдлыг, товших нь зөөлөн богино даралт ба намжаагч эрт буцахыг загварчилна.</p>
 
         <div class="field-group" id="strikeChordGroup" hidden>
-          <div class="field-title"><span data-i18n="strikeChord">Аккорд сонгох</span></div>
-          <div class="drum-sizes" role="group" aria-label="Гитарын аккордууд" data-i18n-aria="strikeChord">
+          <div class="field-title"><span data-i18n="strikeChord">Аккорд цохих</span></div>
+          <div class="drum-sizes strike-pads" role="group" aria-label="Гитарын аккордууд" data-i18n-aria="strikeChord">
             <button type="button" class="selected" data-guitar-chord="em" aria-pressed="true">Em</button>
             <button type="button" data-guitar-chord="g" aria-pressed="false">G</button>
             <button type="button" data-guitar-chord="c" aria-pressed="false">C</button>
           </div>
-          <p class="field-help" data-i18n="strikeChordHint">Зургаан чавхдас ээлжлэн дуугарна. Аккорд бүрд зарим чавхдасыг дарж, заримыг нь алгасна.</p>
+          <p class="field-help" data-i18n="strikeChordHint">Em, G, C товчийг дарахад шууд цохино. Дахин дахин товшоод хэмнэл үүсгээрэй.</p>
         </div>
 
         <div class="field-group" id="strikePitchGroup">
@@ -263,13 +263,13 @@
         </div>
 
         <div class="field-group" id="strikeDrumSizeGroup" hidden>
-          <div class="field-title"><span data-i18n="strikeDrumSize">Бөмбөрийн хэмжээ</span><output id="strikeDrumFrequencies">112 Гц</output></div>
-          <div class="drum-sizes" role="group" id="strikeDrumSizes" aria-label="Бөмбөрийн хэмжээ">
+          <div class="field-title"><span data-i18n="strikeDrumSize">Бөмбөр цохих</span><output id="strikeDrumFrequencies">112 Гц</output></div>
+          <div class="drum-sizes strike-pads" role="group" id="strikeDrumSizes" aria-label="Бөмбөр цохих">
             <button type="button" data-drum-size="large" aria-pressed="false" data-i18n="strikeLarge">Том</button>
             <button type="button" class="selected" data-drum-size="medium" aria-pressed="true" data-i18n="strikeMedium">Дунд</button>
             <button type="button" data-drum-size="small" aria-pressed="false" data-i18n="strikeSmall">Жижиг</button>
           </div>
-          <p class="field-help" data-i18n="strikeDrumHint">Том бөмбөрийн үндсэн давтамж нам, жижиг бөмбөрийнх өндөр байна.</p>
+          <p class="field-help" data-i18n="strikeDrumHint">Том, дунд, жижиг бөмбөрийг шууд товшиж хэмнэл үүсгээрэй.</p>
           <div class="field-title"><label for="strikeDrumTension" data-i18n="strikeDrumTension">Арьсны таталт</label><output id="strikeDrumTensionValue">100%</output></div>
           <input id="strikeDrumTension" type="range" min="50" max="200" step="5" value="100">
           <p class="field-help" data-i18n="strikeDrumTensionHint">Таталтыг чангалах тусам хэлбэлзлийн давтамж нэмэгдэнэ.</p>
