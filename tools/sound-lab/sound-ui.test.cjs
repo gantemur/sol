@@ -48,7 +48,7 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-scales\.js\?v=s031"/);
   assert.match(html, /src="sound-limit5\.js\?v=s030"/);
   assert.match(html, /src="sound-temperaments\.js\?v=s034"/);
-  assert.match(html, /src="sound-lab\.js\?v=s034b"/);
+  assert.match(html, /src="sound-lab\.js\?v=s034c"/);
   assert.match(html, /href="sound-lab\.css\?v=s034"/);
   assert.match(html, /id="scaleGapToggle" type="checkbox"/);
   assert.match(html, /id="scaleGapPanel" hidden/);
@@ -2464,6 +2464,12 @@ test("S034 temperament lattice, fifths and chord experiments stay synchronized w
   app.fire("tempTaskSelect", "change", { target: { value: "wolf" } });
   assert.equal(app.elements.get("tempChordFields").hidden, true);
   assert.equal(app.tempPlayButtons[0].textContent, "▶ Ordinary fifth");
+  assert.equal(app.tempPlayButtons[1].textContent, "▶ Wolf fifth");
+  app.fire("tempSystemSelect", "change", { target: { value: "equal" } });
+  assert.equal(app.tempPlayButtons[1].textContent, "▶ Closing fifth");
+  assert.match(app.elements.get("tempTaskHint").textContent, /has no wolf/);
+  assert.match(app.elements.get("tempLatticeFact").textContent, /without a single wolf/);
+  app.fire("tempSystemSelect", "change", { target: { value: "meantone" } });
   assert.equal(app.tempPlayButtons[1].textContent, "▶ Wolf fifth");
   app.fire("tempTaskSelect", "change", { target: { value: "third" } });
   assert.equal(app.tempPlayButtons[0].textContent, "▶ Tuned third");

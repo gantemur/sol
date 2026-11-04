@@ -210,6 +210,7 @@
       tempTaskThird: "Compare pure thirds", tempTaskChord: "Chords in different keys",
       tempTaskHintBuild: "Move the slider: ordinary fifths get narrower, major thirds improve, but the closing fifth may become a wolf.",
       tempTaskHintWolf: "Compare an ordinary fifth C–G and the closing fifth G♯–E♭ in the same tuning. Listen for fast rough beating.",
+      tempTaskHintWolfFree: "This system has no wolf. Compare C–G and the closing G♯–E♭ fifth: both stay near 700¢.",
       tempTaskHintThird: "Compare the selected tuning's third with an exact 5:4 major or 6:5 minor third. Listen for beating, not just pitch.",
       tempTaskHintChord: "Move the same major or minor triangle around the keys. Some temperaments change its sound greatly.",
       tempSystemTitle: "Tuning system", tempKeyTitle: "Chord root", tempQualityTitle: "Chord quality",
@@ -220,11 +221,12 @@
       tempAdjustFact: "Ordinary fifth: {regular}¢ · closing fifth: {wolf}¢ · C–E third: {third}¢.",
       tempListenBuild: "Play the chosen chord while adjusting the fifths. Exact major thirds have a 5:4 ratio (386.31¢).",
       tempListenWolf: "Hear the wolf's rapid roughness: the lower note's third harmonic no longer lines up with the upper note's second.",
+      tempListenWolfFree: "Here the closing fifth is deliberately tempered. Switch to Pythagorean or meantone to hear an actual wolf.",
       tempListenThird: "The fifth harmonic of the lower note and fourth of the higher note match in a pure major third.",
       tempListenThirdMinor: "In a pure minor third, the lower note's sixth harmonic matches the upper note's fifth.",
       tempListenChord: "Compare C major and G♯ major in meantone, then try equal temperament.",
       tempPlaybackAria: "Play the notes in sequence or together; tap again to stop", tempMelody: "In sequence", tempChord: "Together",
-      tempRegularPlay: "Ordinary fifth", tempWolfPlay: "Wolf fifth", tempTunedPlay: "Tuned third", tempPurePlay: "Pure third",
+      tempRegularPlay: "Ordinary fifth", tempWolfPlay: "Wolf fifth", tempClosingPlay: "Closing fifth", tempTunedPlay: "Tuned third", tempPurePlay: "Pure third",
       tempReference: "A4 stays at 440 Hz in every system; the other pitches change.",
       tempLatticeTitle: "The 3:2–5:4 triangular lattice",
       tempLatticeHint: "Hollow points are exact ratios. Colored dots show twelve tuned pitches against chosen Pythagorean references; local chord triangles show interval errors. Displacements are magnified.",
@@ -234,6 +236,7 @@
       tempLatticeAria: "Triangular exact-ratio lattice with twelve shifted temperament notes, pure chord triangle and Pythagorean comma closure; click a named note to change root",
       tempLatticeFact: "The selected {quality} chord has a {third}¢ third ({thirdError}¢ from pure) and {fifth}¢ fifth ({fifthError}¢ from pure). Where visible, the dashed line shows the 21.51¢ third discrepancy.",
       tempLatticeWolf: "The ordinary C–G and the G♯–E♭ closing fifth are different. The 23.46¢ Pythagorean comma is why a pure-fifth D♯ cannot replace E♭ without changing the keyboard.",
+      tempLatticeWolfFree: "This tuning distributes the closure without a single wolf. The exact lattice nevertheless has distinct E♭ and D♯ points, separated by 23.46¢.",
       tempLatticeClosure: "E♭ and the next pure-fifth D♯ are different exact lattice points: 12 fifths overshoot 7 octaves by 23.46¢.",
       tempPartialTitle: "Matching harmonics and beating", tempPartialHint: "A pure fifth shares 3f of the low note with 2f of the high one; a pure major third shares 5f and 4f.",
       tempPartialHintMinor: "A pure minor third shares 6f of its lower note with 5f of its upper note.",
@@ -716,6 +719,7 @@
       tempTaskThird: "Цэвэр терцтэй харьцуулах", tempTaskChord: "Аккорд ба тональ",
       tempTaskHintBuild: "Гулсуурыг хөдөлгө: энгийн квинт нарийсахад их терц сайжирна, харин хаалтын квинт чоно болж болно.",
       tempTaskHintWolf: "Нэг хөгт До–Соль квинт ба Соль♯–Ми♭ хаалтын квинтийг харьцуул. Түргэн биение, барзгар авиаг сонс.",
+      tempTaskHintWolfFree: "Энэ хөгт чоно квинт байхгүй. До–Соль ба Соль♯–Ми♭ хаалтын квинт хоёулаа 700 центэд ойр.",
       tempTaskHintThird: "Сонгосон хөгийн терцийг яг 5:4 их, эсвэл 6:5 бага терцтэй харьцуул. Дууны өндөр бус, биениеийг анзаар.",
       tempTaskHintChord: "Нэг гурвалжныг өөр тональ руу шилжүүл. Зарим хөгт аккордын өнгө их өөрчлөгдөнө.",
       tempSystemTitle: "Хөгийн систем", tempKeyTitle: "Аккордын үндэс", tempQualityTitle: "Аккордын төрөл",
@@ -726,11 +730,12 @@
       tempAdjustFact: "Энгийн квинт: {regular} цент · хаалтын квинт: {wolf} цент · До–Ми терц: {third} цент.",
       tempListenBuild: "Квинтийг өөрчлөөд аккордыг сонс. Цэвэр их терц 5:4 буюу 386.31 цент.",
       tempListenWolf: "Квинтийн үед доод нотын 3f ба дээд нотын 2f гармоник хэрхэн зөрж байгааг харьцуул.",
+      tempListenWolfFree: "Энд хаалтын квинтийг зохицуулсан. Жинхэнэ чоно квинтийг сонсохын тулд Пифагор эсвэл дундаж хөг сонго.",
       tempListenThird: "Цэвэр их терцэд доод нотын 5 дахь, дээд нотын 4 дэх гармоник давхцана.",
       tempListenThirdMinor: "Цэвэр бага терцэд доод нотын 6 дахь, дээд нотын 5 дахь гармоник давхцана.",
       tempListenChord: "До мажор ба Соль♯ мажорыг дундаж хөгт харьцуул. Дараа нь тэнцүү хөгт турш.",
       tempPlaybackAria: "Нотуудыг ээлжлэн эсвэл хамт сонсох, дахин дарж зогсоох", tempMelody: "Ээлжлэн", tempChord: "Хамт",
-      tempRegularPlay: "Энгийн квинт", tempWolfPlay: "Чоно квинт", tempTunedPlay: "Хөгийн терц", tempPurePlay: "Цэвэр терц",
+      tempRegularPlay: "Энгийн квинт", tempWolfPlay: "Чоно квинт", tempClosingPlay: "Хаалтын квинт", tempTunedPlay: "Хөгийн терц", tempPurePlay: "Цэвэр терц",
       tempReference: "Бүх системд Ля4 = 440 Гц хэвээр; бусад нотын өндөр өөрчлөгдөнө.",
       tempLatticeTitle: "3:2 ба 5:4-ийн гурвалжин тор",
       tempLatticeHint: "Хөндий цэг нь цэвэр харьцаа, өнгөт цэгүүд 12 нотыг Пифагорын сонгосон жишигтэй харьцуулна. Аккордын гурвалжин нь интервалын зөрөөг харуулна. Зөрөөг томруулсан.",
@@ -740,6 +745,7 @@
       tempLatticeAria: "Цэвэр харьцааны гурвалжин тор, 12 хөглөсөн нот, цэвэр аккордын гурвалжин ба Пифагорын комма; нот дээр дарж үндэс сонгоно",
       tempLatticeFact: "{quality} аккордын терц {third} цент (цэвэрээс {thirdError}), квинт {fifth} цент (цэвэрээс {fifthError}). Харагдаж буй тасархай холбоос нь терцийн хоёр замын 21.51 центийн зөрүүг заана.",
       tempLatticeWolf: "До–Соль энгийн квинт ба Соль♯–Ми♭ хаалтын квинт ялгаатай. Пифагорын 23.46 центийн коммаас шалтгаалж цэвэр Ре♯-ийг Ми♭-ээр шууд орлуулж болохгүй.",
+      tempLatticeWolfFree: "Энэ хөг хаалтын зөрөөг нэг чоно квинтгүйгээр хуваарилсан. Гэхдээ цэвэр торын Ми♭ ба Ре♯ цэгүүд 23.46 центээр ялгаатай хэвээр.",
       tempLatticeClosure: "Ми♭ ба дараагийн цэвэр квинтийн Ре♯ нь торын ялгаатай цэгүүд: 12 квинт 7 октаваас 23.46 центээр давна.",
       tempPartialTitle: "Гармоникийн давхцал ба биение", tempPartialHint: "Цэвэр квинтэд доод 3f, дээд 2f, цэвэр их терцэд доод 5f, дээд 4f гармоник давхцана.",
       tempPartialHintMinor: "Цэвэр бага терцэд доод нотын 6f, дээд нотын 5f гармоник давхцана.",
@@ -3646,7 +3652,8 @@
   }
 
   function tempListenKey(mode) {
-    return state.tempTask === "wolf" ? mode === "melody" ? "tempRegularPlay" : "tempWolfPlay" :
+    return state.tempTask === "wolf" ? mode === "melody" ? "tempRegularPlay" :
+      tempFifths().some(edge => edge.wolf) ? "tempWolfPlay" : "tempClosingPlay" :
       state.tempTask === "third" ? mode === "melody" ? "tempTunedPlay" : "tempPurePlay" :
         mode === "melody" ? "tempMelody" : "tempChord";
   }
@@ -3655,8 +3662,10 @@
     const chord = tempChord();
     const fifths = tempFifths();
     const task = state.tempTask;
+    const hasWolf = fifths.some(edge => edge.wolf);
     $("tempTaskSelect").value = task;
-    $("tempTaskHint").textContent = text({ build: "tempTaskHintBuild", wolf: "tempTaskHintWolf",
+    $("tempTaskHint").textContent = text(task === "wolf" && !hasWolf ? "tempTaskHintWolfFree" :
+      { build: "tempTaskHintBuild", wolf: "tempTaskHintWolf",
       third: "tempTaskHintThird", chord: "tempTaskHintChord" }[task]);
     $("tempSystemSelect").value = state.tempSystem;
     $("tempAdjustGroup").hidden = state.tempSystem !== "adjustable";
@@ -3676,8 +3685,9 @@
     });
     $("tempKeySelect").value = String(state.tempKey);
     $("tempQualitySelect").value = state.tempQuality;
-    $("tempListenFact").textContent = text(task === "third" && state.tempQuality === "minor" ?
-      "tempListenThirdMinor" : { build: "tempListenBuild", wolf: "tempListenWolf",
+    $("tempListenFact").textContent = text(task === "wolf" && !hasWolf ? "tempListenWolfFree" :
+      task === "third" && state.tempQuality === "minor" ? "tempListenThirdMinor" :
+      { build: "tempListenBuild", wolf: "tempListenWolf",
         third: "tempListenThird", chord: "tempListenChord" }[task]);
     $("tempVolume").value = String(state.tempVolume);
     $("tempVolumeValue").textContent = state.tempVolume + "%";
@@ -3686,7 +3696,7 @@
     $("tempChordBadge").textContent = chord.notes.map(note => note.name).join(" · ");
     $("tempLatticeBadge").textContent = task === "wolf" ? "C–G · G♯–E♭" :
       chord.notes.map(note => note.name.replace(/[45]$/, "")).join(" · ");
-    $("tempLatticeFact").textContent = task === "wolf" ? text("tempLatticeWolf") : intervalPhrase("tempLatticeFact", {
+    $("tempLatticeFact").textContent = task === "wolf" ? text(hasWolf ? "tempLatticeWolf" : "tempLatticeWolfFree") : intervalPhrase("tempLatticeFact", {
       quality: text(state.tempQuality === "major" ? "tempMajor" : "tempMinor"),
       third: chord.thirdCents.toFixed(2), thirdError: tempCents(chord.thirdCents -
         (state.tempQuality === "major" ? tempModel.PURE_MAJOR_THIRD : tempModel.PURE_MINOR_THIRD)),
