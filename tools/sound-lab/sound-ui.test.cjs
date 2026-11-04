@@ -36,7 +36,7 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /id="fixedTimeCheck" checked/);
   assert.match(html, /src="sound-string\.js\?v=s037"/);
   assert.match(html, /src="sound-piano\.js\?v=s019"/);
-  assert.match(html, /src="sound-transient\.js\?v=s037"/);
+  assert.match(html, /src="sound-transient\.js\?v=s038"/);
   assert.match(html, /src="sound-sustain\.js\?v=s020b"/);
   assert.match(html, /src="sound-spectrum\.js\?v=s017"/);
   assert.match(html, /src="sound-motion\.js\?v=s020c"/);
@@ -48,7 +48,7 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-scales\.js\?v=s031"/);
   assert.match(html, /src="sound-limit5\.js\?v=s036"/);
   assert.match(html, /src="sound-temperaments\.js\?v=s036"/);
-  assert.match(html, /src="sound-lab\.js\?v=s037"/);
+  assert.match(html, /src="sound-lab\.js\?v=s038"/);
   assert.match(html, /href="sound-lab\.css\?v=s037"/);
   assert.match(html, /id="scaleGapToggle" type="checkbox"/);
   assert.match(html, /id="scaleGapPanel" hidden/);
@@ -142,6 +142,9 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.ok(html.indexOf('id="mixWorkspace"') < html.indexOf('class="experiment-switch mix-experiment-switch"'),
     "Experiment choices belong within left panels, not under the main tabs");
   for (const kind of transientModel.KINDS) assert.match(html, new RegExp('data-strike="' + kind + '"'));
+  for (const family of transientModel.DRUM_VOICES) {
+    assert.match(html, new RegExp('<option value="' + family + '" data-i18n="strikeDrum'));
+  }
   for (const chord of Object.keys(transientModel.STRUM_CHORDS)) {
     assert.match(html, new RegExp('data-guitar-chord="' + chord + '"'));
   }
@@ -2355,7 +2358,7 @@ test("S037 additional guitar chords and strokes remain momentary and quiet until
   assert.equal(app.contexts.length, 1, "Language change cannot create a second audio context");
 });
 
-test("S037 percussion pads switch families silently, expose high frequencies, and start louder", async () => {
+test("S038 percussion pads switch families silently, expose high frequencies, and start louder", async () => {
   const app = fakePage();
   app.fire("modeStrike", "click");
   assert.equal(app.elements.get("strikeStrengthValue").textContent, "55%");
@@ -2370,13 +2373,14 @@ test("S037 percussion pads switch families silently, expose high frequencies, an
     "Drum gain applies the distinct default strength through the original safety cap");
   const previous = context.sources[0];
   const families = [
-    "snare", "cymbal", "steelpan"
+    "snare", "cymbal", "steelpan", "jingles", "woodblock"
   ];
   const waveforms = [];
+  let hits = 1;
   for (const family of families) {
     app.elements.get("strikeDrumVoice").value = family;
     app.fire("strikeDrumVoice", "change");
-    assert.equal(context.sources.length, 1 + waveforms.length, "Selecting percussion is silent");
+    assert.equal(context.sources.length, hits, "Selecting percussion is silent");
     assert.equal(previous.stopped, true, "Changing to another family stops the old membrane");
     assert.equal(app.elements.get("strikeDrumVoice").value, family);
     assert.equal(app.elements.get("strikeDrumTensionGroup").hidden,
@@ -2384,8 +2388,10 @@ test("S037 percussion pads switch families silently, expose high frequencies, an
     assert.equal(app.elements.get("strikeStrengthValue").textContent, "78%");
     assert.ok(app.elements.get("strikeSpectrumHint").textContent.length > 0);
     assert.equal(app.drumButtons[1].textContent,
-      { snare: "Дунд", cymbal: "Райд", steelpan: "Ми4" }[family]);
+      { snare: "Дунд", cymbal: "Райд", steelpan: "Ми4",
+        jingles: "Хэдэн", woodblock: "Дунд" }[family]);
     await app.drumButtons[1].click();
+    hits++;
     waveforms.push(context.sources.at(-1).buffer.getChannelData(0)[400]);
     assert.equal(context.gains.at(-1).gain.value, .21 * .78);
     if (family === "cymbal") {
@@ -2397,11 +2403,24 @@ test("S037 percussion pads switch families silently, expose high frequencies, an
       assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "330 Гц");
       assert.ok(app.elements.get("strikeSpectrumCanvas").drawnText.some(t => t.includes("4 кГц")));
     }
+    if (family === "jingles") {
+      assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "Тогтмол нотгүй");
+      assert.ok(app.elements.get("strikeSpectrumCanvas").drawnText.some(t => t.includes("8 кГц")));
+      await app.drumButtons[1].click();
+      hits++;
+      assert.equal(context.sources.length, hits,
+        "Consecutive shaker taps retrigger while the previous ring remains");
+      assert.equal(context.sources.at(-2).stopped, false);
+    }
+    if (family === "woodblock") {
+      assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "Тогтмол нотгүй");
+      assert.ok(app.elements.get("strikeSpectrumCanvas").drawnText.some(t => t.includes("5 кГц")));
+    }
   }
-  assert.equal(new Set(waveforms).size, 3, "Each percussion family has distinct audio");
+  assert.equal(new Set(waveforms).size, 5, "Each percussion family has distinct audio");
   app.fire("langEn", "click");
-  assert.equal(app.drumButtons[1].textContent, "E4");
-  assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "330 Hz");
+  assert.equal(app.drumButtons[1].textContent, "Mid");
+  assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "No fixed note");
   app.strikeButtons[0].click();
   assert.equal(app.elements.get("strikeStrengthValue").textContent, "55%",
     "Guitar maintains its original strength after playing percussion");

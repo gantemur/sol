@@ -411,14 +411,19 @@
       strikeStrength: "Strength", strikeDecay: "Decay time",
       strikeDrumVoiceTitle: "Percussion family", strikeDrumMembrane: "Bass drum / tom",
       strikeDrumSnare: "Snare", strikeDrumCymbal: "Cymbals", strikeDrumSteelpan: "Steel pan",
+      strikeDrumJingles: "Jingle bells", strikeDrumWoodblock: "Woodblock",
       strikeDrumSize: "Hit a drum", strikeLarge: "Large", strikeMedium: "Medium", strikeSmall: "Small",
       strikeSnareLow: "Low", strikeSnareMid: "Mid", strikeSnareHigh: "High",
       strikeCymbalCrash: "Crash", strikeCymbalRide: "Ride", strikeCymbalHat: "Hi-hat",
       strikePanC: "C4", strikePanE: "E4", strikePanG: "G4", strikeNoSinglePitch: "No fixed note",
+      strikeJinglesFew: "Few", strikeJinglesSome: "Several", strikeJinglesMany: "Many",
+      strikeWoodLow: "Low", strikeWoodMid: "Mid", strikeWoodHigh: "High",
       strikeDrumHint: "Tap any size repeatedly to make a rhythm. Larger membranes vibrate more slowly; their modes are not integer harmonics.",
       strikeSnareHint: "A snare adds a short broadband rattle to a vibrating membrane. Tap low, mid and high to compare.",
       strikeCymbalHint: "Crash, ride and hi-hat use inharmonic plate-like modes and deterministic noise. They do not have a single pitched note.",
       strikePanHint: "The steel pan has tuned pitches with a prominent octave and near-twelfth overtone. Try C4, E4 and G4 as a three-note melody.",
+      strikeJinglesHint: "Shake a few, several or many little bells. Each tap makes a cluster of tiny impacts with overlapping metallic rings.",
+      strikeWoodHint: "Strike a low, mid or high wooden block. Short, uneven resonances make a dry tok rather than a lasting metallic jingle.",
       strikeDrumTension: "Membrane tension", strikeDrumTensionHint: "Tighten the membrane to raise all its natural frequencies.",
       strikeWaveTitle: "Waveform · zoom and explore",
       strikeWaveSubtitle: "See the full decay; zoom in to reveal individual vibrations.",
@@ -436,6 +441,8 @@
       strikeSnareSpectrumHint: "The snare has both membrane resonances and a broad rattling spectrum.",
       strikeCymbalSpectrumHint: "A cymbal spreads energy over many inharmonic, noisy high frequencies.",
       strikePanSpectrumHint: "A steel pan concentrates energy at its tuned pitch, octave and near-twelfth.",
+      strikeJinglesSpectrumHint: "Each tiny collision excites high, inharmonic ringing frequencies at a different moment.",
+      strikeWoodSpectrumHint: "A short contact click and a few strongly damped inharmonic modes make the wooden tap.",
       strikeSpectrumWholeHint: "Average frequency content across the whole modeled hit.",
       strikeWaveAria: "Modeled waveform with a movable time cursor",
       strikeSpectrumAria: "Short-time Fourier magnitude spectrum of the modeled sound",
@@ -449,7 +456,7 @@
       strikeChallenge: "Change the decay time. What happens to the sound and its envelope?",
       strikeLearnMore: "Why do these sounds fade away?",
       strikeLessonOne: "A plucked string vibrates at several frequencies. Its higher harmonics fade faster than its fundamental.",
-      strikeLessonTwo: "A circular membrane has non-integer mode ratios, determined by Bessel functions. A snare adds broadband rattling; cymbals have many inharmonic plate-like vibrations. A tuned steel pan instead emphasizes pitch, octave and a near-twelfth. Compare the sounds and their local spectra.",
+      strikeLessonTwo: "A circular membrane has non-integer mode ratios, determined by Bessel functions. A snare adds broadband rattling; cymbals ring inharmonically; a tuned steel pan emphasizes pitch. Jingle bells combine many tiny metal collisions, while woodblocks decay quickly. Compare their spectra.",
       strikeReady: "Ready. Sound starts only when you tap the pad.",
       strikeStarting: "Preparing the sound…", strikeDone: "Sound triggered. Tap again to make a rhythm.",
       strikeStopped: "Stopped. Tap the pad to try again.",
@@ -459,7 +466,7 @@
       strikeInvalid: "Enter a string frequency between 110 and 880 Hz.",
       strikeDesc: {
         pluck: "A plucked string repeatedly reflects its vibration, losing some energy each cycle. Several strings can form a chord.",
-        kick: "Compare a membrane, rattling snare, inharmonic cymbals and a tuned steel pan. Tap the pads to build a rhythm.",
+        kick: "Compare drums, cymbals, a steel pan, jingle bells and woodblocks. Tap the pads to build a rhythm.",
         piano: "Hammer force changes the brightness of slightly detuned, stiff strings. Their overtones fade at different rates."
       },
       sustainPhase: "03 · Held sounds", sustainChoose: "Choose a held sound",
@@ -957,14 +964,19 @@
       strikeStrength: "Цохилтын хүч", strikeDecay: "Намдах хугацаа",
       strikeDrumVoiceTitle: "Цохивор хөгжмийн төрөл", strikeDrumMembrane: "Басс бөмбөр / том",
       strikeDrumSnare: "Бага бөмбөр", strikeDrumCymbal: "Цан", strikeDrumSteelpan: "Ган бөмбөр",
+      strikeDrumJingles: "Жингэнүүр хонх", strikeDrumWoodblock: "Модон товшуур",
       strikeDrumSize: "Бөмбөр цохих", strikeLarge: "Том", strikeMedium: "Дунд", strikeSmall: "Жижиг",
       strikeSnareLow: "Нам", strikeSnareMid: "Дунд", strikeSnareHigh: "Өндөр",
       strikeCymbalCrash: "Крэш", strikeCymbalRide: "Райд", strikeCymbalHat: "Хай-хэт",
       strikePanC: "До4", strikePanE: "Ми4", strikePanG: "Соль4", strikeNoSinglePitch: "Тогтмол нотгүй",
+      strikeJinglesFew: "Цөөн", strikeJinglesSome: "Хэдэн", strikeJinglesMany: "Олон",
+      strikeWoodLow: "Нам", strikeWoodMid: "Дунд", strikeWoodHigh: "Өндөр",
       strikeDrumHint: "Том, дунд, жижиг бөмбөрийг шууд товшиж хэмнэл үүсгээрэй. Том мембран нам хэлбэлздэг; өөрийн модын давтамжууд бүхэл тоон харьцаатай биш.",
       strikeSnareHint: "Бага бөмбөрт мембраны доргион дээр богино шуугиантай цуурай нэмэгдэнэ. Нам, дунд, өндөр цохилтыг харьцуул.",
       strikeCymbalHint: "Цангийн гурван төрөл нь хоорондоо үл бүхэл харьцаатай хэлбэлзэл ба шуугиантай. Тогтсон ганц нотгүй.",
       strikePanHint: "Ган бөмбөр нь октав болон ойролцоо 3 дахин давтамжийн хүчтэй өнгөтэй, хөглөгдсөн цохивор хөгжим. До4, Ми4, Соль4-өөр аялгуу бүтээ.",
+      strikeJinglesHint: "Цөөн, хэдэн эсвэл олон жижиг хонх сэгсэр. Товшилт бүр олон жижиг мөргөлдөөн, давхацсан металл жингэнээ үүсгэнэ.",
+      strikeWoodHint: "Нам, дунд эсвэл өндөр модон товшуурыг цохиорой. Богино, үл бүхэл харьцаатай хэлбэлзэл нь металлын жингэнээнээс өөр хуурай тог тог авиа гаргана.",
       strikeDrumTension: "Мембраны таталт", strikeDrumTensionHint: "Мембраныг чангалахад бүх хэлбэлзлийн давтамж өснө.",
       strikeWaveTitle: "Дууны долгион · томруулж үзэх",
       strikeWaveSubtitle: "Бүхэлд нь намдлыг, томруулбал нэг нэг хэлбэлзлийг харна.",
@@ -982,6 +994,8 @@
       strikeSnareSpectrumHint: "Бага бөмбөрт мембраны оргилууд дээр шуугианы өргөн спектр нэмэгдэнэ.",
       strikeCymbalSpectrumHint: "Цангийн энерги дээд давтамжийн олон үл бүхэл харьцаатай хэлбэлзэлд тархана.",
       strikePanSpectrumHint: "Ган бөмбөрийн спектрт үндсэн нот, октав ба ойролцоогоор 3 дахин давтамж тодорно.",
+      strikeJinglesSpectrumHint: "Жижиг мөргөлдөөн бүр янз бүрийн мөчид өндөр, үл бүхэл харьцаатай давтамжуудыг өдөөдөг.",
+      strikeWoodSpectrumHint: "Богино цохилт ба хурдан намдах цөөн үл бүхэл харьцаатай модын хэлбэлзэл нийлнэ.",
       strikeSpectrumWholeHint: "Загварчилсан цохилтын турших хугацааны дундаж спектр.",
       strikeWaveAria: "Хугацаа сонгох тэмдэглэгээтэй загвар долгион",
       strikeSpectrumAria: "Загварчилсан дууны хугацааны хэсгийн Фурье спектр",
@@ -995,7 +1009,7 @@
       strikeChallenge: "Намдах хугацааг өөрчил. Дуу болон график хэрхэн өөрчлөгдөж байна вэ?",
       strikeLearnMore: "Яагаад эдгээр дуу намддаг вэ?",
       strikeLessonOne: "Чавхдас олон давтамжаар хэлбэлзэнэ. Өндөр гармоникууд нь үндсэн давтамжаас хурдан намдана.",
-      strikeLessonTwo: "Дугуй мембраны модын давтамжууд Бесселийн функцээс хамаардаг тул бүхэл тоон харьцаатай биш. Бага бөмбөрт шуугиант цуурай нэмэгдэж, цанд олон үл бүхэл харьцаатай хэлбэлзэл бий. Харин хөглөгдсөн ган бөмбөр үндсэн нот, октав ба ойролцоох 3 дахин давтамжийг тодотгодог. Эдгээрийн спектрийг харьцуул.",
+      strikeLessonTwo: "Дугуй мембраны модын давтамжууд Бесселийн функцээс хамаарах тул бүхэл тоон харьцаатай биш. Бага бөмбөр шуугиантай, цан үл бүхэл харьцаатай хэлбэлзэлтэй, харин ган бөмбөр хөглөгдсөн. Жингэнүүр хонх олон жижиг мөргөлдөөнөөс, модон товшуур богино хэлбэлзлээс авиа үүсгэдэг. Спектрийг нь харьцуул.",
       strikeReady: "Бэлэн. Дарахад л дуу гарна.",
       strikeStarting: "Дууг бэлтгэж байна…", strikeDone: "Цохилоо. Дахин дахин товшоод хэмнэл үүсгээрэй.",
       strikeStopped: "Зогслоо. Дахин дарж сонсоорой.",
@@ -1005,7 +1019,7 @@
       strikeInvalid: "Нотын давтамжийг 110–880 Гц-ийн хооронд оруулна уу.",
       strikeDesc: {
         pluck: "Чавхдасны хэлбэлзэл эргэж ойж, энергиэ бага багаар алддаг. Хэд хэдэн чавхдас аккорд үүсгэнэ.",
-        kick: "Мембран, шуугиантай бага бөмбөр, цан, хөглөгдсөн ган бөмбөрийг харьцуул. Товчлууруудыг товшиж хэмнэл үүсгээрэй.",
+        kick: "Бөмбөр, цан, ган бөмбөр, жингэнүүр хонх, модон товшуурыг харьцуул. Товшиж хэмнэл үүсгээрэй.",
         piano: "Алх цохиход өчүүхэн зөрүүтэй чавхдас зэрэг хэлбэлзэнэ. Цохилтын хүчийг өсгөхөд дээд гармоникууд тодорч, авиа хурц болно."
       },
       sustainPhase: "03 · Үргэлжлэх авиа", sustainChoose: "Үргэлжлэх дуу сонгох",
@@ -2671,6 +2685,8 @@
     if (state.strikeDrumVoice === "snare") return 5200;
     if (state.strikeDrumVoice === "cymbal") return 6000;
     if (state.strikeDrumVoice === "steelpan") return 4000;
+    if (state.strikeDrumVoice === "jingles") return 8000;
+    if (state.strikeDrumVoice === "woodblock") return 5000;
     return Math.max(600, transientModel.kickFrequency(0,
       state.strikeDrumSize, state.strikeDrumTension) * 4);
   }
@@ -2709,7 +2725,8 @@
     $("strikeSpectrumBadge").textContent = state.strikeSpectrumView === "local" ?
       "t = " + secondsFixedText(state.strikeCursor) : text("strikeSpectrumWhole");
     const voiceHints = { snare: "strikeSnareSpectrumHint", cymbal: "strikeCymbalSpectrumHint",
-      steelpan: "strikePanSpectrumHint" };
+      steelpan: "strikePanSpectrumHint", jingles: "strikeJinglesSpectrumHint",
+      woodblock: "strikeWoodSpectrumHint" };
     $("strikeSpectrumHint").textContent = text(state.strikeSpectrumView === "local" ?
       (state.strikeKind === "kick" ? voiceHints[state.strikeDrumVoice] : null) ||
         "strikeSpectrumHint" : "strikeSpectrumWholeHint");
@@ -4567,8 +4584,7 @@
     $("strikePluckPositionValue").textContent = Math.round(100 * state.strikePluckPosition) + "%";
     $("strikeDrumSizeGroup").hidden = state.strikeKind !== "kick";
     $("strikeDrumVoice").value = state.strikeDrumVoice;
-    $("strikeDrumTensionGroup").hidden = state.strikeDrumVoice === "cymbal" ||
-      state.strikeDrumVoice === "steelpan";
+    $("strikeDrumTensionGroup").hidden = !["membrane", "snare"].includes(state.strikeDrumVoice);
     $("strikeDrumTension").value = String(Math.round(state.strikeDrumTension * 100));
     $("strikeDrumTensionValue").textContent = Math.round(state.strikeDrumTension * 100) + "%";
     const drumHz = transientModel.drumReferenceHz(state.strikeDrumSize,
@@ -4577,7 +4593,8 @@
       text("strikeNoSinglePitch") : hzText(Math.round(drumHz));
     $("strikeDrumHint").textContent = text({ membrane: "strikeDrumHint",
       snare: "strikeSnareHint", cymbal: "strikeCymbalHint",
-      steelpan: "strikePanHint" }[state.strikeDrumVoice]);
+      steelpan: "strikePanHint", jingles: "strikeJinglesHint",
+      woodblock: "strikeWoodHint" }[state.strikeDrumVoice]);
     $("strikeStrength").value = String(state.strikeStrength);
     $("strikeStrengthValue").textContent = state.strikeStrength + "%";
     $("strikeDecay").value = String(state.strikeDecay);
@@ -4607,7 +4624,9 @@
       const keys = { membrane: ["strikeLarge", "strikeMedium", "strikeSmall"],
         snare: ["strikeSnareLow", "strikeSnareMid", "strikeSnareHigh"],
         cymbal: ["strikeCymbalCrash", "strikeCymbalRide", "strikeCymbalHat"],
-        steelpan: ["strikePanC", "strikePanE", "strikePanG"] };
+        steelpan: ["strikePanC", "strikePanE", "strikePanG"],
+        jingles: ["strikeJinglesFew", "strikeJinglesSome", "strikeJinglesMany"],
+        woodblock: ["strikeWoodLow", "strikeWoodMid", "strikeWoodHigh"] };
       button.textContent = text(keys[state.strikeDrumVoice][index]);
     });
   }
@@ -4845,7 +4864,8 @@
     state.strikeKind = kind;
     state.strikeStrength = state.strikeStrengthByKind[kind];
     state.strikeDecay = kind === "pluck" ? 0.65 : kind === "piano" ? 0.8 :
-      { membrane: .3, snare: .33, cymbal: .55, steelpan: .8 }[state.strikeDrumVoice];
+      { membrane: .3, snare: .33, cymbal: .55, steelpan: .8, jingles: .38,
+        woodblock: .24 }[state.strikeDrumVoice];
     state.strikeCursor = 0;
     state.strikeViewStart = 0;
     state.strikeViewSpan = 3;
@@ -7434,7 +7454,8 @@
     stopStrikeForEdit();
     state.strikeDrumVoice = voice;
     state.strikeDrumSize = "medium";
-    state.strikeDecay = { membrane: .3, snare: .33, cymbal: .55, steelpan: .8 }[voice];
+    state.strikeDecay = { membrane: .3, snare: .33, cymbal: .55, steelpan: .8,
+      jingles: .38, woodblock: .24 }[voice];
     renderStrikeControls();
     drawPlots();
   });
