@@ -17,13 +17,41 @@ test("all Compose examples are valid measured single-part scores", () => {
     const parsed = abc.parse(source);
     assert.equal(parsed.version, 1, name);
     assert.equal(parsed.parts.length, 1, name);
-    assert.equal(parsed.bars.length, 4, name);
-    assert.equal(parsed.totalBeats, name === "waltz" ? 12 : 16, name);
+    const expectedBars = { ode: 16, minuetG: 16, lightly: 16, mozart40: 13,
+      frere: 8, twinkle: 12 }[name] || 4;
+    assert.equal(parsed.bars.length, expectedBars, name);
+    assert.equal(parsed.totalBeats, name === "waltz" ? 12 :
+      name === "minuetG" ? 48 : name === "lightly" ? 32 :
+      name === "mozart40" ? 52 : name === "frere" ? 32 :
+      name === "twinkle" ? 48 : name === "ode" ? 64 : 16, name);
     assert.equal(parsed.parts[0].events[0].startBeat, 0, name);
     assert.equal(parsed.parts[0].events.at(-1).startBeat +
       parsed.parts[0].events.at(-1).durationBeats, parsed.totalBeats, name);
+    assert.ok(parsed.totalBeats * score.secondsPerBeat(parsed) <= 90, name);
+    for (const note of parsed.parts[0].events.filter(e => e.type === "note")) {
+      const hz = score.frequency(note.pitch);
+      assert.ok(hz >= score.MIN_NOTE_HZ && hz <= score.MAX_NOTE_HZ,
+        `${name}: ${score.pitchName(note.pitch)} is in range for every Compose instrument`);
+    }
     assert.equal(score.validate(parsed), parsed);
   }
+});
+
+test("published melodies preserve musical signatures rather than replacing them with exercises", () => {
+  const ode = abc.parse(EXAMPLES.ode);
+  assert.equal(ode.parts[0].events.length, 62);
+  assert.deepEqual(ode.parts[0].events.slice(0, 4).map(e => score.pitchName(e.pitch)),
+    ["B4", "B4", "C5", "D5"]);
+  const mozart = abc.parse(EXAMPLES.mozart40);
+  assert.equal(mozart.key.name, "Gm");
+  assert.equal(mozart.parts[0].events[0].type, "rest");
+  assert.equal(mozart.parts[0].events[0].durationBeats, 3,
+    "The Mozart theme retains the original three-beat lead-in before the violin upbeat");
+  assert.deepEqual(mozart.parts[0].events.slice(1, 3).map(e => score.pitchName(e.pitch)),
+    ["E♭4", "D4"]);
+  const minuet = abc.parse(EXAMPLES.minuetG);
+  assert.equal(minuet.key.name, "G");
+  assert.equal(score.pitchName(minuet.parts[0].events.at(-1).pitch), "G4");
 });
 
 test("ABC note values, rests, split bars and double bars preserve exact timing", () => {
