@@ -1,18 +1,29 @@
 <!doctype html>
-<html lang="mn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Нарны цаг · Sol</title><link rel="stylesheet" href="style.css"></head>
-<body><main><header><a href="../../">← Sol</a><select id="lang" aria-label="Language"><option value="mn">Монгол</option><option value="en">English</option></select></header>
-<h1 data-i="title">Нарны цаг</h1><p data-i="intro">Хэвтээ нарны цагийн хээ гаргах, хэвлэх, сийлэхэд зориулсан загвар.</p>
-<section class="controls"><label><span data-i="latitude">Өргөрөг (хойд +, өмнөд −)</span><input id="lat" type="number" min="-89" max="89" step="0.1" value="47.9"></label>
-<label><span data-i="diameter">Диаметр (мм)</span><input id="size" type="number" min="80" max="1500" step="10" value="300"></label>
-<label><span data-i="hours">Хуваарь</span><select id="interval"><option value="60">1 h</option><option value="30">30 min</option><option value="15">15 min</option></select></label>
-<label><span data-i="style">Дугаар</span><select id="numerals"><option value="arabic">1, 2, 3</option><option value="roman">I, II, III</option></select></label>
-<label><span data-i="guides">Угсралтын тэмдэг</span><input id="guides" type="checkbox" checked></label>
+<!-- SPDX-FileCopyrightText: 2026 Tsogt Gantumur; SPDX-License-Identifier: MIT -->
+<html lang="mn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light">
+<title>Нарны цаг · Sol</title><link rel="stylesheet" href="style.css?v=R01.1">
+<script defer src="sundial.js?v=R01.1"></script><script defer src="ui.js?v=R01.1"></script></head>
+<body><main><header><a href="../../">← Sol</a><div><span id="version" class="badge">…</span> <select id="lang" aria-label="Language / Хэл"><option value="mn">Монгол</option><option value="en">English</option></select></div></header>
+<h1 data-i="title">Нарны цаг</h1><p class="intro" data-i="intro">Хэвлэх, сийлэх, гадаргуу дээр шилжүүлэх хэвтээ нарны цагийн загвар.</p>
+<section class="controls" aria-label="Design">
+<label><span data-i="latitude">Өргөрөг (хойд +, өмнөд −)</span><input id="lat" type="number" min="-89" max="89" step="0.1" value="47.9"></label>
+<label><span data-i="shape">Хэлбэр</span><select id="shape"><option value="rectangle" data-i="rectangle">Тэгш өнцөгт</option><option value="circle" data-i="circle">Дугуй</option></select></label>
+<label class="rect-control"><span data-i="width">Өргөн (мм)</span><input id="width" type="number" min="80" max="1500" step="1" value="300"></label>
+<label class="rect-control"><span data-i="height">Өндөр (мм)</span><input id="height" type="number" min="80" max="1500" step="1" value="200"></label>
+<label id="diameter-control" hidden><span data-i="diameter">Диаметр (мм)</span><input id="diameter" type="number" min="80" max="1500" step="1" value="300"></label>
+<label><span data-i="divisions">Хуваарь</span><select id="interval"><option value="60" data-i="hourly">1 цаг</option><option value="30" data-i="half">30 минут</option><option value="15" data-i="quarter">15 минут</option></select></label>
+<label><span data-i="numerals">Дугаар</span><select id="numerals"><option value="24">6–18</option><option value="12">6–12–6</option><option value="roman">VI–XII–VI</option></select></label>
 </section>
-<p id="error" role="alert"></p><div class="preview"><svg id="dial" role="img" aria-label="Sundial pattern"></svg></div>
-<div class="actions"><button id="svg" data-i="svg">SVG татах</button><button id="pdf" data-i="pdf">PDF татах</button><button id="png" data-i="png">PNG (300 dpi)</button></div>
-<p class="note" data-i="timeNote">Хээ нь орон нутгийн жинхэнэ нарны цагийг заана. Иргэний цагт шилжүүлэхэд уртраг, огноо шаардлагатай.</p>
-<details><summary data-i="table">Цагийн шугамын өнцөг</summary><div id="angles"></div></details>
-<details><summary data-i="gnomon">Нэмэлт: гномоны хэмжээс</summary><p data-i="gnomonNote">Туйлын ирмэг нь дэлхийн тэнхлэгтэй параллель байна. Доорх хэмжээсийг өөрийн материалаар хийхэд ашиглаж болно.</p><label><span data-i="edge">Налуу ирмэгийн урт (мм)</span><input id="edge" type="number" min="20" max="1000" value="100"></label><p id="gnomonSize"></p><button id="gnomonSvg" data-i="gnomonSvg">Гномоны SVG татах</button></details>
-<section class="help"><h2 data-i="use">Хэрэглэх нь</h2><p data-i="instructions">Хээний хэмжээг 100% хэвлэж, хавтгайг тэгш байрлуулна. Үд дундын шугамыг жинхэнэ хойд–өмнөд чиглэлтэй давхцуулж, гномоны ирмэгийг дэлхийн тэнхлэгтэй параллель болгоно. Компасын соронзон хойд зүг нь жинхэнэ хойд зүгээс зөрж болно.</p><p data-i="limits">Зөвхөн хэвтээ, туйлын гномонтой нарны цаг. Экватор болон туйлын тусгай хийц энэ хувилбарт ороогүй.</p></section>
-<footer>© 2026 Tsogt Gantumur · <a href="https://github.com/gantemur/sol/tree/main/tools/sundial/">Source</a> · <a href="LICENSE">MIT License</a> · <a href="README.md">Credits</a></footer></main><script src="sundial.js"></script></body></html>
+<div class="options"><label class="check"><input id="seasons" type="checkbox"><span data-i="seasons">Улирлын шугам</span></label><label class="check"><input id="guides" type="checkbox"><span data-i="guides">Угсралтын тэмдэг</span></label><label class="check"><input id="color" type="checkbox"><span data-i="color">Улирлын шугамыг өнгөөр ялгах</span></label><button id="reset" class="quiet" data-i="reset">Эхлэх утга</button></div>
+<div id="season-controls" class="panel" hidden><label><span data-i="length">Гномоны ирмэг дагуух үзүүрийн зай L (мм)</span><input id="length" type="number" min="1" max="1000" step="1" value="40"></label><p data-i="nodusHelp">Улирлыг ирмэгийн бус, тодорхой үзүүр буюу тэмдэглэсэн цэгийн сүүдрээр уншина. L нь сууриас тэр цэг хүртэлх налуу зай.</p><p id="nodusDimensions"></p></div>
+<p id="error" role="alert"></p><p id="warnings" role="status"></p>
+<section class="drawing" aria-label="Pattern"><div class="drawing-head"><strong data-i="pattern">Загвар</strong><span id="dimensions"></span><button id="zoom" class="quiet" data-i="zoomIn" aria-pressed="false">Томруулах</button></div><div class="preview"><img id="dial" alt="Нарны цагийн загвар" draggable="false"></div><div id="legend" class="legend" hidden></div></section>
+<div class="actions"><button id="pdf" data-i="pdf">PDF татах</button><button id="svg" data-i="svg">SVG татах</button><button id="png" data-i="png">PNG · 300 dpi</button></div>
+<p id="exportStatus" role="status"></p><a id="downloadAgain" hidden data-i="again">Файлыг дахин татах</a>
+<p class="note" data-i="print">Хэмжээг өөрчлөхгүй, 100% хэвлэнэ. Хуудасны хэмжээ нь загварт таарсан: A4/Letter рүү автоматаар багтааж болохгүй. Шугамын хэмжээг шугамаар шалгана.</p>
+<p class="note" data-i="time">Энэ загвар 06:00–18:00 жинхэнэ нарны цагийг заана. Цагийн бүс, уртраг, цагийн тэгшитгэлийн засвар ороогүй.</p>
+<details><summary data-i="table">Цагийн шугамын өнцөг</summary><p data-i="angleHelp">Зураг дээрх үдийн чиглэлээс хэмжинэ: баруун тийш эерэг. Өмнөд хагас бөмбөрцөгт өглөө, оройн тал солигдоно.</p><div id="angles"></div></details>
+<details><summary data-i="gnomon">Нэмэлт: гномоны хажуугийн загвар</summary><p data-i="gnomonHelp">Мод, металл эсвэл хатуу картоноор хийх гурвалжин. Налуу ирмэг O–G нь дэлхийн тэнхлэгтэй параллель; үзүүр G нь улирлын шугамын цэг болно. Угсрах холбоос, нугалах хавтас ороогүй.</p><label><span data-i="length">Гномоны ирмэг дагуух үзүүрийн зай L (мм)</span><input id="profileLength" type="number" min="1" max="1000" step="1" value="40"></label><p id="profileDimensions"></p><div class="actions"><button id="profileSvg" data-i="profileSvg">Гномоны SVG</button><button id="profilePdf" data-i="profilePdf">Гномоны PDF</button></div></details>
+<section class="help"><h2 data-i="installation">Байрлуулах нь</h2><p id="orientation"></p><p data-i="install">Хавтгайг тэгшилж, сумыг жинхэнэ туйлын чиглэлд тааруулна. O нь налуу ирмэгийн суурь, P нь үзүүрийн доорх босоо тусгал. Улирлын шугамыг ашиглах бол L ба үзүүрийн өндрийг яг тааруулах хэрэгтэй. Компасын соронзон хойд зүг жинхэнэ хойд зүгтэй заавал давхцахгүй.</p><p data-i="limits">Туйлын хазайлт ±23.44° гэсэн ойролцоогоор улирлын 3 шугамыг зурна. Сүүдэр хавтангаас гарч болно; тухайн цагт нар заавал мандсан байхгүй. Экватор, туйлын тусгай хийц болон минутын нарийвчлалын баталгаа энэ хувилбарт байхгүй.</p></section>
+<footer>© 2026 Tsogt Gantumur · <a href="https://github.com/gantemur/sol/tree/main/tools/sundial/" data-i="source">Эх код</a> · <a href="LICENSE">MIT License</a> · <a href="README.md" data-i="credits">Тайлбар</a></footer>
+<noscript>JavaScript is required. / JavaScript-ийг идэвхжүүлнэ үү.</noscript></main></body></html>
