@@ -4,6 +4,25 @@ Static, standalone 1D cutting-stock calculator. The main page is bilingual
 (Mongolian by default, English optional). No network service or build step is
 required.
 
+## Dedication
+
+This tool was first created many years ago at the request of my friend
+M. Purev-Erdene, to help with his work as chief engineer on many major
+construction projects. It is dedicated to his memory.
+
+## Credits and licensing status
+
+The historical source is [gantemur/armatur](https://github.com/gantemur/armatur),
+including [revision f937ba9](https://github.com/gantemur/armatur/tree/f937ba9ab252372858f2e81076f2663772f87fcb).
+The current planner and corrected legacy reference continue that tool.
+No third-party runtime libraries, fonts, images, or datasets are bundled here.
+
+The historical revision has no explicit software license. This update adds
+the dedication and provenance information; it does not grant or change a
+license. Historical licensing remains unconfirmed, and this package is not
+represented as wholly MIT-licensed. Any future license grant will specify its
+file scope and include the full applicable license text with the tool.
+
 ## Versions
 
 - **Main page:** current planner, with an improved solver, editable
