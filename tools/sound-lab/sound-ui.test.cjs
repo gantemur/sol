@@ -2432,6 +2432,9 @@ test("S034 temperament lattice, fifths and chord experiments stay synchronized w
   assert.match(app.elements.get("tempLatticeClosureFact").textContent, /23\.46/);
   assert.match(app.elements.get("tempLatticeFact").textContent, /386\.31/);
   assert.match(app.elements.get("tempBeatFact").textContent, /Hz|Гц/);
+  assert.equal(app.elements.get("tempPartialCanvas").drawnText
+    .filter(value => /^[1-6]f$/.test(value)).length, 12,
+  "The harmonic comparison has exactly two six-partial rows, even for a three-note chord");
   assert.ok(app.elements.get("tempCircleCanvas").drawnArcs.length >= 12);
   assert.ok(app.elements.get("tempFifthsCanvas").drawnRects.length >= 13);
   assert.equal([...app.elements.get("tempFifthsBody").innerHTML.matchAll(/<tr/g)].length, 12);
