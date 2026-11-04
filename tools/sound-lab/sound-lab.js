@@ -229,15 +229,17 @@
       tempRegularPlay: "Ordinary fifth", tempWolfPlay: "Wolf fifth", tempClosingPlay: "Closing fifth", tempTunedPlay: "Tuned third", tempPurePlay: "Pure third",
       tempReference: "A4 stays at 440 Hz in every system; the other pitches change.",
       tempLatticeTitle: "The 3:2–5:4 triangular lattice",
-      tempLatticeHint: "Hollow points are exact ratios. Colored dots show twelve tuned pitches against chosen Pythagorean references; local chord triangles show interval errors. Displacements are magnified.",
-      tempExactLegend: "Exact ratio lattice", tempTunedLegend: "Tempered notes", tempTriangleLegend: "Pure chord triangle",
+      tempLatticeHint: "Three exact-ratio rows: hollow points are 3:2–5:4 constructions. Colored pitches are shown beside fifth-chain shadows, not against every possible pure target. Displacements are magnified.",
+      tempExactLegend: "Exact ratio lattice", tempTunedLegend: "Tuned pitches (fifth-chain view)", tempTriangleLegend: "Pure chord triangle",
       tempLatticeScale: "Pitch displacements ×8 (diagram only)",
-      tempLatticeFoot: "→ is a 3:2 fifth; ↗ a 5:4 third. Two exact points with the same twelve-note name may differ by the syntonic comma, not have identical frequency.",
-      tempLatticeAria: "Triangular exact-ratio lattice with twelve shifted temperament notes, pure chord triangle and Pythagorean comma closure; click a named note to change root",
+      tempLatticeFoot: "→ is a 3:2 fifth; ↗ a 5:4 third. The pure D♯ and E♭ fifth-chain endpoints differ by the Pythagorean comma (23.46¢).",
+      tempLatticeAria: "Three-row exact-ratio lattice, fifth-chain shadows of tuned notes, marked pure C to E target and chord triangles; click a named note to change root",
       tempLatticeFact: "The selected {quality} chord has a {third}¢ third ({thirdError}¢ from pure) and {fifth}¢ fifth ({fifthError}¢ from pure). Where visible, the dashed line shows the 21.51¢ third discrepancy.",
       tempLatticeWolf: "The ordinary C–G and the G♯–E♭ closing fifth are different. The 23.46¢ Pythagorean comma is why a pure-fifth D♯ cannot replace E♭ without changing the keyboard.",
       tempLatticeWolfFree: "This tuning distributes the closure without a single wolf. The exact lattice nevertheless has distinct E♭ and D♯ points, separated by 23.46¢.",
-      tempLatticeClosure: "E♭ and the next pure-fifth D♯ are different exact lattice points: 12 fifths overshoot 7 octaves by 23.46¢.",
+      tempLatticeConstruction: "C→E by four tuned fifths: {actual}¢. Exact 5:4 target: 386.31¢ (difference {error}¢). {outcome}",
+      tempLatticeConstructionExact: "The two constructions agree: E lands on the exact 5:4 point, even though its Pythagorean shadow is elsewhere.",
+      tempLatticeConstructionOther: "The two constructions differ. A colored note missing its Pythagorean shadow does not mean every pure interval is missed.",
       tempPartialTitle: "Matching harmonics and beating", tempPartialHint: "A pure fifth shares 3f of the low note with 2f of the high one; a pure major third shares 5f and 4f.",
       tempPartialHintMinor: "A pure minor third shares 6f of its lower note with 5f of its upper note.",
       tempPartialAria: "Harmonic frequency ladders for the two compared notes, highlighting near matching upper partials",
@@ -738,15 +740,17 @@
       tempRegularPlay: "Энгийн квинт", tempWolfPlay: "Чоно квинт", tempClosingPlay: "Хаалтын квинт", tempTunedPlay: "Хөгийн терц", tempPurePlay: "Цэвэр терц",
       tempReference: "Бүх системд Ля4 = 440 Гц хэвээр; бусад нотын өндөр өөрчлөгдөнө.",
       tempLatticeTitle: "3:2 ба 5:4-ийн гурвалжин тор",
-      tempLatticeHint: "Хөндий цэг нь цэвэр харьцаа, өнгөт цэгүүд 12 нотыг Пифагорын сонгосон жишигтэй харьцуулна. Аккордын гурвалжин нь интервалын зөрөөг харуулна. Зөрөөг томруулсан.",
-      tempExactLegend: "Цэвэр тор", tempTunedLegend: "Хөглөсөн нот", tempTriangleLegend: "Цэвэр аккордын гурвалжин",
+      tempLatticeHint: "Цэвэр харьцааны гурван мөр: хөндий цэгүүд 3:2 ба 5:4-ийн зам. Өнгөт нотыг квинтийн замын жишигтэй харьцуулсан; энэ нь цэвэр терцийн бүх боломж биш. Зөрөөг томруулсан.",
+      tempExactLegend: "Цэвэр тор", tempTunedLegend: "Хөглөсөн нот (квинтийн зам)", tempTriangleLegend: "Цэвэр аккордын гурвалжин",
       tempLatticeScale: "Зөрөөг зурагт ×8 томруулав",
-      tempLatticeFoot: "→ нь 3:2 квинт, ↗ нь 5:4 терц. Нэр ижил ч хоёр цэвэр замын давтамж синтоник коммагаар зөрж болно.",
-      tempLatticeAria: "Цэвэр харьцааны гурвалжин тор, 12 хөглөсөн нот, цэвэр аккордын гурвалжин ба Пифагорын комма; нот дээр дарж үндэс сонгоно",
+      tempLatticeFoot: "→ нь 3:2 квинт, ↗ нь 5:4 терц. Цэвэр Ре♯ ба Ми♭-ийн замын төгсгөл Пифагорын коммагаар (23.46 цент) зөрнө.",
+      tempLatticeAria: "Цэвэр харьцааны гурван мөр, квинтийн замын жишиг, До–Ми цэвэр 5:4 зорилтот цэг ба аккордын гурвалжин; нот дээр дарж үндэс сонгоно",
       tempLatticeFact: "{quality} аккордын терц {third} цент (цэвэрээс {thirdError}), квинт {fifth} цент (цэвэрээс {fifthError}). Харагдаж буй тасархай холбоос нь терцийн хоёр замын 21.51 центийн зөрүүг заана.",
       tempLatticeWolf: "До–Соль энгийн квинт ба Соль♯–Ми♭ хаалтын квинт ялгаатай. Пифагорын 23.46 центийн коммаас шалтгаалж цэвэр Ре♯-ийг Ми♭-ээр шууд орлуулж болохгүй.",
       tempLatticeWolfFree: "Энэ хөг хаалтын зөрөөг нэг чоно квинтгүйгээр хуваарилсан. Гэхдээ цэвэр торын Ми♭ ба Ре♯ цэгүүд 23.46 центээр ялгаатай хэвээр.",
-      tempLatticeClosure: "Ми♭ ба дараагийн цэвэр квинтийн Ре♯ нь торын ялгаатай цэгүүд: 12 квинт 7 октаваас 23.46 центээр давна.",
+      tempLatticeConstruction: "До→Ми дөрвөн хөглөсөн квинтээр: {actual} цент. Цэвэр 5:4 зорилт: 386.31 цент (зөрүү {error} цент). {outcome}",
+      tempLatticeConstructionExact: "Хоёр зам таарлаа: Ми яг 5:4-ийн цэгт хүрнэ. Гэвч Пифагорын жишиг нь торын өөр цэгт байна.",
+      tempLatticeConstructionOther: "Хоёр зам зөрж байна. Нот Пифагорын жишгээс зөрсөн нь бүх цэвэр интервалыг алдсан гэсэн үг биш.",
       tempPartialTitle: "Гармоникийн давхцал ба биение", tempPartialHint: "Цэвэр квинтэд доод 3f, дээд 2f, цэвэр их терцэд доод 5f, дээд 4f гармоник давхцана.",
       tempPartialHintMinor: "Цэвэр бага терцэд доод нотын 6f, дээд нотын 5f гармоник давхцана.",
       tempPartialAria: "Хоёр нотын гармоникийн шугам болон ойролцоо давхцах дээд гармоникууд",
@@ -3702,7 +3706,18 @@
         (state.tempQuality === "major" ? tempModel.PURE_MAJOR_THIRD : tempModel.PURE_MINOR_THIRD)),
       fifth: chord.fifthCents.toFixed(2), fifthError: tempCents(chord.fifthCents - tempModel.FIFTH_CENTS)
     });
-    $("tempLatticeClosureFact").textContent = text("tempLatticeClosure");
+    // The fourth fifth and the pure 5:4 point are different *constructions*
+    // of E. Meantone identifies their frequencies; the Pythagorean shadow
+    // still occupies its own, distant exact-lattice coordinate.
+    const constructedThird = tempModel.chord(state.tempSystem, 0, "major", 440,
+      state.tempNarrow).thirdCents;
+    const thirdGap = constructedThird - tempModel.PURE_MAJOR_THIRD;
+    $("tempLatticeConstructionFact").textContent = intervalPhrase("tempLatticeConstruction", {
+      actual: constructedThird.toFixed(2),
+      error: tempCents(Math.abs(thirdGap) < .01 ? 0 : thirdGap),
+      outcome: text(Math.abs(thirdGap) < .01 ?
+        "tempLatticeConstructionExact" : "tempLatticeConstructionOther")
+    });
     const pair = tempPlayback();
     const gap = tempModel.partialGap(pair.notes[0].hz, pair.notes[1].hz, pair.interval);
     $("tempPartialBadge").textContent = gap.lowerHarmonic + "f ≈ " + gap.upperHarmonic + "f";
@@ -6436,7 +6451,7 @@
 
   function tempCirclePositions(width, height) {
     const cx = width / 2, cy = height / 2;
-    const radius = Math.max(42, Math.min(width * .34, height * .34));
+    const radius = Math.max(42, Math.min(width * .4, height * .4));
     return tempModel.CIRCLE.map((name, index) => {
       const angle = -Math.PI / 2 + index * Math.PI / 6;
       return { name, pc: tempModel.PITCH_CLASSES[index], x: cx + radius * Math.cos(angle),
@@ -6453,10 +6468,10 @@
     const compact = width < 580;
     const minM = compact ? Math.max(-4, Math.min(rootM - 2, 5)) : -4;
     const maxM = compact ? minM + 7 : 10;
-    const unit = Math.min((width - 72) / (maxM - minM + 1), height / 7.5);
+    const unit = Math.min((width - 72) / (maxM - minM + 1), height / 4.6);
     const position = (m, n) => ({
       x: 40 + (m - minM + n / 2) * unit,
-      y: height * .52 - n * Math.sqrt(3) / 2 * unit
+      y: height * .48 - n * Math.sqrt(3) / 2 * unit
     });
     return { notes, rootM, compact, minM, maxM, unit, position };
   }
@@ -6478,10 +6493,11 @@
     // fifth; the 60-degree step represents an exact 5:4 major third.
     ctx.lineWidth = 1;
     ctx.strokeStyle = "#e1edf2";
-    for (let n = -3; n <= 3; n++) for (let m = minM - 2; m <= maxM + 2; m++) {
+    for (let n = -1; n <= 1; n++) for (let m = minM - 2; m <= maxM + 2; m++) {
       const p = position(m, n);
       if (!inView(p)) continue;
       for (const [dm, dn] of [[1, 0], [0, 1], [-1, 1]]) {
+        if (n + dn > 1) continue;
         const q = position(m + dm, n + dn);
         if (!inView(q)) continue;
         ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
@@ -6496,6 +6512,7 @@
     ctx.textAlign = "left";
     ctx.fillText("n = 1  ·  5:4", 12, Math.max(48, position(minM, 1).y - 8));
     ctx.fillText("n = 0  ·  3:2", 12, position(minM, 0).y - 8);
+    ctx.fillText("n = −1", 12, position(minM, -1).y - 8);
 
     // An unobtrusive route through the twelve named pitches, in chromatic
     // order. It is only a visual guide, not an additional tuning rule.
@@ -6585,6 +6602,30 @@
       ctx.fillText("D♯ (+23.46¢)", extra.x, extra.y - 16);
     }
 
+    // The marked 5:4 target is not the (4,0) Pythagorean shadow of E.
+    // Under quarter-comma meantone, the C→E route of four *tempered*
+    // fifths agrees with this exact 5:4 target, despite the shadow's
+    // distant position on the lattice. This is a relative-pitch comparison.
+    const c = position(0, 0), target = position(0, 1);
+    if (inView(c) && inView(target)) {
+      const third = tempModel.chord(state.tempSystem, 0, "major", 440,
+        state.tempNarrow).thirdCents;
+      const exact = Math.abs(third - tempModel.PURE_MAJOR_THIRD) < .01;
+      ctx.save();
+      ctx.strokeStyle = exact ? "#188c78" : "#bd8640";
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5, 4]);
+      ctx.beginPath(); ctx.moveTo(c.x, c.y); ctx.lineTo(target.x, target.y); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.beginPath(); ctx.arc(target.x, target.y, 6.5, 0, 2 * Math.PI);
+      ctx.fillStyle = exact ? "#23a18b" : "#fff"; ctx.fill(); ctx.stroke();
+      ctx.fillStyle = exact ? "#137865" : "#8d622f";
+      ctx.font = "bold " + (compact ? 10 : 12) + "px system-ui, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("E · 5:4" + (exact ? " ✓" : ""), target.x + 9, target.y - 9);
+      ctx.restore();
+    }
+
     // A small separate keyboard-order strip keeps nominally equal-pitch
     // classes legible even when their fifth-chain representatives are far away.
     const stripY = height - 34;
@@ -6651,12 +6692,12 @@
     const edges = tempFifths();
     const chord = tempChord();
     const selectedNotes = state.tempTask === "wolf" ? [0, 7, 8, 3] : chord.notes.map(note => note.pc);
-    const compact = width < 370;
-    const nodeRadius = compact ? 15 : 20;
+    const compact = width < 400;
+    const nodeRadius = compact ? 13 : 16;
     ctx.lineCap = "round";
     for (const edge of edges) {
       const start = points[edge.index], end = points[(edge.index + 1) % 12];
-      ctx.lineWidth = edge.wolf ? 6 : 4;
+      ctx.lineWidth = edge.wolf ? 5 : 3;
       ctx.strokeStyle = edge.wolf ? "#db9238" : edge.deviation < -.01 ? "#378acc" : "#6c9c83";
       ctx.beginPath(); ctx.moveTo(start.x, start.y); ctx.lineTo(end.x, end.y); ctx.stroke();
     }
@@ -6670,14 +6711,14 @@
       ctx.lineWidth = selected ? 3 : 1.8;
       ctx.beginPath(); ctx.arc(point.x, point.y, nodeRadius, 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
       ctx.fillStyle = selected ? "#fff" : chordIndex >= 0 ? "#126b60" : "#345b7a";
-      ctx.font = (compact ? "bold 11px " : "bold 14px ") + "system-ui, sans-serif";
+      ctx.font = (compact ? "bold 10px " : "bold 12px ") + "system-ui, sans-serif";
       ctx.fillText(point.name, point.x, point.y);
     }
     ctx.fillStyle = "#325d7b";
-    ctx.font = "bold " + (compact ? 12 : 17) + "px system-ui, sans-serif";
+    ctx.font = "bold " + (compact ? 11 : 15) + "px system-ui, sans-serif";
     ctx.fillText(state.tempTask === "wolf" ? "C–G / G♯–E♭" :
       tempModel.NOTE_NAMES[state.tempKey] + " " + text(state.tempQuality === "major" ? "tempMajor" : "tempMinor"), width / 2, height / 2 - 8);
-    ctx.font = "12px system-ui, sans-serif";
+    ctx.font = (compact ? "10" : "12") + "px system-ui, sans-serif";
     ctx.fillText("(3/2)¹² ≠ 2⁷", width / 2, height / 2 + 14);
   }
 

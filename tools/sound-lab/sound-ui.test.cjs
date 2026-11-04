@@ -48,8 +48,8 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-scales\.js\?v=s031"/);
   assert.match(html, /src="sound-limit5\.js\?v=s030"/);
   assert.match(html, /src="sound-temperaments\.js\?v=s034"/);
-  assert.match(html, /src="sound-lab\.js\?v=s034c"/);
-  assert.match(html, /href="sound-lab\.css\?v=s034"/);
+  assert.match(html, /src="sound-lab\.js\?v=s035"/);
+  assert.match(html, /href="sound-lab\.css\?v=s035"/);
   assert.match(html, /id="scaleGapToggle" type="checkbox"/);
   assert.match(html, /id="scaleGapPanel" hidden/);
   assert.match(html, /src="sound-recorder\.js"/);
@@ -97,6 +97,8 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /id="tempChallenge"[^>]*hidden/);
   assert.match(html, /id="tempExplanation"[^>]*hidden/);
   assert.match(html, /id="tempCircleCanvas"/);
+  assert.match(html, /id="tempLatticeCanvas" width="920" height="300"/);
+  assert.match(html, /id="tempLatticeConstructionFact"/);
   assert.match(html, /id="tempFifthsCanvas"/);
   assert.match(html, /id="tempFifthsBody"/);
   assert.equal([...html.matchAll(/data-temp-play="/g)].length, 2);
@@ -2429,7 +2431,12 @@ test("S034 temperament lattice, fifths and chord experiments stay synchronized w
   assert.equal(app.elements.get("tempQualitySelect").value, "major");
   assert.ok(app.elements.get("tempLatticeCanvas").drawnArcs.length >= 12);
   assert.match(app.elements.get("tempLatticeCanvas").drawnText.join(" "), /D♯/);
-  assert.match(app.elements.get("tempLatticeClosureFact").textContent, /23\.46/);
+  assert.match(app.elements.get("tempLatticeConstructionFact").textContent, /386\.31/);
+  assert.match(app.elements.get("tempLatticeConstructionFact").textContent, /таарлаа/);
+  assert.ok(app.elements.get("tempLatticeCanvas").drawnText.includes("n = −1"),
+    "The lattice's three rows include the minor-third construction");
+  assert.ok(app.elements.get("tempLatticeCanvas").drawnText.includes("E · 5:4 ✓"),
+    "Quarter-comma meantone identifies C→E with the exact 5:4 target");
   assert.match(app.elements.get("tempLatticeFact").textContent, /386\.31/);
   assert.match(app.elements.get("tempBeatFact").textContent, /Hz|Гц/);
   assert.equal(app.elements.get("tempPartialCanvas").drawnText
@@ -2449,8 +2456,8 @@ test("S034 temperament lattice, fifths and chord experiments stay synchronized w
   app.fire("tempKeySelect", "change", { target: { value: "8" } });
   assert.match(app.elements.get("tempChordFact").textContent, /427\.37/);
   // Lattice coordinates are deliberately not keyboard-order coordinates.
-  // In the fake 710×210 canvas, G's exact n=0 fifth reference is (180,109).
-  app.fire("tempLatticeCanvas", "click", { clientX: 180, clientY: 112 });
+  // In the fake 710×210 canvas, G's tempered fifth-chain dot is near (253,105).
+  app.fire("tempLatticeCanvas", "click", { clientX: 253, clientY: 105 });
   assert.equal(app.elements.get("tempKeySelect").value, "7");
   app.fire("tempQualitySelect", "change", { target: { value: "minor" } });
   assert.match(app.elements.get("tempCircleBadge").textContent, /Минор/);
@@ -2469,6 +2476,8 @@ test("S034 temperament lattice, fifths and chord experiments stay synchronized w
   assert.equal(app.tempPlayButtons[1].textContent, "▶ Closing fifth");
   assert.match(app.elements.get("tempTaskHint").textContent, /has no wolf/);
   assert.match(app.elements.get("tempLatticeFact").textContent, /without a single wolf/);
+  assert.match(app.elements.get("tempLatticeConstructionFact").textContent, /400\.00/);
+  assert.match(app.elements.get("tempLatticeConstructionFact").textContent, /\+13\.69/);
   app.fire("tempSystemSelect", "change", { target: { value: "meantone" } });
   assert.equal(app.tempPlayButtons[1].textContent, "▶ Wolf fifth");
   app.fire("tempTaskSelect", "change", { target: { value: "third" } });

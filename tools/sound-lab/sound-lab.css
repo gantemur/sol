@@ -272,10 +272,10 @@ h1, h2, p { margin-top: 0; }
   color: #306a8b; font-weight: 750; font-size: 11px; background: #f5faff; cursor: pointer; }
 .temp-narrow-presets button.selected { background: #e0f6ed; border-color: #26a28a; color: #106f65; }
 .temp-visuals { min-width: 0; }
-.temp-lower-visuals { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: start; }
+.temp-lower-visuals { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: 14px; align-items: start; }
 .temp-lower-visuals > .chart-panel { min-width: 0; }
 .temp-lattice-panel #tempLatticeCanvas { display: block; width: 100%; height: auto;
-  aspect-ratio: 920 / 510; margin: 10px 0 2px; cursor: pointer; touch-action: manipulation; }
+  aspect-ratio: 920 / 300; margin: 10px 0 2px; cursor: pointer; touch-action: manipulation; }
 .temp-partial-panel #tempPartialCanvas { display: block; width: 100%; height: auto;
   aspect-ratio: 920 / 210; margin: 13px 0 5px; }
 .temp-lattice-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px;
@@ -400,7 +400,7 @@ h1, h2, p { margin-top: 0; }
   #temperamentWorkspace .visuals { grid-template-columns: 1fr; }
   #temperamentWorkspace .chart-heading { display: block; }
   #temperamentWorkspace .chart-badge { display: inline-block; margin-top: 8px; }
-  .temp-lattice-panel #tempLatticeCanvas { min-height: 330px; aspect-ratio: auto; }
+  .temp-lattice-panel #tempLatticeCanvas { min-height: 245px; aspect-ratio: auto; }
   .temp-partial-panel #tempPartialCanvas { min-height: 190px; aspect-ratio: auto; }
   .chart-panel canvas { height: 188px; }
   .chart-panel #spectrumCanvas { height: 188px; }
