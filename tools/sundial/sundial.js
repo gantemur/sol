@@ -241,15 +241,27 @@
   function profile(input) {
     const p=validate(input),f=planeFrame(p),H=p.length;
     if(f.raised){
-      // A supported rod lies parallel to the receiving surface; its nodus
-      // is at normal distance h above the reference point O.
-      const w=150,h=Math.max(H+30,65),y=14,x=18,items=[];
-      items.push({type:'path',pts:[[10,y+H],[w-10,y+H]],width:.35,color:'#111111',dash:[]});
-      items.push({type:'path',pts:[[x,y],[w-20,y]],width:1,color:'#111111',dash:[]});
-      items.push({type:'path',pts:[[x,y],[x,y+H]],width:.25,color:'#777777',dash:[2,1]});
-      items.push({type:'circle',x:w/2,y,r:1,width:.3,color:'#111111'});
+      // The rod is polar-aligned even when deliberately held off an oblique
+      // face: it is horizontal in this cross-section ONLY if f.pn=0.
+      const a=f.polarAngle*DEG,rod=46,w=150,h=H+rod*Math.sin(a)+40,
+        baseY=h-13,nx=w/2,ny=baseY-H,items=[];
+      const ax=rod*.5*Math.cos(a),ay=rod*.5*Math.sin(a);
+      items.push({type:'path',pts:[[10,baseY],[w-10,baseY]],width:.35,color:'#111111',dash:[]});
+      items.push({type:'path',pts:[[nx-ax,ny+ay],[nx+ax,ny-ay]],width:1,color:'#111111',dash:[]});
+      items.push({type:'path',pts:[[nx,ny],[nx,baseY]],width:.25,color:'#777777',dash:[2,1]});
+      items.push({type:'circle',x:nx,y:ny,r:1,width:.3,color:'#111111'});
       items.push({type:'text',x:w/2,y:7,value:'POLAR ROD / POINT G',size:3.2});
-      items.push({type:'text',x:w/2,y:y+H/2,value:'h = '+n(H)+' mm',size:3.2});
+      items.push({type:'text',x:w/2,y:12,value:'h = '+n(H)+' mm; alpha = '+n(f.polarAngle)+' deg',size:3.2});
+      return {w,h,items,p,version:VERSION};
+    }
+    if(f.polarAngle>89.99999){
+      // Polar axis normal to the receiver: support a perpendicular rod.
+      const w=115,h=H+32,x=w/2,y=h-13,items=[];
+      items.push({type:'path',pts:[[10,y],[w-10,y]],width:.35,color:'#111111',dash:[]});
+      items.push({type:'path',pts:[[x,y],[x,y-H]],width:1,color:'#111111',dash:[]});
+      items.push({type:'circle',x,y:y-H,r:1,width:.3,color:'#111111'});
+      items.push({type:'text',x:w/2,y:8,value:'PERPENDICULAR POLAR ROD',size:3.2});
+      items.push({type:'text',x:w/2,y:13,value:'L = h = '+n(H)+' mm',size:3.2});
       return {w,h,items,p,version:VERSION};
     }
     const alpha=f.polarAngle*DEG,B=H*Math.cos(alpha),z=H*Math.sin(alpha),
