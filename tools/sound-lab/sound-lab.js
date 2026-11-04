@@ -100,12 +100,14 @@
       earAdjustHint: "The second pitch begins slightly mistuned. Listen and adjust it, then press Check.",
       earCheck: "Check my tuning", earHarmonicsTitle: "The two sets of harmonics",
       earHarmonicsHint: "Compare up to eight partials of each sound. No sliding target circles or matching pairs are marked.",
+      earHarmonicsAria: "Modeled harmonic lines for the reference and adjustable notes",
       earOctaveTitle: "Bring the note into one octave", earOctaveHint: "The orange dot is the note you tuned; the green dot is the same note class moved into C4–C5 by multiplying or dividing its frequency by two.",
+      earOctaveAria: "Checked note and its octave-equivalent copy on a C3 to C5 pitch scale",
       earOctaveAxis: "C3 · C4 · C5 →", earChallenge: "Tune 3:4 and 2:3 downward. After checking, use ×2 to see where each pitch lands in the C4 octave. Which upward ratios produce those same pitches?",
       earLearnMore: "How can you tune by listening for beating?",
       earLessonOne: "For 3:2, 3f of the reference coincides with 2f of the tuned note. For 5:4, the 5th and 4th coincide; for 3:4, 3f of the reference and 4f of the lower note coincide. Off-tuning creates beating if those partials are audible. Pure sines lack those upper partials, and piano-string inharmonicity shifts them slightly.",
       earLessonTwo: "Multiplying C4 by 3/4, 2/3 or 1/2 makes a pitch below C4. Multiplying that result by 2 moves it into the C4–C5 octave without changing its pitch class: 3/4 × 2 = 3/2 and 2/3 × 2 = 4/3. Repeated ratio steps are explored in the 3-limit and 5-limit tabs.",
-      earReady: "Ready. Press Play and adjust the second note.", earStarting: "Preparing two tones…",
+      earReady: "Ready. Tap In sequence or Together to listen, then tune the second note.", earStarting: "Preparing two tones…",
       earPlaying: "Compare the notes. Together, listen for beating; in sequence, compare their pitches.",
       earStopped: "Stopped. You can still adjust the note and check it.",
       earHidden: "The two notes stopped when you left the page.",
@@ -544,12 +546,14 @@
       earAdjustHint: "Хоёр дахь нот зориуд бага зэрэг зөрүүтэй. Чихээр тааруулаад «Шалгах» дар.",
       earCheck: "Шалгах", earHarmonicsTitle: "Хоёр нотын гармоникууд",
       earHarmonicsHint: "Хоёр авианы 8 хүртэл гармоникийг харьцуул. Зорилтот давхцлыг заасан тэмдэглэгээ байхгүй.",
+      earHarmonicsAria: "Эхний болон тааруулах нотын гармоникуудын загвар шугамууд",
       earOctaveTitle: "Нэг октавт буцаах", earOctaveHint: "Улбар цэг нь тааруулсан нот; ногоон цэг нь түүнийг 2-оор үржүүлж эсвэл хувааж До4–До5 октавт оруулсан байрлал.",
+      earOctaveAria: "Шалгасан нот ба түүний октаваар шилжүүлсэн хувилбарын До3–До5 хуваарь",
       earOctaveAxis: "До3 · До4 · До5 →", earChallenge: "3:4 ба 2:3-ыг доош тааруулж, дараа нь ×2-оор До4-ийн октавт оруул. Ямар дээш харьцаануудтай ижил нот гарав?",
       earLearnMore: "Яагаад биениеийг сонсож тааруулж болдог вэ?",
       earLessonOne: "3:2 үед эхний авианы 3f ба хоёр дахь авианы 2f гармоник давхцана. 5:4-д 5f ба 4f, харин 3:4-д 3f ба 4f давхцана. Хэрэв эдгээр гармоник сонсогдож байвал зөрүүгээс биение үүснэ. Цэвэр синусад дээд гармоник байхгүй, төгөлдөр хуурын чавхдасны гармоник бага зэрэг зөрдөг.",
       earLessonTwo: "До4-ийг 3/4, 2/3, 1/2-оор үржүүлбэл До4-өөс нам болно. Үр дүнг 2-оор үржүүлбэл нотын нэр өөрчлөгдөхгүй, До4–До5 октавт орно: 3/4 × 2 = 3/2, 2/3 × 2 = 4/3. Дараагийн 3-хязгаар, 5-хязгаар туршилтад ийм алхмыг давтана.",
-      earReady: "Бэлэн. Тоглуулаад хоёр дахь нотыг тааруулна уу.", earStarting: "Хоёр авиаг эхлүүлж байна…",
+      earReady: "Бэлэн. «Ээлжлэн» эсвэл «Хамт» дарж сонсоод хоёр дахь нотыг тааруулаарай.", earStarting: "Хоёр авиаг эхлүүлж байна…",
       earPlaying: "Ээлжлэн сонсвол нотын өндрийг, хамт сонсвол гармоникуудын биениеийг харьцуул.",
       earStopped: "Зогслоо. Тохируулах, шалгах боломжтой хэвээр.",
       earHidden: "Хуудсаас гарахад хоёр авиа зогслоо.",
@@ -3833,6 +3837,8 @@
     $("intervalWaveCanvas").setAttribute("aria-label", text("intervalWaveAria"));
     $("intervalSpectrumCanvas").setAttribute("aria-label", text("intervalSpectrumAria"));
     $("earAdjust").setAttribute("aria-label", text("earAdjustAria"));
+    $("earHarmonicsCanvas").setAttribute("aria-label", text("earHarmonicsAria"));
+    $("earOctaveCanvas").setAttribute("aria-label", text("earOctaveAria"));
     $("earTaskSelect").setAttribute("aria-label", text("earTasksAria"));
     $("earSounds").setAttribute("aria-label", text("earSoundAria"));
     $("earPlayModes").setAttribute("aria-label", text("earCompareAria"));
