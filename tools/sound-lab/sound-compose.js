@@ -17,7 +17,34 @@
     first: "X:1\nT:First melody\nM:4/4\nL:1/4\nQ:1/4=96\nK:C\nC D E G | A2 G2 | E F G2 | C4 |]",
     rests: "X:2\nT:Listen to the rests\nM:4/4\nL:1/8\nQ:1/4=104\nK:C\nC2 z2 E2 G2 | A4 z G2 z | F2 E2 D2 C2 | C8 |]",
     waltz: "X:3\nT:Little waltz\nM:3/4\nL:1/4\nQ:1/4=108\nK:G\nG A B | d2 B | A G F | G3 |]",
-    minor: "X:4\nT:Minor melody\nM:4/4\nL:1/4\nQ:1/4=88\nK:Am\nA B c d | e2 d2 | c B A G | A4 |]"
+    minor: "X:4\nT:Minor melody\nM:4/4\nL:1/4\nQ:1/4=88\nK:Am\nA B c d | e2 d2 | c B A G | A4 |]",
+    ode: "X:5\nT:Ode to Joy - Beethoven\nM:4/4\nL:1/4\nQ:1/4=112\nK:G\n" +
+      "B B c d | d c B A | G G A B | B3/2 A/2 A2 |\n" +
+      "B B c d | d c B A | G G A B | A3/2 G/2 G2 |\n" +
+      "A A B G | A B/2 c/2 B G | A B/2 c/2 B A | G A D2 |\n" +
+      "B B c d | d c B A | G G A B | A3/2 G/2 G2 |]",
+    minuetG: "X:6\nT:Minuet in G - Petzold (first strain)\nM:3/4\nL:1/4\nQ:1/4=112\nK:G\n" +
+      "d G/2 A/2 B/2 c/2 | d G G | e c/2 d/2 e/2 f/2 | g G G |\n" +
+      "c d/2 c/2 B/2 A/2 | B c/2 B/2 A/2 G/2 | F G/2 A/2 B/2 G/2 | A3 |\n" +
+      "d G/2 A/2 B/2 c/2 | d G G | e c/2 d/2 e/2 f/2 | g G G |\n" +
+      "c d/2 c/2 B/2 A/2 | B c/2 B/2 A/2 G/2 | A B/2 A/2 G/2 F/2 | G3 |]",
+    lightly: "X:7\nT:Lightly Row - traditional\nM:2/4\nL:1/8\nQ:1/4=96\nK:G\n" +
+      "d B B2 | c A A2 | G A B c | d d d2 |\n" +
+      "d B B2 | c A A2 | G B d d | B2 z2 |\n" +
+      "A A A A | A B c2 | B B B B | B c d2 |\n" +
+      "d B B2 | c A A2 | G B d d | B2 z2 |]",
+    mozart40: "X:8\nT:Symphony No. 40 - Mozart (opening, octave lower)\nM:2/2\nL:1/4\nQ:1/4=180\nK:Gm\n" +
+      "z3 E/2 D/2 | D E/2 D/2 D E/2 D/2 | D B z B/2 A/2 |\n" +
+      "G G/2 F/2 E E/2 D/2 | C C z D/2 C/2 | C D/2 C/2 C D/2 C/2 |\n" +
+      "C A z A/2 G/2 | ^F ^F/2 E/2 D D/2 C/2 | B, B, z B/2 A/2 |\n" +
+      "A c ^F A | G D z B/2 A/2 | A c ^F A | G B A/2 G/2 F/2 E/2 |]",
+    frere: "X:9\nT:Frere Jacques - traditional\nM:4/4\nL:1/4\nQ:1/4=112\nK:C\n" +
+      "C D E C | C D E C | E F G2 | E F G2 |\n" +
+      "G/2 A/2 G/2 F/2 E C | G/2 A/2 G/2 F/2 E C | C G, C2 | C G, C2 |]",
+    twinkle: "X:10\nT:Twinkle, Twinkle - traditional\nM:4/4\nL:1/4\nQ:1/4=100\nK:C\n" +
+      "C C G G | A A G2 | F F E E | D D C2 |\n" +
+      "G G F F | E E D2 | G G F F | E E D2 |\n" +
+      "C C G G | A A G2 | F F E E | D D C2 |]"
   });
 
   const UI = Object.freeze({
@@ -26,6 +53,13 @@
       intro: "Write a short ABC score, choose one instrument and hear it follow your notes. No sound plays until you press Play.",
       example: "Example score", exampleFirst: "First melody", exampleRests: "Notes and rests",
       exampleWaltz: "Waltz in G", exampleMinor: "Minor tune",
+      exampleStudies: "Writing exercises", exampleMelodies: "Complete tunes and themes",
+      exampleOde: "Beethoven · Ode to Joy (16 bars)",
+      exampleMinuetG: "Petzold · Minuet in G (16 bars)",
+      exampleLightly: "Lightly Row · folk (16 bars)",
+      exampleMozart40: "Mozart · Symphony No. 40 (opening)",
+      exampleFrere: "Frère Jacques · folk (8 bars)",
+      exampleTwinkle: "Twinkle, Twinkle · folk (12 bars)",
       instrument: "Instrument", flute: "Flute", violin: "Violin", morin: "Morin khuur",
       guitar: "Guitar", piano: "Piano", chimes: "Chimes",
       tuning: "Tuning", equal: "Equal (12-TET)", pythagorean: "Pythagorean",
@@ -49,6 +83,13 @@
       intro: "ABC тэмдэглэгээгээр богино ая бичиж, нэг хөгжмөөр тоглуулаарай. «Тоглуулах»-ыг дарахаас өмнө дуу гарахгүй.",
       example: "Жишээ ая", exampleFirst: "Энгийн аялгуу", exampleRests: "Нот ба завсарлага",
       exampleWaltz: "Соль мажор вальс", exampleMinor: "Минор аялгуу",
+      exampleStudies: "Нот бичих дасгал", exampleMelodies: "Бүтэн ая болон сонгодог сэдэв",
+      exampleOde: "Бетховен · Баяр баясгалангийн магтуу (16 такт)",
+      exampleMinuetG: "Петцольд · Соль мажор менуэт (16 такт)",
+      exampleLightly: "Lightly Row · ардын дуу (16 такт)",
+      exampleMozart40: "Моцарт · 40-р симфони (эхлэл)",
+      exampleFrere: "Фрэр Жак · ардын дуу (8 такт)",
+      exampleTwinkle: "Гялалзах одод · ардын дуу (12 такт)",
       instrument: "Хөгжмийн зэмсэг", flute: "Лимбэ", violin: "Хийл", morin: "Морин хуур",
       guitar: "Гитар", piano: "Төгөлдөр хуур", chimes: "Хоолойт хонх",
       tuning: "Хөг", equal: "Тэнцүү (12-TET)", pythagorean: "Пифагорын",
@@ -133,6 +174,10 @@
       if (typeof this.document.querySelectorAll === "function") {
         this.document.querySelectorAll("[data-compose-i18n]").forEach(node => {
           node.textContent = this.t(node.getAttribute("data-compose-i18n"));
+        });
+        this.document.querySelectorAll("[data-compose-group-i18n]").forEach(node => {
+          // Setting optgroup.textContent would delete all of its options.
+          node.label = this.t(node.getAttribute("data-compose-group-i18n"));
         });
       }
       this.$("composePlayPause").textContent = this.t(this.player.status === "playing" ? "pause" :
