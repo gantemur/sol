@@ -157,3 +157,80 @@ test("a pending audio-context request cannot launch after Stop", async () => {
   assert.equal(context.sources.length, 0);
   assert.equal(player.status, "stopped");
 });
+
+
+test("playback coalesces a tie chain and preserves the original notation", () => {
+  const tied = abc.parse("M:4/4\nL:1/4\nQ:1/4=120\nK:C\nC2-C2- | C2 C z |]");
+  const original = structuredClone(tied);
+  const notes = playerModel.scheduledEvents(tied);
+  assert.deepEqual(notes.map(event => [event.startBeat, event.durationBeats]), [[0, 6], [6, 1]]);
+  assert.deepEqual(playerModel.scheduledEvents(tied, 5).map(event =>
+    [event.startBeat, event.durationBeats]), [[0, 6], [6, 1]], "Resume retains the chain's attack time");
+  assert.deepEqual(playerModel.scheduledEvents(tied, 6).map(event => event.startBeat), [6]);
+  assert.deepEqual(playerModel.scheduledEvents(tied, tied.totalBeats), []);
+  notes[0].pitch.accidental = 1;
+  assert.deepEqual(tied, original, "Coalescing and caller edits do not mutate the score");
+  assert.throws(() => playerModel.scheduledEvents(tied, -1), /offset/);
+});
+
+test("a tied chain has one attack and ends at its combined duration", async t => {
+  const tied = abc.parse("M:4/4\nL:1/4\nQ:1/4=120\nK:C\nC2-C2- | C2 D2 |]");
+  for (const instrument of ["flute", "violin", "morin", "guitar", "piano", "chimes"]) {
+    const { player, context } = audioFixture();
+    t.after(() => player.stop());
+    player.configure({ score: tied, instrument });
+    await player.play();
+    assert.equal(context.sources.length, 1, instrument);
+    if (["flute", "violin", "morin"].includes(instrument)) {
+      assert.ok(Math.abs(context.sources[0].stoppedAt - 3.085) < 1e-9,
+        "The sustained note spans all three written C notes");
+    }
+    for (const now of [1, 2, 2.5]) { context.currentTime = now; player.tick(); }
+    assert.equal(context.sources.length, 1, instrument + " does not retrigger at a tie");
+    context.currentTime = 2.95;
+    player.tick();
+    assert.equal(context.sources.length, 2, instrument + " attacks the next untied note");
+    player.stop();
+  }
+});
+
+test("pause and resume within a tied chain preserve its ending and sample position", async t => {
+  const tied = abc.parse("M:4/4\nL:1/4\nQ:1/4=120\nK:C\nC2-C2- | C4 |]");
+  for (const instrument of ["violin", "guitar", "piano", "chimes"]) {
+    const { player, context } = audioFixture();
+    t.after(() => player.stop());
+    player.configure({ score: tied, instrument });
+    await player.play();
+    context.currentTime = 1.58;
+    player.pause();
+    assert.equal(player.currentBeat, 3, "Pause is inside the second notated C");
+    context.currentTime = 10;
+    await player.play();
+    const resumed = context.sources.at(-1);
+    assert.equal(context.sources.length, 2, instrument);
+    assert.equal(resumed.startedAt, 10.08);
+    if (instrument === "violin") {
+      assert.ok(Math.abs(resumed.stoppedAt - 12.585) < 1e-9, "Sustain ends at the chain's final beat");
+    } else {
+      assert.equal(resumed.offset, 1.5, "Resume seeks from the original attack, not the continuation");
+    }
+    context.currentTime = 10.45;
+    player.tick();
+    assert.equal(context.sources.length, 2, "No new attack at the next notated continuation");
+    player.stop();
+  }
+});
+
+test("resuming an already-decayed tied pluck does not create a fresh attack", async t => {
+  const { player, context } = audioFixture();
+  t.after(() => player.stop());
+  const tied = abc.parse("M:4/4\nL:1/4\nQ:1/4=120\nK:C\nC4- | C4 |]");
+  player.configure({ score: tied, instrument: "guitar" });
+  await player.play();
+  context.currentTime = 2.58;
+  player.pause();
+  context.currentTime = 5;
+  await player.play();
+  assert.equal(player.currentBeat, 5);
+  assert.equal(context.sources.length, 1, "The two-second buffer has already decayed");
+});

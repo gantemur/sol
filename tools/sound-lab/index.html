@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#192d49">
   <meta name="description" content="Explore sound waves, plucked and held instrument models, harmonic synthesis, noise, a theremin and sirens with interactive plots and bilingual controls.">
   <title>Sound Lab · Sol</title>
-  <link rel="stylesheet" href="sound-lab.css?v=s039">
+  <link rel="stylesheet" href="sound-lab.css?v=s040a">
   <script src="sound-model.js" defer></script>
   <script src="sound-string.js?v=s037" defer></script>
   <script src="sound-piano.js?v=s019" defer></script>
@@ -23,10 +23,10 @@
   <script src="sound-harmonics.js" defer></script>
   <script src="sound-noise.js" defer></script>
   <script src="sound-recorder.js" defer></script>
-  <script src="sound-score.js?v=s039" defer></script>
-  <script src="sound-abc.js?v=s039" defer></script>
-  <script src="sound-score-player.js?v=s039" defer></script>
-  <script src="sound-compose.js?v=s039b" defer></script>
+  <script src="sound-score.js?v=s040a" defer></script>
+  <script src="sound-abc.js?v=s040a" defer></script>
+  <script src="sound-score-player.js?v=s040a" defer></script>
+  <script src="sound-compose.js?v=s040a" defer></script>
   <script src="sound-lab.js?v=s039a" defer></script>
 </head>
 <body>
@@ -1303,10 +1303,20 @@
         <div class="field-group">
           <label class="field-title" for="composeExample" data-compose-i18n="example">Жишээ ая</label>
           <select id="composeExample">
-            <option value="first" data-compose-i18n="exampleFirst">Энгийн аялгуу</option>
-            <option value="rests" data-compose-i18n="exampleRests">Нот ба завсарлага</option>
-            <option value="waltz" data-compose-i18n="exampleWaltz">Соль мажор вальс</option>
-            <option value="minor" data-compose-i18n="exampleMinor">Минор аялгуу</option>
+            <optgroup label="Нот бичих дасгал" data-compose-group-i18n="exampleStudies">
+              <option value="first" data-compose-i18n="exampleFirst">Энгийн аялгуу</option>
+              <option value="rests" data-compose-i18n="exampleRests">Нот ба завсарлага</option>
+              <option value="waltz" data-compose-i18n="exampleWaltz">Соль мажор вальс</option>
+              <option value="minor" data-compose-i18n="exampleMinor">Минор аялгуу</option>
+            </optgroup>
+            <optgroup label="Аялгуу ба сонгодог бүтээлийн хэсгүүд" data-compose-group-i18n="exampleMelodies">
+              <option value="ode" data-compose-i18n="exampleOde">Бетховен · Баяр баясгалангийн магтуу (16 такт)</option>
+              <option value="minuetG" data-compose-i18n="exampleMinuetG">Петцольд · Соль мажор менуэт (32 такт)</option>
+              <option value="lightly" data-compose-i18n="exampleLightly">Lightly Row · ардын дуу (16 такт)</option>
+              <option value="mozart40" data-compose-i18n="exampleMozart40">Моцарт · 40-р симфони (20 тактын сэдэв)</option>
+              <option value="frere" data-compose-i18n="exampleFrere">Фрэр Жак · ардын дуу (8 такт)</option>
+              <option value="twinkle" data-compose-i18n="exampleTwinkle">Гялалзах одод · ардын дуу (12 такт)</option>
+            </optgroup>
           </select>
         </div>
         <div class="compose-options">
@@ -1343,6 +1353,7 @@
           <label class="field-title" for="composeText" data-compose-i18n="score">ABC нотын бичиг</label>
           <textarea id="composeText" rows="9" spellcheck="false" maxlength="8192" autocapitalize="off" autocomplete="off" aria-describedby="composeScoreHint"></textarea>
           <p id="composeScoreHint" class="field-help" data-compose-i18n="scoreHint">L:1/4 үед C D E G нь дөрөвт нотууд; C2 нь хоёр дахин урт, z нь завсарлага.</p>
+          <p class="field-help" data-compose-i18n="limitsHint">32 такт, 256 нот/завсарлага, 90 секунд хүртэл. Эхний такт дутуу байж болно; C2-C нь ижил өндөртэй нотуудыг залгуулна.</p>
           <label class="compose-file-button" for="composeLoad" data-compose-i18n="load">.abc / .txt файл нээх</label>
           <input id="composeLoad" class="sr-only" type="file" accept=".abc,.txt,text/plain" aria-label="ABC text score">
         </div>
@@ -1358,6 +1369,7 @@
             <svg id="composeScoreSvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Нотын мөр"></svg>
           </div>
           <p id="composeNow" class="compose-now" aria-live="off"></p>
+          <p id="composePresetInfo" class="field-help" hidden><span id="composePresetDescription"></span><a id="composeSource" target="_blank" rel="noopener noreferrer" data-compose-i18n="source">Нотын эх сурвалж</a></p>
           <p class="field-help" data-compose-i18n="tuningHint">Ижил нотыг өөр хөгөөр тоглуулахад өндөр нь бага зэрэг өөрчлөгдөнө.</p>
         </section>
         <section class="panel chart-panel compose-help-panel" aria-labelledby="compose-help-title">
