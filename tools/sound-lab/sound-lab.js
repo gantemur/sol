@@ -73,12 +73,12 @@
       mixExperimentsAria: "Explore combined and complex sounds",
       mixExperimentBeats: "Two frequencies", mixExperimentHarmonics: "Build timbre",
       mixExperimentIntervals: "Interval", mixExperimentNoise: "Noise",
-      intervalExperiment: "Ratios", earExperiment: "Tune by ear",
+      intervalExperiment: "Ratios", earExperiment: "Tune",
       harmonicPhase: "05 · Build a sound", noisePhase: "05 · Explore noise",
-      intervalPhase: "06 · Musical intervals", earPhase: "06 · Tune by ear", scalePhase: "06 · 3-limit", limit5Phase: "06 · 5-limit",
+      intervalPhase: "06 · Musical intervals", earPhase: "06 · Tune", scalePhase: "06 · 3-limit", limit5Phase: "06 · 5-limit",
       tuningExperimentsAria: "Tuning experiments", scaleExperiment: "3-limit", limit5Experiment: "5-limit",
-      earChoose: "Tune real intervals by ear",
-      earDescription: "Tune one frequency ratio at a time, including downward steps. See how multiplying or dividing by two returns a note to the same octave; repeat these ideas later in the 3-limit and 5-limit tabs.",
+      earChoose: "Tune the next note",
+      earDescription: "Choose a ratio and tune the second note by ear. Try downward intervals and octave shifts too.",
       earPlay: "Hear the two notes", earStop: "Stop listening",
       earPlayCaption: "Compare in sequence or together", earPlaySequential: "First note, then second · repeated",
       earPlayTogether: "Both notes together · repeated",
@@ -100,7 +100,7 @@
       earAdjustHint: "The second pitch begins slightly mistuned. Listen and adjust it, then press Check.",
       earCheck: "Check my tuning", earHarmonicsTitle: "The two sets of harmonics",
       earHarmonicsHint: "Compare up to eight partials of each sound. No sliding target circles or matching pairs are marked.",
-      earOctaveTitle: "Where does the note land?", earOctaveHint: "After Check, locate your pitch between C3 and C5, then see its octave-equivalent place in C4–C5.",
+      earOctaveTitle: "Bring the note into one octave", earOctaveHint: "The orange dot is the note you tuned; the green dot is the same note class moved into C4–C5 by multiplying or dividing its frequency by two.",
       earOctaveAxis: "C3 · C4 · C5 →", earChallenge: "Tune 3:4 and 2:3 downward. After checking, use ×2 to see where each pitch lands in the C4 octave. Which upward ratios produce those same pitches?",
       earLearnMore: "How can you tune by listening for beating?",
       earLessonOne: "For 3:2, 3f of the reference coincides with 2f of the tuned note. For 5:4, the 5th and 4th coincide; for 3:4, 3f of the reference and 4f of the lower note coincide. Off-tuning creates beating if those partials are audible. Pure sines lack those upper partials, and piano-string inharmonicity shifts them slightly.",
@@ -517,12 +517,12 @@
       mixExperimentsAria: "Холимог ба нийлмэл авианы туршилтууд",
       mixExperimentBeats: "Хоёр давтамж", mixExperimentHarmonics: "Өнгө бүтээх",
       mixExperimentIntervals: "Интервал", mixExperimentNoise: "Шуугиан",
-      intervalExperiment: "Харьцаа", earExperiment: "Чихээр тааруулах",
+      intervalExperiment: "Харьцаа", earExperiment: "Тааруулах",
       harmonicPhase: "05 · Авиа бүтээх", noisePhase: "05 · Шуугиан судлах",
-      intervalPhase: "06 · Хөгжмийн интервал", earPhase: "06 · Чихээр хөглөх", scalePhase: "06 · 3-хязгаар", limit5Phase: "06 · 5-хязгаар",
+      intervalPhase: "06 · Хөгжмийн интервал", earPhase: "06 · Тааруулах", scalePhase: "06 · 3-хязгаар", limit5Phase: "06 · 5-хязгаар",
       tuningExperimentsAria: "Хөгийн туршилтууд", scaleExperiment: "3-хязгаар", limit5Experiment: "5-хязгаар",
-      earChoose: "Сонсож байгаад нот тааруулах",
-      earDescription: "Нэг харьцааг сонгоод дараагийн нотыг чихээр тааруул. Доош үржүүлэх, октаваар буцаахыг турш. Дараа нь эдгээр алхмыг 3-хязгаар ба 5-хязгаарт давтана.",
+      earChoose: "Нот тааруулах",
+      earDescription: "Харьцаагаа сонгоод хоёр дахь нотыг чихээр тааруул. Доош алхам, октаваар шилжүүлэхийг ч бас туршаарай.",
       earPlay: "Хоёр нотыг сонсох", earStop: "Зогсоох",
       earPlayCaption: "Ээлжлэн эсвэл хамт сонсоорой", earPlaySequential: "Эхний нот, дараа нь хоёр дахь · давтана",
       earPlayTogether: "Хоёр нот хамт · давтана",
@@ -544,7 +544,7 @@
       earAdjustHint: "Хоёр дахь нот зориуд бага зэрэг зөрүүтэй. Чихээр тааруулаад «Шалгах» дар.",
       earCheck: "Шалгах", earHarmonicsTitle: "Хоёр нотын гармоникууд",
       earHarmonicsHint: "Хоёр авианы 8 хүртэл гармоникийг харьцуул. Зорилтот давхцлыг заасан тэмдэглэгээ байхгүй.",
-      earOctaveTitle: "Нот хаана буух вэ?", earOctaveHint: "До3–До5 завсарт тааруулсан давтамжийг «Шалгах»-ын дараа харна. До4–До5 октавт шилжүүлж харьцуул.",
+      earOctaveTitle: "Нэг октавт буцаах", earOctaveHint: "Улбар цэг нь тааруулсан нот; ногоон цэг нь түүнийг 2-оор үржүүлж эсвэл хувааж До4–До5 октавт оруулсан байрлал.",
       earOctaveAxis: "До3 · До4 · До5 →", earChallenge: "3:4 ба 2:3-ыг доош тааруулж, дараа нь ×2-оор До4-ийн октавт оруул. Ямар дээш харьцаануудтай ижил нот гарав?",
       earLearnMore: "Яагаад биениеийг сонсож тааруулж болдог вэ?",
       earLessonOne: "3:2 үед эхний авианы 3f ба хоёр дахь авианы 2f гармоник давхцана. 5:4-д 5f ба 4f, харин 3:4-д 3f ба 4f давхцана. Хэрэв эдгээр гармоник сонсогдож байвал зөрүүгээс биение үүснэ. Цэвэр синусад дээд гармоник байхгүй, төгөлдөр хуурын чавхдасны гармоник бага зэрэг зөрдөг.",
@@ -993,6 +993,7 @@
     earChecked: false,
     earVolume: 38,
     earPlaying: false,
+    earStarting: false,
     earStatus: "earReady",
     earError: false,
     scaleDown: 0,
@@ -2209,6 +2210,7 @@
   const intervalAudio = new IntervalEngine(audio);
   const earAudio = new EarEngine(audio);
   let earDrawFrame = null;
+  let earPlaybackRequest = 0;
   const scaleAudio = new ScaleEngine(audio);
   let scaleFrame = null;
   let scaleActive = null;
@@ -2801,6 +2803,7 @@
 
   function renderEarControls() {
     const data = earStep();
+    $("earTaskSelect").value = state.earTask;
     $("earInstruction").textContent = earPhrase("earInstruction", {
       from: earName("C", "4"), to: earName(data.note, data.octave), ratio: data.p + ":" + data.q
     });
@@ -2808,14 +2811,14 @@
     $("earAdjustLabel").textContent = text("earSliderLabel");
     $("earVolume").value = String(state.earVolume);
     $("earVolumeValue").textContent = state.earVolume + "%";
-    $("earButton").classList.toggle("playing", state.earPlaying);
-    $("earButton").setAttribute("aria-pressed", String(state.earPlaying));
-    $("earPlayIcon").textContent = state.earPlaying ? "■" : "▶";
-    $("earPlayLabel").textContent = text(state.earPlaying ? "earStop" : "earPlay");
-    $("earPlayCaption").textContent = text(state.earPattern === "alternating" ? "earPlaySequential" : "earPlayTogether");
+    document.querySelectorAll("[data-ear-play]").forEach(button => {
+      const active = (state.earPlaying || state.earStarting) && button.dataset.earPlay === state.earPattern;
+      button.classList.toggle("playing", active);
+      button.setAttribute("aria-pressed", String(active));
+      button.textContent = (active ? "■ " : "▶ ") + text(button.dataset.earPlay === "alternating" ? "earAlternating" : "earTogether");
+    });
     for (const [selector, key, active] of [
-      ["[data-ear-task]", "earTask", state.earTask], ["[data-ear-help]", "earHelp", state.earHelp],
-      ["[data-ear-sound]", "earSound", state.earSound], ["[data-ear-pattern]", "earPattern", state.earPattern]
+      ["[data-ear-help]", "earHelp", state.earHelp], ["[data-ear-sound]", "earSound", state.earSound]
     ]) {
       document.querySelectorAll(selector).forEach(button => {
         const selected = button.dataset[key] === active;
@@ -2825,6 +2828,7 @@
     }
     const result = $("earResult");
     result.hidden = !state.earChecked;
+    $("earOctavePanel").hidden = !state.earChecked || !data.shifts;
     result.classList.toggle("good", state.earChecked && earModel.rating(data.errorCents) === "excellent");
     if (state.earChecked) {
       const rating = text({ excellent: "earCheckExcellent", close: "earCheckClose", retry: "earCheckRetry" }[
@@ -2844,23 +2848,41 @@
   }
 
   function stopEarSound(immediate = false, message = "earStopped") {
+    earPlaybackRequest++;
     earAudio.stop(immediate);
     state.earPlaying = false;
+    state.earStarting = false;
     setEarStatus(message);
     renderEarControls();
   }
 
-  async function toggleEarSound() {
-    if (state.earPlaying) { stopEarSound(); return; }
-    if (state.mode !== "tuning" || state.tuningKind !== "ear") return;
+  async function toggleEarPlayback(pattern) {
+    if (!earModel.PATTERNS.includes(pattern) || state.mode !== "tuning" || state.tuningKind !== "ear") return;
+    if ((state.earPlaying || state.earStarting) && state.earPattern === pattern) {
+      stopEarSound();
+      return;
+    }
+    // A new choice replaces the old playback, even if AudioContext.resume() is pending.
+    const request = ++earPlaybackRequest;
+    earAudio.stop(true);
+    state.earPlaying = false;
+    state.earStarting = true;
+    state.earPattern = pattern;
     setEarStatus("earStarting");
+    renderEarControls();
     try {
-      if (await earAudio.start()) {
+      const started = await earAudio.start();
+      if (request !== earPlaybackRequest) return;
+      state.earStarting = false;
+      if (started) {
         state.earPlaying = true;
         setEarStatus("earPlaying");
-        renderEarControls();
+      } else {
+        setEarStatus("earReady");
       }
+      renderEarControls();
     } catch (_) {
+      if (request !== earPlaybackRequest) return;
       stopEarSound(true, "earBlocked");
       setEarStatus("earBlocked", true);
     }
@@ -2900,14 +2922,6 @@
     setEarStatus("earReady");
     renderEarControls();
     drawPlots();
-  }
-
-  function selectEarPattern(pattern) {
-    if (!earModel.PATTERNS.includes(pattern) || state.earPattern === pattern) return;
-    stopEarSound();
-    state.earPattern = pattern;
-    setEarStatus("earReady");
-    renderEarControls();
   }
 
   function resetEar() {
@@ -3819,9 +3833,9 @@
     $("intervalWaveCanvas").setAttribute("aria-label", text("intervalWaveAria"));
     $("intervalSpectrumCanvas").setAttribute("aria-label", text("intervalSpectrumAria"));
     $("earAdjust").setAttribute("aria-label", text("earAdjustAria"));
-    $("earTasks").setAttribute("aria-label", text("earTasksAria"));
+    $("earTaskSelect").setAttribute("aria-label", text("earTasksAria"));
     $("earSounds").setAttribute("aria-label", text("earSoundAria"));
-    $("earPatterns").setAttribute("aria-label", text("earCompareAria"));
+    $("earPlayModes").setAttribute("aria-label", text("earCompareAria"));
     $("earHelpModes").setAttribute("aria-label", text("earHelpAria"));
     $("scalePresets").setAttribute("aria-label", text("scalePresetsAria"));
     $("scaleTonicChoices").setAttribute("aria-label", text("scaleTonicAria"));
@@ -5060,6 +5074,7 @@
   }
 
   function drawEarOctave() {
+    if ($("earOctavePanel").hidden) return;
     const { ctx, width, height } = plotContext($("earOctaveCanvas"));
     const data = earStep();
     const left = 53, right = width - 45, y = height / 2 + 18;
@@ -5081,7 +5096,7 @@
       ctx.fillStyle = "#64829c"; ctx.fillText(label, xSafe(earModel.START_HZ * ratio), y + 41);
     }
     const referenceX = xFor(earModel.START_HZ);
-    ctx.fillStyle = "#168f82";
+    ctx.fillStyle = "#3d84c8";
     ctx.beginPath(); ctx.arc(referenceX, y, 8, 0, Math.PI * 2); ctx.fill();
     if (state.earChecked) {
       const tunedX = xSafe(data.tunedHz);
@@ -5864,14 +5879,12 @@
   document.querySelectorAll("[data-tuning-kind]").forEach(button => {
     button.addEventListener("click", () => selectTuningKind(button.dataset.tuningKind));
   });
-  document.querySelectorAll("[data-ear-task]").forEach(button => {
-    button.addEventListener("click", () => selectEarTask(button.dataset.earTask));
-  });
+  $("earTaskSelect").addEventListener("change", event => selectEarTask(event.target.value));
   document.querySelectorAll("[data-ear-sound]").forEach(button => {
     button.addEventListener("click", () => selectEarSound(button.dataset.earSound));
   });
-  document.querySelectorAll("[data-ear-pattern]").forEach(button => {
-    button.addEventListener("click", () => selectEarPattern(button.dataset.earPattern));
+  document.querySelectorAll("[data-ear-play]").forEach(button => {
+    button.addEventListener("click", () => toggleEarPlayback(button.dataset.earPlay));
   });
   document.querySelectorAll("[data-ear-help]").forEach(button => {
     button.addEventListener("click", () => {
@@ -5880,7 +5893,6 @@
       drawPlots();
     });
   });
-  $("earButton").addEventListener("click", toggleEarSound);
   $("earAdjust").addEventListener("input", event => setEarAdjustment(event.target.value));
   $("earVolume").addEventListener("input", event => {
     state.earVolume = Math.max(0, Math.min(100, Number(event.target.value)));
