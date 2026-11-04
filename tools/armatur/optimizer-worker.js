@@ -1,5 +1,7 @@
+/* SPDX-FileCopyrightText: 2026 Tsogt Gantumur
+ * SPDX-License-Identifier: MIT */
 "use strict";
-importScripts("engine.js");
+importScripts("engine.js?v=20261103-r2");
 
 self.onmessage = function (event) {
   var id = event.data.id;

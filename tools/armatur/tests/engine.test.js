@@ -1,3 +1,5 @@
+/* SPDX-FileCopyrightText: 2026 Tsogt Gantumur
+ * SPDX-License-Identifier: MIT */
 "use strict";
 const assert = require("node:assert/strict");
 const Engine = require("../engine.js");

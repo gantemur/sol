@@ -10,18 +10,38 @@ This tool was first created many years ago at the request of my friend
 M. Purev-Erdene, to help with his work as chief engineer on many major
 construction projects. It is dedicated to his memory.
 
-## Credits and licensing status
+## Credits and license
 
 The historical source is [gantemur/armatur](https://github.com/gantemur/armatur),
 including [revision f937ba9](https://github.com/gantemur/armatur/tree/f937ba9ab252372858f2e81076f2663772f87fcb).
 The current planner and corrected legacy reference continue that tool.
 No third-party runtime libraries, fonts, images, or datasets are bundled here.
 
-The historical revision has no explicit software license. This update adds
-the dedication and provenance information; it does not grant or change a
-license. Historical licensing remains unconfirmed, and this package is not
-represented as wholly MIT-licensed. Any future license grant will specify its
-file scope and include the full applicable license text with the tool.
+Copyright (c) 2020, 2026 Tsogt Gantumur.
+
+This Armatur package is distributed under the [MIT License](LICENSE),
+including the current planner, corrected legacy version, tests, and ordinary
+accompanying documentation. The owner explicitly approved this license for
+Armatur on 3 November 2026. The legacy subfolder includes its own copy of the
+full license so it can be distributed independently.
+
+The historical upstream revision did not include a license. The MIT grant
+applies to this distributed Sol Armatur package; it does not change other
+Sol tools or rewrite historical revisions in the upstream repository.
+The copyright years identify the published 2020 source and the 2026 update,
+not a claim that the tool was first created in 2020.
+
+Generated cutting lists contain the user's inputs and calculated results;
+using or sharing those lists does not require reproducing the interface footer.
+
+## Browser updates
+
+The HTML, stylesheet, scripts, worker, and worker's engine import use the same
+release token in their asset URLs. Update all of these URLs together when
+releasing changed assets; the static tests check that the chain stays in sync.
+This avoids mixing a newer HTML page with an older cached translation script
+or stylesheet. Unknown static translation keys leave the readable HTML text
+intact instead of displaying internal key names.
 
 ## Versions
 
@@ -93,6 +113,8 @@ It is an estimate rather than a manufacturer's nominal mass table.
 From the Sol repository root:
 
     node tools/armatur/tests/engine.test.js
+    node tools/armatur/tests/static.test.js
+    node tools/armatur/tests/i18n.test.js
     node scripts/check-static.js
     node scripts/test-static-check.js
 

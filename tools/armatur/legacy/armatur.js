@@ -3,6 +3,8 @@
  * pattern choices (no saw kerf), but uses integer lengths and validates input.
  * It is independent of the new Armatur engine.
  */
+/* SPDX-FileCopyrightText: 2020, 2026 Tsogt Gantumur
+ * SPDX-License-Identifier: MIT */
 (function (root, factory) {
   "use strict";
   var api = factory();

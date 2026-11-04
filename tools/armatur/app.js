@@ -1,3 +1,5 @@
+/* SPDX-FileCopyrightText: 2026 Tsogt Gantumur
+ * SPDX-License-Identifier: MIT */
 (function () {
   "use strict";
   var Engine = window.ArmaturEngine;
@@ -26,7 +28,7 @@
       helpText: "Энгийн арга урт хэсгүүдээс эхэлж савааг дүүргэнэ. Сайжруулсан арга өөр олон байрлалыг шалгана. Бага захиалгад оновчтой эсэхийг баталж чадна; том захиалгад олдсон хамгийн сайн төлөвлөгөөг харуулна. Ирний өргөн нь бодит зүсэлт бүрт хамаарна. Савааг яг дүүргэвэл сүүлийн хэсгийг тусад нь таслах шаардлагагүй.",
       legacyLink: "Засварласан хуучин хувилбар",
       footer: "Дотооддоо тооцоолно · сүлжээ, бүртгэл шаардлагагүй",
-      sourceLink: "Эх код", creditsLink: "Түүх ба лицензийн мэдээлэл",
+      sourceLink: "Эх код", licenseLink: "MIT лиценз", creditsLink: "Түүх ба талархал",
       dedicationHistory: "Энэ хэрэгслийг олон жилийн өмнө миний найз М. Пүрэв-Эрдэнийн хүсэлтээр, түүний ажилд туслах зорилгоор бүтээсэн. Тэрээр олон томоохон барилгын төслийн ерөнхий инженерээр ажиллаж байв.",
       dedicationMemory: "Түүний гэгээн дурсгалд зориулав.",
       duplicate: "Хуулах", remove: "Арилгах",
@@ -69,7 +71,7 @@
       helpText: "The greedy method fills rods from the longest pieces down. The improved method searches alternative arrangements. For small orders it may prove optimality; for larger orders it shows the best arrangement found. Kerf applies to each actual cut. When a rod is filled exactly, the final piece needs no separating cut.",
       legacyLink: "Corrected legacy version",
       footer: "Runs locally in your browser · no account or server required",
-      sourceLink: "Source", creditsLink: "Credits and licensing status",
+      sourceLink: "Source", licenseLink: "MIT License", creditsLink: "Credits",
       dedicationHistory: "This tool was first created many years ago at the request of my friend M. Purev-Erdene, to help with his work as chief engineer on many major construction projects.",
       dedicationMemory: "It is dedicated to his memory.",
       duplicate: "Duplicate", remove: "Delete",
@@ -207,14 +209,20 @@
     });
     lastUnit = newUnit;
   }
+  function translateStatic(element) {
+    var key = element.dataset.i18n;
+    var translated = words[language][key] || words.mn[key];
+    // Keep the readable HTML fallback if a newer page introduces an unknown key.
+    if (typeof translated === "string" && translated.length) {
+      element.textContent = translated;
+    }
+  }
   function setLanguage(next) {
     if (next !== "mn" && next !== "en") return;
     language = next;
     document.documentElement.lang = next;
     document.title = t("title") + " — Sol";
-    document.querySelectorAll("[data-i18n]").forEach(function (element) {
-      element.textContent = t(element.dataset.i18n);
-    });
+    document.querySelectorAll("[data-i18n]").forEach(translateStatic);
     document.querySelectorAll("[data-language]").forEach(function (button) {
       var selected = button.dataset.language === next;
       button.classList.toggle("selected", selected);
@@ -363,7 +371,7 @@
     }
     if (typeof Worker === "function") {
       try {
-        worker = new Worker("optimizer-worker.js");
+        worker = new Worker("optimizer-worker.js?v=20261103-r2");
         worker.onmessage = function (event) {
           if (event.data.id !== id) return;
           if (event.data.error) {
