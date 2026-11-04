@@ -47,9 +47,9 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-noise\.js"/);
   assert.match(html, /src="sound-scales\.js\?v=s031"/);
   assert.match(html, /src="sound-limit5\.js\?v=s030"/);
-  assert.match(html, /src="sound-temperaments\.js\?v=s033"/);
-  assert.match(html, /src="sound-lab\.js\?v=s033"/);
-  assert.match(html, /href="sound-lab\.css\?v=s033b"/);
+  assert.match(html, /src="sound-temperaments\.js\?v=s034"/);
+  assert.match(html, /src="sound-lab\.js\?v=s034"/);
+  assert.match(html, /href="sound-lab\.css\?v=s034"/);
   assert.match(html, /id="scaleGapToggle" type="checkbox"/);
   assert.match(html, /id="scaleGapPanel" hidden/);
   assert.match(html, /src="sound-recorder\.js"/);
@@ -237,6 +237,7 @@ function fakePage(search = "", supportWorklets = true) {
         const noop = () => {};
         return {
           setTransform: noop, clearRect: noop, setLineDash: noop,
+          save: noop, restore: noop, closePath: noop,
           fillRect(x, y, width, height) { drawnRects.push({ x, y, width, height, color: this.fillStyle }); },
           beginPath: noop,
           moveTo: noop, lineTo: noop, stroke: noop, fillText(value) { drawnText.push(String(value)); },
@@ -271,6 +272,8 @@ function fakePage(search = "", supportWorklets = true) {
   const earPlayButtons = earModel.PATTERNS.map(earPlay => element({ earPlay }));
   const limit5PlayButtons = ["melody", "chord"].map(limit5Play => element({ limit5Play }));
   const tempPlayButtons = ["melody", "chord"].map(tempPlay => element({ tempPlay }));
+  const tempNarrowButtons = ["pythagorean", "equal", "no-wolf", "meantone"]
+    .map(tempNarrowPreset => element({ tempNarrowPreset }));
   const scalePlayButtons = ["melody", "chord"].map(scalePlay => element({ scalePlay }));
   const scaleTonicButtons = Array.from({ length: scaleModel.MAX_NOTES }, (_, scaleTonic) =>
     element({ scaleTonic: String(scaleTonic) }));
@@ -312,6 +315,7 @@ function fakePage(search = "", supportWorklets = true) {
       if (selector === "[data-scale-tonic]") return scaleTonicButtons;
       if (selector === "[data-limit5-play]") return limit5PlayButtons;
       if (selector === "[data-temp-play]") return tempPlayButtons;
+      if (selector === "[data-temp-narrow-preset]") return tempNarrowButtons;
       if (selector === "[data-interval-play]") return intervalPlayButtons;
       if (selector === "#intervalRatioSelect option") return intervalOptions;
       if (selector === "[data-interval-tuning]") return intervalTuningButtons;
@@ -521,7 +525,7 @@ function fakePage(search = "", supportWorklets = true) {
     motionButtons, sirenPatternButtons, timbreButtons, vowelButtons, mixGapButtons, mixKindButtons,
     tuningKindButtons, scalePlayButtons, scaleTonicButtons,
     earHelpButtons, earSoundButtons, earPlayButtons, timers, animationFrames,
-    limit5PlayButtons, tempPlayButtons,
+    limit5PlayButtons, tempPlayButtons, tempNarrowButtons,
     intervalOptions, intervalPlayButtons, intervalTuningButtons, intervalColorButtons,
     harmonicPresetButtons, harmonicLevelInputs, noiseColorButtons,
     hzLabels, objectUrls, revokedUrls,
@@ -2409,7 +2413,7 @@ test("harmonic and noise pending playback are canceled before any orphan sound s
   assert.equal(app.contexts[0].oscillators.at(-1).stopped, true);
 });
 
-test("S033 fifth tuning tab draws exact temperament recipes and transposes bilingual chords without autoplay", () => {
+test("S034 temperament lattice, fifths and chord experiments stay synchronized without autoplay", () => {
   const app = fakePage();
   app.fire("modeTuning", "click");
   app.tuningKindButtons[4].click();
@@ -2418,14 +2422,21 @@ test("S033 fifth tuning tab draws exact temperament recipes and transposes bilin
   assert.equal(app.elements.get("tempExplanation").hidden, false);
   assert.equal(app.elements.get("limit5Workspace").hidden, true);
   assert.equal(app.elements.get("pagePhase").textContent, "06 · Темперамент");
-  assert.equal(app.elements.get("tempSystemSelect").value, "werckmeister");
+  assert.equal(app.elements.get("tempSystemSelect").value, "adjustable");
+  assert.equal(app.elements.get("tempTaskSelect").value, "build");
+  assert.match(app.elements.get("tempNarrowValue").textContent, /5\.38/);
   assert.equal(app.elements.get("tempKeySelect").value, "0");
   assert.equal(app.elements.get("tempQualitySelect").value, "major");
+  assert.ok(app.elements.get("tempLatticeCanvas").drawnArcs.length >= 12);
+  assert.match(app.elements.get("tempLatticeCanvas").drawnText.join(" "), /D♯/);
+  assert.match(app.elements.get("tempLatticeClosureFact").textContent, /23\.46/);
+  assert.match(app.elements.get("tempLatticeFact").textContent, /386\.31/);
+  assert.match(app.elements.get("tempBeatFact").textContent, /Hz|Гц/);
   assert.ok(app.elements.get("tempCircleCanvas").drawnArcs.length >= 12);
   assert.ok(app.elements.get("tempFifthsCanvas").drawnRects.length >= 13);
   assert.equal([...app.elements.get("tempFifthsBody").innerHTML.matchAll(/<tr/g)].length, 12);
   assert.match(app.elements.get("tempChordBadge").textContent, /C4 · E4 · G4/);
-  assert.match(app.elements.get("tempNoteHz0").textContent, /263\.4/);
+  assert.match(app.elements.get("tempNoteHz0").textContent, /263\.18/);
   assert.equal(app.contexts.length, 0);
 
   app.fire("tempSystemSelect", "change", { target: { value: "meantone" } });
@@ -2434,30 +2445,49 @@ test("S033 fifth tuning tab draws exact temperament recipes and transposes bilin
   assert.match(app.elements.get("tempChordFact").textContent, /386\.31/);
   app.fire("tempKeySelect", "change", { target: { value: "8" } });
   assert.match(app.elements.get("tempChordFact").textContent, /427\.37/);
+  // Lattice coordinates are deliberately not keyboard-order coordinates.
+  // In the fake 710×210 canvas, G's exact n=0 fifth reference is (180,109).
+  app.fire("tempLatticeCanvas", "click", { clientX: 180, clientY: 112 });
+  assert.equal(app.elements.get("tempKeySelect").value, "7");
   app.fire("tempQualitySelect", "change", { target: { value: "minor" } });
   assert.match(app.elements.get("tempCircleBadge").textContent, /Минор/);
   app.fire("tempCircleCanvas", "keydown", { key: "ArrowRight", preventDefault() {} });
-  assert.equal(app.elements.get("tempKeySelect").value, "3");
+  assert.equal(app.elements.get("tempKeySelect").value, "2");
 
   app.fire("langEn", "click");
   assert.equal(app.elements.get("pagePhase").textContent, "06 · Temperaments");
   assert.equal(app.tempPlayButtons[0].textContent, "▶ In sequence");
   assert.equal(app.tempPlayButtons[1].textContent, "▶ Together");
+  app.fire("tempTaskSelect", "change", { target: { value: "wolf" } });
+  assert.equal(app.elements.get("tempChordFields").hidden, true);
+  assert.equal(app.tempPlayButtons[0].textContent, "▶ Ordinary fifth");
+  assert.equal(app.tempPlayButtons[1].textContent, "▶ Wolf fifth");
+  app.fire("tempTaskSelect", "change", { target: { value: "third" } });
+  assert.equal(app.tempPlayButtons[0].textContent, "▶ Tuned third");
+  assert.equal(app.tempPlayButtons[1].textContent, "▶ Pure third");
+  app.tempNarrowButtons[0].click();
+  assert.match(app.elements.get("tempNarrowValue").textContent, /0\.00/);
+  app.tempNarrowButtons[2].click();
+  assert.match(app.elements.get("tempWolfFact").textContent, /without a single wolf/);
+  assert.match(app.elements.get("tempNarrowValue").textContent, /2\.13/);
+  app.fire("tempNarrowSlider", "input", { target: { value: "3.50" } });
+  assert.match(app.elements.get("tempNarrowValue").textContent, /3\.50/);
   app.fire("tempReset", "click");
-  assert.equal(app.elements.get("tempSystemSelect").value, "werckmeister");
+  assert.equal(app.elements.get("tempSystemSelect").value, "adjustable");
+  assert.equal(app.elements.get("tempTaskSelect").value, "build");
   assert.equal(app.elements.get("tempKeySelect").value, "0");
   assert.equal(app.elements.get("tempQualitySelect").value, "major");
   assert.equal(app.contexts.length, 0, "Switching and diagram interaction must not start audio");
 });
 
-test("S033 sequential/together audio uses the shared recording bus, stops and switches exclusively", async () => {
+test("S034 sequential/together rich audio uses the shared recording bus, stops and switches exclusively", async () => {
   const app = fakePage();
   app.fire("modeTuning", "click");
   app.tuningKindButtons[4].click();
   await app.tempPlayButtons[0].click();
   const context = app.contexts[0];
   assert.equal(context.sources.length, 1);
-  assert.equal(context.sources[0].buffer.length, Math.ceil(3 * limit5Model.STEP_SECONDS * context.sampleRate));
+  assert.equal(context.sources[0].buffer.length, Math.ceil(3 * .64 * context.sampleRate));
   assert.equal(app.tempPlayButtons[0].getAttribute("aria-pressed"), "true");
   assert.equal(app.tempPlayButtons[1].getAttribute("aria-pressed"), "false");
   assert.equal(context.gains.at(-1).gain.value, .28 * .38);
@@ -2466,7 +2496,7 @@ test("S033 sequential/together audio uses the shared recording bus, stops and sw
   await app.tempPlayButtons[1].click();
   assert.equal(context.sources[0].stopped, true);
   assert.equal(context.sources.length, 2);
-  assert.equal(context.sources[1].buffer.length, Math.ceil(limit5Model.CHORD_SECONDS * context.sampleRate));
+  assert.equal(context.sources[1].buffer.length, Math.ceil(4 * context.sampleRate));
   assert.equal(app.tempPlayButtons[0].getAttribute("aria-pressed"), "false");
   assert.equal(app.tempPlayButtons[1].getAttribute("aria-pressed"), "true");
   app.fire("tempVolume", "input", { target: { value: "25" } });
@@ -2480,6 +2510,31 @@ test("S033 sequential/together audio uses the shared recording bus, stops and sw
   await app.tempPlayButtons[1].click();
   app.fire("stopAll", "click");
   assert.equal(context.sources.at(-1).stopped, true);
+});
+
+test("S034 wolf and third experiments compare actual harmonic gaps without changing playback semantics", async () => {
+  const app = fakePage();
+  app.fire("modeTuning", "click");
+  app.tuningKindButtons[4].click();
+  app.fire("langEn", "click");
+  app.fire("tempTaskSelect", "change", { target: { value: "wolf" } });
+  const ordinaryGap = Number(app.elements.get("tempBeatFact").textContent.match(/by (\d+\.\d+) Hz/)[1]);
+  await app.tempPlayButtons[0].click();
+  assert.equal(app.contexts[0].sources.at(-1).buffer.length, 4 * 44100,
+    "An ordinary fifth must sound simultaneously, not as a short melody");
+  await app.tempPlayButtons[1].click();
+  const wolfGap = Number(app.elements.get("tempBeatFact").textContent.match(/by (\d+\.\d+) Hz/)[1]);
+  assert.ok(wolfGap > ordinaryGap + 10);
+  assert.equal(app.contexts[0].sources.length, 2);
+  app.fire("tempTaskSelect", "change", { target: { value: "third" } });
+  assert.equal(app.contexts[0].sources.at(-1).stopped, true);
+  app.fire("tempSystemSelect", "change", { target: { value: "pythagorean" } });
+  const tunedGap = Number(app.elements.get("tempBeatFact").textContent.match(/by (\d+\.\d+) Hz/)[1]);
+  await app.tempPlayButtons[1].click();
+  const pureGap = Number(app.elements.get("tempBeatFact").textContent.match(/by (\d+\.\d+) Hz/)[1]);
+  assert.ok(tunedGap > 10);
+  assert.equal(pureGap, 0);
+  assert.equal(app.contexts[0].sources.at(-1).buffer.length, 4 * 44100);
 });
 
 test("S033 pending browser audio is canceled on tab switch and page hide", async () => {
