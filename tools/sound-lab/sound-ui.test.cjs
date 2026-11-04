@@ -18,6 +18,7 @@ const tempModel = require("./sound-temperaments.js");
 const harmonicModel = require("./sound-harmonics.js");
 const noiseModel = require("./sound-noise.js");
 const recorderModel = require("./sound-recorder.js");
+const composeModel = require("./sound-compose.js");
 
 const html = fs.readFileSync(path.join(__dirname, "index.html"), "utf8");
 const browserCode = fs.readFileSync(path.join(__dirname, "sound-lab.js"), "utf8");
@@ -36,7 +37,7 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /id="fixedTimeCheck" checked/);
   assert.match(html, /src="sound-string\.js\?v=s037"/);
   assert.match(html, /src="sound-piano\.js\?v=s019"/);
-  assert.match(html, /src="sound-transient\.js\?v=s038"/);
+  assert.match(html, /src="sound-transient\.js\?v=s039"/);
   assert.match(html, /src="sound-sustain\.js\?v=s020b"/);
   assert.match(html, /src="sound-spectrum\.js\?v=s017"/);
   assert.match(html, /src="sound-motion\.js\?v=s020c"/);
@@ -48,8 +49,12 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-scales\.js\?v=s031"/);
   assert.match(html, /src="sound-limit5\.js\?v=s036"/);
   assert.match(html, /src="sound-temperaments\.js\?v=s036"/);
-  assert.match(html, /src="sound-lab\.js\?v=s038"/);
-  assert.match(html, /href="sound-lab\.css\?v=s037"/);
+  assert.match(html, /src="sound-score\.js\?v=s039"/);
+  assert.match(html, /src="sound-abc\.js\?v=s039"/);
+  assert.match(html, /src="sound-score-player\.js\?v=s039"/);
+  assert.match(html, /src="sound-compose\.js\?v=s039"/);
+  assert.match(html, /src="sound-lab\.js\?v=s039"/);
+  assert.match(html, /href="sound-lab\.css\?v=s039"/);
   assert.match(html, /id="scaleGapToggle" type="checkbox"/);
   assert.match(html, /id="scaleGapPanel" hidden/);
   assert.match(html, /src="sound-recorder\.js"/);
@@ -127,6 +132,12 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(limit5Markup, /id="limit5PointInfo"/);
   assert.match(limit5Markup, /id="limit5CommaRuler"[^>]*hidden/);
   assert.match(html, /id="noiseWorkspace"[^>]*hidden/);
+  assert.match(html, /id="modeCompose"[^>]*data-i18n="modeCompose"/);
+  assert.match(html, /id="composeWorkspace"[^>]*hidden/);
+  for (const id of ["composeText", "composeExample", "composeInstrument", "composeTuning",
+    "composePlayPause", "composeStop", "composeVolume", "composeLoad", "composeScoreSvg"]) {
+    assert.ok(ids.includes(id), "Missing Compose control #" + id);
+  }
   assert.match(html, /id="harmonicChallenge"[^>]*hidden/);
   assert.match(html, /id="noiseChallenge"[^>]*hidden/);
   assert.doesNotMatch(html, /id="mixExperimentSwitch"/);
@@ -229,6 +240,7 @@ function fakePage(search = "", supportWorklets = true) {
       drawnText,
       drawnRects,
       drawnArcs,
+      children: [],
       events: {},
       value: "",
       checked: false,
@@ -237,6 +249,8 @@ function fakePage(search = "", supportWorklets = true) {
       classList: classList(),
       setAttribute(name, value) { attributes[name] = String(value); },
       getAttribute(name) { return attributes[name]; },
+      appendChild(node) { this.children.push(node); return node; },
+      replaceChildren(...nodes) { this.children = nodes; },
       addEventListener(name, callback) { this.events[name] = callback; },
       click() { this.clickCount = (this.clickCount || 0) + 1; if (this.events.click) return this.events.click(); },
       getBoundingClientRect() { return { left: 0, top: 0, width: 710, height: 210 }; },
@@ -302,6 +316,7 @@ function fakePage(search = "", supportWorklets = true) {
     hidden: false,
     events: {},
     getElementById(id) { return elements.get(id) || null; },
+    createElementNS(_ns, name) { const node = element(); node.tagName = name; return node; },
     querySelectorAll(selector) {
       if (selector === "[data-wave]") return waveButtons;
       if (selector === "[data-strike]") return strikeButtons;
@@ -431,7 +446,8 @@ function fakePage(search = "", supportWorklets = true) {
     }
     createBuffer(channels, length, sampleRate) {
       const data = new Float32Array(length);
-      const buffer = { channels, length, sampleRate, getChannelData() { return data; } };
+      const buffer = { channels, length, sampleRate, duration: length / sampleRate,
+        getChannelData() { return data; } };
       this.buffers.push(buffer);
       return buffer;
     }
@@ -525,8 +541,18 @@ function fakePage(search = "", supportWorklets = true) {
   }
   window.AudioContext = FakeAudioContext;
   window.AudioWorkletNode = supportWorklets ? FakeAudioWorkletNode : undefined;
-  const sandbox = { document, window, URL: FakeURL, Blob, URLSearchParams, ResizeObserver: undefined };
-  vm.runInNewContext(browserCode, sandbox, { filename: "sound-lab.js" });
+  const sandbox = { document, window, URL: FakeURL, Blob, URLSearchParams, ResizeObserver: undefined,
+    setInterval: (...args) => window.setInterval(...args), clearInterval: id => window.clearInterval(id),
+    setTimeout, clearTimeout };
+  const vmContext = vm.createContext(sandbox);
+  // Load the new modules as a browser would, not via Node require: their audio
+  // scheduler must see this sandbox's clock/timers rather than real Node timers.
+  for (const name of ["sound-score.js", "sound-abc.js", "sound-score-player.js",
+    "sound-compose.js"]) {
+    vm.runInContext(fs.readFileSync(path.join(__dirname, name), "utf8"), vmContext,
+      { filename: name });
+  }
+  vm.runInContext(browserCode, vmContext, { filename: "sound-lab.js" });
   return {
     contexts, elements, document, window, waveButtons, strikeButtons,
     guitarPlayButtons, guitarChordButtons, pianoTouchButtons, strikePlayButtons, sustainButtons,
@@ -2358,7 +2384,7 @@ test("S037 additional guitar chords and strokes remain momentary and quiet until
   assert.equal(app.contexts.length, 1, "Language change cannot create a second audio context");
 });
 
-test("S038 percussion pads switch families silently, expose high frequencies, and start louder", async () => {
+test("S039 percussion pads include pitched chimes with clean ringing and higher drum strength", async () => {
   const app = fakePage();
   app.fire("modeStrike", "click");
   assert.equal(app.elements.get("strikeStrengthValue").textContent, "55%");
@@ -2373,7 +2399,7 @@ test("S038 percussion pads switch families silently, expose high frequencies, an
     "Drum gain applies the distinct default strength through the original safety cap");
   const previous = context.sources[0];
   const families = [
-    "snare", "cymbal", "steelpan", "jingles", "woodblock"
+    "snare", "cymbal", "steelpan", "chimes", "woodblock"
   ];
   const waveforms = [];
   let hits = 1;
@@ -2389,7 +2415,7 @@ test("S038 percussion pads switch families silently, expose high frequencies, an
     assert.ok(app.elements.get("strikeSpectrumHint").textContent.length > 0);
     assert.equal(app.drumButtons[1].textContent,
       { snare: "Дунд", cymbal: "Райд", steelpan: "Ми4",
-        jingles: "Хэдэн", woodblock: "Дунд" }[family]);
+        chimes: "Ми5", woodblock: "Дунд" }[family]);
     await app.drumButtons[1].click();
     hits++;
     waveforms.push(context.sources.at(-1).buffer.getChannelData(0)[400]);
@@ -2403,13 +2429,13 @@ test("S038 percussion pads switch families silently, expose high frequencies, an
       assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "330 Гц");
       assert.ok(app.elements.get("strikeSpectrumCanvas").drawnText.some(t => t.includes("4 кГц")));
     }
-    if (family === "jingles") {
-      assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "Тогтмол нотгүй");
+    if (family === "chimes") {
+      assert.equal(app.elements.get("strikeDrumFrequencies").textContent, "659 Гц");
       assert.ok(app.elements.get("strikeSpectrumCanvas").drawnText.some(t => t.includes("8 кГц")));
       await app.drumButtons[1].click();
       hits++;
       assert.equal(context.sources.length, hits,
-        "Consecutive shaker taps retrigger while the previous ring remains");
+        "Consecutive chime strikes retrigger while the previous ring remains");
       assert.equal(context.sources.at(-2).stopped, false);
     }
     if (family === "woodblock") {
@@ -2428,6 +2454,75 @@ test("S038 percussion pads switch families silently, expose high frequencies, an
   assert.equal(app.elements.get("strikeStrengthValue").textContent, "78%");
   app.fire("stopAll", "click");
   assert.ok(context.sources.every(source => source.stopped), "Global Stop silences the last hit");
+});
+
+test("Compose C1 renders a four-bar staff, stays silent until Play and responds to global Stop", async () => {
+  const app = fakePage();
+  assert.equal(app.contexts.length, 0, "Loading the page or parsing the default score is silent");
+  app.fire("modeCompose", "click");
+  assert.equal(app.elements.get("composeWorkspace").hidden, false);
+  assert.equal(app.elements.get("pureWorkspace").hidden, true);
+  assert.equal(app.elements.get("pagePhase").textContent, "07 · Ая зохиох");
+  assert.match(app.elements.get("composeMeta").textContent, /4 такт/);
+  assert.ok(app.elements.get("composeScoreSvg").children.length >= 14,
+    "Staff lines, note groups and bar numbers are drawn from the parsed notes");
+  assert.equal(app.contexts.length, 0);
+
+  await app.fire("composePlayPause", "click");
+  assert.equal(app.contexts.length, 1);
+  const context = app.contexts[0];
+  assert.equal(context.oscillators.length, 1);
+  assert.ok(context.oscillators[0].started);
+  assert.ok(app.elements.get("composeNow").textContent.includes("До") ||
+    app.elements.get("composeNow").textContent.includes("C4"));
+  assert.ok([...app.timers.values()].some(timer => timer.delay === 35),
+    "The composer schedules notes against the Web Audio clock");
+  app.fire("composePlayPause", "click");
+  assert.match(app.elements.get("composeStatus").textContent, /Түр зогслоо/);
+  assert.ok(![...app.timers.values()].some(timer => timer.delay === 35));
+  await app.fire("composePlayPause", "click");
+  assert.ok([...app.timers.values()].some(timer => timer.delay === 35));
+  app.fire("stopAll", "click");
+  assert.ok(![...app.timers.values()].some(timer => timer.delay === 35));
+  assert.match(app.elements.get("composeStatus").textContent, /Зогслоо/);
+
+  app.fire("langEn", "click");
+  assert.equal(app.elements.get("pagePhase").textContent, "07 · Write a melody");
+  assert.match(app.elements.get("composeMeta").textContent, /4 bars/);
+  assert.equal(app.contexts.length, 1, "Language switching doesn't start audio");
+});
+
+test("Compose C1 validates edits and loads local ABC scores without autoplay", async () => {
+  const app = fakePage();
+  app.fire("modeCompose", "click");
+  app.elements.get("composeExample").value = "waltz";
+  app.fire("composeExample", "change");
+  assert.match(app.elements.get("composeText").value, /M:3\/4/);
+  assert.equal(app.contexts.length, 0);
+  assert.match(app.elements.get("composeMeta").textContent, /4 такт/);
+  app.elements.get("composeText").value = "M:4/4\nL:1/4\nQ:1/4=100\nK:C\nC2 D | E4 |]";
+  app.fire("composeText", "input");
+  await app.fire("composePlayPause", "click");
+  assert.equal(app.elements.get("composePlayPause").disabled, true);
+  assert.match(app.elements.get("composeStatus").textContent, /алдаа/);
+  assert.equal(app.contexts.length, 0);
+
+  const source = composeModel.EXAMPLES.minor;
+  const file = { name: "little.abc", size: source.length, text: async () => source };
+  await app.fire("composeLoad", "change", { target: { files: [file] } });
+  assert.equal(app.elements.get("composePlayPause").disabled, false);
+  assert.equal(app.elements.get("composeText").value, source);
+  assert.match(app.elements.get("composeMeta").textContent, /Minor melody · 4 такт/);
+  assert.equal(app.contexts.length, 0, "Importing an ABC file never autoplays");
+
+  app.elements.get("composeInstrument").value = "chimes";
+  app.fire("composeInstrument", "change");
+  await app.fire("composePlayPause", "click");
+  assert.equal(app.contexts.length, 1);
+  assert.ok(app.contexts[0].sources.length > 0);
+  app.fire("modeStrike", "click");
+  assert.equal(app.elements.get("composeWorkspace").hidden, true);
+  assert.ok(![...app.timers.values()].some(timer => timer.delay === 35));
 });
 
 test("harmonic builder is an interactive eight-partial synthesis without autoplay", async () => {

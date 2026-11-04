@@ -33,9 +33,9 @@ test("membrane fundamentals depend on size and the square root of tension", () =
 });
 
 test("six percussion families share bounded playback/plot samples and distinct frequency responses", () => {
-  assert.deepEqual(sound.DRUM_VOICES, ["membrane", "snare", "cymbal", "steelpan", "jingles", "woodblock"]);
+  assert.deepEqual(sound.DRUM_VOICES, ["membrane", "snare", "cymbal", "steelpan", "chimes", "woodblock"]);
   assert.equal(sound.drumReferenceHz("medium", 1, "cymbal"), null);
-  assert.equal(sound.drumReferenceHz("medium", 1, "jingles"), null);
+  assert.ok(Math.abs(sound.drumReferenceHz("medium", 1, "chimes") - 659.25) < .02);
   assert.equal(sound.drumReferenceHz("small", 1, "woodblock"), null);
   assert.ok(Math.abs(sound.drumReferenceHz("large", 1, "steelpan") - 261.6256) < .001);
   assert.ok(Math.abs(sound.drumReferenceHz("medium", 1, "steelpan") - 329.6276) < .001);
@@ -46,7 +46,7 @@ test("six percussion families share bounded playback/plot samples and distinct f
   const signatures = [];
   for (const voice of sound.DRUM_VOICES) {
     const decay = { membrane: .3, snare: .33, cymbal: .55, steelpan: .8,
-      jingles: .38, woodblock: .24 }[voice];
+      chimes: .7, woodblock: .24 }[voice];
     for (const size of Object.keys(sound.KICK_SIZES)) {
       const options = { drumVoice: voice, drumTension: 1 };
       const samples = sound.makeSamples("kick", 220, decay, sampleRate, size, options);
@@ -86,7 +86,7 @@ test("large membrane adds audible beater/body presence without clipping", () => 
   }
 });
 
-test("jingle collision density differs from the woodblock's short dry strike", () => {
+test("struck chimes have definite pitches and long metallic resonance unlike woodblocks", () => {
   const rate = 16000;
   const rms = (samples, start, end) => {
     let energy = 0, count = 0;
@@ -96,15 +96,18 @@ test("jingle collision density differs from the woodblock's short dry strike", (
     }
     return Math.sqrt(energy / count);
   };
-  const few = sound.makeSamples("kick", 220, .38, rate, "large", { drumVoice: "jingles" });
-  const many = sound.makeSamples("kick", 220, .38, rate, "small", { drumVoice: "jingles" });
+  const low = sound.makeSamples("kick", 220, .7, rate, "large", { drumVoice: "chimes" });
+  const high = sound.makeSamples("kick", 220, .7, rate, "small", { drumVoice: "chimes" });
+  const chosen = sound.makeSamples("kick", 220, .7, rate, "medium", { drumVoice: "chimes", chimeHz: 440 });
   const block = sound.makeSamples("kick", 220, .24, rate, "medium", { drumVoice: "woodblock" });
-  assert.ok(rms(many, .24, .34) > 2 * rms(few, .24, .34),
-    "Many bells continue colliding after the few-bell shake has ended");
+  assert.notDeepEqual([...low.slice(150, 160)], [...high.slice(150, 160)],
+    "Different chime bars have distinct tonal waveforms");
+  assert.notDeepEqual([...chosen.slice(150, 160)], [...high.slice(150, 160)],
+    "Compose can choose any supported chime pitch");
   assert.ok(rms(block, 0, .02) > 3 * rms(block, .12, .16),
     "Woodblock has a dry transient rather than sustained metallic ringing");
-  assert.ok(rms(many, .24, .34) > 2 * rms(block, .24, .34),
-    "Metallic shake retains energy after a woodblock hit fades");
+  assert.ok(rms(high, .24, .34) > 2 * rms(block, .24, .34),
+    "Struck metal continues ringing after a woodblock fades");
 });
 
 test("invalid or unbounded transient recipes are rejected", () => {

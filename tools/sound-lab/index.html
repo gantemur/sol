@@ -6,11 +6,11 @@
   <meta name="theme-color" content="#192d49">
   <meta name="description" content="Explore sound waves, plucked and held instrument models, harmonic synthesis, noise, a theremin and sirens with interactive plots and bilingual controls.">
   <title>Sound Lab · Sol</title>
-  <link rel="stylesheet" href="sound-lab.css?v=s037">
+  <link rel="stylesheet" href="sound-lab.css?v=s039">
   <script src="sound-model.js" defer></script>
   <script src="sound-string.js?v=s037" defer></script>
   <script src="sound-piano.js?v=s019" defer></script>
-  <script src="sound-transient.js?v=s038" defer></script>
+  <script src="sound-transient.js?v=s039" defer></script>
   <script src="sound-sustain.js?v=s020b" defer></script>
   <script src="sound-spectrum.js?v=s017" defer></script>
   <script src="sound-motion.js?v=s020c" defer></script>
@@ -23,7 +23,11 @@
   <script src="sound-harmonics.js" defer></script>
   <script src="sound-noise.js" defer></script>
   <script src="sound-recorder.js" defer></script>
-  <script src="sound-lab.js?v=s038" defer></script>
+  <script src="sound-score.js?v=s039" defer></script>
+  <script src="sound-abc.js?v=s039" defer></script>
+  <script src="sound-score-player.js?v=s039" defer></script>
+  <script src="sound-compose.js?v=s039" defer></script>
+  <script src="sound-lab.js?v=s039" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -70,6 +74,7 @@
         <button type="button" id="modeMotion" class="mode-button" aria-pressed="false" data-i18n="modeMotion">Хувирдаг давтамж</button>
         <button type="button" id="modeMix" class="mode-button" aria-pressed="false" data-i18n="modeMix">Долгион холих</button>
         <button type="button" id="modeTuning" class="mode-button" aria-pressed="false" data-i18n="modeTuning">Хөг</button>
+        <button type="button" id="modeCompose" class="mode-button" aria-pressed="false" data-i18n="modeCompose">Ая зохиох</button>
       </nav>
       <span class="pill" id="pagePhase" data-i18n="phase">01 · Энгийн дохионууд</span>
     </div>
@@ -291,7 +296,7 @@
             <option value="snare" data-i18n="strikeDrumSnare">Бага бөмбөр</option>
             <option value="cymbal" data-i18n="strikeDrumCymbal">Цан</option>
             <option value="steelpan" data-i18n="strikeDrumSteelpan">Ган бөмбөр</option>
-            <option value="jingles" data-i18n="strikeDrumJingles">Жингэнүүр хонх</option>
+            <option value="chimes" data-i18n="strikeDrumChimes">Хоолойт хонх</option>
             <option value="woodblock" data-i18n="strikeDrumWoodblock">Модон товшуур</option>
           </select>
           <div class="field-title"><span data-i18n="strikeDrumSize">Бөмбөр цохих</span><output id="strikeDrumFrequencies">112 Гц</output></div>
@@ -1285,6 +1290,79 @@
           </div>
           <canvas id="noiseSpectrumCanvas" width="740" height="220" role="img" aria-label="Шуугианы өнгө ба шүүлтүүрийн идеал давтамжийн чиг хандлага"></canvas>
           <div class="chart-foot"><span data-i18n="noiseSpectrumFoot">Энэ нь хэмжилт биш, хүлээгдэх ерөнхий хэлбэр юм.</span><span data-i18n="frequencyAxis">давтамж →</span></div>
+        </section>
+      </div>
+    </div>
+
+    <div class="workspace" id="composeWorkspace" hidden>
+      <section class="panel controls compose-controls" aria-labelledby="compose-controls-title">
+        <div class="section-top">
+          <h2 id="compose-controls-title" data-compose-i18n="title">Аялгуу зохиох</h2>
+          <p class="description" data-compose-i18n="intro">ABC тэмдэглэгээгээр богино ая бичиж, нэг хөгжмөөр тоглуулаарай.</p>
+        </div>
+        <div class="field-group">
+          <label class="field-title" for="composeExample" data-compose-i18n="example">Жишээ ая</label>
+          <select id="composeExample">
+            <option value="first" data-compose-i18n="exampleFirst">Энгийн аялгуу</option>
+            <option value="rests" data-compose-i18n="exampleRests">Нот ба завсарлага</option>
+            <option value="waltz" data-compose-i18n="exampleWaltz">Соль мажор вальс</option>
+            <option value="minor" data-compose-i18n="exampleMinor">Минор аялгуу</option>
+          </select>
+        </div>
+        <div class="compose-options">
+          <div class="field-group">
+            <label class="field-title" for="composeInstrument" data-compose-i18n="instrument">Хөгжмийн зэмсэг</label>
+            <select id="composeInstrument">
+              <option value="flute" data-compose-i18n="flute">Лимбэ</option>
+              <option value="violin" data-compose-i18n="violin">Хийл</option>
+              <option value="morin" data-compose-i18n="morin">Морин хуур</option>
+              <option value="guitar" data-compose-i18n="guitar">Гитар</option>
+              <option value="piano" data-compose-i18n="piano">Төгөлдөр хуур</option>
+              <option value="chimes" data-compose-i18n="chimes">Хоолойт хонх</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-title" for="composeTuning" data-compose-i18n="tuning">Хөг</label>
+            <select id="composeTuning">
+              <option value="equal" data-compose-i18n="equal">Тэнцүү (12-TET)</option>
+              <option value="pythagorean" data-compose-i18n="pythagorean">Пифагорын</option>
+              <option value="just" data-compose-i18n="just">Цэвэр · До төвтэй</option>
+            </select>
+          </div>
+        </div>
+        <div class="compose-play-row">
+          <button id="composePlayPause" class="compose-play" type="button">▶ Тоглуулах</button>
+          <button id="composeStop" class="compose-stop" type="button">■ Зогсоох</button>
+        </div>
+        <p id="composeStatus" class="audio-status" role="status" aria-live="polite">Бэлэн. Аяыг өөрчлөх эсвэл тоглуулаарай.</p>
+        <div class="field-group">
+          <div class="field-title"><label for="composeVolume" data-compose-i18n="volume">Дууны хэмжээ</label><output id="composeVolumeValue">38%</output></div>
+          <input id="composeVolume" type="range" min="0" max="100" step="1" value="38">
+        </div>
+        <div class="field-group compose-score-editor">
+          <label class="field-title" for="composeText" data-compose-i18n="score">ABC нотын бичиг</label>
+          <textarea id="composeText" rows="9" spellcheck="false" maxlength="8192" autocapitalize="off" autocomplete="off" aria-describedby="composeScoreHint"></textarea>
+          <p id="composeScoreHint" class="field-help" data-compose-i18n="scoreHint">L:1/4 үед C D E G нь дөрөвт нотууд; C2 нь хоёр дахин урт, z нь завсарлага.</p>
+          <label class="compose-file-button" for="composeLoad" data-compose-i18n="load">.abc / .txt файл нээх</label>
+          <input id="composeLoad" class="sr-only" type="file" accept=".abc,.txt,text/plain" aria-label="ABC text score">
+        </div>
+      </section>
+      <div class="visuals compose-visuals">
+        <section class="panel chart-panel" aria-labelledby="compose-staff-title">
+          <div class="chart-heading">
+            <div><h2 id="compose-staff-title" data-compose-i18n="staff">Нотын мөр ба тоглуулах тэмдэг</h2>
+              <p data-compose-i18n="staffHint">Тоглож буй нот тодорно. Завсарлагыг жижиг дөрвөлжнөөр харуулна.</p></div>
+            <span class="chart-badge" id="composeMeta">4 такт</span>
+          </div>
+          <div id="composeScoreScroll" class="compose-score-scroll" tabindex="0" aria-label="Scrollable musical staff">
+            <svg id="composeScoreSvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Нотын мөр"></svg>
+          </div>
+          <p id="composeNow" class="compose-now" aria-live="off"></p>
+          <p class="field-help" data-compose-i18n="tuningHint">Ижил нотыг өөр хөгөөр тоглуулахад өндөр нь бага зэрэг өөрчлөгдөнө.</p>
+        </section>
+        <section class="panel chart-panel compose-help-panel" aria-labelledby="compose-help-title">
+          <h2 id="compose-help-title" data-compose-i18n="model">Загварчилсан зэмсгүүд · нэг хоолой · ABC-ийн үндсэн тэмдэглэгээ</h2>
+          <p data-compose-i18n="footer">C1-д нэг аялгуу тоглоно. Дараа нь олон хөгжмийн хоолой, аккорд, цохивор хэмнэл нэмж болно.</p>
         </section>
       </div>
     </div>

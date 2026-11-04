@@ -28,19 +28,20 @@
   const DRUM_MIN_TENSION = .5;
   const DRUM_MAX_TENSION = 2;
   const KICK_SIZES = Object.freeze({ large: 0.72, medium: 1, small: 1.4 });
-  // Reuse the three momentary pads across families: some choose a size or
-  // pitched pan note, while the jingle pads choose collision density.
-  const DRUM_VOICES = Object.freeze(["membrane", "snare", "cymbal", "steelpan", "jingles", "woodblock"]);
+  // The three pads choose either drum sizes or pitched struck resonators.
+  const DRUM_VOICES = Object.freeze(["membrane", "snare", "cymbal", "steelpan", "chimes", "woodblock"]);
   const STEELPAN_PITCHES = Object.freeze({ large: 261.625565, medium: 329.627557,
     small: 391.995436 });
   const CYMBAL_MODES = Object.freeze([1, 1.42, 1.87, 2.31, 2.92, 3.55, 4.23, 5.04, 6.17]);
   const CYMBAL_WEIGHTS = Object.freeze([.6, .42, .37, .31, .24, .19, .17, .12, .10]);
   const PAN_MODES = Object.freeze([1, 2.005, 3.012, 4.16, 5.34, 6.08]);
   const PAN_WEIGHTS = Object.freeze([1, .67, .42, .18, .10, .07]);
-  const JINGLE_COUNTS = Object.freeze({ large: 5, medium: 9, small: 14 });
-  const JINGLE_SPANS = Object.freeze({ large: .18, medium: .28, small: .38 });
-  const JINGLE_MODES = Object.freeze([1, 1.53, 2.27, 3.14, 4.03]);
-  const JINGLE_WEIGHTS = Object.freeze([.78, .55, .40, .26, .16]);
+  // A high pitched bar/tube-like chime: sparse inharmonic flexural modes,
+  // distinctly brighter than the tuned steel pan's octave partials.
+  const CHIME_PITCHES = Object.freeze({ large: 523.251131, medium: 659.255114,
+    small: 783.990872 });
+  const CHIME_MODES = Object.freeze([1, 2.76, 5.41, 8.93]);
+  const CHIME_WEIGHTS = Object.freeze([1, .36, .21, .13]);
   const WOOD_BASES = Object.freeze({ large: 510, medium: 760, small: 1110 });
   const WOOD_MODES = Object.freeze([1, 1.61, 2.38, 3.17]);
   const WOOD_WEIGHTS = Object.freeze([.92, .48, .24, .12]);
@@ -58,7 +59,10 @@
         !DRUM_VOICES.includes(options.drumVoice ?? "membrane") ||
         !Number.isFinite(options.drumTension ?? 1) ||
         (options.drumTension ?? 1) < DRUM_MIN_TENSION ||
-        (options.drumTension ?? 1) > DRUM_MAX_TENSION)) {
+        (options.drumTension ?? 1) > DRUM_MAX_TENSION ||
+        (options.drumVoice === "chimes" && (!Number.isFinite(options.chimeHz ?? CHIME_PITCHES[kickSize]) ||
+          (options.chimeHz ?? CHIME_PITCHES[kickSize]) < 110 ||
+          (options.chimeHz ?? CHIME_PITCHES[kickSize]) > 1200)))) {
       throw new RangeError("Unknown drum-size preset");
     }
     if (kind === "pluck" && (!strings.validPosition(options.position ?? .22) ||
@@ -98,8 +102,9 @@
     if (!Object.hasOwn(KICK_SIZES, size) || !DRUM_VOICES.includes(voice)) {
       throw new RangeError("Unknown drum pad or sound family");
     }
-    if (["cymbal", "jingles", "woodblock"].includes(voice)) return null;
+    if (["cymbal", "woodblock"].includes(voice)) return null;
     if (voice === "steelpan") return STEELPAN_PITCHES[size];
+    if (voice === "chimes") return CHIME_PITCHES[size];
     return kickFrequency(0, size, tension);
   }
 
@@ -167,32 +172,17 @@
     return (1 - Math.exp(-time / .0015)) * (.38 * ringing + strike);
   }
 
-  // A very small deterministic collision model: successive tiny impacts
-  // excite inharmonic bell-like resonances and broadband jingle noise. This
-  // borrows the physical idea (not code or coefficients) of PhISEM shakers.
-  function jinglesAt(time, size, decaySec) {
-    const count = JINGLE_COUNTS[size];
-    const span = JINGLE_SPANS[size];
-    const strength = .44 / Math.sqrt(count / 5);
-    let sum = 0;
-    for (let hit = 0; hit < count; hit++) {
-      const offset = .004 + hit * span / (count - 1) + .005 * hash(hit * 13 + count);
-      const t = time - offset;
-      if (t <= 0 || t > .26) continue;
-      const amplitude = .75 + .22 * hash(hit * 29 + 17);
-      const ringDecay = (.030 + .050 * decaySec) * (0.83 + .24 * hash(hit * 7 + 9));
-      const base = 1240 + 170 * hash(hit * 19 + 31);
-      let ring = 0;
-      for (let mode = 0; mode < JINGLE_MODES.length; mode++) {
-        ring += JINGLE_WEIGHTS[mode] * Math.exp(-t / (ringDecay * (1 - .10 * mode))) *
-          Math.sin(TAU * base * JINGLE_MODES[mode] * t + hit * .67 + mode * .29);
-      }
-      const rattle = .38 * noiseAt(t + .013 * hit) * Math.exp(-t / .021);
-      sum += amplitude * (1 - Math.exp(-t / .0006)) * (ring + rattle);
+  // One struck chime with a crisp attack and decaying inharmonic ringing.
+  // No stochastic sequence of collisions: repeated taps are separate hits.
+  function chimeAt(time, pitchHz, decaySec) {
+    let ring = 0;
+    for (let mode = 0; mode < CHIME_MODES.length; mode++) {
+      const partialDecay = decaySec * (1.35 - .21 * mode);
+      ring += CHIME_WEIGHTS[mode] * Math.exp(-time / partialDecay) *
+        Math.sin(TAU * pitchHz * CHIME_MODES[mode] * time + mode * .18);
     }
-    // Soft limiting protects four concurrent hits, while retaining their
-    // individual envelopes and exactly the same spectrum/plot samples.
-    return .94 * Math.tanh(strength * sum);
+    const tick = .09 * Math.exp(-time / .004) * noiseAt(time);
+    return (1 - Math.exp(-time / .001)) * (.48 * ring + tick);
   }
 
   // A dry struck wooden block: shorter, lower-Q inharmonic body modes plus
@@ -216,7 +206,7 @@
       if (voice === "snare") return snareAt(time, kickSize, options.drumTension ?? 1, decaySec);
       if (voice === "cymbal") return cymbalAt(time, kickSize, decaySec);
       if (voice === "steelpan") return steelpanAt(time, kickSize, decaySec);
-      if (voice === "jingles") return jinglesAt(time, kickSize, decaySec);
+      if (voice === "chimes") return chimeAt(time, options.chimeHz ?? CHIME_PITCHES[kickSize], decaySec);
       if (voice === "woodblock") return woodblockAt(time, kickSize, decaySec);
       // Circular-membrane eigenfrequencies are Bessel zeros, not integer harmonics.
       return membraneAt(time, kickSize, options.drumTension ?? 1, decaySec);
@@ -273,7 +263,7 @@
 
   return Object.freeze({
     KINDS, KICK_SIZES, DRUM_VOICES, DRUM_MIN_TENSION, DRUM_MAX_TENSION,
-    STEELPAN_PITCHES, STRUM_CHORDS: strings.CHORDS, STRUM_PATTERNS: strings.STRUM_PATTERNS,
+    STEELPAN_PITCHES, CHIME_PITCHES, STRUM_CHORDS: strings.CHORDS, STRUM_PATTERNS: strings.STRUM_PATTERNS,
     MIN_PITCH_HZ, MAX_PITCH_HZ, MIN_DECAY, MAX_DECAY,
     PIANO_STIFFNESS: piano.STIFFNESS, PIANO_TOUCHES: piano.TOUCHES,
     pianoPartialHz: piano.pianoPartialHz,

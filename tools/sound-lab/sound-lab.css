@@ -13,9 +13,10 @@
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 body { margin: 0; min-width: 280px; line-height: 1.45; }
-button, input, select { font: inherit; }
+button, input, select, textarea { font: inherit; }
 button { cursor: pointer; }
-button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible, a:focus-visible {
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible,
+summary:focus-visible, a:focus-visible, .compose-score-scroll:focus-visible {
   outline: 3px solid #72a7fc;
   outline-offset: 3px;
 }
@@ -348,6 +349,53 @@ h1, h2, p { margin-top: 0; }
 .volume-field { border-top: 1px solid #ecf0f5; padding-top: 17px; }
 .volume-field input { display: block; }
 
+/* Compose C1 — compact controls and a deliberately simple readable score. */
+.compose-controls { gap: 13px; }
+.compose-controls .field-group { padding-top: 0; }
+.compose-controls label.field-title { display: block; margin-bottom: 7px; font-weight: 800; color: #345a79; font-size: 12px; }
+.compose-controls select { display: block; width: 100%; min-width: 0; min-height: 44px;
+  border: 1px solid #bad2e8; border-radius: 9px; color: #2c5379; background: #f8fbff;
+  padding: 9px; font-weight: 700; font-size: 12px; }
+.compose-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+.compose-play-row { display: grid; grid-template-columns: 1.2fr .8fr; gap: 9px; }
+.compose-play-row button { min-height: 56px; border-radius: 11px; font-size: 14px; font-weight: 850; }
+.compose-play { border: 1px solid #346dc7; color: white; background: #306bc3; }
+.compose-play:hover:not(:disabled) { background: #2458a8; }
+.compose-play:disabled { opacity: .45; cursor: not-allowed; }
+.compose-stop { border: 1px solid #a8c1d7; color: #365975; background: #e7eff7; }
+.compose-stop:hover { background: #d9e9f8; }
+.compose-controls .audio-status { margin: -4px 0 4px; }
+.compose-controls .audio-status.error { color: #ae453e; background: #fff0ee; border-color: #efbcb3; }
+.compose-score-editor textarea { display: block; width: 100%; min-height: 190px; resize: vertical;
+  line-height: 1.5; padding: 12px; border-radius: 9px; border: 1px solid #b4cce4;
+  background: #f8fbff; color: #233f61; font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  tab-size: 2; }
+.compose-score-editor .field-help { margin: 9px 0 0; }
+.compose-file-button { display: inline-block; margin-top: 10px; border: 1px solid #b7d7e6;
+  background: #edf7fd; color: #28618a; padding: 9px 12px; border-radius: 8px;
+  cursor: pointer; font-size: 12px; font-weight: 800; }
+.compose-file-button:hover { background: #dceffc; }
+.compose-score-scroll { overflow-x: auto; overflow-y: hidden; margin: 13px 0 5px;
+  background: #fbfdff; border: 1px solid #e0e9f2; border-radius: 11px; }
+.compose-score-scroll svg { display: block; width: 864px; max-width: none; height: auto;
+  margin: 0; background: transparent; }
+.compose-staff-line { stroke: #b4c7dc; stroke-width: 1.3; }
+.compose-bar-line { stroke: #7d9db9; stroke-width: 1.6; }
+.compose-ledger-line { stroke: #5e85a5; stroke-width: 1.5; }
+.compose-bar-number { fill: #718ba5; font-size: 12px; font-weight: 700; }
+.compose-note ellipse { fill: #427cb8; }
+.compose-note .compose-stem { stroke: #427cb8; stroke-width: 1.7; }
+.compose-note .compose-rest { fill: #8a9cac; }
+.compose-note .compose-accidental { fill: #365d7f; font-size: 16px; }
+.compose-note-name { fill: #426b88; font-size: 11px; font-weight: 750; }
+.compose-note.active ellipse { fill: #ef9b32; stroke: #b97226; stroke-width: 1.5; }
+.compose-note.active .compose-stem { stroke: #ca8230; }
+.compose-note.active .compose-rest { fill: #ef9b32; }
+.compose-note.active .compose-note-name { fill: #ab641c; font-weight: 900; }
+.compose-now { color: #226e71; font-size: 13px; font-weight: 800; text-align: center; min-height: 24px; }
+.compose-help-panel h2 { font-size: 15px; color: #375a77; }
+.compose-help-panel p { font-size: 12px; color: #6c8196; margin-bottom: 1px; }
+
 .settings { border-top: 1px solid #e5ecf4; padding-top: 13px; }
 .settings summary { color: #3b6ba8; cursor: pointer; font-size: 12px; font-weight: 800; padding: 5px 0; }
 .settings summary:hover { color: #1b4f92; }
@@ -468,6 +516,7 @@ h1, h2, p { margin-top: 0; }
   .footer { padding: 2px 14px 28px; }
 }
 @media (max-width: 470px) {
+  .compose-options { grid-template-columns: minmax(0, 1fr); }
   .temp-just-ratio-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .brand-mark, .brand small { display: none; }
   .record-button-label, .record-timer { display: none; }
