@@ -130,12 +130,13 @@
       bars: [], totalBeats: 0 };
     const events = score.parts[0].events;
     let startBeat = 0, barStart = 0, bar = 1, closed = false;
-    let carried = {};
+    let carried = {}, pendingTie = null, lastToken = null;
     const finishBar = (isLast, line) => {
       const length = startBeat - barStart;
+      if (bar > scoreModel.MAX_BARS) throw new ABCError("Maximum 32 bars", line);
       if (length < 1e-8) throw new ABCError("Empty bar " + bar, line);
       if (length > meter.quarterBeats + 1e-7 ||
-          (!isLast && Math.abs(length - meter.quarterBeats) > 1e-7)) {
+          (bar !== 1 && !isLast && Math.abs(length - meter.quarterBeats) > 1e-7)) {
         throw new ABCError("Bar " + bar + " has " + Number(length.toFixed(4)) +
           " quarter beats; M:" + meter.numerator + "/" + meter.denominator +
           " needs " + meter.quarterBeats, line);
@@ -143,7 +144,6 @@
       score.bars.push({ number: bar, startBeat: barStart, durationBeats: length,
         partial: length < meter.quarterBeats - 1e-7 });
       bar++;
-      if (bar > 17) throw new ABCError("Keep this first experiment within 16 bars", line);
       barStart = startBeat;
       carried = {};
     };
@@ -152,11 +152,24 @@
         const c = body[i];
         if (/\s/.test(c)) { i++; continue; }
         if (closed) throw new ABCError("Nothing may follow the final |]", line, i + 1);
+        if (c === "-") {
+          if (!lastToken || lastToken.type !== "note" || pendingTie) {
+            throw new ABCError("A tie must follow a note", line, i + 1);
+          }
+          lastToken.tieToNext = true;
+          pendingTie = { event: lastToken, line, column: i + 1 };
+          lastToken = null;
+          i++;
+          continue;
+        }
         if (c === "|") {
           if (body[i + 1] === ":") throw new ABCError("Repeats are not supported in C1", line, i + 1);
           const finalBar = body[i + 1] === "]";
-          finishBar(finalBar, line);
-          i += finalBar ? 2 : body[i + 1] === "|" ? 2 : 1;
+          const width = finalBar || body[i + 1] === "|" ? 2 : 1;
+          const isLast = finalBar || (bodyLines.at(-1).line === line && !body.slice(i + width).trim());
+          finishBar(isLast, line);
+          lastToken = null;
+          i += width;
           if (finalBar) closed = true;
           continue;
         }
@@ -169,7 +182,7 @@
         }
         if (!/[A-Ga-gz]/.test(body[i] || "") || !/^[A-Ga-gz]$/.test(body[i])) {
           throw new ABCError("Unsupported symbol '" + (body[i] ?? "end") +
-            "' (C1 supports notes, rests, lengths and barlines)", line, i + 1);
+            "' (Compose supports notes, rests, lengths, ties and barlines)", line, i + 1);
         }
         const letter = body[i++];
         const isRest = letter === "z";
@@ -187,21 +200,38 @@
         if (durationBeats > 32) throw new ABCError("One note/rest may not exceed 32 quarter beats", line, startIndex + 1);
         const event = { type: isRest ? "rest" : "note", startBeat,
           durationBeats, bar, abc: body.slice(startIndex, i) };
+        if (pendingTie && isRest) {
+          throw new ABCError("A tie must join notes of the same spelled pitch", line, startIndex + 1);
+        }
         if (!isRest) {
           const spelling = base + octave;
           if (explicit !== null) carried[spelling] = explicit;
-          event.pitch = { letter: base, accidental: explicit !== null ? explicit :
-            (carried[spelling] ?? key.accidentals[base] ?? 0), octave };
+          // A tied continuation retains the previous pitch across a barline,
+          // without carrying its accidental into later untied notes in that bar.
+          const accidental = explicit !== null ? explicit : pendingTie ?
+            pendingTie.event.pitch.accidental : (carried[spelling] ?? key.accidentals[base] ?? 0);
+          event.pitch = { letter: base, accidental, octave };
+          event.tieFromPrevious = Boolean(pendingTie);
+          event.tieToNext = false;
+          if (pendingTie) {
+            const previous = pendingTie.event.pitch;
+            if (base !== previous.letter || octave !== previous.octave || accidental !== previous.accidental) {
+              throw new ABCError("A tie must join notes of the same spelled pitch", line, startIndex + 1);
+            }
+            pendingTie = null;
+          }
         }
         events.push(event);
-        if (events.length > scoreModel.MAX_EVENTS) throw new ABCError("Maximum 128 notes/rests", line);
+        lastToken = event;
+        if (events.length > scoreModel.MAX_EVENTS) throw new ABCError("Maximum 256 notes/rests", line);
         startBeat += durationBeats;
-        if (startBeat > scoreModel.MAX_BEATS + 1e-7) throw new ABCError("Maximum 128 quarter beats", line);
+        if (startBeat > scoreModel.MAX_BEATS + 1e-7) throw new ABCError("Maximum 256 quarter beats", line);
       }
     }
+    if (pendingTie) throw new ABCError("A tie must continue to another note", pendingTie.line, pendingTie.column);
     if (startBeat > barStart + 1e-8) finishBar(true, lines.length);
     if (!events.length) throw new ABCError("Write at least one note or rest after K:");
-    if (score.bars.length > 16) throw new ABCError("Maximum 16 bars");
+    score.bars[0].pickup = score.bars.length > 1 && score.bars[0].partial;
     score.totalBeats = startBeat;
     scoreModel.validate(score);
     return score;

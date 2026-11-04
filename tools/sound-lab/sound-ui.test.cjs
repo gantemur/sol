@@ -49,12 +49,12 @@ test("the HTML has unique IDs and all scripted controls exist", () => {
   assert.match(html, /src="sound-scales\.js\?v=s031"/);
   assert.match(html, /src="sound-limit5\.js\?v=s036"/);
   assert.match(html, /src="sound-temperaments\.js\?v=s036"/);
-  assert.match(html, /src="sound-score\.js\?v=s039"/);
-  assert.match(html, /src="sound-abc\.js\?v=s039"/);
-  assert.match(html, /src="sound-score-player\.js\?v=s039"/);
-  assert.match(html, /src="sound-compose\.js\?v=s040"/);
+  assert.match(html, /src="sound-score\.js\?v=s040a"/);
+  assert.match(html, /src="sound-abc\.js\?v=s040a"/);
+  assert.match(html, /src="sound-score-player\.js\?v=s040a"/);
+  assert.match(html, /src="sound-compose\.js\?v=s040a"/);
   assert.match(html, /src="sound-lab\.js\?v=s039a"/);
-  assert.match(html, /href="sound-lab\.css\?v=s039"/);
+  assert.match(html, /href="sound-lab\.css\?v=s040a"/);
   assert.match(html, /id="scaleGapToggle" type="checkbox"/);
   assert.match(html, /id="scaleGapPanel" hidden/);
   assert.match(html, /src="sound-recorder\.js"/);
@@ -2502,7 +2502,7 @@ test("Compose C1 validates edits and loads local ABC scores without autoplay", a
   assert.match(app.elements.get("composeText").value, /M:3\/4/);
   assert.equal(app.contexts.length, 0);
   assert.match(app.elements.get("composeMeta").textContent, /4 такт/);
-  app.elements.get("composeText").value = "M:4/4\nL:1/4\nQ:1/4=100\nK:C\nC2 D | E4 |]";
+  app.elements.get("composeText").value = "M:4/4\nL:1/4\nQ:1/4=100\nK:C\nC3 D2 | E4 |]";
   app.fire("composeText", "input");
   await app.fire("composePlayPause", "click");
   assert.equal(app.elements.get("composePlayPause").disabled, true);
@@ -2536,21 +2536,55 @@ test("Compose C1 validates edits and loads local ABC scores without autoplay", a
 test("S040 published melody choices load full phrases silently and remain bilingual", async () => {
   const app = fakePage();
   app.fire("modeCompose", "click");
-  for (const [choice, bars] of [["ode", 16], ["minuetG", 16], ["lightly", 16],
-    ["mozart40", 13], ["frere", 8], ["twinkle", 12]]) {
+  for (const [choice, bars] of [["ode", 16], ["minuetG", 32], ["lightly", 16],
+    ["mozart40", 20], ["frere", 8], ["twinkle", 12]]) {
     app.elements.get("composeExample").value = choice;
     app.fire("composeExample", "change");
     assert.equal(app.elements.get("composeText").value, composeModel.EXAMPLES[choice], choice);
     assert.match(app.elements.get("composeMeta").textContent, new RegExp(`${bars} такт`), choice);
     assert.equal(app.elements.get("composePlayPause").disabled, false, choice);
+    assert.equal(app.elements.get("composeInstrument").value, composeModel.EXAMPLE_INFO[choice].instrument);
+    assert.equal(app.elements.get("composePresetInfo").hidden, false);
+    assert.equal(app.elements.get("composeSource").href, composeModel.EXAMPLE_INFO[choice].source);
     assert.equal(app.contexts.length, 0, `${choice} loads without autoplay`);
   }
   app.fire("langEn", "click");
   assert.match(app.elements.get("composeMeta").textContent, /12 bars/);
   app.elements.get("composeExample").value = "mozart40";
   app.fire("composeExample", "change");
-  assert.match(app.elements.get("composeMeta").textContent, /13 bars/);
+  assert.match(app.elements.get("composeMeta").textContent, /20 bars/);
+  assert.equal(app.elements.get("composeSource").textContent, "Score source");
+  app.elements.get("composeInstrument").value = "guitar";
+  app.fire("composeInstrument", "change");
+  app.fire("langMn", "click");
+  assert.equal(app.elements.get("composeInstrument").value, "guitar",
+    "Language switching preserves the instrument chosen after loading a preset");
+  assert.equal(app.elements.get("composeSource").textContent, "Нотын эх сурвалж");
   assert.equal(app.contexts.length, 0);
+});
+
+test("Compose draws ties across staff rows and keeps long-score playback visible", async () => {
+  const app = fakePage();
+  app.fire("modeCompose", "click");
+  const scroll = app.elements.get("composeScoreScroll");
+  scroll.clientWidth = 390;
+  scroll.clientHeight = 300;
+  const positions = [];
+  scroll.scrollTo = position => positions.push(position);
+  const source = "T:Tied pickup\nM:4/4\nL:1/4\nQ:1/4=120\nK:C\nC | C4 | C4 | C4- | C4 |]";
+  await app.fire("composeLoad", "change", { target: { files: [{ name: "ties.abc", size: source.length,
+    text: async () => source }] } });
+  const svg = app.elements.get("composeScoreSvg");
+  assert.equal(svg.children.find(node => node.getAttribute("class") === "compose-bar-number").textContent, "0");
+  const paths = svg.children.flatMap(node => node.children).filter(node => node.tagName === "path");
+  assert.equal(paths.filter(node => node.getAttribute("class") === "compose-tie").length, 2,
+    "A tie crossing a row break is visible at both row edges");
+  assert.equal(app.contexts.length, 0, "Rendering a tied imported score is silent");
+  await app.fire("composePlayPause", "click");
+  app.contexts[0].currentTime = 7;
+  [...app.timers.values()].find(timer => timer.delay === 35).callback();
+  assert.ok(positions.at(-1).top > 0, "The staff follows playback into the next row");
+  app.fire("stopAll", "click");
 });
 
 test("harmonic builder is an interactive eight-partial synthesis without autoplay", async () => {

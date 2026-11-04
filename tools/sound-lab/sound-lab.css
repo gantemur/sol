@@ -357,6 +357,9 @@ h1, h2, p { margin-top: 0; }
   border: 1px solid #bad2e8; border-radius: 9px; color: #2c5379; background: #f8fbff;
   padding: 9px; font-weight: 700; font-size: 12px; }
 .compose-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+.compose-visuals .chart-heading { display: block; }
+#composeMeta { display: inline-block; max-width: 100%; margin-top: 10px; border-radius: 10px;
+  white-space: normal; overflow-wrap: anywhere; line-height: 1.6; }
 .compose-play-row { display: grid; grid-template-columns: 1.2fr .8fr; gap: 9px; }
 .compose-play-row button { min-height: 56px; border-radius: 11px; font-size: 14px; font-weight: 850; }
 .compose-play { border: 1px solid #346dc7; color: white; background: #306bc3; }
@@ -375,7 +378,7 @@ h1, h2, p { margin-top: 0; }
   background: #edf7fd; color: #28618a; padding: 9px 12px; border-radius: 8px;
   cursor: pointer; font-size: 12px; font-weight: 800; }
 .compose-file-button:hover { background: #dceffc; }
-.compose-score-scroll { overflow-x: auto; overflow-y: hidden; margin: 13px 0 5px;
+.compose-score-scroll { overflow: auto; max-height: min(70vh, 620px); margin: 13px 0 5px;
   background: #fbfdff; border: 1px solid #e0e9f2; border-radius: 11px; }
 .compose-score-scroll svg { display: block; width: 864px; max-width: none; height: auto;
   margin: 0; background: transparent; }
@@ -385,6 +388,7 @@ h1, h2, p { margin-top: 0; }
 .compose-bar-number { fill: #718ba5; font-size: 12px; font-weight: 700; }
 .compose-note ellipse { fill: #427cb8; }
 .compose-note .compose-stem { stroke: #427cb8; stroke-width: 1.7; }
+.compose-tie { fill: none; stroke: #427cb8; stroke-width: 1.7; }
 .compose-note .compose-rest { fill: #8a9cac; }
 .compose-note .compose-accidental { fill: #365d7f; font-size: 16px; }
 .compose-note-name { fill: #426b88; font-size: 11px; font-weight: 750; }

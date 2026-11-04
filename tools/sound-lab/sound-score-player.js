@@ -24,8 +24,19 @@
     if (!Number.isFinite(fromBeat) || fromBeat < 0 || fromBeat > score.totalBeats) {
       throw new RangeError("Invalid score offset");
     }
-    return score.parts[0].events.filter(event =>
-      event.type === "note" && event.startBeat + event.durationBeats > fromBeat);
+    const notes = [];
+    for (const event of score.parts[0].events) {
+      if (event.type === "rest") continue;
+      if (event.tieFromPrevious) {
+        notes[notes.length - 1].durationBeats += event.durationBeats;
+      } else {
+        const { tieFromPrevious, tieToNext, ...note } = event;
+        notes.push({ ...note, pitch: { ...event.pitch } });
+      }
+    }
+    // Keep the complete attack time when resuming inside a chain. The player
+    // clips its remaining duration and seeks percussive buffers from that time.
+    return notes.filter(event => event.startBeat + event.durationBeats > fromBeat);
   }
 
   class Player {
@@ -42,6 +53,7 @@
       this.voices = new Set();
       this.buffers = new Map();
       this.score = null;
+      this.playEvents = [];
       this.instrument = "flute";
       this.tuning = "equal";
       this.volume = 38;
@@ -74,6 +86,7 @@
       }
       this.stop();
       this.score = score;
+      this.playEvents = scheduledEvents(score);
       this.instrument = instrument;
       this.tuning = tuning;
       this.volume = volume;
@@ -135,9 +148,9 @@
         this.context = context;
         this.originBeat = this.positionBeat;
         this.baseTime = context.currentTime + .08;
-        this.nextIndex = this.score.parts[0].events.findIndex(event =>
+        this.nextIndex = this.playEvents.findIndex(event =>
           event.startBeat + event.durationBeats > this.originBeat);
-        if (this.nextIndex < 0) this.nextIndex = this.score.parts[0].events.length;
+        if (this.nextIndex < 0) this.nextIndex = this.playEvents.length;
         this.status = "playing";
         this.tick();
         this.interval = setInterval(() => this.tick(), TICK_MS);
@@ -154,10 +167,9 @@
       const now = this.context.currentTime;
       const spb = scoreModel.secondsPerBeat(this.score);
       const aheadBeat = this.originBeat + (now + AHEAD_SECONDS - this.baseTime) / spb;
-      const events = this.score.parts[0].events;
+      const events = this.playEvents;
       while (this.nextIndex < events.length && events[this.nextIndex].startBeat < aheadBeat) {
         const event = events[this.nextIndex++];
-        if (event.type === "rest") continue;
         const clippedBeat = Math.max(this.originBeat, event.startBeat);
         const at = this.baseTime + (clippedBeat - this.originBeat) * spb;
         const endsAt = this.baseTime + (event.startBeat + event.durationBeats - this.originBeat) * spb;
