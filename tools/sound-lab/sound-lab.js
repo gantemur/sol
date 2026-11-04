@@ -6606,7 +6606,7 @@
     for (const y of [yLow, yHigh]) {
       ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(right, y); ctx.stroke();
     }
-    notes.forEach((note, index) => {
+    notes.slice(0, 2).forEach((note, index) => {
       const y = index ? yHigh : yLow;
       const color = index ? "#d28e46" : "#277bb6";
       ctx.font = "bold 11px system-ui, sans-serif";
