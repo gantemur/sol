@@ -12,7 +12,11 @@ This tool was inspired by the old notebook
 `_import/spectrum/temperature.ipynb`, inspected as read-only migration source.
 The formulas were reimplemented in new JavaScript for this standalone tool.
 
-License: TBD. The repository does not yet have a chosen public license.
+Copyright (c) 2026 Tsogtgerel Gantumur. This current Sol tool and its ordinary
+documentation are offered under the local [MIT License](LICENSE), explicitly authorized
+by the author on 5 November 2026, including his notebook-derived contributions.
+Earlier notebook releases and their licensing are not changed. Keep the license
+with this standalone tool.
 
 ## Model
 

@@ -17,7 +17,7 @@ including [revision f937ba9](https://github.com/gantemur/armatur/tree/f937ba9ab2
 The current planner and corrected legacy reference continue that tool.
 No third-party runtime libraries, fonts, images, or datasets are bundled here.
 
-Copyright (c) 2020, 2026 Tsogt Gantumur.
+Copyright (c) 2020, 2026 Tsogtgerel Gantumur.
 
 This Armatur package is distributed under the [MIT License](LICENSE),
 including the current planner, corrected legacy version, tests, and ordinary

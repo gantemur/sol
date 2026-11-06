@@ -6,7 +6,12 @@
     "category": "astronomy",
     "entry": "tools/planets-en/",
     "description": "English planetary and Ptolemaic model animations.",
-    "migrationStatus": "initial static migration"
+    "migrationStatus": "initial static migration",
+    "copyrightHolder": "Tsogtgerel Gantumur",
+    "license": null,
+    "ownCodeLicense": "MIT",
+    "licenseStatus": "Upstream legacy permissions unresolved; MIT covers author-owned contributions only.",
+    "licenseFile": "tools/planets-en/LICENSING.md"
   },
   {
     "id": "planets-mn",
@@ -15,7 +20,12 @@
     "category": "astronomy",
     "entry": "tools/planets-mn/",
     "description": "Mongolian planetary and Ptolemaic model animations.",
-    "migrationStatus": "initial static migration"
+    "migrationStatus": "initial static migration",
+    "copyrightHolder": "Tsogtgerel Gantumur",
+    "license": null,
+    "ownCodeLicense": "MIT",
+    "licenseStatus": "Upstream legacy permissions unresolved; MIT covers author-owned contributions only.",
+    "licenseFile": "tools/planets-mn/LICENSING.md"
   },
   {
     "id": "doppler",
@@ -24,7 +34,10 @@
     "category": "physics",
     "entry": "tools/doppler/",
     "description": "Canvas demonstrations of sound and light Doppler effects.",
-    "migrationStatus": "initial static migration with small audio resume compatibility fix"
+    "migrationStatus": "initial static migration with small audio resume compatibility fix",
+    "copyrightHolder": "Tsogtgerel Gantumur",
+    "license": "MIT",
+    "licenseFile": "tools/doppler/LICENSE"
   },
   {
     "id": "rainbow-angle",
@@ -36,7 +49,10 @@
     "category": "physics",
     "entry": "tools/rainbow-angle/",
     "description": "Interactive geometric-optics curves for primary and secondary rainbow angles.",
-    "migrationStatus": "native notebook-derived alpha"
+    "migrationStatus": "native notebook-derived alpha",
+    "copyrightHolder": "Tsogtgerel Gantumur",
+    "license": "MIT",
+    "licenseFile": "tools/rainbow-angle/LICENSE"
   },
   {
     "id": "warm",
@@ -48,7 +64,10 @@
     "category": "physics",
     "entry": "tools/warm/",
     "description": "A simplified stellar irradiance, planet temperature, and liquid-water zone explorer.",
-    "migrationStatus": "native notebook-derived MVP"
+    "migrationStatus": "native notebook-derived MVP",
+    "copyrightHolder": "Tsogtgerel Gantumur",
+    "license": "MIT",
+    "licenseFile": "tools/warm/LICENSE"
   },
   {
     "id": "kinetic",
@@ -57,7 +76,10 @@
     "category": "physics",
     "entry": "tools/kinetic/",
     "description": "Educational kinetic animation/toy model for particles, wind, and waves.",
-    "migrationStatus": "initial static migration"
+    "migrationStatus": "initial static migration",
+    "copyrightHolder": "Tsogtgerel Gantumur",
+    "license": "MIT",
+    "licenseFile": "tools/kinetic/LICENSE"
   },
   {
     "id": "armatur",
@@ -69,7 +91,10 @@
     "category": "engineering",
     "entry": "tools/armatur/",
     "description": "Bilingual 1D cutting-stock planner with optimized rod patterns and visual cutting lists.",
-    "migrationStatus": "native optimizer and interactive UI with corrected standalone legacy"
+    "migrationStatus": "native optimizer and interactive UI with corrected standalone legacy",
+    "copyrightHolder": "Tsogtgerel Gantumur",
+    "license": "MIT",
+    "licenseFile": "tools/armatur/LICENSE"
   },
   {
     "id": "sundial",
@@ -81,6 +106,9 @@
     "category": "astronomy",
     "entry": "tools/sundial/",
     "description": "Generate printable and engravable horizontal sundial patterns with optional gnomon dimensions.",
-    "migrationStatus": "native horizontal v1 review"
+    "migrationStatus": "native horizontal v1 review",
+    "copyrightHolder": "Tsogtgerel Gantumur",
+    "license": "MIT",
+    "licenseFile": "tools/sundial/LICENSE"
   }
 ]

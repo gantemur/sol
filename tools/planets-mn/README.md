@@ -13,3 +13,10 @@ Known limitations:
 - The English and Mongolian planetary tools are intentionally not merged yet.
 - Some hard-coded text remains embedded in HTML and page-level JavaScript.
 - Credits embedded in the original index page are preserved.
+
+## Authorship and licensing
+
+Tsogtgerel Gantumur's own contributions are offered under the local [MIT License](LICENSE).
+The complete legacy package is **not** represented as MIT-cleared: upstream permissions
+remain unresolved. Read [LICENSING.md](LICENSING.md) and
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), and retain them when copying this tool.

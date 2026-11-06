@@ -16,7 +16,12 @@ The original `_import/spectrum` folder has GPL provenance. For this public-alpha
 
 ## License
 
-License is TBD, following the current repository status. Do not assume a repository-wide license until one is added explicitly.
+Copyright (c) 2026 Tsogtgerel Gantumur. This current Sol tool and its ordinary
+documentation are offered under the local [MIT License](LICENSE), explicitly authorized
+by the author on 5 November 2026, including his notebook-derived contributions.
+This grant is not inferred merely from translating Python into JavaScript. It does
+not change the earlier notebook releases or their GPL terms. Keep this README and
+LICENSE with the extracted tool.
 
 ## Model
 

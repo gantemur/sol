@@ -51,4 +51,12 @@ These checks do not validate scientific models or browser behavior.
 
 ## License
 
-License is TBD. Do not assume a repository-wide license until one is added explicitly.
+Copyright (c) 2026 Tsogtgerel Gantumur. Author-owned Sol code and ordinary
+accompanying documentation are available under the [MIT License](LICENSE), subject
+to the explicit [per-tool scope and exceptions](LICENSING.md). Each tool includes
+a local license and visible author/source/licensing notice.
+
+The planetary tools retain upstream legacy code with unresolved permissions; do not
+treat their complete packages as MIT-cleared. See their local licensing notices.
+Older copyright years and source credits are preserved. Compact interface credits use
+Ts. Gantumur or Gantumur.

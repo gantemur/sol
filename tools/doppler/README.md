@@ -12,3 +12,9 @@ Known limitations:
 - Audio quality and timing have not been subjectively revalidated.
 - The animations use legacy global JavaScript state.
 - `doppler.js` appears to be an unused duplicate or older sound script, but it has not been deleted.
+
+## Authorship and license
+
+Copyright (c) 2026 Tsogtgerel Gantumur.
+This tool and its ordinary documentation are offered under the local [MIT License](LICENSE). See [NOTICE.md](NOTICE.md) for the retained GPL release history.
+Keep the license with the tool when copying its standalone folder.

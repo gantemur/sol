@@ -1,26 +1,38 @@
-# Credits
+# Credits and licensing
 
-This repository is an early public-alpha migration of small static scientific/computational tools.
-
-The original raw migration inputs live in the local `_import/` folder, which is intentionally ignored and not part of the public repository.
+Sol is developed by **Tsogtgerel Gantumur**, also credited as **Ts. Gantumur** or
+**Gantumur** where space is limited. See the [licensing scope](../LICENSING.md)
+and the [MIT License](../LICENSE). Individual tools include their own full license.
 
 ## Planetary models
 
-The English and Mongolian planetary index pages preserve their original credits:
+The original English and Mongolian pages credit:
 
-- The implementation is partially based on the Almagest Ephemeris Calculator: <https://webspace.science.uu.nl/~gent0113/astro/almagestephemeris.htm>
-- It is also based on Prof. Duke's Almagest Planetary Model Animations: <https://people.sc.fsu.edu/~dduke/models>
+- Prof. van Gent's [Almagest Ephemeris Calculator](https://webspace.science.uu.nl/~gent0113/astro/almagestephemeris.htm).
+- Prof. Duke's [Almagest Planetary Model Animations](https://people.sc.fsu.edu/~dduke/models).
 
-Those links are retained as external reference/credit links.
+These credits are retained. They are not an MIT permission grant for upstream code.
+The legacy portions remain excluded from a blanket MIT declaration while permissions
+and the boundary of borrowed code are unresolved. See the local
+[English](../tools/planets-en/THIRD_PARTY_NOTICES.md) and
+[Mongolian](../tools/planets-mn/THIRD_PARTY_NOTICES.md) notices.
 
-## Doppler
+## Doppler and Kinetic
 
-The migrated Doppler folder includes its imported `LICENSE` file, which is the GNU General Public License text. No repository-wide license decision has been made.
+Doppler's current author-owned implementation is offered under MIT by the author.
+The old [GPL text](../tools/doppler/LICENSES/GPL-3.0.txt) is retained with an
+[explanation of its historical scope](../tools/doppler/NOTICE.md).
+Kinetic retains its MIT provenance and original 2023 copyright year.
 
-## Kinetic
+## Rainbow Angles and Stellar Warmth
 
-The migrated kinetic folder includes its imported `LICENSE` file.
+These tools derive from the author's older `spectrum` notebooks. Their current Sol
+implementations are offered under MIT by explicit author authorization. The older
+notebooks are not imported or relicensed by this change. Their mathematical models
+and source references remain documented in the tool READMEs.
 
-## Repository license
+## Armatur and Sundial
 
-License is TBD. Do not assume a repository-wide license until one is added explicitly.
+Armatur retains its source history and dedication to M. Purev-Erdene in its
+[README](../tools/armatur/README.md#dedication) and interface. Sundial records its
+geometrical references in its [README](../tools/sundial/README.md#provenance-and-license).
