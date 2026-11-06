@@ -2,7 +2,7 @@
  * Armatur 1D cutting engine. No DOM or package dependencies.
  * Lengths are integer tenths of a millimetre throughout the solver.
  */
-/* SPDX-FileCopyrightText: 2026 Tsogt Gantumur
+/* SPDX-FileCopyrightText: 2026 Tsogtgerel Gantumur
  * SPDX-License-Identifier: MIT */
 (function (root, factory) {
   "use strict";
@@ -213,6 +213,122 @@
     return groupBins(job, bins, method + (ascending ? "-ascending" : "-descending"));
   }
 
+  function countDpImprove(job, incumbent, options) {
+    // Count vectors, not labelled pieces: F(r) = 1 + min F(r - p),
+    // over every nonempty feasible pattern p <= r. A pattern containing
+    // the first remaining type suffices: reorder rods to put that one first.
+    // Keep the exact fits() rule, including the saved final sawcut.
+    function limit(name, ceiling) {
+      var value = options[name];
+      if (value === undefined) return ceiling;
+      return Number.isFinite(value) ? Math.max(0, Math.min(ceiling, Math.floor(value))) : 0;
+    }
+    var maxStates = limit("dpMaxStates", 100000);
+    var maxPatterns = limit("dpMaxPatterns", 4000);
+    var maxPatternNodes = limit("dpMaxPatternNodes", 100000);
+    var maxTransitions = limit("dpMaxTransitions", 2000000);
+    var deadline = Date.now() + limit("dpTimeLimitMs", 600);
+    var info = { status: "completed", stateCount: null, statesVisited: 0,
+      patterns: 0, patternNodes: 0, transitions: 0 };
+    function finish(status, plan) {
+      info.status = status;
+      return { plan: plan || incumbent, completed: status === "completed", details: info };
+    }
+    if (!maxStates) return finish("disabled");
+    var types = job.items.length, strides = [], radices = [], stateCount = 1;
+    for (var i = 0; i < types; i++) {
+      strides.push(stateCount);
+      radices.push(job.items[i].quantity + 1);
+      // Check BEFORE multiplication or allocation, also preventing overflow.
+      if (radices[i] > Math.floor(maxStates / stateCount)) return finish("state-limit");
+      stateCount *= radices[i];
+    }
+    info.stateCount = stateCount;
+    if (Date.now() >= deadline) return finish("time-limit");
+
+    var patterns = [], counts = new Array(types).fill(0), stopped = "";
+    function enumerate(type, sum, count, code) {
+      if (stopped) return;
+      if (++info.patternNodes > maxPatternNodes) { stopped = "pattern-node-limit"; return; }
+      if (info.patternNodes % 128 === 0 && Date.now() >= deadline) { stopped = "time-limit"; return; }
+      if (type === types) {
+        if (!count) return;
+        if (patterns.length >= maxPatterns) { stopped = "pattern-limit"; return; }
+        patterns.push({ counts: counts.slice(), code: code });
+        info.patterns = patterns.length;
+        return;
+      }
+      var item = job.items[type];
+      var maximum = maxFittingCount(job, sum, count, item.length, item.quantity);
+      for (var n = 0; n <= maximum && !stopped; n++) {
+        counts[type] = n;
+        enumerate(type + 1, sum + n * item.length, count + n, code + n * strides[type]);
+      }
+      counts[type] = 0;
+    }
+    enumerate(0, 0, 0, 0);
+    // A truncated pattern set must NEVER be used to certify optimality.
+    if (stopped) return finish(stopped);
+    if (Date.now() >= deadline) return finish("time-limit");
+
+    var byType = Array.from({ length: types }, function () { return []; });
+    patterns.forEach(function (pattern, index) {
+      for (var type = 0; type < types; type++) {
+        if (pattern.counts[type]) byType[type].push(index);
+      }
+    });
+    var costs, choices;
+    try {
+      costs = new Uint32Array(stateCount);
+      choices = new Int32Array(stateCount);
+    } catch (_) { return finish("state-limit"); }
+    costs.fill(job.totalCount + 1);
+    choices.fill(-1);
+    costs[0] = 0;
+    for (var state = 1; state < stateCount; state++) {
+      if (state % 128 === 1 && Date.now() >= deadline) return finish("time-limit");
+      var first = -1, totalLength = 0;
+      for (var type = 0; type < types; type++) {
+        counts[type] = Math.floor(state / strides[type]) % radices[type];
+        totalLength += counts[type] * job.items[type].length;
+        if (first < 0 && counts[type]) first = type;
+      }
+      var bound = Math.ceil(totalLength / job.stockLength);
+      var candidates = byType[first];
+      for (var j = 0; j < candidates.length; j++) {
+        if (++info.transitions > maxTransitions) return finish("transition-limit");
+        if (info.transitions % 512 === 0 && Date.now() >= deadline) return finish("time-limit");
+        var index = candidates[j], pattern = patterns[index], compatible = true;
+        // Subtracting mixed-radix codes without this check could borrow across
+        // digits and silently manufacture pieces of another requested length.
+        for (var k = 0; k < types; k++) {
+          if (pattern.counts[k] > counts[k]) { compatible = false; break; }
+        }
+        if (!compatible) continue;
+        var candidate = 1 + costs[state - pattern.code];
+        if (candidate < costs[state]) { costs[state] = candidate; choices[state] = index; }
+        if (costs[state] === bound) break;
+      }
+      info.statesVisited++;
+    }
+    var full = stateCount - 1;
+    if (costs[full] > incumbent.stockCount) fail("Internal error: exact DP missed a feasible plan.");
+    // An equally good incumbent needs no reconstruction, but now has a proof.
+    if (costs[full] === incumbent.stockCount) return finish("completed");
+    var groups = new Map(), remaining = full, rods = 0;
+    while (remaining) {
+      if (++rods % 512 === 0 && Date.now() >= deadline) return finish("time-limit");
+      var selected = choices[remaining];
+      if (selected < 0) fail("Internal error: incomplete DP reconstruction.");
+      groups.set(selected, (groups.get(selected) || 0) + 1);
+      remaining -= patterns[selected].code;
+    }
+    var solution = Array.from(groups, function (entry) {
+      return { counts: patterns[entry[0]].counts, repeats: entry[1] };
+    });
+    return finish("completed", makePlan(job, solution, "count-dp"));
+  }
+
   function exactImprove(job, incumbent, lowerBound, options) {
     var pieces = [];
     job.items.forEach(function (item, type) {
@@ -281,18 +397,28 @@
         });
       });
     }
-    var searched = false, completed = false, nodes = 0;
-    if (best.stockCount === lowerBound) completed = true;
-    else if (job.totalCount <= (options.exactMaxPieces || 26)) {
+    var searched = false, completed = false, nodes = 0, proof = null;
+    var dp = { status: "not-needed", stateCount: null, statesVisited: 0,
+      patterns: 0, patternNodes: 0, transitions: 0 };
+    if (best.stockCount === lowerBound) { completed = true; proof = "length-bound"; }
+    else {
+      var dynamic = countDpImprove(job, best, options);
+      dp = dynamic.details;
+      best = dynamic.plan;
+      completed = dynamic.completed;
+      if (completed) proof = "count-dp";
+    }
+    if (!completed && job.totalCount <= (options.exactMaxPieces || 26)) {
       searched = true;
       var result = exactImprove(job, best, lowerBound, options);
       best = result.plan;
       completed = result.completed;
       nodes = result.nodes;
+      if (completed) proof = best.stockCount === lowerBound ? "length-bound" : "branch-and-bound";
     }
     return {
       greedy: greedy, best: best, lowerBound: lowerBound,
-      optimal: completed, searched: searched, nodes: nodes
+      optimal: completed, proof: proof, dp: dp, searched: searched, nodes: nodes
     };
   }
 
@@ -302,3 +428,4 @@
     makePlan: makePlan, solve: solve
   };
 });
+

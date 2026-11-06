@@ -1,4 +1,4 @@
-/* SPDX-FileCopyrightText: 2026 Tsogt Gantumur
+/* SPDX-FileCopyrightText: 2026 Tsogtgerel Gantumur
  * SPDX-License-Identifier: MIT */
 (function () {
   "use strict";
@@ -25,11 +25,11 @@
       greedyView: "Энгийн", diagramHint: "Зурагт хэсэг бүрийн урт, ирний хаягдал, үлдэгдлийг харуулав. Ижил төлөвлөгөөг бүлэглэсэн.",
       copy: "Жагсаалт хуулах", csv: "CSV татах", print: "Хэвлэх",
       helpHeading: "Тооцоолох аргын тухай",
-      helpText: "Энгийн арга урт хэсгүүдээс эхэлж савааг дүүргэнэ. Сайжруулсан арга өөр олон байрлалыг шалгана. Бага захиалгад оновчтой эсэхийг баталж чадна; том захиалгад олдсон хамгийн сайн төлөвлөгөөг харуулна. Ирний өргөн нь бодит зүсэлт бүрт хамаарна. Савааг яг дүүргэвэл сүүлийн хэсгийг тусад нь таслах шаардлагагүй.",
+      helpText: "Энгийн арга урт хэсгүүдээс эхэлж савааг дүүргэнэ. Сайжруулсан арга хэд хэдэн хурдан аргыг харьцуулж, боломжтой үед урт бүрийн тоо ширхэгээр динамик программчлал хийнэ. Ингэснээр ижил урттай олон хэсэг бүхий захиалгын оновчтой төлөвлөгөөг ч баталж болно. Тооцооны хэмжээ, хугацаа хязгаартай; бага захиалгад салаалсан хайлтыг мөн ашиглана. Баталгаа гараагүй бол олдсон сайн төлөвлөгөөг харуулна. Ирний өргөн нь бодит зүсэлт бүрт хамаарна. Савааг яг дүүргэвэл сүүлийн хэсгийг тусад нь таслах шаардлагагүй.",
       legacyLink: "Засварласан хуучин хувилбар",
       footer: "Дотооддоо тооцоолно · сүлжээ, бүртгэл шаардлагагүй",
       sourceLink: "Эх код", licenseLink: "MIT лиценз", creditsLink: "Түүх ба талархал",
-      dedicationHistory: "Энэ хэрэгслийг олон жилийн өмнө найз М. Пүрэв-Эрдэнийн хүсэлтээр, түүний ажилд туслах зорилгоор бүтээсэн юм. Тэрээр олон томоохон барилгын төслийн ерөнхий инженерээр ажиллаж байв.",
+      dedicationHistory: "Энэ хэрэгслийг олон жилийн өмнө найз Мөнхөөгийн Пүрэв-Эрдэнийн хүсэлтээр, түүний ажилд туслах зорилгоор бүтээсэн юм. Тэрээр олон томоохон барилгын төслийн ерөнхий инженерээр ажиллаж байв.",
       dedicationMemory: "Түүний гэгээн дурсгалд зориулав.",
       duplicate: "Хуулах", remove: "Арилгах",
       rods: "Нийт саваа", waste: "Нийт хаягдал", weight: "Нийт жин (ойролцоо)",
@@ -42,6 +42,11 @@
       saved: "Энгийн аргаас {n} саваагаар цөөн.",
       equal: "Одоогоор энгийн аргатай ижил тооны саваа хэрэгтэй.",
       lowerBound: "Онолын доод хязгаар: {n} саваа.",
+      dpProof: "Тоо ширхэгт суурилсан динамик программчлалаар оновчтойг батлав.",
+      searchProof: "Салаалсан хайлтыг бүрэн дуусгаж, оновчтойг батлав.",
+      lengthProof: "Төлөвлөгөө уртаас тооцсон доод хязгаарт хүрсэн тул оновчтой.",
+      dpLimited: "Динамик программчлалын хэмжээ эсвэл хугацааны хязгаарт хүрсэн. Олдсон сайн төлөвлөгөөг харуулав; оновчтой нь батлагдаагүй.",
+      boundedBest: "Олдсон сайн төлөвлөгөө; оновчтой нь одоогоор батлагдаагүй.",
       times: "{n} саваанд энэ зүсэлт", pieces: "Хэсгүүд",
       details: "Нэг савааны үлдэгдэл: {offcut}; зүсэлт: {cuts}; ирний хаягдал: {kerf}",
       simplified: "Олон жижиг хэсгийг зурагт нэгтгэв.",
@@ -68,11 +73,11 @@
       greedyView: "Greedy", diagramHint: "Drawings show pieces, saw loss, and offcuts. Identical patterns are grouped.",
       copy: "Copy cutting list", csv: "Download CSV", print: "Print",
       helpHeading: "How the calculation works",
-      helpText: "The greedy method fills rods from the longest pieces down. The improved method searches alternative arrangements. For small orders it may prove optimality; for larger orders it shows the best arrangement found. Kerf applies to each actual cut. When a rod is filled exactly, the final piece needs no separating cut.",
+      helpText: "The greedy method fills rods from the longest pieces down. The improved method compares several fast methods, then uses count-based dynamic programming when its state space is manageable. This can prove optimality even for orders with many repeated lengths. Work and time are bounded; small orders can also use branch-and-bound search. Without a proof, the best plan found is shown. Kerf applies to each actual cut. When a rod is filled exactly, the final piece needs no separating cut.",
       legacyLink: "Corrected legacy version",
       footer: "Runs locally in your browser · no account or server required",
       sourceLink: "Source", licenseLink: "MIT License", creditsLink: "Credits",
-      dedicationHistory: "This tool was first created many years ago at the request of my friend M. Purev-Erdene, to help with his work as chief engineer on many major construction projects.",
+      dedicationHistory: "This tool was first created many years ago at the request of my friend Purev-Erdene Munkhuu, to help with his work as chief engineer on many major construction projects.",
       dedicationMemory: "It is dedicated to his memory.",
       duplicate: "Duplicate", remove: "Delete",
       rods: "Stock rods", waste: "Total waste", weight: "Estimated mass",
@@ -85,6 +90,11 @@
       saved: "Uses {n} fewer rods than greedy.",
       equal: "Currently uses the same number of rods as greedy.",
       lowerBound: "Length-based lower bound: {n} rods.",
+      dpProof: "Optimality proved by count-based dynamic programming.",
+      searchProof: "Optimality proved by completed branch-and-bound search.",
+      lengthProof: "This plan reaches the length-based lower bound, proving optimality.",
+      dpLimited: "The dynamic-programming size or time budget was reached. Showing the best plan found; optimality is not proved.",
+      boundedBest: "Best plan found so far; optimality is not proved.",
       times: "This pattern × {n} rods", pieces: "Pieces",
       details: "Offcut per rod: {offcut}; cuts: {cuts}; saw loss: {kerf}",
       simplified: "Tiny pieces are combined in this drawing.",
@@ -251,6 +261,15 @@
   function selectedPlan() {
     return view === "greedy" ? current.result.greedy : current.result.best;
   }
+  function solverNoteKey(result) {
+    if (result.optimal) {
+      if (result.proof === "count-dp") return "dpProof";
+      if (result.proof === "branch-and-bound") return "searchProof";
+      return "lengthProof";
+    }
+    if (result.dp && /-limit$/.test(result.dp.status)) return "dpLimited";
+    return "boundedBest";
+  }
   function makeBar(pattern, job) {
     var bar = document.createElement("div"); bar.className = "bar";
     var maximumPieces = 100, drawn = 0;
@@ -349,6 +368,8 @@
     $("comparison").textContent = (saved > 0 ?
       t("saved", { n: number(saved, 0) }) : t("equal")) + " " +
       t("lowerBound", { n: number(result.lowerBound, 0) });
+    $("solver-note").hidden = view !== "best";
+    $("solver-note").textContent = view === "best" ? t(solverNoteKey(result)) : "";
     ["best", "greedy"].forEach(function (key) {
       var button = $("show-" + key), selected = view === key;
       button.classList.toggle("selected", selected);
@@ -371,7 +392,7 @@
     }
     if (typeof Worker === "function") {
       try {
-        worker = new Worker("optimizer-worker.js?v=20261103-r3");
+        worker = new Worker("optimizer-worker.js?v=20261105-dp1");
         worker.onmessage = function (event) {
           if (event.data.id !== id) return;
           if (event.data.error) {
@@ -400,7 +421,13 @@
     // Local-file / older-browser fallback, with a deliberately short search budget.
     setTimeout(function () {
       if (id !== requestId) return;
-      try { useResult(Engine.solve(job, { timeLimitMs: 120, nodeLimit: 20000 })); }
+      try {
+        useResult(Engine.solve(job, {
+          timeLimitMs: 120, nodeLimit: 20000,
+          dpMaxStates: 10000, dpMaxPatterns: 1000, dpMaxPatternNodes: 10000,
+          dpMaxTransitions: 100000, dpTimeLimitMs: 40
+        }));
+      }
       catch (error) { setStatus("failed", errorText(error), true); }
     }, 0);
   }
@@ -481,13 +508,12 @@
     input.focus();
   });
   $("example").addEventListener("click", function () {
-    $("stock-length").value = "1000"; $("unit").value = "mm"; lastUnit = "mm";
+    $("stock-length").value = "2500"; $("unit").value = "mm"; lastUnit = "mm";
     $("diameter").value = "12"; $("kerf").value = "0";
     setRows([
-      { length: "600", quantity: "1" },
-      { length: "500", quantity: "1" },
-      { length: "300", quantity: "1" },
-      { length: "200", quantity: "3" }
+      { length: "1200", quantity: "12" },
+      { length: "1100", quantity: "10" },
+      { length: "200", quantity: "7" }
     ]);
     markStale(); setStatus("exampleLoaded");
   });
@@ -513,3 +539,4 @@
   ]);
   setLanguage("mn");
 })();
+
