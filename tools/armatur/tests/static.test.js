@@ -1,4 +1,4 @@
-/* SPDX-FileCopyrightText: 2026 Tsogt Gantumur
+/* SPDX-FileCopyrightText: 2026 Tsogtgerel Gantumur
  * SPDX-License-Identifier: MIT */
 "use strict";
 const assert = require("node:assert/strict");
@@ -37,14 +37,27 @@ assert.match(html, /data-i18n="dedicationHistory"/);
 assert.match(html, /data-i18n="dedicationMemory"/);
 for (const page of ["index.html", "legacy/index.html"]) {
   const content = fs.readFileSync(path.join(tool, page), "utf8");
-  assert.match(content, /М\. Пүрэв-Эрдэнийн/);
+  assert.match(content, /найз Мөнхөөгийн Пүрэв-Эрдэнийн хүсэлтээр/);
+  assert.match(content, /бүтээсэн юм\./);
+  assert.doesNotMatch(content, /миний найз|М\. Пүрэв-Эрдэнийн|M\. Purev-Erdene/);
   assert.match(content, /#credits-and-license/);
-  assert.match(content, /href="https:\/\/github.com\/gantemur\/sol\/blob\/main\/tools\/armatur\/(?:legacy\/)?LICENSE"/);
+  assert.match(content, /href="LICENSE"/);
+  assert.match(content, /© 2020, 2026 Ts\. Gantumur/);
   assert.doesNotMatch(content, /sol-private/);
 }
+for (const file of ["README.md", "legacy/README.md"]) {
+  const content = fs.readFileSync(path.join(tool, file), "utf8");
+  assert.match(content, /Purev-Erdene Munkhuu \(Мөнхөөгийн Пүрэв-Эрдэнэ\)/);
+  assert.match(content, /Tsogtgerel Gantumur/);
+  assert.doesNotMatch(content, /M\. Purev-Erdene/);
+}
+assert.match(app, /my friend Purev-Erdene Munkhuu/);
+assert.match(app, /dpTimeLimitMs: 40/);
+assert.match(app, /dpMaxStates: 10000/);
 
 const worker = fs.readFileSync(path.join(tool, "optimizer-worker.js"), "utf8");
 const legacy = fs.readFileSync(path.join(tool, "legacy/index.html"), "utf8");
+assert.match(legacy, /my friend Purev-Erdene Munkhuu/);
 const assetReferences = [
   [html, /href="style\.css\?v=([^"]+)"/, "main CSS"],
   [html, /src="engine\.js\?v=([^"]+)"/, "main engine"],
@@ -63,7 +76,8 @@ assert.equal(new Set(releases).size, 1, "asset release tokens must match");
 const license = fs.readFileSync(path.join(tool, "LICENSE"), "utf8");
 assert.equal(license, fs.readFileSync(path.join(tool, "legacy/LICENSE"), "utf8"));
 assert.match(license, /^MIT License\n/);
-assert.match(license, /Copyright \(c\) 2020, 2026 Tsogt Gantumur/);
+assert.match(license, /Copyright \(c\) 2020, 2026 Tsogtgerel Gantumur/);
 assert.match(license, /Permission is hereby granted, free of charge/);
 assert.match(license, /THE SOFTWARE IS PROVIDED "AS IS"/);
 console.log("Armatur local HTML and assets: static checks passed");
+
