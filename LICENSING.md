@@ -11,7 +11,13 @@ The author approved MIT licensing of his existing Sol code and ordinary accompan
 documentation on 5 November 2026. The standard [MIT License](LICENSE) applies to
 that material. It permits reuse, modification and commercial redistribution subject
 to retaining its copyright and permission notice. The software is supplied as is.
-The visible footer is our presentation choice, not an additional MIT restriction.
+For an uncluttered interface, copyright and licensing are stated once on the
+[Sol homepage](./), rather than repeated inside each tool or on every tool card.
+Unless otherwise stated in the accompanying files, Sol's author-owned code and
+ordinary documentation use MIT, even when the interface has no visible notice.
+Tool-local LICENSE files, copyright headers, credits and explicit exceptions remain
+part of each package and must not be removed just to simplify its interface.
+The homepage statement adds no visible-credit requirement to MIT.
 
 **This grant does not relicense someone else's code, text, data or other assets.**
 The planetary tools contain legacy material with unresolved upstream permissions;
@@ -24,11 +30,11 @@ they must not be described or redistributed as wholly MIT-cleared packages.
 | [Armatur](tools/armatur/) | [MIT](tools/armatur/LICENSE); includes the corrected [standalone legacy version](tools/armatur/legacy/LICENSE). Copyright years 2020, 2026 retained. |
 | [Doppler](tools/doppler/) | [MIT](tools/doppler/LICENSE) for the author's current code and documentation. Previous GPL release history is retained in its [notice](tools/doppler/NOTICE.md). |
 | [Kinetic](tools/kinetic/) | [MIT](tools/kinetic/LICENSE); original 2023 copyright retained alongside 2026 updates. |
-| [Rainbow Angles](tools/rainbow-angle/) | [MIT](tools/rainbow-angle/LICENSE), under the author's explicit grant for the current tool and his notebook-derived contributions. |
-| [Stellar Warmth](tools/warm/) | [MIT](tools/warm/LICENSE), under the author's explicit grant for the current tool and his notebook-derived contributions. |
+| [Rainbow angles](tools/rainbow-angle/) | [MIT](tools/rainbow-angle/LICENSE), under the author's explicit grant for the current tool and his notebook-derived contributions. |
+| [Stellar warmth](tools/warm/) | [MIT](tools/warm/LICENSE), under the author's explicit grant for the current tool and his notebook-derived contributions. |
 | [Sundial](tools/sundial/) | [MIT](tools/sundial/LICENSE). |
-| [Planetary Models — English](tools/planets-en/) | MIT for Gantumur's own contributions only; [upstream legacy scope and unresolved permissions](tools/planets-en/LICENSING.md). |
-| [Planetary Models — Mongolian](tools/planets-mn/) | MIT for Gantumur's own contributions only; [upstream legacy scope and unresolved permissions](tools/planets-mn/LICENSING.md). |
+| [Planetary models — English](tools/planets-en/) | MIT for Gantumur's own contributions only; [upstream legacy scope and unresolved permissions](tools/planets-en/LICENSING.md). |
+| [Planetary models — Mongolian](tools/planets-mn/) | MIT for Gantumur's own contributions only; [upstream legacy scope and unresolved permissions](tools/planets-mn/LICENSING.md). |
 
 Each tool carries a local license; keep its README and any licensing/third-party
 notices with it when extracting the folder. A tool's specific scope or retained

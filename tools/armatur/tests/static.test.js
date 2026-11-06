@@ -29,9 +29,9 @@ const translations = [...html.matchAll(/data-i18n="([^"]+)"/g)].map((match) => m
 for (const key of translations) {
   assert.ok(app.includes(key + ":"), "missing UI translation key " + key);
 }
-for (const key of ["sourceLink", "licenseLink", "creditsLink", "dedicationHistory", "dedicationMemory"]) {
+for (const key of ["dedicationHistory", "dedicationMemory"]) {
   assert.equal([...app.matchAll(new RegExp("\\b" + key + ":", "g"))].length, 2,
-    "footer key must exist in both languages: " + key);
+    "dedication key must exist in both languages: " + key);
 }
 assert.match(html, /data-i18n="dedicationHistory"/);
 assert.match(html, /data-i18n="dedicationMemory"/);
@@ -40,9 +40,10 @@ for (const page of ["index.html", "legacy/index.html"]) {
   assert.match(content, /найз Мөнхөөгийн Пүрэв-Эрдэнийн хүсэлтээр/);
   assert.match(content, /бүтээсэн юм\./);
   assert.doesNotMatch(content, /миний найз|М\. Пүрэв-Эрдэнийн|M\. Purev-Erdene/);
-  assert.match(content, /#credits-and-license/);
-  assert.match(content, /href="LICENSE"/);
-  assert.match(content, /© 2020, 2026 Ts\. Gantumur/);
+  // Legal files and source headers stay; repeated interface notices do not.
+  assert.doesNotMatch(content.replace(/<!--[\s\S]*?-->/g, ""),
+    /©|href="LICENSE"|#credits-and-license|data-i18n="(?:sourceLink|licenseLink|creditsLink)"/);
+  assert.match(content, /SPDX-License-Identifier: MIT/);
   assert.doesNotMatch(content, /sol-private/);
 }
 for (const file of ["README.md", "legacy/README.md"]) {

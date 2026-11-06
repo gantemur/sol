@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="mn">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,148 +26,128 @@
       }
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       background: var(--bg);
       color: var(--text);
       font: 16px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-
     main {
       width: min(920px, calc(100% - 32px));
       margin: 0 auto;
       padding: 32px 0 48px;
     }
-
-    header {
-      margin-bottom: 28px;
-    }
-
+    header { margin-bottom: 28px; }
     h1 {
       margin: 0 0 8px;
       font-size: clamp(2rem, 8vw, 4rem);
       line-height: 1;
       letter-spacing: 0;
     }
-
-    p {
-      margin: 0;
-      color: var(--muted);
-    }
-
+    p { margin: 0; color: var(--muted); }
+    p + p { margin-top: 0.45rem; }
     .tools {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
       gap: 14px;
       margin: 24px 0;
       padding: 0;
       list-style: none;
     }
-
     .tool {
       display: flex;
       flex-direction: column;
+      min-width: 0;
       min-height: 180px;
       padding: 18px;
       border: 1px solid var(--line);
       border-radius: 8px;
       background: var(--card);
     }
-
-    .tool h2 {
-      margin: 0 0 8px;
-      font-size: 1.25rem;
-      line-height: 1.2;
-    }
-
+    .tool h2 { margin: 0 0 12px; font-size: 1.25rem; line-height: 1.3; }
+    .title-en { display: block; margin-top: 0.15em; font-size: 0.9em; font-weight: 500; }
     .meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.5em 1em;
       margin-top: auto;
       padding-top: 16px;
       color: var(--muted);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
-
-    a {
-      color: var(--accent);
-    }
-
-    .tool a {
-      text-decoration-thickness: 0.08em;
-      text-underline-offset: 0.18em;
-    }
-
-    .notes {
-      margin-top: 28px;
-      padding-top: 22px;
-      border-top: 1px solid var(--line);
-    }
-
-    .notes h2 {
-      margin: 0 0 8px;
-      font-size: 1.1rem;
-    }
+    .languages { white-space: nowrap; }
+    a { color: var(--accent); }
+    .tool a { text-decoration-thickness: 0.08em; text-underline-offset: 0.18em; }
+    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+    .notes { margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--line); font-size: 0.9rem; }
+    .notes h2 { margin: 0 0 8px; font-size: 1.1rem; }
   </style>
 </head>
 <body>
   <main>
     <header>
       <h1>sol</h1>
-      <p>Small scientific and computational web tools, migrated as lightweight static pages.</p>
+      <p>Шинжлэх ухаан, тооцооллын хөнгөн веб хэрэгслүүд.</p>
+      <p lang="en">Lightweight scientific and computational tools.</p>
     </header>
 
     <ul class="tools">
-      <li class="tool">
-        <h2><a href="tools/planets-en/">Planetary Models</a></h2>
-        <p>English planetary and Ptolemaic model animations.</p>
-        <div class="meta">Astronomy · English</div>
+      <li class="tool" data-tool="planets-en">
+        <h2><a href="tools/planets-en/"><span lang="en">Planetary models</span></a></h2>
+        <p lang="en">Animations of planetary motion and Ptolemaic models.</p>
+        <div class="meta"><span>Astronomy</span><span class="languages" lang="en" aria-label="English">EN</span></div>
       </li>
-      <li class="tool">
-        <h2><a href="tools/planets-mn/">Гаригуудын загвар</a></h2>
-        <p>Mongolian planetary and Ptolemaic model animations.</p>
-        <div class="meta">Astronomy · Mongolian</div>
+      <li class="tool" data-tool="planets-mn">
+        <h2><a href="tools/planets-mn/"><span lang="mn">Гаригуудын загвар</span></a></h2>
+        <p lang="mn">Гаригуудын хөдөлгөөн болон Птолемейн загваруудын хөдөлгөөнт үзүүлэн.</p>
+        <div class="meta"><span>Одон орон</span><span class="languages" lang="en" aria-label="Монгол">MN</span></div>
       </li>
-      <li class="tool">
-        <h2><a href="tools/doppler/">Доплер эффект</a></h2>
-        <p>Canvas demonstrations of sound and light Doppler effects.</p>
-        <div class="meta">Physics · Mongolian</div>
+      <li class="tool" data-tool="doppler">
+        <h2><a href="tools/doppler/"><span lang="mn">Доплер эффект</span></a></h2>
+        <p lang="mn">Дуу ба гэрлийн Доплер эффектийг харуулах хөдөлгөөнт үзүүлэн.</p>
+        <div class="meta"><span>Физик</span><span class="languages" lang="en" aria-label="Монгол">MN</span></div>
       </li>
-      <li class="tool">
-        <h2><a href="tools/rainbow-angle/">Rainbow Angles</a></h2>
-        <p>Interactive geometric-optics curves for primary and secondary rainbow angles.</p>
-        <div class="meta">Physics · English</div>
+      <li class="tool" data-tool="rainbow-angle">
+        <h2><a href="tools/rainbow-angle/"><span lang="mn">Солонгын өнцөг</span><span lang="en" class="title-en">Rainbow angles</span></a></h2>
+        <p lang="mn">Усан дусал дахь гэрлийн цацраг болон солонгын өнцгийг судлах.</p>
+        <p lang="en">Explore rays in a water drop and the angles of rainbows.</p>
+        <div class="meta"><span>Физик</span><span class="languages" lang="en" aria-label="Монгол / English">MN · EN</span></div>
       </li>
-      <li class="tool">
-        <h2><a href="tools/warm/">Stellar Warmth</a></h2>
-        <p>A simplified stellar irradiance, planet temperature, and liquid-water zone explorer.</p>
-        <div class="meta">Physics · English/Mongolian</div>
+      <li class="tool" data-tool="warm">
+        <h2><a href="tools/warm/"><span lang="mn">Одны дулаан</span><span lang="en" class="title-en">Stellar warmth</span></a></h2>
+        <p lang="mn">Одны цацраг, гаригийн температур, шингэн устай байж болох бүсийн хялбаршуулсан загвар.</p>
+        <p lang="en">Explore stellar irradiance, planetary temperature, and a simplified liquid-water zone.</p>
+        <div class="meta"><span>Физик</span><span class="languages" lang="en" aria-label="Монгол / English">MN · EN</span></div>
       </li>
-      <li class="tool">
-        <h2><a href="tools/kinetic/">Атом молекул</a></h2>
-        <p>Educational kinetic animation/toy model for particles, wind, and waves.</p>
-        <div class="meta">Physics · Mongolian</div>
+      <li class="tool" data-tool="kinetic">
+        <h2><a href="tools/kinetic/"><span lang="mn">Атом молекул</span></a></h2>
+        <p lang="mn">Атом, молекулын хөдөлгөөнөөр салхи ба долгионыг тайлбарлах сургалтын үзүүлэн.</p>
+        <div class="meta"><span>Физик</span><span class="languages" lang="en" aria-label="Монгол">MN</span></div>
       </li>
-      <li class="tool">
-        <h2><a href="tools/sundial/">Нарны цаг · Sundial</a></h2>
-        <p>Printable horizontal sundial patterns for engraving, etching, or paper, with optional gnomon dimensions.</p>
-        <div class="meta">Astronomy · Mongolian/English</div>
+      <li class="tool" data-tool="sundial">
+        <h2><a href="tools/sundial/"><span lang="mn">Нарны цаг</span><span lang="en" class="title-en">Sundial</span></a></h2>
+        <p lang="mn">Хэвтээ, босоо болон налуу гадаргуугийн нарны цагийн хэвлэх, сийлэх загвар.</p>
+        <p lang="en">Design printable sundials for horizontal, vertical, and inclined surfaces.</p>
+        <div class="meta"><span>Одон орон</span><span class="languages" lang="en" aria-label="Монгол / English">MN · EN</span></div>
       </li>
-      <li class="tool">
-        <h2><a href="tools/armatur/">Арматур</a></h2>
-        <p>Simple reinforcing-bar cutting calculator using the imported greedy algorithm.</p>
-        <div class="meta">Engineering · Mongolian</div>
+      <li class="tool" data-tool="armatur">
+        <h2><a href="tools/armatur/"><span lang="mn">Арматур</span><span lang="en" class="title-en">Rebar cutting</span></a></h2>
+        <p lang="mn">Стандарт савааг хэрэгтэй уртуудад бага хаягдалтай таслах төлөвлөгөө.</p>
+        <p lang="en">Plan rod cuts with less waste and view the cutting patterns.</p>
+        <div class="meta"><span>Инженерчлэл</span><span class="languages" lang="en" aria-label="Монгол / English">MN · EN</span></div>
       </li>
     </ul>
 
-    <p>Tool metadata is also available in <a href="tools.json">tools.json</a>.</p>
+    <p><a href="tools.json">Хэрэгслийн мэдээлэл · <span lang="en">Tool metadata</span></a></p>
 
-    <section class="notes" aria-labelledby="credits-title">
-      <h2 id="credits-title">Credits and license</h2>
-      <p>© 2026 Ts. Gantumur · <a href="https://github.com/gantemur/sol">Source</a> · <a href="LICENSE">MIT License</a> for author-owned code · <a href="LICENSING.md">Scope and exceptions</a> · <a href="docs/CREDITS.md">Credits</a>. Planetary legacy upstream permissions remain unresolved.</p>
-    </section>
+    <footer class="notes" aria-labelledby="credits-title">
+      <h2 id="credits-title">Лиценз · <span lang="en">License</span></h2>
+      <p>© 2026 Ts. Gantumur · <a href="https://github.com/gantemur/sol">Эх код / <span lang="en">Source</span></a> · <a href="LICENSE">MIT</a> · <a href="LICENSING.md">Нөхцөл / <span lang="en">Scope and exceptions</span></a> · <a href="docs/CREDITS.md">Талархал / <span lang="en">Credits</span></a></p>
+      <p>Харагдацыг цэгцтэй байлгахын тулд хэрэгсэл бүрд лицензийн мэдэгдлийг давтахгүй. Дагалдах файлд өөрөөр заагаагүй бол Sol-ийн зохиогчийн код, баримт бичиг MIT лицензтэй. Бусдын код болон гаригуудын загварын онцгой нөхцөлийг лицензийн тайлбараас үзнэ үү.</p>
+      <p lang="en">To keep interfaces uncluttered, individual tools omit repeated license notices. Unless otherwise stated in the accompanying files, Sol's author-owned code and documentation use the MIT license. See scope and exceptions for third-party material, including the planetary models.</p>
+    </footer>
   </main>
 </body>
 </html>

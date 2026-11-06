@@ -1,11 +1,11 @@
 [
   {
     "id": "planets-en",
-    "title": "Planetary Models",
+    "title": "Planetary models",
     "language": "en",
     "category": "astronomy",
     "entry": "tools/planets-en/",
-    "description": "English planetary and Ptolemaic model animations.",
+    "description": "Animations of planetary motion and Ptolemaic models.",
     "migrationStatus": "initial static migration",
     "copyrightHolder": "Tsogtgerel Gantumur",
     "license": null,
@@ -19,7 +19,7 @@
     "language": "mn",
     "category": "astronomy",
     "entry": "tools/planets-mn/",
-    "description": "Mongolian planetary and Ptolemaic model animations.",
+    "description": "Гаригуудын хөдөлгөөн болон Птолемейн загваруудын хөдөлгөөнт үзүүлэн.",
     "migrationStatus": "initial static migration",
     "copyrightHolder": "Tsogtgerel Gantumur",
     "license": null,
@@ -33,7 +33,7 @@
     "language": "mn",
     "category": "physics",
     "entry": "tools/doppler/",
-    "description": "Canvas demonstrations of sound and light Doppler effects.",
+    "description": "Дуу ба гэрлийн Доплер эффектийг харуулах хөдөлгөөнт үзүүлэн.",
     "migrationStatus": "initial static migration with small audio resume compatibility fix",
     "copyrightHolder": "Tsogtgerel Gantumur",
     "license": "MIT",
@@ -41,33 +41,49 @@
   },
   {
     "id": "rainbow-angle",
-    "title": "Rainbow Angles",
+    "title": "Солонгын өнцөг · Rainbow angles",
     "language": [
-      "en",
-      "mn"
+      "mn",
+      "en"
     ],
     "category": "physics",
     "entry": "tools/rainbow-angle/",
-    "description": "Interactive geometric-optics curves for primary and secondary rainbow angles.",
+    "description": "Усан дусал дахь гэрлийн цацраг болон солонгын өнцгийг судлах.",
     "migrationStatus": "native notebook-derived alpha",
     "copyrightHolder": "Tsogtgerel Gantumur",
     "license": "MIT",
-    "licenseFile": "tools/rainbow-angle/LICENSE"
+    "licenseFile": "tools/rainbow-angle/LICENSE",
+    "titles": {
+      "mn": "Солонгын өнцөг",
+      "en": "Rainbow angles"
+    },
+    "descriptions": {
+      "mn": "Усан дусал дахь гэрлийн цацраг болон солонгын өнцгийг судлах.",
+      "en": "Explore rays in a water drop and the angles of rainbows."
+    }
   },
   {
     "id": "warm",
-    "title": "Stellar Warmth",
+    "title": "Одны дулаан · Stellar warmth",
     "language": [
-      "en",
-      "mn"
+      "mn",
+      "en"
     ],
     "category": "physics",
     "entry": "tools/warm/",
-    "description": "A simplified stellar irradiance, planet temperature, and liquid-water zone explorer.",
+    "description": "Одны цацраг, гаригийн температур, шингэн устай байж болох бүсийн хялбаршуулсан загвар.",
     "migrationStatus": "native notebook-derived MVP",
     "copyrightHolder": "Tsogtgerel Gantumur",
     "license": "MIT",
-    "licenseFile": "tools/warm/LICENSE"
+    "licenseFile": "tools/warm/LICENSE",
+    "titles": {
+      "mn": "Одны дулаан",
+      "en": "Stellar warmth"
+    },
+    "descriptions": {
+      "mn": "Одны цацраг, гаригийн температур, шингэн устай байж болох бүсийн хялбаршуулсан загвар.",
+      "en": "Explore stellar irradiance, planetary temperature, and a simplified liquid-water zone."
+    }
   },
   {
     "id": "kinetic",
@@ -75,7 +91,7 @@
     "language": "mn",
     "category": "physics",
     "entry": "tools/kinetic/",
-    "description": "Educational kinetic animation/toy model for particles, wind, and waves.",
+    "description": "Атом, молекулын хөдөлгөөнөөр салхи ба долгионыг тайлбарлах сургалтын үзүүлэн.",
     "migrationStatus": "initial static migration",
     "copyrightHolder": "Tsogtgerel Gantumur",
     "license": "MIT",
@@ -83,18 +99,26 @@
   },
   {
     "id": "armatur",
-    "title": "Арматур",
+    "title": "Арматур · Rebar cutting",
     "language": [
       "mn",
       "en"
     ],
     "category": "engineering",
     "entry": "tools/armatur/",
-    "description": "Bilingual 1D cutting-stock planner with optimized rod patterns and visual cutting lists.",
+    "description": "Стандарт савааг хэрэгтэй уртуудад бага хаягдалтай таслах төлөвлөгөө.",
     "migrationStatus": "native optimizer and interactive UI with corrected standalone legacy",
     "copyrightHolder": "Tsogtgerel Gantumur",
     "license": "MIT",
-    "licenseFile": "tools/armatur/LICENSE"
+    "licenseFile": "tools/armatur/LICENSE",
+    "titles": {
+      "mn": "Арматур",
+      "en": "Rebar cutting"
+    },
+    "descriptions": {
+      "mn": "Стандарт савааг хэрэгтэй уртуудад бага хаягдалтай таслах төлөвлөгөө.",
+      "en": "Plan rod cuts with less waste and view the cutting patterns."
+    }
   },
   {
     "id": "sundial",
@@ -105,10 +129,18 @@
     ],
     "category": "astronomy",
     "entry": "tools/sundial/",
-    "description": "Generate printable and engravable horizontal sundial patterns with optional gnomon dimensions.",
+    "description": "Хэвтээ, босоо болон налуу гадаргуугийн нарны цагийн хэвлэх, сийлэх загвар.",
     "migrationStatus": "native horizontal v1 review",
     "copyrightHolder": "Tsogtgerel Gantumur",
     "license": "MIT",
-    "licenseFile": "tools/sundial/LICENSE"
+    "licenseFile": "tools/sundial/LICENSE",
+    "titles": {
+      "mn": "Нарны цаг",
+      "en": "Sundial"
+    },
+    "descriptions": {
+      "mn": "Хэвтээ, босоо болон налуу гадаргуугийн нарны цагийн хэвлэх, сийлэх загвар.",
+      "en": "Design printable sundials for horizontal, vertical, and inclined surfaces."
+    }
   }
 ]
