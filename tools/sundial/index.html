@@ -1,8 +1,8 @@
 <!doctype html>
 <!-- SPDX-FileCopyrightText: 2026 Tsogtgerel Gantumur; SPDX-License-Identifier: MIT -->
 <html lang="mn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light">
-<title>Нарны цаг · Sol</title><link rel="stylesheet" href="style.css?v=P1.0">
-<script defer src="planar3d.js?v=P1.0"></script><script defer src="sundial.js?v=P1.0"></script><script defer src="diagram3d.js?v=P1.0"></script><script defer src="ui.js?v=P1.0"></script></head>
+<title>Нарны цаг · Sol</title><link rel="stylesheet" href="style.css?v=P1.1">
+<script defer src="planar3d.js?v=P1.1"></script><script defer src="sundial.js?v=P1.1"></script><script defer src="diagram3d.js?v=P1.1"></script><script defer src="ui.js?v=P1.1"></script></head>
 <body><main><header><a href="../../">← Sol</a><div><span id="version" class="badge">…</span> <select id="lang" aria-label="Language / Хэл"><option value="mn">Монгол</option><option value="en">English</option></select></div></header>
 <h1 data-i="title">Нарны цаг</h1><p class="intro" data-i="intro">Хэвтээ, босоо хана болон налуу хавтгайн нарны цагийг загварчилж, хэвлэн сийлэх хээ гаргана.</p>
 <section class="controls" aria-label="Design">
@@ -27,10 +27,10 @@
 <p id="exportStatus" role="status"></p><a id="downloadAgain" hidden data-i="again">Файлыг дахин татах</a>
 <p class="note" data-i="print">Хэмжээг өөрчлөхгүй, 100% хэвлэнэ. Хуудасны хэмжээ нь загварт таарсан: A4/Letter рүү автоматаар багтааж болохгүй. Шугамын хэмжээг шугамаар шалгана.</p>
 <p class="note" data-i="time">Зөвхөн 06:00–18:00 жинхэнэ нарны цагийн мужийг авч, бодит тэнгэрийн хаяа болон хавтгайд тусах гэрлийг шалгана. Цагийн бүс, уртраг, цагийн тэгшитгэлийн засвар ороогүй.</p>
-<details><summary data-i="table">Цагийн шугамын өнцөг</summary><p data-i="angleHelp">Зураг дээрх үдийн чиглэлээс хэмжинэ: баруун тийш эерэг. Өмнөд хагас бөмбөрцөгт өглөө, оройн тал солигдоно.</p><div id="angles"></div></details>
+<details><summary data-i="table">Цагийн шугамын өнцөг</summary><p data-i="angleHelp">Зургийн дээд сумаас цагийн зүүний дагуу хэмжсэн өнцөг (дээш 0°, доош 180°).</p><div id="angles"></div></details>
 <details><summary data-i="gnomon">Нэмэлт: гномоны хажуугийн загвар</summary><p data-i="gnomonHelp">Мод, металл эсвэл хатуу картоноор хийх гурвалжин. Налуу ирмэг O–G нь дэлхийн тэнхлэгтэй параллель; үзүүр G нь улирлын шугамын цэг болно. Угсрах холбоос, нугалах хавтас ороогүй.</p><label><span data-i="length">Гномоны ирмэг дагуух үзүүрийн зай L (мм)</span><input id="profileLength" type="number" min="1" max="1000" step="1" value="40"></label><p id="profileDimensions"></p><div class="actions"><button id="profileSvg" data-i="profileSvg">Гномоны SVG</button><button id="profilePdf" data-i="profilePdf">Гномоны PDF</button></div></details>
 <details id="mount-info"><summary data-i="mountSummary">Гномоны байрлал ба виртуал газарзүй</summary>
-<p id="mountingInfo"></p><p id="virtualInfo"></p><p data-i="mountHelp">Туйлын ирмэг нь дэлхийн тэнхлэгтэй параллель. Зураг дээрх дээд сум налуу ирмэгийн хавтгай дээрх тусгал руу заана; босоо хананд энэ нь доош чиглэж болно. Ханын гадна тал нарны гэрэл авах ёстой.</p>
+<p id="mountingInfo"></p><p id="virtualInfo"></p><p data-i="mountHelp">Туйлын ирмэг нь дэлхийн тэнхлэгтэй параллель. Хана, налуу хавтгайн дээд сум бодит дээш чиглэлийг заана. Туйлын ирмэгийн тусгалаар O суурийн байрлал тогтоно.</p>
 </details>
 <details id="diagramPanel"><summary data-i="diagramTitle">3D геометр — цагийн хавтгай ба улирлын конус</summary>
 <div class="controls diagram-controls"><label><span data-i="demoHour">Нарны цаг (цаг)</span><input id="demoHour" type="range" min="6" max="18" step="0.5" value="12"><output id="demoHourValue">12:00</output></label>
@@ -38,5 +38,5 @@
 <label><span data-i="demoYaw">3D дүрсийг эргүүлэх</span><input id="demoYaw" type="range" min="-180" max="180" step="5" value="40"></label></div>
 <div id="diagram" class="diagram" role="img" aria-label="Sundial hour plane and declination cone"></div>
 <p class="note" data-i="diagramHelp">Цэнхэр нь цагийн хавтгай, шар нь улирлын конус, ногоон нь үзүүрээс унах сүүдрийн цацраг. Энэ 3D зураг нь угсралтын хэмжээст зураг биш.</p></details>
-<section class="help"><h2 data-i="installation">Байрлуулах нь</h2><p id="orientation"></p><p data-i="install">Сонгосон хавтгайн хазайлт болон азимутыг хэмжиж, зураг дээрх чиглэлийн тэмдгийг зөв тааруулна. Хэвтээ хавтгайг тэгшилнэ. O нь налуу ирмэгийн суурь, P нь үзүүрийн доорх босоо тусгал. Улирлын шугамыг ашиглах бол L ба үзүүрийн өндрийг яг тааруулах хэрэгтэй. Компасын соронзон хойд зүг жинхэнэ хойд зүгтэй заавал давхцахгүй.</p><p data-i="limits">Нарны хэлбийлтийн −23.44°-ээс +23.44° хүртэлх 3, 5 эсвэл 7 шугамыг зурна. Сүүдэр хавтангаас гарч болно; тухайн цагт нар заавал мандсан байхгүй. Экваторт энгийн налуу гномон хэрэглэх боломжгүй: хэвтээ туйлын саваа буюу өндөрт байрлах цэг хэрэглэнэ. Туйлд 24 цагийн тусгай хийц хэрэгтэй. Минутын нарийвчлалын баталгаа байхгүй.</p></section>
+<section class="help"><h2 data-i="installation">Байрлуулах нь</h2><p id="orientation"></p><p data-i="install">Хавтгайг заасан хазайлт, азимутаар байрлуулна. Хана, налуу хавтгайн ДЭЭШ сумыг бодит дээш чиглүүлнэ; хэвтээ цагийн N/S сумыг жинхэнэ туйл руу чиглүүлнэ. O нь туйлын ирмэгийн суурь, P нь үзүүрийн хавтгайд перпендикуляр тусгал юм.</p><p data-i="limits">Нарны хэлбийлтийн −23.44°-ээс +23.44° хүртэлх 3, 5 эсвэл 7 шугамыг зурна. Сүүдэр хавтангаас гарч болно; тухайн цагт нар заавал мандсан байхгүй. Экваторт энгийн налуу гномон хэрэглэх боломжгүй: хэвтээ туйлын саваа буюу өндөрт байрлах цэг хэрэглэнэ. Туйлд 24 цагийн тусгай хийц хэрэгтэй. Минутын нарийвчлалын баталгаа байхгүй.</p></section>
 <noscript>JavaScript is required. / JavaScript-ийг идэвхжүүлнэ үү.</noscript></main></body></html>

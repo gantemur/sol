@@ -13,8 +13,9 @@
     tilt:'Tilt from horizontal β (°)',azimuth:'Outward face azimuth (°)',
     faceConvention:'Azimuth is the outward-facing normal: N=0°, E=90°, S=180°, W=270°. The plate surface must face the Sun.',
     style:'Polar gnomon mounting',autoStyle:'Automatic: rooted edge or supported rod',raisedStyle:'Supported polar rod / nodus',
-    mountSummary:'Gnomon mounting and virtual location',mountHelp:'The gnomon is parallel to Earth’s polar axis. The drawing’s top arrow follows its projection into the face; on a vertical wall this may point physically down. Align the actual wall with the UP direction shown in the layout and directions.',
+    mountSummary:'Gnomon mounting and virtual location',mountHelp:'On walls and inclined plates, the page-top arrow points physically UP; on a horizontal dial it points poleward. The outward polar edge determines where root O belongs: usually at the upper edge of a south-facing northern wall. A supported rod has no converging root on the face.',
     raisedHelp:'The rod is parallel to the face or is intentionally raised away from it. L now means perpendicular stand-off h (mm), measured from face O to nodus G. Provide physical supports.',
+    nodusOutside:'The perpendicular projection P is outside this face. Check the mounting arrangement.',
     rootedHelp:'L means distance along the outward polar edge from face root O to the seasonal nodus G. The vertical-to-face height is h = L sin(α), where α is the polar-edge angle above this face.',
     raisedStyleWarn:'Use a supported polar rod or nodus at perpendicular distance h. Hour markings are parallel for faces exactly parallel to Earth’s axis.',
     nearParallel:'Polar edge nearly parallel to the face: a triangular plate would be very low. Consider a supported rod.',
@@ -22,11 +23,11 @@
     parallelHalf:'The semicircle clips some seasonal shadow paths of this parallel-rod construction; Rectangle shows both halves.',
     diagramTitle:'3D geometry — hour plane and declination cone',demoHour:'Apparent solar hour',demoDelta:'Solar declination δ',demoYaw:'Rotate 3D view',
     diagramHelp:'Blue: rotating hour plane. Ochre: seasonal shadow cone. Green: nodus shadow ray where the face and real horizon admit it. The 3D view is schematic, not a fabrication drawing.',
-    orientationFace:'Face orientation',mountAngle:'Polar-edge angle to face',virtual:'Virtual horizontal location',
-    angleHelp:'Angles measured from the printed upward polar-axis projection. Missing entries were physically unlit or fell outside the face.',
+    orientationFace:'Face orientation',orientationWall:'Page top = physical UP; root O is positioned for the illuminated hour lines.',mountAngle:'Polar-edge angle to face',virtual:'Virtual horizontal location',
+    angleHelp:'Angles are measured clockwise from page top (0° upward, 180° downward). Missing entries were physically unlit or fell outside the face.',
     equatorAngleHelp:'Parallel polar-rod hour marks are given as signed offsets from the reference position. Missing marks were outside this face or unlit.',
     table:'Hour-line angle / offset',
-    install:'Set the plate to the specified tilt and outward azimuth. Align its printed polar-projection arrow with the indicated real-world direction; for a wall the drawing top can point DOWN. A rooted edge extends outward along the polar axis; a raised rod requires supports. The real horizon and face illumination are enforced in the pattern.',
+    install:'Set the plate to the specified tilt and outward azimuth. On a wall or incline install the printed UP arrow physically upward; on a horizontal face align N/S with the true pole. The polar edge extends outward from O along Earth’s axis; a raised rod requires supports. The real horizon and face illumination are enforced.',
     limits:'The geometry covers 06:00–18:00 apparent solar time and approximate declination bands (not calendar months). This is not a civil-clock dial. Strongly oblique/near-polar orientations may omit many marks. A 24-hour polar or underside-facing dial, and a minute-accuracy guarantee, are not included.',
     gnomonHelp:'Optional side profile measured relative to the actual receiving plane. Rooted polar edge: a dimensioned triangle. Raised/parallel polar rod: stand-off elevation sketch. Supports, joints and fold tabs are not included.',
     invalid:'Check latitude −89° to +89°, tilt 0–90°, outward azimuth 0–360°, dimensions 80–1500 mm, and polar length or height 1–1000 mm.',
@@ -39,8 +40,9 @@
     faceConvention:'Азимут нь гадаргууны гадагш харсан нормал: 0° хойд, 90° зүүн, 180° өмнөд, 270° баруун.',
     style:'Гномоны төрөл',autoStyle:'Автомат: ирмэг эсвэл өндөрт бэхэлсэн саваа',raisedStyle:'Өндөрт бэхэлсэн туйлын саваа',
     mountSummary:'Гномоны байрлал ба виртуал газарзүй',
-    mountHelp:'Гномон дэлхийн эргэлтийн тэнхлэгтэй параллель. Зургийн дээд сум хавтгай дахь туйлын тэнхлэгийн тусгалыг заана. Босоо хананд тэр чиглэл доош харж болно; бодит дээш чиглэлийг заасан заавартай тааруулна.',
+    mountHelp:'Босоо хана болон налуу хавтгайн зургийн дээд сум бодит ДЭЭШ чиглэлийг, хэвтээ цагийнх туйлын чиглэлийг заана. Хавтгай дахь туйлын ирмэгийн тусгалаар O суурийг байрлуулна. Хойд хагас бөмбөрцгийн өмнө зүг харсан хананд O ихэвчлэн дээд ирмэгт байна. Тулгуурт саваанд хавтгай дээр нийлдэг суурь байхгүй.',
     raisedHelp:'Туйлын саваа хавтантай параллель эсвэл түүнээс зайтай байрлана. L нь одоо хавтанд перпендикуляр зай h (мм); бэхэлгээ хэрэгтэй.',
+    nodusOutside:'Үзүүрийн хавтгайд перпендикуляр тусгал P хавтангаас гарч байна. Бэхэлгээг шалгана уу.',
     rootedHelp:'L нь O сууриас туйлын ирмэг дагуу G үзүүр хүртэлх зай. Хавтангаас перпендикуляр өндөр h=L sin(α), энд α нь ирмэг ба хавтгайн хоорондох өнцөг.',
     raisedStyleWarn:'Хавтанд перпендикуляр h өндөрт туйлын саваа буюу үзүүр байрлуулна. Туйлын тэнхлэг хавтантай параллель бол цагийн шугамууд параллель байна.',
     nearParallel:'Туйлын ирмэг хавтантай бараг параллель, гурвалжин гномон нам болно. Өндөрт бэхэлсэн саваа тохиромжтой.',
@@ -48,11 +50,11 @@
     parallelHalf:'Энэ параллель савааны улирлын зарим сүүдэр хагас дугуйгаас гарна. Хоёр талыг харахын тулд тэгш өнцөгт сонгоно.',
     diagramTitle:'3D геометр — цагийн хавтгай ба улирлын конус',demoHour:'Нарны цаг',demoDelta:'Нарны хэлбийлт δ',demoYaw:'3D дүрсийг эргүүлэх',
     diagramHelp:'Цэнхэр нь цагийн хавтгай, шар нь улирлын конус, ногоон нь үзүүрийн сүүдрийн цацраг. Бодит тэнгэрийн хаяа болон хавтгайн гэрэлтэлтийг шалгасан. 3D дүрс нь угсралтын хэмжээст зураг биш.',
-    orientationFace:'Хавтгайн чиглэл',mountAngle:'Туйлын ирмэгийн хавтантай үүсгэх өнцөг',virtual:'Виртуал хэвтээ байрлал',
-    angleHelp:'Хэвлэсэн дээд туйлын чиглэлээс хэмжсэн өнцөг. Гэрэлтдэггүй эсвэл хавтанд багтахгүй цагийн тэмдэг гаргахгүй.',
+    orientationFace:'Хавтгайн чиглэл',orientationWall:'Зургийн дээд тал = бодит ДЭЭШ; O суурийг гэрэлтэх цагийн шугамын чиглэлээр байрлуулав.',mountAngle:'Туйлын ирмэгийн хавтантай үүсгэх өнцөг',virtual:'Виртуал хэвтээ байрлал',
+    angleHelp:'Зургийн дээд сумаас цагийн зүүний дагуу хэмжсэн өнцөг (дээш 0°, доош 180°). Гэрэлтдэггүй эсвэл хавтанд багтахгүй тэмдэг гаргахгүй.',
     equatorAngleHelp:'Параллель туйлын савааны шугамын үдийн шугамаас хазайлтыг мм-ээр өгнө. Гэрэлтдэггүй, багтахгүй тэмдэг хасагдана.',
     table:'Цагийн шугамын өнцөг / шилжилт',
-    install:'Хавтгайг заасан хазайлт, азимутаар байрлуулна. Зургийн сум туйлын тэнхлэгийн хавтгай дахь тусгал бөгөөд босоо хананд доош чиглэж болно. Гадагш чиглэсэн туйлын ирмэг буюу тулгуурт саваа зөв өнцөгтэй байх ёстой. Бодит тэнгэрийн хаяа ба гэрэлтэлтийг тооцсон.',
+    install:'Хавтгайг заасан хазайлт, азимутаар байрлуулна. Хана, налуу хавтгай дээр зургийн ДЭЭШ сумыг бодит дээш чиглүүлнэ; хэвтээ цагийн N/S сумыг жинхэнэ туйл руу чиглүүлнэ. O сууриас туйлын ирмэгийг дэлхийн тэнхлэгийн дагуу гадагш босгоно; тулгуурт савааг тусад нь бэхэлнэ. Бодит тэнгэрийн хаяа ба гэрэлтэлтийг тооцсон.',
     limits:'Зөвхөн 06:00–18:00 жинхэнэ нарны цагийн муж болон ойролцоо нарны хэлбийлтийн шугамуудыг зурна (сарын огноо биш). Иргэний цагийн засвар ороогүй. Туйл орчим, хэт налуу хавтгайд зарим шугам байхгүй. Минутын нарийвчлалын баталгаа байхгүй.',
     gnomonHelp:'Хавтангийн хувьд гномоны нэмэлт хажуу зураг. Тулсан туйлын ирмэгийн хэмжээсийн гурвалжин эсвэл өндөрт бэхэлсэн савааны загвар. Бэхэлгээ, нугалах хавтас ороогүй.',
     invalid:'Өргөрөг −89°–+89°, хазайлт 0–90°, азимут 0–360°, хэмжээ 80–1500 мм, гномоны хэмжээ 1–1000 мм.',
@@ -88,7 +90,7 @@
     $('dial').hidden=false;previewURL=URL.createObjectURL(new Blob([S.svg(scene)],{type:'image/svg+xml'}));
     $('dial').src=previewURL;$('dial').alt=t('alt');
     const f=scene.frame;
-    $('dimensions').textContent=scene.face.shape==='semicircle'?'D '+scene.face.w+' mm':scene.face.w+' × '+scene.face.h+' mm';
+    $('dimensions').textContent=scene.face.shape==='semicircle'?'D '+scene.p.diameter+' mm':scene.face.w+' × '+scene.face.h+' mm';
     $('warnings').textContent=scene.warnings.map(w=>w.startsWith('off:')?t('off')+' '+(scene.events.find(e=>e.id===w.slice(4))?.label||t(w.slice(4))):
       ({raisedStyle:t('raisedStyleWarn'),nearParallel:t('nearParallel'),unlitHours:t('unlitHours'),parallelHalf:t('parallelHalf')}[w]||t(w))).join(' ');
     const height=f.raised?p.length:p.length*Math.abs(f.pn),base=f.raised?0:p.length*Math.sqrt(Math.max(0,1-f.pn*f.pn));
@@ -99,7 +101,7 @@
       (f.upAngle===null?'':'; UP = '+format(f.upAngle)+'° from page top');
     $('virtualInfo').textContent=t('virtual')+': φ*='+format(f.virtualPhi)+'°, Δλ='+format(f.virtualLon)+'°';
     $('orientation').textContent=p.surface==='horizontal'?t(p.lat<0?'south':'north'):
-      t('mountHelp')+' '+t('orientationFace')+': A='+format(f.azimuth)+'°, β='+format(f.tilt)+'°.';
+      t('orientationWall')+' '+t('orientationFace')+': A='+format(f.azimuth)+'°, β='+format(f.tilt)+'°.';
     document.querySelector('[data-i="angleHelp"]').textContent=t(f.raised&&f.parallel?'equatorAngleHelp':'angleHelp');
     document.querySelectorAll('[data-i="length"]').forEach(e=>e.textContent=t(f.raised?'equatorHeight':'length'));
     document.querySelector('[data-i="nodusHelp"]').textContent=t(f.raised?'raisedHelp':'nodusHelp');

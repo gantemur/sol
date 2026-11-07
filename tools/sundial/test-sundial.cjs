@@ -9,7 +9,7 @@ function eq(a,b,tol=1e-8,msg){checks++;assert.ok(Number.isFinite(a)&&Number.isFi
 function vec(a,b,tol=1e-9){yes(a.length===b.length);for(let i=0;i<a.length;i++)eq(a[i],b[i],tol);}
 function norm(v){return Math.hypot(...v)}
 // API and validation, including old bookmarked circle links.
-assert.equal(S.VERSION,'P1.0');checks++;
+assert.equal(S.VERSION,'P1.1');checks++;
 for(const [key,value] of [['lat',90],['lat',-90],['tilt',91],['tilt',-1],['azimuth',361],['azimuth',-1],['length',0],['surface','cone'],['style','floating'],['shape','ellipse'],['seasonCount',4]]){
   assert.throws(()=>S.build({...S.defaults,[key]:value}),undefined,key);checks++;
 }
@@ -39,13 +39,51 @@ let f=G.frame(45,90,180);eq(f.virtualPhi,-45);eq(f.virtualLon,0);
 f=G.frame(45,90,90);eq(f.virtualPhi,0);eq(f.virtualLon,90);yes(f.raised && f.parallel);
 f=G.frame(45,90,270);eq(f.virtualPhi,0);eq(f.virtualLon,-90);yes(f.raised && f.parallel);
 f=G.frame(45,45,180);eq(f.virtualPhi,0);eq(f.virtualLon,0);
-// Rotating a south-facing wall at 45 N gives the same (visible) hour angles
-// as the horizontal dial at -45, with opposite original coordinates.
+// A south-facing wall at 45 N has the virtual latitude of a horizontal
+// dial at -45. The hour-line slopes agree, but wall page-up is now true UP:
+// the physical downward fan differs by 180 degrees on the page.
 const wall=G.frame(45,90,180),south=G.frame(-45,0,180),b={shape:'rectangle',w:300,h:200,root:[150,180]};
 for(let h=7;h<=17;h++){
   const w=G.hourLine(wall,45,h,40,b.root,S.clipSegment,b),q=G.hourLine(south,-45,h,40,b.root,S.clipSegment,b);
   yes(w!==null&&q!==null,`wall/horizontal counterpart at ${h}`);
-  eq(w.angle,q.angle,1e-7);
+  eq(Math.abs(w.angle-q.angle),180,1e-7);
+}
+// The drawing top is actual gravitational UP for any nonhorizontal plate,
+// including declined walls. For a horizontal face it remains poleward.
+for(const lat of [-75,-45,0,45,75])for(const tilt of [15,45,75,90])for(const az of [0,45,90,135,180,225,270,315]){
+  const f=G.frame(lat,tilt,az);
+  eq(G.dot(f.v,[0,0,1]),Math.sin(tilt*R),2e-12);
+  eq(f.upAngle,0,2e-10);
+}
+// Put the polar intersection opposite the physically illuminated ray fan.
+// South-facing northern (and north-facing southern) walls have the root at
+// the TOP, with lines extending down. A north-facing northern wall is also
+// a summer-lit downward fan, unlike a simplistic polar-projection rule.
+for(const [lat,az] of [[45,180],[-45,0],[45,0]]){
+  const s=S.build({...S.defaults,lat,surface:'vertical',azimuth:az}),semi=S.build({...S.defaults,lat,surface:'vertical',azimuth:az,shape:'semicircle'});
+  yes(s.face.root[1]<s.face.h*.2);
+  yes(s.face.fanDirection[1]>.9);
+  yes(semi.face.inward[1]===1&&semi.face.root[1]===0);
+  const noon=s.hours.find(q=>q.hour===12);
+  if(az===180&&lat>0 || az===0&&lat<0){yes(noon!==undefined);yes(noon.direction[1]>0);}
+  for(const q of semi.items.filter(q=>q.role==='hour'||q.role==='season'))for(const pt of q.pts)
+    yes(S.inside(pt.map(x=>x-8),semi.face),`vertical semicircle clip ${pt}`);
+  yes(S.svg(semi).includes(' A 150 150 0 0 1 '));
+  yes(S.pdf(semi).length>1000);
+}
+for(const az of [90,270]){
+  const s=S.build({...S.defaults,lat:45,surface:'vertical',azimuth:az});
+  yes(s.frame.raised && s.frame.parallel);
+  vec(s.face.root,[s.face.w/2,s.face.h/2]);
+}
+for(const [lat,tilt,az,expectedX,expectedY] of [[45,60,0,'center','top'],[45,30,180,'center','bottom'],[45,60,90,'left','bottom'],[45,60,270,'right','bottom']]){
+  const p={...S.defaults,lat,surface:'inclined',tilt,azimuth:az},s=S.build(p),b=s.face,sem=S.build({...p,shape:'semicircle'}).face;
+  yes(expectedX==='center'?Math.abs(b.root[0]-b.w/2)<1e-7:expectedX==='left'?b.root[0]<b.w*.25:b.root[0]>b.w*.75);
+  yes(expectedY==='top'?b.root[1]<b.h*.25:expectedY==='bottom'?b.root[1]>b.h*.75:true);
+  if(expectedX==='left'||expectedX==='right'){
+    eq(sem.w,p.diameter/2);eq(sem.h,p.diameter);
+    yes(sem.inward[0]===(expectedX==='left'?1:-1));
+  }
 }
 // Hour-plane geometry: both nodus and projected shadow point belong to the
 // same plane through the polar axis; shadow points lie in the receiver.
