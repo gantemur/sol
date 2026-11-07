@@ -4,40 +4,40 @@
     "title": "Planetary models",
     "language": "en",
     "category": "astronomy",
-    "entry": "tools/planets-en/",
+    "entry": "planets-en/",
     "description": "Animations of planetary motion and Ptolemaic models.",
     "migrationStatus": "initial static migration",
     "copyrightHolder": "Tsogtgerel Gantumur",
     "license": null,
     "ownCodeLicense": "MIT",
     "licenseStatus": "Upstream legacy permissions unresolved; MIT covers author-owned contributions only.",
-    "licenseFile": "tools/planets-en/LICENSING.md"
+    "licenseFile": "planets-en/LICENSING.md"
   },
   {
     "id": "planets-mn",
     "title": "Гаригуудын загвар",
     "language": "mn",
     "category": "astronomy",
-    "entry": "tools/planets-mn/",
+    "entry": "planets-mn/",
     "description": "Гаригуудын хөдөлгөөн болон Птолемейн загваруудын хөдөлгөөнт үзүүлэн.",
     "migrationStatus": "initial static migration",
     "copyrightHolder": "Tsogtgerel Gantumur",
     "license": null,
     "ownCodeLicense": "MIT",
     "licenseStatus": "Upstream legacy permissions unresolved; MIT covers author-owned contributions only.",
-    "licenseFile": "tools/planets-mn/LICENSING.md"
+    "licenseFile": "planets-mn/LICENSING.md"
   },
   {
     "id": "doppler",
     "title": "Доплер эффект",
     "language": "mn",
     "category": "physics",
-    "entry": "tools/doppler/",
+    "entry": "doppler/",
     "description": "Дуу ба гэрлийн Доплер эффектийг харуулах хөдөлгөөнт үзүүлэн.",
     "migrationStatus": "initial static migration with small audio resume compatibility fix",
     "copyrightHolder": "Tsogtgerel Gantumur",
     "license": "MIT",
-    "licenseFile": "tools/doppler/LICENSE"
+    "licenseFile": "doppler/LICENSE"
   },
   {
     "id": "rainbow-angle",
@@ -47,12 +47,12 @@
       "en"
     ],
     "category": "physics",
-    "entry": "tools/rainbow-angle/",
+    "entry": "rainbow-angle/",
     "description": "Усан дусал дахь гэрлийн цацраг болон солонгын өнцгийг судлах.",
     "migrationStatus": "native notebook-derived alpha",
     "copyrightHolder": "Tsogtgerel Gantumur",
     "license": "MIT",
-    "licenseFile": "tools/rainbow-angle/LICENSE",
+    "licenseFile": "rainbow-angle/LICENSE",
     "titles": {
       "mn": "Солонгын өнцөг",
       "en": "Rainbow angles"
@@ -70,12 +70,12 @@
       "en"
     ],
     "category": "physics",
-    "entry": "tools/warm/",
+    "entry": "warm/",
     "description": "Одны цацраг, гаригийн температур, шингэн устай байж болох бүсийн хялбаршуулсан загвар.",
     "migrationStatus": "native notebook-derived MVP",
     "copyrightHolder": "Tsogtgerel Gantumur",
     "license": "MIT",
-    "licenseFile": "tools/warm/LICENSE",
+    "licenseFile": "warm/LICENSE",
     "titles": {
       "mn": "Одны дулаан",
       "en": "Stellar warmth"
@@ -90,12 +90,12 @@
     "title": "Атом молекул",
     "language": "mn",
     "category": "physics",
-    "entry": "tools/kinetic/",
+    "entry": "kinetic/",
     "description": "Атом, молекулын хөдөлгөөнөөр салхи ба долгионыг тайлбарлах сургалтын үзүүлэн.",
     "migrationStatus": "initial static migration",
     "copyrightHolder": "Tsogtgerel Gantumur",
     "license": "MIT",
-    "licenseFile": "tools/kinetic/LICENSE"
+    "licenseFile": "kinetic/LICENSE"
   },
   {
     "id": "armatur",
@@ -105,12 +105,12 @@
       "en"
     ],
     "category": "engineering",
-    "entry": "tools/armatur/",
+    "entry": "armatur/",
     "description": "Стандарт савааг хэрэгтэй уртуудад бага хаягдалтай таслах төлөвлөгөө.",
     "migrationStatus": "native optimizer and interactive UI with corrected standalone legacy",
     "copyrightHolder": "Tsogtgerel Gantumur",
     "license": "MIT",
-    "licenseFile": "tools/armatur/LICENSE",
+    "licenseFile": "armatur/LICENSE",
     "titles": {
       "mn": "Арматур",
       "en": "Rebar cutting"
@@ -128,12 +128,12 @@
       "en"
     ],
     "category": "astronomy",
-    "entry": "tools/sundial/",
+    "entry": "sundial/",
     "description": "Хэвтээ, босоо болон налуу гадаргуугийн нарны цагийн хэвлэх, сийлэх загвар.",
     "migrationStatus": "native horizontal v1 review",
     "copyrightHolder": "Tsogtgerel Gantumur",
     "license": "MIT",
-    "licenseFile": "tools/sundial/LICENSE",
+    "licenseFile": "sundial/LICENSE",
     "titles": {
       "mn": "Нарны цаг",
       "en": "Sundial"
@@ -151,12 +151,12 @@
       "en"
     ],
     "category": "culture",
-    "entry": "tools/khurd/",
+    "entry": "khurd/",
     "description": "Маанийн хүрдийг хуруугаараа эргүүлж, доторх маанийг тоолох.",
     "migrationStatus": "native new tool, live-first alpha",
     "copyrightHolder": "Tsogtgerel Gantumur",
     "license": "MIT",
-    "licenseFile": "tools/khurd/LICENSE",
+    "licenseFile": "khurd/LICENSE",
     "titles": {
       "mn": "Маанийн хүрд",
       "en": "Prayer wheel"

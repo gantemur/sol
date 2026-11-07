@@ -1,142 +1,17 @@
 <!doctype html>
-<!-- SPDX-FileCopyrightText: 2026 Tsogtgerel Gantumur
-     SPDX-License-Identifier: MIT -->
+<!-- Forwarder: Sol tools moved from tools/<id>/ to <id>/ on 2026-11-07. -->
 <html lang="mn">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light">
-  <title>Арматур · Таслах төлөвлөгөө — Sol</title>
-  <link rel="stylesheet" href="style.css?v=20261105-dp1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Шилжсэн · Moved</title>
+<link rel="canonical" href="../../armatur/">
+<script>location.replace("../../armatur/" + location.search + location.hash);</script>
+<meta http-equiv="refresh" content="0; url=../../armatur/">
 </head>
 <body>
-  <div class="shell">
-    <header class="site-header">
-      <div>
-        <a class="back-link" href="../../">← Sol</a>
-        <h1 data-i18n="title">Арматур · Таслах төлөвлөгөө</h1>
-        <p class="subtitle" data-i18n="subtitle">Стандарт саваанаас хэрэгтэй уртуудыг бага хаягдалтай таслах.</p>
-      </div>
-      <div class="language-picker" aria-label="Language">
-        <button type="button" data-language="mn" class="selected" aria-pressed="true">MN</button>
-        <button type="button" data-language="en" aria-pressed="false">EN</button>
-      </div>
-    </header>
-
-    <main>
-      <form id="cut-form" novalidate>
-        <section class="card" aria-labelledby="stock-heading">
-          <div class="section-heading">
-            <div>
-              <div class="eyebrow" data-i18n="stockEyebrow">01 · Материал</div>
-              <h2 id="stock-heading" data-i18n="stockHeading">Стандарт саваа</h2>
-            </div>
-          </div>
-          <div class="field-grid">
-            <label>
-              <span data-i18n="stockLength">Урт</span>
-              <input id="stock-length" type="number" min="0" step="any" value="6000" inputmode="decimal" required>
-            </label>
-            <label>
-              <span data-i18n="unit">Уртын нэгж</span>
-              <select id="unit">
-                <option value="mm">мм · mm</option>
-                <option value="cm">см · cm</option>
-                <option value="m">м · m</option>
-              </select>
-            </label>
-            <label>
-              <span data-i18n="diameter">Диаметр (мм)</span>
-              <input id="diameter" type="number" min="0" step="any" value="12" inputmode="decimal" required>
-            </label>
-            <label>
-              <span data-i18n="kerf">Нэг зүсэлтийн өргөн (мм)</span>
-              <input id="kerf" type="number" min="0" step="any" value="0" inputmode="decimal" required>
-            </label>
-          </div>
-          <p class="hint" data-i18n="unitHint">Саваа ба захиалсан уртууд ижил нэгжтэй. Диаметр болон зүсэлтийн өргөн үргэлж мм-ээр.</p>
-        </section>
-
-        <section class="card" aria-labelledby="items-heading">
-          <div class="section-heading">
-            <div>
-              <div class="eyebrow" data-i18n="piecesEyebrow">02 · Захиалга</div>
-              <h2 id="items-heading" data-i18n="piecesHeading">Таслах хэсгүүд</h2>
-            </div>
-            <button id="example" type="button" class="secondary compact" data-i18n="example">Жишээ ачаалах</button>
-          </div>
-          <div class="table-scroll">
-            <table class="items-table">
-              <thead>
-                <tr>
-                  <th scope="col" data-i18n="pieceLength">Урт</th>
-                  <th scope="col" data-i18n="quantity">Тоо ширхэг</th>
-                  <th scope="col" data-i18n="actions">Үйлдэл</th>
-                </tr>
-              </thead>
-              <tbody id="item-rows"></tbody>
-            </table>
-          </div>
-          <div class="items-actions">
-            <button id="add-row" type="button" class="secondary"><span aria-hidden="true">＋</span> <span data-i18n="addRow">Мөр нэмэх</span></button>
-            <span class="hint" data-i18n="precisionHint">Уртын нарийвчлал: 0.1 мм</span>
-          </div>
-        </section>
-
-        <div class="calculate-row">
-          <button id="calculate" class="primary" type="submit">
-            <span aria-hidden="true">▧</span> <span data-i18n="calculate">Таслах төлөвлөгөө гаргах</span>
-          </button>
-          <span id="status" role="status" aria-live="polite"></span>
-        </div>
-      </form>
-
-      <section id="results" class="results card" aria-labelledby="results-heading" hidden>
-        <div class="section-heading">
-          <div>
-            <div class="eyebrow" data-i18n="resultsEyebrow">03 · Үр дүн</div>
-            <h2 id="results-heading" data-i18n="resultsHeading">Таслах төлөвлөгөө</h2>
-          </div>
-          <span id="proof-badge" class="proof-badge"></span>
-        </div>
-        <div id="metrics" class="metrics"></div>
-        <div id="comparison" class="comparison"></div>
-        <p id="solver-note" class="hint"></p>
-        <div class="plan-heading">
-          <h3 data-i18n="patternsHeading">Зүсэлтийн хувилбарууд</h3>
-          <div class="view-switch" role="group" aria-label="Algorithm">
-            <button id="show-best" type="button" class="selected" aria-pressed="true" data-i18n="bestView">Сайжруулсан</button>
-            <button id="show-greedy" type="button" aria-pressed="false" data-i18n="greedyView">Энгийн</button>
-          </div>
-        </div>
-        <p class="hint" data-i18n="diagramHint">Зурагт хэсэг бүрийн урт, ирний хаягдал, үлдэгдлийг харуулав. Ижил төлөвлөгөөг бүлэглэсэн.</p>
-        <div id="patterns" class="patterns"></div>
-        <div class="result-actions">
-          <button type="button" id="copy-list" class="secondary" data-i18n="copy">Жагсаалт хуулах</button>
-          <button type="button" id="export-csv" class="secondary" data-i18n="csv">CSV татах</button>
-          <button type="button" id="print-list" class="secondary" data-i18n="print">Хэвлэх</button>
-        </div>
-      </section>
-
-      <details class="help">
-        <summary data-i18n="helpHeading">Тооцоолох аргын тухай</summary>
-        <p data-i18n="helpText">Энгийн арга урт хэсгүүдээс эхэлж савааг дүүргэнэ. Сайжруулсан арга хэд хэдэн хурдан аргыг харьцуулж, боломжтой үед урт бүрийн тоо ширхэгээр динамик программчлал хийнэ. Ингэснээр ижил урттай олон хэсэг бүхий захиалгын оновчтой төлөвлөгөөг ч баталж болно. Тооцооны хэмжээ, хугацаа хязгаартай; бага захиалгад салаалсан хайлтыг мөн ашиглана. Баталгаа гараагүй бол олдсон сайн төлөвлөгөөг харуулна. Ирний өргөн нь бодит зүсэлт бүрт хамаарна. Савааг яг дүүргэвэл сүүлийн хэсгийг тусад нь таслах шаардлагагүй.</p>
-      </details>
-    </main>
-    <footer>
-      <div class="footer-links">
-        <a href="legacy/" data-i18n="legacyLink">Засварласан хуучин хувилбар</a>
-        <span aria-hidden="true">·</span>
-        <span data-i18n="footer">Дотооддоо тооцоолно · сүлжээ, бүртгэл шаардлагагүй</span>
-      </div>
-      <div class="dedication">
-        <p data-i18n="dedicationHistory">Энэ хэрэгслийг олон жилийн өмнө найз Мөнхөөгийн Пүрэв-Эрдэнийн хүсэлтээр, түүний ажилд туслах зорилгоор бүтээсэн юм. Тэрээр олон томоохон барилгын төслийн ерөнхий инженерээр ажиллаж байв.</p>
-        <p class="in-memory" data-i18n="dedicationMemory">Түүний гэгээн дурсгалд зориулав.</p>
-      </div>
-    </footer>
-  </div>
-  <script src="engine.js?v=20261105-dp1"></script>
-  <script src="app.js?v=20261105-dp1"></script>
+<p>Энэ хуудас шинэ хаяг руу шилжсэн: <a href="../../armatur/">armatur/</a></p>
+<p lang="en">This page has moved: <a href="../../armatur/">armatur/</a></p>
 </body>
 </html>
-

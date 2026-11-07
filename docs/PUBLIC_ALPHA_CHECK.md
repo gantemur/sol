@@ -1,5 +1,7 @@
 # Public alpha check
 
+> **Layout note (2026-11-07):** tools have since moved from `tools/<tool-id>/` to `<tool-id>/` at the repository root. The `tools/...` paths below describe the layout at the time of this report; the old URLs now forward to the new ones.
+
 Second public-polish migration pass.
 
 `_import/` was not modified. It remains ignored and untracked.

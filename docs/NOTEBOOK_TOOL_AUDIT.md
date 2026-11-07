@@ -1,5 +1,7 @@
 # Notebook tool audit
 
+> **Layout note (2026-11-07):** tools have since moved from `tools/<tool-id>/` to `<tool-id>/` at the repository root. The `tools/...` paths below describe the layout at the time of this report; the old URLs now forward to the new ones.
+
 Audit-only pass for `_import/numbers`, `_import/spectrum`, and `_import/power`.
 
 No notebooks were executed. `_import/` was inspected as ignored local source/archive material and was not modified.
