@@ -1,4 +1,4 @@
-# Stellar Warmth
+# Stellar warmth
 
 Status: first MVP native static tool.
 
@@ -73,6 +73,10 @@ it is not a physical atmosphere model.
 The temperature plot auto-scales its vertical axis from the currently visible
 distance range, the displayed temperature curves, and the simplified
 Goldilocks/liquid-water temperature band.
+
+## Language support
+
+Mongolian and English, through the local `STRINGS` dictionary in `warm.js`. The tool uses `?lang=mn` or `?lang=en`, then a saved choice (saved when a language button is clicked), and otherwise defaults to Mongolian. Mongolian is listed first in the language picker.
 
 ## Assumptions and limitations
 

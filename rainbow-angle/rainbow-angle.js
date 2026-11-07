@@ -31,7 +31,7 @@ const RAY_STYLE = {
 
 const STRINGS = {
   en: {
-    pageTitle: "Rainbow Angles",
+    pageTitle: "Rainbow angles",
     pageSubtitle: "Explore the geometric-optics angles behind primary and secondary rainbows.",
     presetLabel: "Preset",
     presetRed: "Water red",
