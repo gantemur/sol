@@ -2,7 +2,7 @@
 
 Status: first native notebook-derived port for `sol`.
 
-This is a standalone static JavaScript tool for exploring geometric rainbow/refraction angles. It uses no framework and keeps all code local to `tools/rainbow-angle/`.
+This is a standalone static JavaScript tool for exploring geometric rainbow/refraction angles. It uses no framework and keeps all code local to `rainbow-angle/`.
 
 ## Source and provenance
 

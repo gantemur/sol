@@ -1,5 +1,7 @@
 # sol migration report
 
+> **Layout note (2026-11-07):** tools have since moved from `tools/<tool-id>/` to `<tool-id>/` at the repository root. The `tools/...` paths below describe the layout at the time of this report; the old URLs now forward to the new ones.
+
 First-pass migration from `_import/` into lightweight static tool folders.
 
 `_import/` was inspected only. It was not modified.

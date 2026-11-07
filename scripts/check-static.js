@@ -19,6 +19,9 @@ function rel(file) {
   return path.relative(root, file).replaceAll(path.sep, "/");
 }
 
+// Root folders that are not tools. Tool IDs must not take these names.
+const RESERVED_IDS = new Set(["docs", "scripts", "shared", "tools", "node_modules"]);
+
 function checkRegistry() {
   const file = path.join(root, "tools.json");
   const tools = JSON.parse(fs.readFileSync(file, "utf8"));
@@ -32,8 +35,11 @@ function checkRegistry() {
     }
     if (ids.has(tool.id)) throw new Error(`${label}: duplicate tool ID "${tool.id}".`);
     ids.add(tool.id);
+    if (RESERVED_IDS.has(tool.id)) {
+      throw new Error(`${label}: reserved tool ID "${tool.id}"; that root folder is not a tool.`);
+    }
 
-    const expectedEntry = `tools/${tool.id}/`;
+    const expectedEntry = `${tool.id}/`;
     if (tool.entry !== expectedEntry) {
       throw new Error(`${label} (${tool.id}): invalid entry path; expected "${expectedEntry}".`);
     }
@@ -72,15 +78,45 @@ function checkRefs() {
   return missing;
 }
 
+// Tools moved from tools/<id>/ to <id>/ on 2026-11-07. The old folder keeps only
+// forwarding pages so earlier links keep working; each must point at a real page.
+function checkForwarders() {
+  const dir = path.join(root, "tools");
+  if (!fs.existsSync(dir)) return [];
+  const problems = [];
+  for (const file of walk(dir)) {
+    if (path.basename(file) === "README.md") continue;
+    const text = file.endsWith(".html") ? fs.readFileSync(file, "utf8") : "";
+    const match = text.match(/location\.replace\("([^"]+)"/);
+    const refresh = text.match(/http-equiv="refresh" content="0; url=([^"]+)"/);
+    if (!match || !refresh || match[1] !== refresh[1]) {
+      problems.push(`${rel(file)}: only forwarding pages belong in tools/`);
+      continue;
+    }
+    const target = path.resolve(path.dirname(file), match[1]);
+    const page = match[1].endsWith("/") ? path.join(target, "index.html") : target;
+    if (path.relative(root, page).startsWith("tools" + path.sep) || !fs.existsSync(page)) {
+      problems.push(`${rel(file)}: forwarding target "${match[1]}" is missing`);
+    }
+  }
+  return problems;
+}
+
 try {
   checkRegistry();
+  const forwarders = checkForwarders();
+  if (forwarders.length) {
+    console.error("Invalid forwarders:");
+    for (const item of forwarders) console.error(`- ${item}`);
+    process.exit(1);
+  }
   const missing = checkRefs();
   if (missing.length) {
     console.error("Missing local references:");
     for (const item of missing) console.error(`- ${item}`);
     process.exit(1);
   }
-  console.log("Static checks passed: tools.json registry is valid and local href/src targets exist.");
+  console.log("Static checks passed: tools.json registry is valid, tools/ forwarders resolve, and local href/src targets exist.");
 } catch (error) {
   console.error(error.message);
   process.exit(1);

@@ -2,7 +2,7 @@
 
 Status: public alpha migration. The tool is preserved as a standalone static canvas/Web Audio folder.
 
-Original source note: migrated from the local raw import archive into `tools/doppler/`. `_import/` remains local-only and ignored.
+Original source note: migrated from the local raw import archive into `tools/doppler/` (moved to `doppler/` on 2026-11-07). `_import/` remains local-only and ignored.
 
 Language: Mongolian.
 

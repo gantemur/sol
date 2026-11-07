@@ -27,15 +27,15 @@ they must not be described or redistributed as wholly MIT-cleared packages.
 
 | Tool | License and scope |
 | --- | --- |
-| [Armatur](tools/armatur/) | [MIT](tools/armatur/LICENSE); includes the corrected [standalone legacy version](tools/armatur/legacy/LICENSE). Copyright years 2020, 2026 retained. |
-| [Doppler](tools/doppler/) | [MIT](tools/doppler/LICENSE) for the author's current code and documentation. Previous GPL release history is retained in its [notice](tools/doppler/NOTICE.md). |
-| [Kinetic](tools/kinetic/) | [MIT](tools/kinetic/LICENSE); original 2023 copyright retained alongside 2026 updates. |
-| [Rainbow angles](tools/rainbow-angle/) | [MIT](tools/rainbow-angle/LICENSE), under the author's explicit grant for the current tool and his notebook-derived contributions. |
-| [Stellar warmth](tools/warm/) | [MIT](tools/warm/LICENSE), under the author's explicit grant for the current tool and his notebook-derived contributions. |
-| [Sundial](tools/sundial/) | [MIT](tools/sundial/LICENSE). |
-| [Prayer wheel](tools/khurd/) | [MIT](tools/khurd/LICENSE) for the code and documentation. The bundled Tibetan font subset is third-party: Noto Serif Tibetan, [SIL Open Font License 1.1](tools/khurd/fonts/OFL.txt). |
-| [Planetary models — English](tools/planets-en/) | MIT for Gantumur's own contributions only; [upstream legacy scope and unresolved permissions](tools/planets-en/LICENSING.md). |
-| [Planetary models — Mongolian](tools/planets-mn/) | MIT for Gantumur's own contributions only; [upstream legacy scope and unresolved permissions](tools/planets-mn/LICENSING.md). |
+| [Armatur](armatur/) | [MIT](armatur/LICENSE); includes the corrected [standalone legacy version](armatur/legacy/LICENSE). Copyright years 2020, 2026 retained. |
+| [Doppler](doppler/) | [MIT](doppler/LICENSE) for the author's current code and documentation. Previous GPL release history is retained in its [notice](doppler/NOTICE.md). |
+| [Kinetic](kinetic/) | [MIT](kinetic/LICENSE); original 2023 copyright retained alongside 2026 updates. |
+| [Rainbow angles](rainbow-angle/) | [MIT](rainbow-angle/LICENSE), under the author's explicit grant for the current tool and his notebook-derived contributions. |
+| [Stellar warmth](warm/) | [MIT](warm/LICENSE), under the author's explicit grant for the current tool and his notebook-derived contributions. |
+| [Sundial](sundial/) | [MIT](sundial/LICENSE). |
+| [Prayer wheel](khurd/) | [MIT](khurd/LICENSE) for the code and documentation. The bundled Tibetan font subset is third-party: Noto Serif Tibetan, [SIL Open Font License 1.1](khurd/fonts/OFL.txt). |
+| [Planetary models — English](planets-en/) | MIT for Gantumur's own contributions only; [upstream legacy scope and unresolved permissions](planets-en/LICENSING.md). |
+| [Planetary models — Mongolian](planets-mn/) | MIT for Gantumur's own contributions only; [upstream legacy scope and unresolved permissions](planets-mn/LICENSING.md). |
 
 Each tool carries a local license; keep its README and any licensing/third-party
 notices with it when extracting the folder. A tool's specific scope or retained

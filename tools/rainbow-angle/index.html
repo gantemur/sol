@@ -1,123 +1,17 @@
 <!doctype html>
-<html lang="en">
+<!-- Forwarder: Sol tools moved from tools/<id>/ to <id>/ on 2026-11-07. -->
+<html lang="mn">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Rainbow Angles</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="rainbow-angle.js" defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Шилжсэн · Moved</title>
+<link rel="canonical" href="../../rainbow-angle/">
+<script>location.replace("../../rainbow-angle/" + location.search + location.hash);</script>
+<meta http-equiv="refresh" content="0; url=../../rainbow-angle/">
 </head>
 <body>
-  <main>
-    <header class="page-header">
-      <a class="back-link" href="../../">sol</a>
-      <div class="header-row">
-        <div>
-          <h1 data-i18n="pageTitle">Rainbow Angles</h1>
-          <p data-i18n="pageSubtitle">Explore the geometric-optics angles behind primary and secondary rainbows.</p>
-        </div>
-        <div class="language-toggle" role="group" aria-label="Language">
-          <button type="button" class="language-option" data-lang="en">English</button>
-          <button type="button" class="language-option" data-lang="mn">Монгол</button>
-        </div>
-      </div>
-    </header>
-
-    <section class="panel controls" aria-label="Rainbow controls">
-      <div class="control-row">
-        <label for="preset" data-i18n="presetLabel">Preset</label>
-        <div class="button-group" id="preset" role="group" aria-label="Refractive index presets">
-          <button type="button" class="preset active" data-preset="red" data-i18n="presetRed">Water red</button>
-          <button type="button" class="preset" data-preset="violet" data-i18n="presetViolet">Water violet</button>
-          <button type="button" class="preset" data-preset="custom" data-i18n="presetCustom">Custom</button>
-        </div>
-      </div>
-
-      <div class="control-grid">
-        <label>
-          <span><span data-i18n="controlN">Refractive index</span> <output id="n-value"></output></span>
-          <input id="n" type="range" min="1.01" max="1.80" step="0.001" value="1.3296">
-        </label>
-        <label>
-          <span><span data-i18n="controlK">Rainbow order</span> <output id="k-value"></output></span>
-          <input id="k" type="range" min="1" max="6" step="1" value="1">
-        </label>
-      </div>
-    </section>
-
-    <section class="panel ray-panel" aria-label="Ray sketch through a water drop">
-      <div class="chart-header">
-        <h2 data-i18n="rayTitle">Drop ray sketch</h2>
-      </div>
-      <details class="display-controls" open>
-        <summary data-i18n="rayDisplayTitle">Ray display</summary>
-        <div class="display-grid">
-          <label>
-            <span><span data-i18n="rayCountLabel">Ray count</span> <output id="ray-count-value"></output></span>
-            <input id="ray-count" type="range" min="24" max="420" step="6" value="96">
-          </label>
-          <label>
-            <span><span data-i18n="rayBrightnessLabel">Ray brightness</span> <output id="ray-brightness-value"></output></span>
-            <input id="ray-brightness" type="range" min="0.5" max="2" step="0.05" value="1">
-          </label>
-        </div>
-      </details>
-      <svg id="ray-diagram" viewBox="0 0 760 440" role="img" aria-labelledby="ray-title ray-desc">
-        <title id="ray-title" data-i18n="raySvgTitle">Parallel rays entering a spherical water drop</title>
-        <desc id="ray-desc" data-i18n="raySvgDesc">A schematic circle showing many parallel rays refracting and reflecting through a water drop.</desc>
-      </svg>
-      <p class="small" data-i18n="rayCaption">
-        Many parallel rays are sampled across the drop. Where the outgoing family bunches together,
-        the rainbow direction is forming.
-      </p>
-    </section>
-
-    <section class="panel chart-panel" aria-label="Deviation angle curve">
-      <div class="plot-controls">
-        <label>
-          <span><span data-i18n="controlImpact">Impact parameter b/R</span> <output id="impact-value"></output></span>
-          <input id="impact" type="range" min="0" max="1" step="0.001" value="0.863">
-        </label>
-        <div class="toggles">
-          <label><input id="show-extrema" type="checkbox" checked> <span data-i18n="showExtrema">Show extrema</span></label>
-          <label><input id="show-table" type="checkbox" checked> <span data-i18n="showTable">Show angle table</span></label>
-        </div>
-      </div>
-      <div class="chart-header">
-        <h2 data-i18n="chartTitle">Deviation angle curve</h2>
-        <p id="chart-note"></p>
-      </div>
-      <svg id="chart" viewBox="0 0 760 440" role="img" aria-labelledby="chart-title chart-desc">
-        <title id="chart-title" data-i18n="chartSvgTitle">Deviation angle versus impact parameter</title>
-        <desc id="chart-desc" data-i18n="chartSvgDesc">A curve showing signed rainbow deviation angle as a function of normalized impact parameter.</desc>
-      </svg>
-    </section>
-
-    <section class="details">
-      <section class="panel" aria-labelledby="current-title">
-        <h2 id="current-title" data-i18n="currentTitle">Current angle</h2>
-        <div id="current-table" class="table-wrap"></div>
-        <p class="small" data-i18n="signNote">A negative signed angle follows the source notebook convention: it is counted from the Sun. Positive angles are measured from the antisolar point.</p>
-      </section>
-
-      <section class="panel" aria-labelledby="summary-title">
-        <h2 id="summary-title" data-i18n="summaryTitle">Primary and secondary summary</h2>
-        <div id="summary-table" class="table-wrap"></div>
-      </section>
-    </section>
-
-    <section class="panel explanation">
-      <h2 data-i18n="explainTitle">What is plotted?</h2>
-      <p data-i18n="explainOne">
-        The impact parameter b/R is the normalized height where a parallel ray enters the
-        droplet. The incident angle α follows from b/R = sin(α). Order 1 is the primary
-        rainbow, order 2 is the secondary rainbow, and higher orders add more internal reflections.
-      </p>
-      <p data-i18n="explainTwo">
-        Uniformly spaced rays in the sketch correspond to uniformly spaced b/R values on the
-        curve. Extrema mark where nearby rays bunch together, producing a bright rainbow direction.
-      </p>
-    </section>
-  </main>
+<p>Энэ хуудас шинэ хаяг руу шилжсэн: <a href="../../rainbow-angle/">rainbow-angle/</a></p>
+<p lang="en">This page has moved: <a href="../../rainbow-angle/">rainbow-angle/</a></p>
 </body>
 </html>

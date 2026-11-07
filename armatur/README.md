@@ -53,7 +53,8 @@ intact instead of displaying internal key names.
   Legacy does not include a saw-cut-width parameter.
 
 The migrated original was in tools/armatur/index.html and
-tools/armatur/armatur.js before this update. The ignored _import/ remains
+tools/armatur/armatur.js before this update (the tool moved to armatur/
+on 2026-11-07). The ignored _import/ remains
 untouched. The corrected legacy code is independent of the new engine.
 
 ## Model and algorithm
@@ -150,10 +151,10 @@ It is an estimate rather than a manufacturer's nominal mass table.
 
 From the Sol repository root:
 
-    node tools/armatur/tests/engine.test.js
-    node tools/armatur/tests/dp.test.js
-    node tools/armatur/tests/static.test.js
-    node tools/armatur/tests/i18n.test.js
+    node armatur/tests/engine.test.js
+    node armatur/tests/dp.test.js
+    node armatur/tests/static.test.js
+    node armatur/tests/i18n.test.js
     node scripts/check-static.js
     node scripts/test-static-check.js
 

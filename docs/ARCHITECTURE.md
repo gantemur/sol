@@ -5,10 +5,17 @@
 ## Folders
 
 - `_import/` is ignored local source/archive material. It should not be committed or modified during normal migration work.
-- `tools/<tool-id>/` contains migrated or native tools. Each tool should keep its own entry page and local assets.
+- `<tool-id>/` at the repository root contains each migrated or native tool, served at `/sol/<tool-id>/`. Each tool should keep its own entry page and local assets.
+- `tools/` is the former tool location (until 2026-11-07). It holds only forwarding pages from old URLs to `<tool-id>/`; do not add tools or other files there.
 - `tools.json` is the public registry used to describe the tools on the site.
 - `shared/` may contain optional source-level utilities later. Tools should not depend on shared code unless that dependency is genuinely helpful and still easy to copy.
 - `docs/` contains migration notes and project planning documentation.
+
+`docs`, `scripts`, `shared` and `tools` are reserved names; the static checker rejects them as tool IDs.
+
+## Old URLs
+
+GitHub Pages has no server-side redirects, so each former page `tools/<tool-id>/<page>.html` is replaced by a tiny HTML page that forwards with `location.replace` (keeping `?query` and `#hash`), plus a `meta refresh` fallback and a visible link. These pages are marked `noindex` and point `rel=canonical` at the new address. `node scripts/check-static.js` fails if anything other than a working forwarder appears under `tools/`.
 
 ## Tool independence
 

@@ -1,42 +1,17 @@
 <!doctype html>
-<!-- SPDX-FileCopyrightText: 2026 Tsogtgerel Gantumur; SPDX-License-Identifier: MIT -->
-<html lang="mn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light">
-<title>Нарны цаг · Sol</title><link rel="stylesheet" href="style.css?v=P1.1">
-<script defer src="planar3d.js?v=P1.1"></script><script defer src="sundial.js?v=P1.1"></script><script defer src="diagram3d.js?v=P1.1"></script><script defer src="ui.js?v=P1.1"></script></head>
-<body><main><header><a href="../../">← Sol</a><div><span id="version" class="badge">…</span> <select id="lang" aria-label="Language / Хэл"><option value="mn">Монгол</option><option value="en">English</option></select></div></header>
-<h1 data-i="title">Нарны цаг</h1><p class="intro" data-i="intro">Хэвтээ, босоо хана болон налуу хавтгайн нарны цагийг загварчилж, хэвлэн сийлэх хээ гаргана.</p>
-<section class="controls" aria-label="Design">
-<label><span data-i="latitude">Өргөрөг (хойд +, өмнөд −)</span><input id="lat" type="number" min="-89" max="89" step="0.1" value="47.9"></label>
-<label><span data-i="surface">Хавтгайн байрлал</span><select id="surface"><option value="horizontal" data-i="horizontal">Хэвтээ</option><option value="vertical" data-i="vertical">Босоо хана</option><option value="inclined" data-i="inclined">Налуу хавтгай</option></select></label>
-<label id="tilt-control" hidden><span data-i="tilt">Хэвтээгээс хазайх өнцөг β (°)</span><input id="tilt" type="number" min="0" max="90" step="1" value="45"></label>
-<label id="azimuth-control" hidden><span data-i="azimuth">Гадагш чиглэсэн нормалын азимут (°)</span><input id="azimuth" type="number" min="0" max="360" step="1" value="180"></label>
-<label><span data-i="shape">Хэлбэр</span><select id="shape"><option value="rectangle" data-i="rectangle">Тэгш өнцөгт</option><option value="semicircle" data-i="semicircle">Хагас дугуй</option></select></label>
-<label class="rect-control"><span data-i="width">Өргөн (мм)</span><input id="width" type="number" min="80" max="1500" step="1" value="300"></label>
-<label class="rect-control"><span data-i="height">Өндөр (мм)</span><input id="height" type="number" min="80" max="1500" step="1" value="200"></label>
-<label id="diameter-control" hidden><span data-i="diameter">Диаметр (мм)</span><input id="diameter" type="number" min="80" max="1500" step="1" value="300"></label>
-<label><span data-i="divisions">Хуваарь</span><select id="interval"><option value="60" data-i="hourly">1 цаг</option><option value="30" data-i="half">30 минут</option><option value="15" data-i="quarter">15 минут</option></select></label>
-<label><span data-i="numerals">Дугаар</span><select id="numerals"><option value="24">6–18</option><option value="12">6–12–6</option><option value="roman">VI–XII–VI</option></select></label>
-<label><span data-i="style">Гномоны төрөл</span><select id="style"><option value="auto" data-i="autoStyle">Гадаргуутай огтлолцох ирмэг</option><option value="raised" data-i="raisedStyle">Өндөрт бэхэлсэн туйлын саваа</option></select></label>
-</section>
-<p class="note" id="faceConvention" data-i="faceConvention">Азимут: 0° хойд, 90° зүүн, 180° өмнөд, 270° баруун. Ханын гадагш харсан талыг заана.</p>
-<div class="options"><label class="check"><input id="seasons" type="checkbox"><span data-i="seasons">Улирлын шугам</span></label><label class="check"><input id="guides" type="checkbox"><span data-i="guides">Угсралтын тэмдэг</span></label><label class="check"><input id="color" type="checkbox"><span data-i="color">Улирлын шугамыг өнгөөр ялгах</span></label><button id="reset" class="quiet" data-i="reset">Эхлэх утга</button></div>
-<div id="season-controls" class="panel" hidden><label><span data-i="seasonCount">Улирлын шугамын тоо</span><select id="seasonCount"><option value="3" data-i="count3">3 · үндсэн</option><option value="5" selected data-i="count5">5 · тэнцвэртэй</option><option value="7" data-i="count7">7 · дэлгэрэнгүй</option></select></label><p data-i="declinationNote">Нэмэлт шугамууд нь сар бүрийн өдөр биш, нарны хэлбийлтийн тэнцүү алхмууд юм. Завсрын утга жилд хоёр удаа тохиолдоно.</p><label><span data-i="length">Гномоны ирмэг дагуух үзүүрийн зай L (мм)</span><input id="length" type="number" min="1" max="1000" step="1" value="40"></label><p data-i="nodusHelp">Улирлыг ирмэгийн бус, тодорхой үзүүр буюу тэмдэглэсэн цэгийн сүүдрээр уншина. L нь сууриас тэр цэг хүртэлх налуу зай.</p><p id="nodusDimensions"></p></div>
-<p id="error" role="alert"></p><p id="warnings" role="status"></p>
-<section class="drawing" aria-label="Pattern"><div class="drawing-head"><strong data-i="pattern">Загвар</strong><span id="dimensions"></span><button id="zoom" class="quiet" data-i="zoomIn" aria-pressed="false">Томруулах</button></div><div class="preview"><img id="dial" alt="Нарны цагийн загвар" draggable="false"></div><div id="legend" class="legend" hidden></div></section>
-<div class="actions"><button id="pdf" data-i="pdf">PDF татах</button><button id="svg" data-i="svg">SVG татах</button><button id="png" data-i="png">PNG · 300 dpi</button></div>
-<p id="exportStatus" role="status"></p><a id="downloadAgain" hidden data-i="again">Файлыг дахин татах</a>
-<p class="note" data-i="print">Хэмжээг өөрчлөхгүй, 100% хэвлэнэ. Хуудасны хэмжээ нь загварт таарсан: A4/Letter рүү автоматаар багтааж болохгүй. Шугамын хэмжээг шугамаар шалгана.</p>
-<p class="note" data-i="time">Зөвхөн 06:00–18:00 жинхэнэ нарны цагийн мужийг авч, бодит тэнгэрийн хаяа болон хавтгайд тусах гэрлийг шалгана. Цагийн бүс, уртраг, цагийн тэгшитгэлийн засвар ороогүй.</p>
-<details><summary data-i="table">Цагийн шугамын өнцөг</summary><p data-i="angleHelp">Зургийн дээд сумаас цагийн зүүний дагуу хэмжсэн өнцөг (дээш 0°, доош 180°).</p><div id="angles"></div></details>
-<details><summary data-i="gnomon">Нэмэлт: гномоны хажуугийн загвар</summary><p data-i="gnomonHelp">Мод, металл эсвэл хатуу картоноор хийх гурвалжин. Налуу ирмэг O–G нь дэлхийн тэнхлэгтэй параллель; үзүүр G нь улирлын шугамын цэг болно. Угсрах холбоос, нугалах хавтас ороогүй.</p><label><span data-i="length">Гномоны ирмэг дагуух үзүүрийн зай L (мм)</span><input id="profileLength" type="number" min="1" max="1000" step="1" value="40"></label><p id="profileDimensions"></p><div class="actions"><button id="profileSvg" data-i="profileSvg">Гномоны SVG</button><button id="profilePdf" data-i="profilePdf">Гномоны PDF</button></div></details>
-<details id="mount-info"><summary data-i="mountSummary">Гномоны байрлал ба виртуал газарзүй</summary>
-<p id="mountingInfo"></p><p id="virtualInfo"></p><p data-i="mountHelp">Туйлын ирмэг нь дэлхийн тэнхлэгтэй параллель. Хана, налуу хавтгайн дээд сум бодит дээш чиглэлийг заана. Туйлын ирмэгийн тусгалаар O суурийн байрлал тогтоно.</p>
-</details>
-<details id="diagramPanel"><summary data-i="diagramTitle">3D геометр — цагийн хавтгай ба улирлын конус</summary>
-<div class="controls diagram-controls"><label><span data-i="demoHour">Нарны цаг (цаг)</span><input id="demoHour" type="range" min="6" max="18" step="0.5" value="12"><output id="demoHourValue">12:00</output></label>
-<label><span data-i="demoDelta">Нарны хэлбийлт δ</span><select id="demoDelta"><option value="23.44" data-i="june">VI · +23.44°</option><option value="0" selected data-i="equinox">III/IX · 0°</option><option value="-23.44" data-i="december">XII · −23.44°</option></select></label>
-<label><span data-i="demoYaw">3D дүрсийг эргүүлэх</span><input id="demoYaw" type="range" min="-180" max="180" step="5" value="40"></label></div>
-<div id="diagram" class="diagram" role="img" aria-label="Sundial hour plane and declination cone"></div>
-<p class="note" data-i="diagramHelp">Цэнхэр нь цагийн хавтгай, шар нь улирлын конус, ногоон нь үзүүрээс унах сүүдрийн цацраг. Энэ 3D зураг нь угсралтын хэмжээст зураг биш.</p></details>
-<section class="help"><h2 data-i="installation">Байрлуулах нь</h2><p id="orientation"></p><p data-i="install">Хавтгайг заасан хазайлт, азимутаар байрлуулна. Хана, налуу хавтгайн ДЭЭШ сумыг бодит дээш чиглүүлнэ; хэвтээ цагийн N/S сумыг жинхэнэ туйл руу чиглүүлнэ. O нь туйлын ирмэгийн суурь, P нь үзүүрийн хавтгайд перпендикуляр тусгал юм.</p><p data-i="limits">Нарны хэлбийлтийн −23.44°-ээс +23.44° хүртэлх 3, 5 эсвэл 7 шугамыг зурна. Сүүдэр хавтангаас гарч болно; тухайн цагт нар заавал мандсан байхгүй. Экваторт энгийн налуу гномон хэрэглэх боломжгүй: хэвтээ туйлын саваа буюу өндөрт байрлах цэг хэрэглэнэ. Туйлд 24 цагийн тусгай хийц хэрэгтэй. Минутын нарийвчлалын баталгаа байхгүй.</p></section>
-<noscript>JavaScript is required. / JavaScript-ийг идэвхжүүлнэ үү.</noscript></main></body></html>
+<!-- Forwarder: Sol tools moved from tools/<id>/ to <id>/ on 2026-11-07. -->
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Шилжсэн · Moved</title>
+<link rel="canonical" href="../../sundial/">
+<script>location.replace("../../sundial/" + location.search + location.hash);</script>
+<meta http-equiv="refresh" content="0; url=../../sundial/">
+</head>
+<body>
+<p>Энэ хуудас шинэ хаяг руу шилжсэн: <a href="../../sundial/">sundial/</a></p>
+<p lang="en">This page has moved: <a href="../../sundial/">sundial/</a></p>
+</body>
+</html>

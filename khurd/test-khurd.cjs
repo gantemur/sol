@@ -1,6 +1,6 @@
 /* SPDX-FileCopyrightText: 2026 Tsogtgerel Gantumur
  * SPDX-License-Identifier: MIT
- * Run: node tools/khurd/test-khurd.cjs */
+ * Run: node khurd/test-khurd.cjs */
 "use strict";
 const assert = require("node:assert/strict");
 const E = require("./engine.js");

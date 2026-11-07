@@ -2,7 +2,7 @@
 
 Status: public alpha migration. This is preserved as an educational static canvas animation.
 
-Original source note: migrated from the local raw import archive into `tools/kinetic/`. `_import/` remains local-only and ignored.
+Original source note: migrated from the local raw import archive into `tools/kinetic/` (moved to `kinetic/` on 2026-11-07). `_import/` remains local-only and ignored.
 
 Language: Mongolian.
 

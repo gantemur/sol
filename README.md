@@ -20,6 +20,11 @@ The tools are intended to be:
 - `warm`: A simplified stellar irradiance, planet temperature, and liquid-water zone explorer.
 - `kinetic`: Educational kinetic animation/toy model for particles, wind, and waves.
 - `armatur`: Simple reinforcing-bar cutting calculator using the imported greedy algorithm.
+- `sundial`: Printable sundial designs for horizontal, vertical and inclined surfaces.
+- `khurd`: A prayer wheel turned with a finger, counting the mantras inside.
+
+Each tool is served at `https://gantemur.github.io/sol/<tool-id>/`, for example
+`https://gantemur.github.io/sol/khurd/`.
 
 ## Planned directions
 
@@ -32,7 +37,11 @@ Future tools may include:
 
 ## Project shape
 
-Tool metadata lives in `tools.json`. Individual tools live under `tools/<tool-id>/`.
+Tool metadata lives in `tools.json`. Each tool lives in its own folder at the repository root, `<tool-id>/`, with its own `index.html`, assets, README and license.
+
+Until 2026-11-07 tools lived under `tools/<tool-id>/`. That folder now holds only small forwarding pages, so old links and bookmarks such as `/sol/tools/khurd/` (including subpages, `?lang=` and `#` fragments) still reach the tool at its new address. New tools go directly at the root and need no forwarder. See [`tools/README.md`](tools/README.md).
+
+`docs/`, `scripts/`, `shared/` and `tools/` are reserved root folders, not tool IDs.
 
 The `_import/` folder is local migration input and is intentionally ignored. It should not be committed.
 
@@ -45,7 +54,7 @@ node scripts/check-static.js
 node scripts/test-static-check.js
 ```
 
-The checker validates the tool registry, entry pages, and local HTML links.
+The checker validates the tool registry (`entry` must be `<tool-id>/`), entry pages, local HTML links, and that every page left in `tools/` is a forwarder to an existing page.
 The tests exercise valid and invalid registries in temporary fixtures without changing the site's files.
 These checks do not validate scientific models or browser behavior.
 

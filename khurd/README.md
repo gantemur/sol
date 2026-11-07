@@ -84,7 +84,7 @@ Counts and settings are kept in this browser's local storage only.
 ## Verification
 
 ```sh
-node tools/khurd/test-khurd.cjs
+node khurd/test-khurd.cjs
 node scripts/check-static.js
 node scripts/test-static-check.js
 node scripts/test-homepage.cjs

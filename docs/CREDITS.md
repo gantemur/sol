@@ -14,14 +14,14 @@ The original English and Mongolian pages credit:
 These credits are retained. They are not an MIT permission grant for upstream code.
 The legacy portions remain excluded from a blanket MIT declaration while permissions
 and the boundary of borrowed code are unresolved. See the local
-[English](../tools/planets-en/THIRD_PARTY_NOTICES.md) and
-[Mongolian](../tools/planets-mn/THIRD_PARTY_NOTICES.md) notices.
+[English](../planets-en/THIRD_PARTY_NOTICES.md) and
+[Mongolian](../planets-mn/THIRD_PARTY_NOTICES.md) notices.
 
 ## Doppler and Kinetic
 
 Doppler's current author-owned implementation is offered under MIT by the author.
-The old [GPL text](../tools/doppler/LICENSES/GPL-3.0.txt) is retained with an
-[explanation of its historical scope](../tools/doppler/NOTICE.md).
+The old [GPL text](../doppler/LICENSES/GPL-3.0.txt) is retained with an
+[explanation of its historical scope](../doppler/NOTICE.md).
 Kinetic retains its MIT provenance and original 2023 copyright year.
 
 ## Rainbow Angles and Stellar Warmth
@@ -34,5 +34,5 @@ and source references remain documented in the tool READMEs.
 ## Armatur and Sundial
 
 Armatur retains its source history and dedication to M. Purev-Erdene in its
-[README](../tools/armatur/README.md#dedication) and interface. Sundial records its
-geometrical references in its [README](../tools/sundial/README.md#provenance-and-license).
+[README](../armatur/README.md#dedication) and interface. Sundial records its
+geometrical references in its [README](../sundial/README.md#provenance-and-license).
