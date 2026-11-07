@@ -33,8 +33,9 @@
       modeSubtract: "Хасагдана",
       scroll: "Доторх маань",
       scrollNote: "Хүрдийг нэг эргүүлэхэд дотор нь бичсэн бүх маань дээд туузаар нэг удаа гүйнэ.",
-      million: "сая",
       bell: "Эргэлт бүрд хонх",
+      fullscreen: "Бүтэн дэлгэц",
+      exitFullscreen: "Бүтэн дэлгэцээс гарах",
       reset: "Тоолуурыг тэглэх",
       resetConfirm: "Тоолуурыг тэглэх үү?",
       aboutTitle: "Тухай",
@@ -65,8 +66,9 @@
       modeSubtract: "Subtracts",
       scroll: "Mantras inside",
       scrollNote: "One turn of the wheel runs every mantra written inside once through the band at the top.",
-      million: "million",
       bell: "Bell on every turn",
+      fullscreen: "Full screen",
+      exitFullscreen: "Exit full screen",
       reset: "Reset counter",
       resetConfirm: "Reset the counter to zero?",
       aboutTitle: "About",
@@ -124,7 +126,7 @@
     mode: pick(store.get("mode"), ["ratchet", "subtract"], "ratchet"),
     scroll: (() => {
       const n = Number(store.get("scroll"));
-      return E.SCROLL_SIZES.includes(n) ? n : 1000;
+      return E.SCROLL_SIZES.includes(n) ? n : 1;
     })(),
     bell: store.get("bell") === "1"
   };
@@ -350,24 +352,12 @@
     // and pass the viewer from right to left when the wheel turns clockwise.
     const samples = blurSamples(dA, TAU / 6);
     const yMid = (bandTop + bandBot) / 2;
-    const scale = 1 / dpr;
+    const slices = samples > 1 ? 6 : 16;
     for (let s = 0; s < samples; s += 1) {
       const aBase = angle - (samples > 1 ? dA * (s / samples) : 0);
       g.globalAlpha = samples > 1 ? Math.min(1, 1.6 / samples) : 1;
       for (let j = 0; j < SYLLABLES.length; j += 1) {
-        const a = (j / 6) * TAU - aBase;  // Om faces the viewer at rest
-        const c = Math.cos(a);
-        if (c <= 0.04) continue;
-        const sp = sprites[j];
-        const x = cx + R * Math.sin(a);
-        const y = yMid + ry * c * 0.6;
-        const sw = sp.w * scale;
-        const sh = sp.h * scale;
-        g.save();
-        g.translate(x, y);
-        g.scale(c, 1);
-        g.drawImage(sp.canvas, -sw / 2, -sh / 2 - sh * 0.04, sw, sh);
-        g.restore();
+        drawWrapped(g, sprites[j], (j / 6) * TAU - aBase, cx, yMid, R, ry, slices);
       }
     }
     g.globalAlpha = 1;
@@ -405,6 +395,37 @@
     g.fill();
 
     w.lastDraw = angle;
+  }
+
+  /* Paint a syllable onto the cylinder. The sprite's width is arc length on
+   * the drum, so each vertical slice at arc offset u sits at angle a + u/R and
+   * projects to x = R sin(a + u/R): letters narrow as they turn toward the rim,
+   * the trailing side more than the leading side. Each slice also follows the
+   * band's elliptical curve, which keeps the letter centred in the band. */
+  function drawWrapped(g, sp, a, cx, yMid, R, ry, slices) {
+    const sw = sp.w / dpr;
+    const sh = sp.h / dpr;
+    const half = sw / 2;
+    for (let k = 0; k < slices; k += 1) {
+      const u0 = -half + (sw * k) / slices;
+      const u1 = -half + (sw * (k + 1)) / slices;
+      const b0 = a + u0 / R;
+      const b1 = a + u1 / R;
+      const c0 = Math.cos(b0);
+      const c1 = Math.cos(b1);
+      if (c0 <= 0 && c1 <= 0) continue;
+      const x0 = cx + R * Math.sin(b0);
+      const x1 = cx + R * Math.sin(b1);
+      const w = x1 - x0;
+      if (w <= 0.05) continue;
+      const shade = Math.max(0, Math.min(1, 0.25 + 0.9 * Math.max(c0, c1)));
+      const y = yMid + ry * Math.max(0, (c0 + c1) / 2);
+      const prev = g.globalAlpha;
+      g.globalAlpha = prev * shade;
+      const sx = (sp.w * k) / slices;
+      g.drawImage(sp.canvas, sx, 0, sp.w / slices, sp.h, x0, y - sh / 2, w + 0.35, sh);
+      g.globalAlpha = prev;
+    }
   }
 
   function drawTop(i) {
@@ -857,19 +878,22 @@
 
   /* ---------- Settings UI ---------- */
 
+  /* Traditional Mongolian names for powers of ten. */
+  const MN_NUMBERS = { 1e3: "мянга", 1e4: "түм", 1e5: "бум", 1e6: "сая", 1e7: "живаа", 1e8: "дүнчүүр" };
+
+  function scrollLabel(n) {
+    if (settings.lang === "mn") return MN_NUMBERS[n] || String(n);
+    if (n >= 1e6) return (n / 1e6) + " million";
+    try { return n.toLocaleString("en-US"); } catch (e) { return String(n); }
+  }
+
   function fillScrollOptions() {
     const sel = $("#scroll");
-    const locale = settings.lang === "mn" ? "mn-MN" : "en-US";
     sel.innerHTML = "";
     for (const n of E.SCROLL_SIZES) {
       const o = document.createElement("option");
       o.value = String(n);
-      let label;
-      if (n >= 1e6) label = (n / 1e6).toLocaleString(locale) + " " + t("million");
-      else {
-        try { label = n.toLocaleString(locale); } catch (e) { label = String(n); }
-      }
-      o.textContent = label;
+      o.textContent = scrollLabel(n);
       if (n === settings.scroll) o.selected = true;
       sel.appendChild(o);
     }
@@ -894,6 +918,7 @@
     fillScrollOptions();
     updateHint();
     updateCounts();
+    if (fsEnabled) updateFullscreenButton();
   }
 
   function setLanguage(lang) {
@@ -964,6 +989,33 @@
     updateCounts();
     requestDraw();
   });
+
+  /* ---------- Full screen ---------- */
+
+  const fsButton = $("#fullscreen");
+  const fsEnabled = !!(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+  const fsElement = () => document.fullscreenElement || document.webkitFullscreenElement;
+
+  function updateFullscreenButton() {
+    const on = !!fsElement();
+    fsButton.setAttribute("aria-pressed", on ? "true" : "false");
+    fsButton.setAttribute("aria-label", t(on ? "exitFullscreen" : "fullscreen"));
+    fsButton.title = t(on ? "exitFullscreen" : "fullscreen");
+    document.documentElement.classList.toggle("is-fullscreen", on);
+  }
+
+  if (fsEnabled) {
+    fsButton.hidden = false;
+    fsButton.addEventListener("click", () => {
+      const root = document.documentElement;
+      try {
+        if (fsElement()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+        else (root.requestFullscreen || root.webkitRequestFullscreen).call(root, { navigationUI: "hide" });
+      } catch (e) { /* the browser refused; nothing to do */ }
+    });
+    document.addEventListener("fullscreenchange", () => { updateFullscreenButton(); queueLayout(); });
+    document.addEventListener("webkitfullscreenchange", () => { updateFullscreenButton(); queueLayout(); });
+  }
 
   /* ---------- Start ---------- */
 
