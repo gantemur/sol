@@ -226,7 +226,6 @@
     }
     while (wheels.length < n) {
       const w = E.createWheel(settings.mode);
-      w.angle = wheels.length ? E.wrap(wheels.length * 0.7) : 0;
       w.ring = 0;
       wheels.push(w);
     }
@@ -491,7 +490,10 @@
     }
     g.restore();
 
-    // Syllables around the ring, upright toward the rim, read clockwise.
+    // Syllables as the side wall projects seen from above, with the front at
+    // the bottom of the screen: upright at the front, reading left to right
+    // there, so counter-clockwise around the ring. Turning clockwise brings
+    // them to the back (top), the reading point, in order.
     const samples = blurSamples(dA, TAU / 6);
     const scale = 1 / dpr;
     const rText = R * 0.745;
@@ -499,18 +501,28 @@
       const aBase = angle - (samples > 1 ? dA * (s / samples) : 0);
       g.globalAlpha = samples > 1 ? Math.min(1, 1.6 / samples) : 1;
       for (let j = 0; j < SYLLABLES.length; j += 1) {
-        const b = aBase + (j / 6) * TAU - Math.PI / 2;
+        const b = aBase - (j / 6) * TAU - Math.PI / 2;
         const sp = sprites[j];
         const sw = sp.w * scale;
         const sh = sp.h * scale;
         g.save();
         g.translate(cx + Math.cos(b) * rText, cy + Math.sin(b) * rText);
-        g.rotate(b + Math.PI / 2);
+        g.rotate(b - Math.PI / 2);
         g.drawImage(sp.canvas, -sw / 2, -sh / 2, sw, sh);
         g.restore();
       }
     }
     g.globalAlpha = 1;
+
+    // Reading pointer at the back of the wheel.
+    const pt = Math.max(7, R * 0.05);
+    g.beginPath();
+    g.moveTo(cx - pt, cy - R - pt * 1.9);
+    g.lineTo(cx + pt, cy - R - pt * 1.9);
+    g.lineTo(cx, cy - R - pt * 0.2);
+    g.closePath();
+    g.fillStyle = "#d6a23e";
+    g.fill();
 
     // Hub.
     const hub = g.createRadialGradient(cx - R * 0.05, cy - R * 0.06, R * 0.01, cx, cy, R * 0.17);
@@ -556,19 +568,31 @@
   let bandMetrics = null;
   let bandCenters = [];   // each drum's centre, in band-canvas pixels
 
+  /* The band is laid out like the drum: six equal cells, one per syllable,
+   * each syllable centred in its cell and the tsheg on the cell boundary.
+   * One drum sector of 60° then corresponds to exactly one cell. */
+  const BAND_CELLS = ["ཨོཾ", "མ", "ཎི", "པ", "དྨེ", "ཧཱུྃ"];
+  const TSHEG_AFTER = [true, true, true, false, true, true];
+
   function bandStrip(H) {
     const px = Math.round(H * 0.46);
     if (bandMetrics && bandMetrics.px === px) return bandMetrics;
-    const probe = bctx;
-    probe.font = "700 " + px + "px " + TIB_FONT;
-    const unit = Math.ceil(probe.measureText(MANTRA + " ").width);
+    const font = "700 " + px + "px " + TIB_FONT;
+    bctx.font = font;
+    const widest = Math.max(...BAND_CELLS.map((t) => bctx.measureText(t).width));
+    const cell = Math.ceil(widest * 1.18);
+    const unit = cell * 6;
     const c = document.createElement("canvas");
     c.width = unit;
     c.height = H;
     const g = c.getContext("2d");
-    g.font = probe.font;
+    g.font = font;
     g.fillStyle = "#e9c983";
-    g.fillText(MANTRA, 0, H * 0.66);
+    g.textAlign = "center";
+    BAND_CELLS.forEach((t, j) => {
+      g.fillText(t, (j + 0.5) * cell, H * 0.66);
+      if (TSHEG_AFTER[j]) g.fillText("་", (j + 1) * cell - (j === 5 ? cell * 0.02 : 0), H * 0.66);
+    });
     bandMetrics = { px, unit, strip: c };
     return bandMetrics;
   }
@@ -599,7 +623,9 @@
       const center = bandCenters[i];
       const left = i === 0 ? 0 : (bandCenters[i - 1] + center) / 2;
       const right = i === n - 1 ? W : (center + bandCenters[i + 1]) / 2;
-      const pos = (w.acc / TAU) * settings.scroll;
+      // Displayed angle and counted angle differ only by whole turns, and N is
+      // an integer, so this has the same fraction as the counted position.
+      const pos = (((w.angle + w.recoil) % TAU) / TAU) * settings.scroll;
       const frac = pos - Math.floor(pos);
       const step = w.bandFrame || 0;
       const shift = Math.abs(step);
@@ -625,9 +651,10 @@
       const kMin = Math.floor((left - center) / unit) - 1;
       const kMax = Math.ceil((right - center) / unit) + 1;
       for (const off of offsets) {
-        // Mantra k spans [center + (k - pos)·unit, center + (k + 1 - pos)·unit].
+        // Cell j of mantra k is centred at center + (k + j/6 - pos)·unit, so
+        // syllable j sits on the mark when the drum has turned j sixths.
         for (let k = kMin; k <= kMax; k += 1) {
-          g.drawImage(strip, center + (k - off) * unit, 0);
+          g.drawImage(strip, center + (k - off) * unit - unit / 12, 0);
         }
       }
       g.restore();
@@ -1008,6 +1035,7 @@
     const n = Number(ev.target.value);
     if (!E.SCROLL_SIZES.includes(n)) return;
     banked = E.bank(banked, wheels, settings.scroll);
+    restartWheels();
     settings.scroll = n;
     store.set("scroll", n);
     save();
@@ -1026,11 +1054,26 @@
     if (!window.confirm(t("resetConfirm"))) return;
     banked = { turns: 0n, mani: 0n };
     sessionStart = 0n;
-    for (const w of wheels) { w.acc = 0; w.omega = 0; w.ring = 0; }
+    restartWheels();
     save();
     updateCounts();
     requestDraw();
   });
+
+  /* Turn every drum back to its starting position (Om in front). The count
+   * restarts from the bank, so the drums' faces, bands and count agree. */
+  function restartWheels() {
+    for (const w of wheels) {
+      w.acc = 0;
+      w.angle = 0;
+      w.omega = 0;
+      w.ring = 0;
+      w.recoil = 0;
+      w.lastDraw = undefined;
+      w.bandStep = 0;
+      w.bandFrame = 0;
+    }
+  }
 
   /* ---------- Full screen ---------- */
 

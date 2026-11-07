@@ -52,6 +52,14 @@ the saved choice, then Mongolian. Switching keeps the count and settings.
   syllables pass the viewer in reading order.
 - Coasting uses constant bearing friction plus speed-proportional drag, with a
   speed limit of 8 turns per second.
+- The band is laid out like the drum, in six equal cells, and its position is the
+  drum's displayed angle times N / 2π. With N = 1 the syllable on a drum's gold
+  mark is exactly the syllable at the drum's front (side view) or at the back,
+  under the gold pointer (top view). The top view draws the letters as the side
+  wall would project seen from above with the front at the bottom: upright and
+  read left to right at the front, so counter-clockwise around the wheel, and
+  turning clockwise brings them to the back in reading order. Changing N or
+  resetting turns the drums back to Om, so faces, bands and count stay in step.
 - Each drum reads its own scroll. Partial turns on different drums are not
   added together: three drums turned a third of a turn each complete no mantra,
   and their bands show only the first syllables passing each mark.
