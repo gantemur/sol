@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: MIT */
 (function (root) {
   'use strict';
-  const VERSION = 'P1.0', DEG = Math.PI / 180;
+  const VERSION = 'P1.1', DEG = Math.PI / 180;
   const G = (typeof module!=='undefined'&&module.exports)?require('./planar3d.js'):root.Sundial3D;
   const defaults = Object.freeze({lat:47.9, shape:'rectangle', width:300, height:200,
     diameter:300, interval:60, numerals:'24', seasons:false, seasonCount:5, length:40, guides:false, color:false, surface:'horizontal', tilt:45, azimuth:180, style:'auto'});
@@ -71,13 +71,13 @@
     return {shape:p.shape,w,h,root};
   }
   function inside(q,b,inset=0) {
-    if (b.shape==='semicircle') return q[1]<=b.h-inset+1e-7 &&
-      Math.hypot(q[0]-b.w/2,q[1]-b.h)<=b.w/2-inset+1e-7;
+    if (b.shape==='semicircle') return G.dot(G.sub(q,b.root),b.inward)>=inset-1e-7 &&
+      Math.hypot(q[0]-b.root[0],q[1]-b.root[1])<=b.r-inset+1e-7;
     return q[0]>=inset-1e-7 && q[0]<=b.w-inset+1e-7 && q[1]>=inset-1e-7 && q[1]<=b.h-inset+1e-7;
   }
   function rayEnd(b,d,inset=0) {
     const o=b.root;
-    if (b.shape==='semicircle') return [o[0]+d[0]*(b.w/2-inset),o[1]+d[1]*(b.w/2-inset)];
+    if (b.shape==='semicircle') return [o[0]+d[0]*(b.r-inset),o[1]+d[1]*(b.r-inset)];
     let t=Infinity;
     if (d[0]>1e-12) t=Math.min(t,(b.w-inset-o[0])/d[0]);
     if (d[0]<-1e-12) t=Math.min(t,(inset-o[0])/d[0]);
@@ -88,15 +88,18 @@
   function clipSegment(a,z,b) {
     const dx=z[0]-a[0],dy=z[1]-a[1]; let lo=0,hi=1;
     if (b.shape==='semicircle') {
-      const ax=a[0]-b.w/2,ay=a[1]-b.h,A=dx*dx+dy*dy;
+      const ax=a[0]-b.root[0],ay=a[1]-b.root[1],A=dx*dx+dy*dy;
       if (A<1e-20) return inside(a,b)?[a,z]:null;
-      const B=2*(ax*dx+ay*dy),C=ax*ax+ay*ay-b.w*b.w/4,disc=B*B-4*A*C;
+      const B=2*(ax*dx+ay*dy),C=ax*ax+ay*ay-b.r*b.r,disc=B*B-4*A*C;
       if (disc<0) return null;
       lo=Math.max(0,(-B-Math.sqrt(disc))/(2*A)); hi=Math.min(1,(-B+Math.sqrt(disc))/(2*A));
-      // The flat semicircle diameter clips away the unused lower hemisphere.
-      if(Math.abs(dy)<1e-14){if(a[1]>b.h+1e-9)return null;}
-      else if(dy>0)hi=Math.min(hi,(b.h-a[1])/dy);
-      else lo=Math.max(lo,(b.h-a[1])/dy);
+      // The diameter is perpendicular to the chosen inward direction. This
+      // permits upper, lower, left and right semicircles with the same clipper.
+      const base=ax*b.inward[0]+ay*b.inward[1],
+        slope=dx*b.inward[0]+dy*b.inward[1];
+      if(Math.abs(slope)<1e-14){if(base < -1e-9)return null;}
+      else if(slope>0)lo=Math.max(lo,-base/slope);
+      else hi=Math.min(hi,-base/slope);
     } else {
       for (const [v,q] of [[-dx,a[0]],[dx,b.w-a[0]],[-dy,a[1]],[dy,b.h-a[1]]]) {
         if (Math.abs(v)<1e-15) {if(q<0)return null;continue;}
@@ -131,12 +134,51 @@
     const tilt=p.surface==='horizontal'?0:p.surface==='vertical'?90:p.tilt;
     return G.frame(p.lat,tilt,p.azimuth,p.style);
   }
+  function fanDirection(p,frame) {
+    const polar=G.sub(frame.k,G.mul(frame.n,G.dot(frame.k,frame.n))),
+      projection=[G.dot(polar,frame.u),-G.dot(polar,frame.v)],m=Math.hypot(...projection);
+    // A pole perpendicular to the face has no preferred half-plane, while
+    // a parallel/supported rod has no root on it at all.
+    if(frame.raised || m<1e-6)return [0,0];
+    let x=0,y=0;
+    // Use the same horizon/face-illumination criterion as the hour-line
+    // generator. A grazing or summer-only shadow can point opposite the
+    // polar projection: simply centering O on that projection can clip away
+    // the usable fan on a declining/north-facing wall.
+    for(let hour=6;hour<=18;hour+=.5){
+      let best=null,score=-1;
+      for(let i=0;i<=72;i++){
+        const q=G.project(frame,p.lat,-23.44+46.88*i/72,hour,1,[0,0]);
+        if(!q)continue;
+        const distance=Math.hypot(q.x,q.y),s=Math.min(q.alt,q.face);
+        if(distance>1e-7 && distance<1e9 && s>score){best=[q.x/distance,q.y/distance];score=s;}
+      }
+      if(best){x+=score*best[0];y+=score*best[1];}
+    }
+    const length=Math.hypot(x,y);
+    return length>1e-8?[x/length,y/length]:projection.map(v=>v/m);
+  }
   function planarLayout(p,frame) {
-    const w=p.shape==='semicircle'?p.diameter:p.width;
-    const h=p.shape==='semicircle'?p.diameter/2:p.height;
-    const root=[w/2,p.shape==='semicircle'?h:
-      (frame.raised?h/2:h-Math.max(12,Math.min(20,h*.1)))];
-    return {shape:p.shape,w,h,root};
+    // The outward polar edge actually meets the face at O.  Its projected
+    // hour-ray fan determines which rim should hold it.  Orientation follows
+    // actual illumination, not a hardcoded 'vertical' or 'horizontal' rule.
+    const dir=fanDirection(p,frame);
+    if(p.shape==='semicircle') {
+      const r=p.diameter/2;
+      // Turn the half-disc toward the projected polar edge, including the
+      // downward-pointing edge on a south-facing northern wall.
+      const inward=dir[0]===0&&dir[1]===0?[0,-1]:
+        Math.abs(dir[0])>Math.abs(dir[1])?[Math.sign(dir[0]),0]:[0,Math.sign(dir[1])];
+      const sideways=inward[0]!==0,w=sideways?r:p.diameter,h=sideways?p.diameter:r;
+      const root=[inward[0]===1?0:inward[0]===-1?w:w/2,
+        inward[1]===1?0:inward[1]===-1?h:h/2];
+      return {shape:p.shape,w,h,root,r,inward,fanDirection:dir};
+    }
+    const w=p.width,h=p.height,inset=Math.max(12,Math.min(20,Math.min(w,h)*.1)),
+      travel=(dir[0]===0&&dir[1]===0)?0:Math.min(
+        Math.abs(dir[0])<1e-12?Infinity:(w/2-inset)/Math.abs(dir[0]),
+        Math.abs(dir[1])<1e-12?Infinity:(h/2-inset)/Math.abs(dir[1]));
+    return {shape:p.shape,w,h,root:[w/2-travel*dir[0],h/2-travel*dir[1]],fanDirection:dir};
   }
   function planarSeasonalPaths(p,b,frame,delta) {
     const paths=[];let run=null,previous=null;
@@ -169,7 +211,8 @@
       items.push({type:'path',pts:pts.map(q=>[q[0]+margin,q[1]+margin]),width,color,dash,role});
     const text=(x,y,value,size=3.2,role='caption')=>
       items.push({type:'text',x:x+margin,y:y+margin,value,size,role});
-    if(b.shape==='semicircle')items.push({type:'semicircle',x:b.w/2+margin,y:b.h+margin,r:b.w/2,width:.35,color:'#111111'});
+    if(b.shape==='semicircle')items.push({type:'semicircle',x:b.root[0]+margin,y:b.root[1]+margin,
+      r:b.r,inward:b.inward,width:.35,color:'#111111'});
     else line([[0,0],[b.w,0],[b.w,b.h],[0,b.h],[0,0]],.35);
     const font=Math.max(2.6,Math.min(7,Math.min(b.w,b.h)*.026)),labels=[];
     for(let minute=360;minute<=1080;minute+=p.interval){
@@ -207,17 +250,21 @@
       text(x,y+font*.34,q.value,font,'hour-label');
     }
     const [ox,oy]=b.root;
-    line([[ox-1,oy],[ox+1,oy]],.25);line([[ox,oy-1],[ox,oy+(b.shape==='semicircle'?0:1)]],.25);
-    // The top arrow is the projection of the outward polar edge when it
-    // exists. For tilted plates it may point physically DOWN on a wall.
+    if(b.shape==='semicircle'){
+      const tangent=[-b.inward[1],b.inward[0]];
+      line([[ox-tangent[0],oy-tangent[1]],[ox+tangent[0],oy+tangent[1]]],.25);
+      line([[ox,oy],[ox+b.inward[0],oy+b.inward[1]]],.25);
+    }else{line([[ox-1,oy],[ox+1,oy]],.25);line([[ox,oy-1],[ox,oy+1]],.25);}
+    // On a nonhorizontal face this page-up arrow is physical UP, not the
+    // polar projection; that projection determines the root's location.
     line([[b.w/2,-1],[b.w/2,-5]],.25);line([[b.w/2-1,-3.5],[b.w/2,-5],[b.w/2+1,-3.5]],.25);
-    text(b.w/2+8,-2,p.surface==='horizontal'?(p.lat>=0?'N':'S'):'AXIS',3);
+    text(b.w/2+8,-2,p.surface==='horizontal'?(p.lat>=0?'N':'S'):'UP',3);
     const scale=b.w>=160?100:20,sy=b.h+8;
     line([[1,sy],[1+scale,sy]],.25);line([[1,sy-1],[1,sy+1]],.25);line([[1+scale,sy-1],[1+scale,sy+1]],.25);
     text(1+scale/2,sy-1.8,scale+' mm',3);
-    text(b.w*.79,sy+.5,b.shape==='semicircle'?'D = '+n(b.w)+' mm':n(b.w)+' x '+n(b.h)+' mm',3);
+    text(b.w*.79,sy+.5,b.shape==='semicircle'?'D = '+n(p.diameter)+' mm':n(b.w)+' x '+n(b.h)+' mm',3);
     if(p.surface!=='horizontal'){
-      const orient=frame.upAngle===null?'UP REF N/A':'UP '+n(frame.upAngle)+' deg FROM AXIS';
+      const orient=frame.upAngle===null?'UP REF N/A':'UP '+n(frame.upAngle)+' deg FROM PAGE TOP';
       text(b.w*.50,b.h+14,orient,3,'orientation');
       text(b.w*.5,b.h+19,'TILT '+n(frame.tilt)+' deg / FACE '+n(frame.azimuth)+' deg',3,'orientation');
     }
@@ -278,7 +325,12 @@
     for(const q of scene.items) {
       if(q.type==='path')body+='<path d="'+q.pts.map((p,i)=>(i?'L':'M')+n(p[0])+' '+n(p[1])).join(' ')+'" fill="none" stroke="'+q.color+'" stroke-width="'+q.width+'" stroke-dasharray="'+q.dash.join(' ')+'"/>';
       if(q.type==='circle')body+='<circle cx="'+n(q.x)+'" cy="'+n(q.y)+'" r="'+n(q.r)+'" fill="none" stroke="'+q.color+'" stroke-width="'+q.width+'"/>';
-      if(q.type==='semicircle')body+='<path d="M '+n(q.x-q.r)+' '+n(q.y)+' A '+n(q.r)+' '+n(q.r)+' 0 0 1 '+n(q.x+q.r)+' '+n(q.y)+' L '+n(q.x-q.r)+' '+n(q.y)+'" fill="none" stroke="'+q.color+'" stroke-width="'+q.width+'"/>';
+      if(q.type==='semicircle'){
+        const t=[-q.inward[1],q.inward[0]],a=[q.x-q.r*t[0],q.y-q.r*t[1]],
+          z=[q.x+q.r*t[0],q.y+q.r*t[1]];
+        body+='<path d="M '+n(a[0])+' '+n(a[1])+' A '+n(q.r)+' '+n(q.r)+' 0 0 1 '+n(z[0])+' '+n(z[1])+
+          ' L '+n(a[0])+' '+n(a[1])+'" fill="none" stroke="'+q.color+'" stroke-width="'+q.width+'"/>';
+      }
       if(q.type==='rect')body+='<rect x="'+n(q.x)+'" y="'+n(q.y)+'" width="'+n(q.w)+'" height="'+n(q.h)+'" fill="'+q.fill+'"/>';
       if(q.type==='text')body+='<text x="'+n(q.x)+'" y="'+n(q.y)+'" text-anchor="middle" font-size="'+q.size+'" font-family="Helvetica,Arial,sans-serif" fill="#111111">'+xml(q.value)+'</text>';
     }
@@ -299,9 +351,11 @@
         stream+=xy([x+r,y])+' m '+[[x+r,y+t,x+t,y+r,x,y+r],[x-t,y+r,x-r,y+t,x-r,y],[x-r,y-t,x-t,y-r,x,y-r],[x+t,y-r,x+r,y-t,x+r,y]].map(a=>xy(a.slice(0,2))+' '+xy(a.slice(2,4))+' '+xy(a.slice(4,6))+' c').join(' ')+' S\n';
       }
       if(q.type==='semicircle') {
-        const {x,y,r}=q,t=r*.5522847498307936;
-        stream+=xy([x-r,y])+' m '+xy([x-r,y-t])+' '+xy([x-t,y-r])+' '+xy([x,y-r])+' c '+
-          xy([x+t,y-r])+' '+xy([x+r,y-t])+' '+xy([x+r,y])+' c '+xy([x-r,y])+' l S\n';
+        const {x,y,r,inward}=q,t=r*.5522847498307936,
+          tangent=[-inward[1],inward[0]],c=[x,y],
+          a=G.sub(c,G.mul(tangent,r)),peak=G.add(c,G.mul(inward,r)),z=G.add(c,G.mul(tangent,r));
+        stream+=xy(a)+' m '+xy(G.add(a,G.mul(inward,t)))+' '+xy(G.sub(peak,G.mul(tangent,t)))+' '+xy(peak)+' c '+
+          xy(G.add(peak,G.mul(tangent,t)))+' '+xy(G.add(z,G.mul(inward,t)))+' '+xy(z)+' c '+xy(a)+' l S\n';
       }
       if(q.type==='rect')stream+=rgb(q.fill)+' rg '+f(q.x*k)+' '+f(h-(q.y+q.h)*k)+' '+f(q.w*k)+' '+f(q.h*k)+' re f\n';
       if(q.type==='text') {
@@ -330,6 +384,6 @@
       if(type!=='pHYs')parts.push(data.slice(pos,end));if(type==='IHDR')parts.push(chunk);pos=end;}
     const out=new Uint8Array(parts.reduce((a,b)=>a+b.length,0));let at=0;for(const p of parts){out.set(p,at);at+=p.length;}return out;
   }
-  const api={VERSION,defaults,events,seasonEvents,validate,sunVector,shadow,direction,layout,inside,rayEnd,clipSegment,seasonalPaths,planeFrame,planarLayout,planarSeasonalPaths,build,profile,svg,pdf,pngDensity,geom:G};
+  const api={VERSION,defaults,events,seasonEvents,validate,sunVector,shadow,direction,layout,inside,rayEnd,clipSegment,seasonalPaths,planeFrame,fanDirection,planarLayout,planarSeasonalPaths,build,profile,svg,pdf,pngDensity,geom:G};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.Sundial=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

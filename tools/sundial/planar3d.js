@@ -29,9 +29,13 @@
     const parallel=Math.abs(pn)<1e-8;
     const raised=style==='raised'||parallel;
     const k=mul(p,pn<0?-1:1);
-    // Align the printed top with the projection of the outward polar axis.
-    // This may point physically down on a south-facing vertical wall.
-    let v=sub(k,mul(n,dot(k,n)));
+    // On an inclined receiver page-up is physical uphill: the projection of
+    // gravitational up into the face.  On a horizontal plate it is undefined,
+    // so retain the familiar poleward direction instead.  In particular,
+    // page-up must NOT follow the outward polar edge on a south-facing wall:
+    // that edge points physically down and its root belongs near page-top.
+    const up=[0,0,1],physUp=sub(up,mul(n,dot(up,n)));
+    let v=norm(physUp)>1e-8?physUp:sub(k,mul(n,dot(k,n)));
     if(norm(v)<1e-8) {
       // If the polar axis is perpendicular to the face, choose the
       // Sun's equatorial noon direction as an unambiguous drawing axis.
@@ -39,7 +43,6 @@
     }
     v=unit(v);
     const u=unit(cross(v,n));
-    const up=[0,0,1],physUp=sub(up,mul(n,dot(up,n)));
     const virtualPhi=Math.asin(clamp(pn,-1,1))/R;
     const meridianPerp=[0,-Math.sin(phi*R),Math.cos(phi*R)];
     const virtualLon=Math.atan2(n[0],dot(n,meridianPerp))/R;

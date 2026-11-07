@@ -19,7 +19,12 @@
     const text=(q,v,shift=[6,-4])=>{const v2=pt(q);return '<text x="'+f(v2[0]+shift[0])+'" y="'+f(v2[1]+shift[1])+'" fill="#243e4a" font-size="12">'+v+'</text>';};
     let edge=[];
     if(b.shape==='semicircle'){
-      for(let i=0;i<=36;i++){const t=i*Math.PI/36;edge.push(world(b.w/2+b.w/2*Math.cos(t),b.h-b.w/2*Math.sin(t)));}
+      const tangent=[-b.inward[1],b.inward[0]];
+      for(let i=0;i<=36;i++){
+        const t=i*Math.PI/36;
+        edge.push(world(b.root[0]+b.r*(-tangent[0]*Math.cos(t)+b.inward[0]*Math.sin(t)),
+          b.root[1]+b.r*(-tangent[1]*Math.cos(t)+b.inward[1]*Math.sin(t))));
+      }
     }else edge=[[0,0],[b.w,0],[b.w,b.h],[0,b.h]].map(q=>world(...q));
     let svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 350" role="img" aria-label="3D sundial geometry" style="width:100%;height:auto;background:#ffffff">';
     svg+='<rect x=".5" y=".5" width="599" height="349" fill="#fff" stroke="#d8e5e9" rx="8"/>';
