@@ -234,32 +234,59 @@
 
   /* ---------- Syllable sprites ---------- */
 
+  /* Render each syllable on a roomy scratch canvas, then crop to its actual
+   * ink. Font metrics for Tibetan differ between browsers (a glyph sitting on
+   * the baseline can report zero descent), so the visible pixels decide the
+   * sprite's box, and each letter is centred by what is really drawn. */
   function buildSprites(px) {
     spriteSize = Math.max(12, px);
     const font = "700 " + spriteSize + "px " + TIB_FONT;
-    const probe = document.createElement("canvas").getContext("2d");
-    probe.font = font;
+    const size = Math.ceil(spriteSize * 2.6);
+    const scratch = document.createElement("canvas");
+    scratch.width = size;
+    scratch.height = size;
+    const sg = scratch.getContext("2d", { willReadFrequently: true });
+    const pad = Math.ceil(spriteSize * 0.08);
     sprites = SYLLABLES.map((s) => {
-      const m = probe.measureText(s.text);
-      const pad = Math.ceil(spriteSize * 0.12);
-      const asc = Math.ceil(m.actualBoundingBoxAscent || spriteSize * 0.9);
-      const desc = Math.ceil(m.actualBoundingBoxDescent || spriteSize * 0.5);
-      const left = Math.ceil(m.actualBoundingBoxLeft || 0);
-      const w = Math.ceil((m.actualBoundingBoxRight || m.width) + left) + pad * 2;
-      const h = asc + desc + pad * 2;
+      sg.clearRect(0, 0, size, size);
+      sg.font = font;
+      sg.lineJoin = "round";
+      sg.lineWidth = Math.max(1.5, spriteSize * 0.07);
+      sg.strokeStyle = "#d6a23e";
+      sg.textAlign = "center";
+      const x0 = size / 2;
+      const y0 = size * 0.62;
+      sg.strokeText(s.text, x0, y0);
+      sg.fillStyle = s.color;
+      sg.fillText(s.text, x0, y0);
+      const box = inkBox(sg, size) || { x: 0, y: 0, w: size, h: size };
+      const w = box.w + pad * 2;
+      const h = box.h + pad * 2;
       const c = document.createElement("canvas");
       c.width = w;
       c.height = h;
-      const g = c.getContext("2d");
-      g.font = font;
-      g.lineJoin = "round";
-      g.lineWidth = Math.max(1.5, spriteSize * 0.07);
-      g.strokeStyle = "#d6a23e";
-      g.strokeText(s.text, pad + left, pad + asc);
-      g.fillStyle = s.color;
-      g.fillText(s.text, pad + left, pad + asc);
-      return { canvas: c, w, h, baseline: pad + asc };
+      c.getContext("2d").drawImage(scratch, box.x, box.y, box.w, box.h, pad, pad, box.w, box.h);
+      return { canvas: c, w, h };
     });
+  }
+
+  function inkBox(g, size) {
+    let data;
+    try { data = g.getImageData(0, 0, size, size).data; } catch (e) { return null; }
+    let x0 = size, y0 = size, x1 = -1, y1 = -1;
+    for (let y = 0; y < size; y += 1) {
+      const row = y * size * 4;
+      for (let x = 0; x < size; x += 1) {
+        if (data[row + x * 4 + 3] > 8) {
+          if (x < x0) x0 = x;
+          if (x > x1) x1 = x;
+          if (y < y0) y0 = y;
+          if (y > y1) y1 = y;
+        }
+      }
+    }
+    if (x1 < 0) return null;
+    return { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 };
   }
 
   /* ---------- Drawing: wheels ---------- */
@@ -491,9 +518,10 @@
     g.restore();
 
     // Syllables as the side wall projects seen from above, with the front at
-    // the bottom of the screen: upright at the front, reading left to right
-    // there, so counter-clockwise around the ring. Turning clockwise brings
-    // them to the back (top), the reading point, in order.
+    // the bottom of the screen: upright at the front and reading left to
+    // right there, so counter-clockwise around the ring. The front is the
+    // reading point, as in the side view: turning clockwise brings the
+    // syllables to the bottom in order, and syllable j is there at j/6 turn.
     const samples = blurSamples(dA, TAU / 6);
     const scale = 1 / dpr;
     const rText = R * 0.745;
@@ -501,7 +529,7 @@
       const aBase = angle - (samples > 1 ? dA * (s / samples) : 0);
       g.globalAlpha = samples > 1 ? Math.min(1, 1.6 / samples) : 1;
       for (let j = 0; j < SYLLABLES.length; j += 1) {
-        const b = aBase - (j / 6) * TAU - Math.PI / 2;
+        const b = aBase - (j / 6) * TAU + Math.PI / 2;
         const sp = sprites[j];
         const sw = sp.w * scale;
         const sh = sp.h * scale;
@@ -514,12 +542,12 @@
     }
     g.globalAlpha = 1;
 
-    // Reading pointer at the back of the wheel.
+    // Reading pointer at the front of the wheel.
     const pt = Math.max(7, R * 0.05);
     g.beginPath();
-    g.moveTo(cx - pt, cy - R - pt * 1.9);
-    g.lineTo(cx + pt, cy - R - pt * 1.9);
-    g.lineTo(cx, cy - R - pt * 0.2);
+    g.moveTo(cx - pt, cy + R + pt * 1.9);
+    g.lineTo(cx + pt, cy + R + pt * 1.9);
+    g.lineTo(cx, cy + R + pt * 0.2);
     g.closePath();
     g.fillStyle = "#d6a23e";
     g.fill();
