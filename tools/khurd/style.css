@@ -70,29 +70,6 @@ body {
   height: 100%;
 }
 
-/* Reading mark: each mantra that passes it is counted. */
-.mark {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  margin-left: -1px;
-  background: linear-gradient(var(--gilt) 0 22%, transparent 22% 78%, var(--gilt) 78%);
-  pointer-events: none;
-}
-
-.mark::before,
-.mark::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  border: 6px solid transparent;
-  margin-left: -6px;
-}
-
-.mark::before { top: 0; border-top-color: var(--gilt); }
-.mark::after { bottom: 0; border-bottom-color: var(--gilt); }
 
 .topbar {
   display: flex;
