@@ -24,7 +24,7 @@ The old [GPL text](../doppler/LICENSES/GPL-3.0.txt) is retained with an
 [explanation of its historical scope](../doppler/NOTICE.md).
 Kinetic retains its MIT provenance and original 2023 copyright year.
 
-## Rainbow Angles and Stellar Warmth
+## Rainbow angles and Stellar warmth
 
 These tools derive from the author's older `spectrum` notebooks. Their current Sol
 implementations are offered under MIT by explicit author authorization. The older

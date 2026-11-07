@@ -1,4 +1,4 @@
-# Rainbow Angles
+# Rainbow angles
 
 Status: first native notebook-derived port for `sol`.
 

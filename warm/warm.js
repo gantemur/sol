@@ -31,7 +31,7 @@ const PLANETS = [
 
 const STRINGS = {
   en: {
-    pageTitle: "Stellar Warmth",
+    pageTitle: "Stellar warmth",
     pageSubtitle: "Flux, temperature, and habitable zones",
     starControls: "Star",
     planetControls: "Planet and orbit",
@@ -313,17 +313,10 @@ function initialLanguage() {
     const saved = localStorage.getItem("warm-lang");
     if (STRINGS[saved]) return saved;
   } catch (_error) {
-    // Continue to browser-language fallback.
+    // Ignore storage failures; Mongolian is the default.
   }
 
-  try {
-    const browserLang = (navigator.language || "").slice(0, 2).toLowerCase();
-    if (STRINGS[browserLang]) return browserLang;
-  } catch (_error) {
-    // Default below.
-  }
-
-  return "en";
+  return "mn";
 }
 
 function t(key, values = {}) {
