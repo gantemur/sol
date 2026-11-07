@@ -227,6 +227,24 @@
       element.textContent = translated;
     }
   }
+  function initialLanguage() {
+    var requested = null, saved = null;
+    try { requested = new URLSearchParams(window.location.search).get("lang"); } catch (e) { requested = null; }
+    if (requested === "mn" || requested === "en") return requested;
+    try { saved = window.localStorage.getItem("armatur-lang"); } catch (e) { saved = null; }
+    return saved === "mn" || saved === "en" ? saved : "mn";
+  }
+  // A clicked choice is remembered and reflected in the address, so links keep it.
+  function chooseLanguage(next) {
+    if (next !== "mn" && next !== "en") return;
+    try { window.localStorage.setItem("armatur-lang", next); } catch (e) { /* storage is optional */ }
+    try {
+      var url = new URL(window.location.href);
+      url.searchParams.set("lang", next);
+      window.history.replaceState(null, "", url);
+    } catch (e) { /* address update is optional */ }
+    setLanguage(next);
+  }
   function setLanguage(next) {
     if (next !== "mn" && next !== "en") return;
     language = next;
@@ -392,7 +410,7 @@
     }
     if (typeof Worker === "function") {
       try {
-        worker = new Worker("optimizer-worker.js?v=20261105-dp1");
+        worker = new Worker("optimizer-worker.js?v=20261107-lang1");
         worker.onmessage = function (event) {
           if (event.data.id !== id) return;
           if (event.data.error) {
@@ -518,7 +536,7 @@
     markStale(); setStatus("exampleLoaded");
   });
   document.querySelectorAll("[data-language]").forEach(function (button) {
-    button.addEventListener("click", function () { setLanguage(button.dataset.language); });
+    button.addEventListener("click", function () { chooseLanguage(button.dataset.language); });
   });
   $("show-best").addEventListener("click", function () { view = "best"; renderResult(); });
   $("show-greedy").addEventListener("click", function () { view = "greedy"; renderResult(); });
@@ -537,6 +555,6 @@
     { length: "2400", quantity: "4" },
     { length: "1200", quantity: "6" }
   ]);
-  setLanguage("mn");
+  setLanguage(initialLanguage());
 })();
 

@@ -43,6 +43,12 @@ This avoids mixing a newer HTML page with an older cached translation script
 or stylesheet. Unknown static translation keys leave the readable HTML text
 intact instead of displaying internal key names.
 
+## Language
+
+Mongolian and English. The page uses `?lang=mn` or `?lang=en`, then the last
+language chosen with the MN/EN buttons in this browser, and otherwise Mongolian.
+Choosing a language also updates the address, so a copied link keeps it.
+
 ## Versions
 
 - **Main page:** current planner, with an improved solver, editable
