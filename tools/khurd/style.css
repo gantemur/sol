@@ -45,6 +45,7 @@ html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
   min-height: 100svh;
+  padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   background: var(--wall);
   color: var(--ink);
   font: 16px/1.5 var(--ui);
@@ -117,6 +118,26 @@ body {
   font-weight: 600;
   letter-spacing: 0;
 }
+
+.fs {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.fs[hidden] { display: none; }
+.fs svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.fs .exit { display: none; }
+.fs[aria-pressed="true"] .enter { display: none; }
+.fs[aria-pressed="true"] .exit { display: inline; }
+.fs:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .lang { display: flex; gap: 2px; }
 
@@ -318,10 +339,36 @@ select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .lang button { padding: 4px 8px; }
 }
 
+/* Phones held sideways, and full screen: give the wheels the whole height
+ * that is left after the band, a slim title row and the counter. */
 @media (orientation: landscape) and (max-height: 500px) {
-  .frieze { height: 48px; }
-  .topbar { padding-top: 6px; }
+  .frieze { height: 42px; }
+  .topbar { padding-top: 4px; gap: 8px; }
+  .topbar h1 { font-size: 0.95rem; }
+  .lang button, .fs { min-height: 30px; height: 30px; }
+  .fs { width: 30px; }
   .stage,
-  .stage[data-view="top"] { height: clamp(200px, 56svh, 420px); margin-top: 2px; }
-  .count { margin-top: 0; }
+  .stage[data-view="top"] {
+    height: calc(100vh - 142px);
+    height: calc(100dvh - 142px);
+    min-height: 170px;
+    margin-top: 0;
+  }
+  .count { display: flex; justify-content: center; align-items: baseline; gap: 18px; margin-top: 0; }
+  .mani { font-size: 1.6rem; }
+  .sub { margin-top: 0 !important; }
+}
+
+.is-fullscreen .stage,
+.is-fullscreen .stage[data-view="top"] {
+  height: calc(100vh - 190px);
+  height: calc(100dvh - 190px);
+  max-height: none;
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .is-fullscreen .stage,
+  .is-fullscreen .stage[data-view="top"] {
+    height: calc(100dvh - 124px);
+  }
 }

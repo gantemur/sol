@@ -24,10 +24,16 @@ network requests and no external libraries. The folder works when copied on its 
   wheel and press Space, Enter or the arrow keys.
 - **Turning backwards** either does nothing (the default, with a small recoil) or
   subtracts from the count.
-- **Mantras inside** sets how many mantras the inner scroll holds:
-  1, 108, 1 000, 10 000, 100 000, 1 million or 100 million. Default 1 000.
+- **Mantras inside** sets how many mantras the inner scroll holds: 1, 108, then
+  10³ to 10⁸, shown in Mongolian with the traditional names мянга, түм, бум, сая,
+  живаа and дүнчүүр. Default 1.
 - An optional bell rings on each full turn. Sound starts only after a user action.
 - **Reset counter** returns the count to zero after a confirmation.
+- **Full screen**: a button in the title row where the browser allows it
+  (desktop, Android, iPad). iPhone Safari offers no full-screen mode for pages;
+  there, "Add to Home Screen" opens the wheel full screen through
+  `manifest.webmanifest`. Phones held sideways get a compact layout that gives
+  the drums the remaining height.
 
 Languages: Mongolian (default) and English, through `?lang=mn` or `?lang=en`, then
 the saved choice, then Mongolian. Switching keeps the count and settings.
@@ -36,6 +42,10 @@ the saved choice, then Mongolian. Switching keeps the count and settings.
 
 `engine.js` holds the rules as pure functions, separate from drawing.
 
+- On the side view, each syllable is painted onto the cylinder in vertical slices:
+  the sprite width is arc length, a slice at arc offset u sits at angle a + u/R
+  and projects to x = R sin(a + u/R), so letters narrow unevenly toward the rim
+  and follow the band's curve.
 - Positive rotation means clockwise seen from above, the traditional direction.
   Seen from the side, the front of the drum then moves right to left, so the
   syllables pass the viewer in reading order.
@@ -78,6 +88,8 @@ banking preserves totals.
 ## License and provenance
 
 Copyright (c) 2026 Tsogtgerel Gantumur. Code and documentation: [MIT](LICENSE).
+
+`icon-*.png` are rendered from this tool's own top view.
 
 `fonts/tibetan-khurd.woff` is a subset of Noto Serif Tibetan Bold 2.103,
 Copyright 2022 The Noto Project Authors, reduced to the mantra's glyphs with

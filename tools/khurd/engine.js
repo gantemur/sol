@@ -33,7 +33,7 @@
     velocityBlend: 0.35     // smoothing for the drag-velocity estimate
   };
 
-  const SCROLL_SIZES = [1, 108, 1000, 10000, 100000, 1000000, 100000000];
+  const SCROLL_SIZES = [1, 108, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8];
 
   function createWheel(mode) {
     return {
