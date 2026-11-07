@@ -227,17 +227,10 @@ function initialLanguage() {
     const saved = localStorage.getItem("rainbow-angle-lang");
     if (STRINGS[saved]) return saved;
   } catch (_error) {
-    // Ignore storage failures and continue to browser-language fallback.
+    // Ignore storage failures; Mongolian is the default.
   }
 
-  try {
-    const browserLang = (navigator.language || "").slice(0, 2).toLowerCase();
-    if (STRINGS[browserLang]) return browserLang;
-  } catch (_error) {
-    // Default below.
-  }
-
-  return "en";
+  return "mn";
 }
 
 function initialRayCount() {

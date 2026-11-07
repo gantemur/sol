@@ -36,7 +36,7 @@ The drop ray sketch uses dense, uniform impact-height sampling across almost one
 
 ## Language support
 
-This tool has local English/Mongolian language support through a small `STRINGS` dictionary in `rainbow-angle.js`. It chooses language from `?lang=en` or `?lang=mn`, then a saved local preference, then browser language, and finally English.
+This tool has local Mongolian/English language support through a small `STRINGS` dictionary in `rainbow-angle.js`. It chooses language from `?lang=mn` or `?lang=en`, then a saved local preference, and otherwise defaults to Mongolian. Mongolian is listed first in the language picker.
 
 Future standalone tools can reuse this lightweight local dictionary pattern before the project needs any global i18n framework.
 
