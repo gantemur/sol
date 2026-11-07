@@ -15,7 +15,7 @@
     mn: {
       title: "Маанийн хүрд",
       langLabel: "Хэл",
-      bandLabel: "Хүрдний доторх маань уншигдаж буй тууз",
+      bandLabel: "Хүрд бүрийн доторх маань уншигдаж буй тууз",
       wheelLabel: "Маанийн хүрд. Эргүүлэхийн тулд чирэх, эсвэл зай товч дарна.",
       mani: "маань",
       turns: "Эргэлт",
@@ -32,7 +32,7 @@
       modeRatchet: "Эргэхгүй",
       modeSubtract: "Хасагдана",
       scroll: "Доторх маань",
-      scrollNote: "Хүрдийг нэг эргүүлэхэд дотор нь бичсэн бүх маань дээд туузаар нэг удаа гүйнэ.",
+      scrollNote: "Хүрдийг нэг эргүүлэхэд дотор нь бичсэн бүх маань дээрх туузаар нэг удаа гүйнэ.",
       bell: "Эргэлт бүрд хонх",
       fullscreen: "Бүтэн дэлгэц",
       exitFullscreen: "Бүтэн дэлгэцээс гарах",
@@ -42,13 +42,13 @@
       about:
         "<p>Хүрдний гадаргуу дээр <span class=\"tib\" lang=\"bo\">ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ</span> буюу «Ом мани бадмэ хум» гэсэн зургаан үсэгт тарни бичигдсэн. " +
         "Жинхэнэ хүрдний дотор маань олон мянгаар бичсэн цаасыг ороож хийдэг бөгөөд хүрдийг цагийн зүүний дагуу нэг эргүүлэхэд дотор нь буй бүх маань нэг уншигдсантай адил гэж үздэг.</p>" +
-        "<p>«Доторх маань» тохиргоо нь ороосон цаасан дээрх маанийн тоо. Дээд талын тууз тэр цаас уншигдаж буйг харуулна: хүрд нэг эргэхэд тууз яг тэр тоогоор маань гүйлгэнэ. Алтан тэмдгийг өнгөрсөн маань бүр тоологдоно.</p>" +
+        "<p>«Доторх маань» тохиргоо нь ороосон цаасан дээрх маанийн тоо. Хүрд бүрийн дээрх тууз тухайн хүрдний цаас уншигдаж буйг харуулна: хүрд нэг эргэхэд түүний тууз яг тэр тоогоор маань гүйлгэнэ. Алтан тэмдгийг бүтэн өнгөрсөн маань бүр тоологдоно. Тиймээс гурван хүрдийг тус бүр гуравны нэгээр эргүүлбэл нэг ч маань бүтэн уншигдахгүй.</p>" +
         "<p>Тоолуур зөвхөн энэ төхөөрөмж дээр хадгалагдана.</p>"
     },
     en: {
       title: "Prayer wheel",
       langLabel: "Language",
-      bandLabel: "Band showing the mantras inside the wheel being read",
+      bandLabel: "Bands showing the mantras inside each drum being read",
       wheelLabel: "Prayer wheel. Drag to turn it, or press Space.",
       mani: "mani",
       turns: "Turns",
@@ -65,7 +65,7 @@
       modeRatchet: "Does not turn",
       modeSubtract: "Subtracts",
       scroll: "Mantras inside",
-      scrollNote: "One turn of the wheel runs every mantra written inside once through the band at the top.",
+      scrollNote: "One turn of the wheel runs every mantra written inside once through the band above it.",
       bell: "Bell on every turn",
       fullscreen: "Full screen",
       exitFullscreen: "Exit full screen",
@@ -75,7 +75,7 @@
       about:
         "<p>The drum carries the six-syllable mantra <span class=\"tib\" lang=\"bo\">ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ</span>, Om mani padme hum. " +
         "A real wheel holds a long paper scroll with the mantra written many thousands of times, and by tradition one clockwise turn counts as reciting everything inside.</p>" +
-        "<p>The Mantras inside setting is the number of mantras on that scroll. The band at the top shows the scroll being read: each turn of the wheel runs exactly that many mantras through it, and every mantra that passes the gold mark is counted.</p>" +
+        "<p>The Mantras inside setting is the number of mantras on that scroll. The band above each drum shows that drum's scroll being read: each turn runs exactly that many mantras through it, and every mantra that has fully passed the gold mark is counted. Turning three drums a third of a turn each therefore completes no mantra.</p>" +
         "<p>The count is kept only on this device.</p>"
     }
   };
@@ -208,6 +208,7 @@
     band.width = Math.round(bandRect.width * dpr);
     band.height = Math.round(bandRect.height * dpr);
     bandMetrics = null;
+    measureBandCenters();
 
     const wanted = Math.round(letterPx * dpr);
     if (!sprites || Math.abs(wanted - spriteSize) > 2) buildSprites(wanted);
@@ -552,9 +553,8 @@
 
   /* ---------- Drawing: mantra band ---------- */
 
-  let bandPos = 0;        // fractional position, in mantras
-  let bandFrame = 0;      // band shift during the last frame, in mantras
   let bandMetrics = null;
+  let bandCenters = [];   // each drum's centre, in band-canvas pixels
 
   function bandStrip(H) {
     const px = Math.round(H * 0.46);
@@ -573,6 +573,17 @@
     return bandMetrics;
   }
 
+  function measureBandCenters() {
+    const br = band.getBoundingClientRect();
+    const sr = canvas.getBoundingClientRect();
+    const k = br.width ? band.width / br.width : dpr;
+    bandCenters = geom.map((gm) => (sr.left - br.left + gm.cx) * k);
+  }
+
+  /* One panel per drum, centred above it. Each panel shows that drum's own
+   * scroll: its position is the drum's angle times N / 2π, the same quantity
+   * the counter truncates, so a mantra is counted exactly when its end has
+   * passed the drum's gold mark. */
   function drawBand() {
     const W = band.width;
     const H = band.height;
@@ -581,34 +592,69 @@
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.clearRect(0, 0, W, H);
     const { unit, strip } = bandStrip(H);
-    const center = W / 2;
-    const frac = bandPos - Math.floor(bandPos);
-    const shift = Math.abs(bandFrame);
+    const n = Math.min(wheels.length, bandCenters.length);
 
-    let offsets;
-    if (reduceMotion.matches || shift * unit < 2) {
-      offsets = [frac];
-    } else if (shift >= 1) {
-      // A whole mantra or more per frame: show an even smear, never a
-      // stroboscopic still image that would misrepresent the speed.
-      const S = 48;
-      offsets = Array.from({ length: S }, (_, s) => (frac + s / S) % 1);
-    } else {
-      const S = Math.min(48, Math.ceil((shift * unit) / 2));
-      offsets = Array.from({ length: S }, (_, s) => frac - bandFrame * (s / S));
-    }
+    for (let i = 0; i < n; i += 1) {
+      const w = wheels[i];
+      const center = bandCenters[i];
+      const left = i === 0 ? 0 : (bandCenters[i - 1] + center) / 2;
+      const right = i === n - 1 ? W : (center + bandCenters[i + 1]) / 2;
+      const pos = (w.acc / TAU) * settings.scroll;
+      const frac = pos - Math.floor(pos);
+      const step = w.bandFrame || 0;
+      const shift = Math.abs(step);
 
-    g.globalAlpha = offsets.length > 1 ? Math.min(1, 2.4 / offsets.length) : 1;
-    const half = Math.ceil(W / unit / 2) + 2;
-    for (const off of offsets) {
-      // Mantra k starts at center + (k - pos) * unit; it is counted as it passes the mark.
-      for (let k = -half; k <= half; k += 1) {
-        const x = center + (k - off) * unit;
-        if (x > W || x + unit < 0) continue;
-        g.drawImage(strip, x, 0);
+      let offsets;
+      if (reduceMotion.matches || shift * unit < 2) {
+        offsets = [frac];
+      } else if (shift >= 1) {
+        // A whole mantra or more per frame: show an even smear, never a
+        // stroboscopic still image that would misrepresent the speed.
+        const S = 48;
+        offsets = Array.from({ length: S }, (_, s) => (frac + s / S) % 1);
+      } else {
+        const S = Math.min(48, Math.ceil((shift * unit) / 2));
+        offsets = Array.from({ length: S }, (_, s) => frac - step * (s / S));
       }
+
+      g.save();
+      g.beginPath();
+      g.rect(left, 0, right - left, H);
+      g.clip();
+      g.globalAlpha = offsets.length > 1 ? Math.min(1, 2.4 / offsets.length) : 1;
+      const kMin = Math.floor((left - center) / unit) - 1;
+      const kMax = Math.ceil((right - center) / unit) + 1;
+      for (const off of offsets) {
+        // Mantra k spans [center + (k - pos)·unit, center + (k + 1 - pos)·unit].
+        for (let k = kMin; k <= kMax; k += 1) {
+          g.drawImage(strip, center + (k - off) * unit, 0);
+        }
+      }
+      g.restore();
+
+      drawMark(g, center, H);
+      if (i > 0) drawDivider(g, left, H);
     }
-    g.globalAlpha = 1;
+  }
+
+  function drawMark(g, x, H) {
+    const s = Math.max(4, H * 0.12);
+    g.fillStyle = "#d6a23e";
+    g.fillRect(Math.round(x) - 1, 0, 2, H * 0.2);
+    g.fillRect(Math.round(x) - 1, H * 0.8, 2, H * 0.2);
+    g.beginPath();
+    g.moveTo(x - s, 0); g.lineTo(x + s, 0); g.lineTo(x, s * 1.1); g.closePath();
+    g.moveTo(x - s, H); g.lineTo(x + s, H); g.lineTo(x, H - s * 1.1); g.closePath();
+    g.fill();
+  }
+
+  function drawDivider(g, x, H) {
+    const d = Math.max(2, Math.round(dpr * 1.5));
+    g.fillStyle = "#4f141b";
+    g.fillRect(x - d * 2, 0, d * 4, H);
+    g.fillStyle = "#d6a23e";
+    g.fillRect(x - d * 2, 0, d, H);
+    g.fillRect(x + d, 0, d, H);
   }
 
   /* ---------- Counters ---------- */
@@ -680,21 +726,18 @@
   /* Every applied rotation passes through here. */
   function account(w, applied) {
     if (!applied) return;
-    bandPos += E.bandShift(applied, settings.scroll);
-    bandStep += E.bandShift(applied, settings.scroll);
+    w.bandStep = (w.bandStep || 0) + E.bandShift(applied, settings.scroll);
     w.ring = (w.ring || 0) + applied;
     while (Math.abs(w.ring) >= TAU) {
       w.ring -= Math.sign(w.ring) * TAU;
       ring();
     }
-    if (Math.abs(bandPos) > 1e6) bandPos -= Math.trunc(bandPos);
   }
 
   /* ---------- Animation loop ---------- */
 
   let running = false;
   let lastT = 0;
-  let bandStep = 0;
   let needsDraw = false;
 
   function requestDraw() {
@@ -716,8 +759,7 @@
     for (const w of wheels) account(w, E.step(w, dt));
     if (E.needsBank(wheels)) banked = E.bankWholeTurns(banked, wheels, settings.scroll);
 
-    bandFrame = bandStep;
-    bandStep = 0;
+    for (const w of wheels) { w.bandFrame = w.bandStep || 0; w.bandStep = 0; }
 
     drawWheels();
     drawBand();
@@ -725,7 +767,7 @@
     updateCounts();
     if (shown.mani !== before) scheduleSave();
 
-    const active = contacts.size > 0 || wheelScroll.size > 0 || wheels.some(E.isMoving) || bandFrame !== 0;
+    const active = contacts.size > 0 || wheelScroll.size > 0 || wheels.some(E.isMoving) || wheels.some((w) => w.bandFrame);
     needsDraw = false;
     if (active) requestAnimationFrame(frame);
     else running = false;

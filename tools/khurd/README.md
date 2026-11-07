@@ -3,9 +3,10 @@
 Status: alpha, published for live testing.
 
 A Tibetan prayer wheel you turn with a finger or a mouse. The drum carries the
-six syllables ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ (Om mani padme hum). A band at the top of the page
-shows the scroll inside the wheel being read, and the counter adds up the mantras
-that pass its gold reading mark.
+six syllables ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ (Om mani padme hum). The frieze at the top of the
+page is split into one band per drum, centred above it; each band shows that
+drum's inner scroll being read, and the counter adds up the mantras that have
+fully passed each drum's gold reading mark.
 
 Entry point: `index.html`. Plain HTML, CSS and JavaScript with no build step, no
 network requests and no external libraries. The folder works when copied on its own.
@@ -51,6 +52,9 @@ the saved choice, then Mongolian. Switching keeps the count and settings.
   syllables pass the viewer in reading order.
 - Coasting uses constant bearing friction plus speed-proportional drag, with a
   speed limit of 8 turns per second.
+- Each drum reads its own scroll. Partial turns on different drums are not
+  added together: three drums turned a third of a turn each complete no mantra,
+  and their bands show only the first syllables passing each mark.
 - With N mantras on the scroll, one turn moves the band exactly N mantra widths,
   so its speed is N times the drum circumference per turn divided by the mantra
   width. The count is `trunc(θ·N / 2π)` for the angle θ turned, which is the
