@@ -142,5 +142,28 @@
       "mn": "Хэвтээ, босоо болон налуу гадаргуугийн нарны цагийн хэвлэх, сийлэх загвар.",
       "en": "Design printable sundials for horizontal, vertical, and inclined surfaces."
     }
+  },
+  {
+    "id": "khurd",
+    "title": "Маанийн хүрд · Prayer wheel",
+    "language": [
+      "mn",
+      "en"
+    ],
+    "category": "culture",
+    "entry": "tools/khurd/",
+    "description": "Маанийн хүрдийг хуруугаараа эргүүлж, доторх маанийг тоолох.",
+    "migrationStatus": "native new tool, live-first alpha",
+    "copyrightHolder": "Tsogtgerel Gantumur",
+    "license": "MIT",
+    "licenseFile": "tools/khurd/LICENSE",
+    "titles": {
+      "mn": "Маанийн хүрд",
+      "en": "Prayer wheel"
+    },
+    "descriptions": {
+      "mn": "Маанийн хүрдийг хуруугаараа эргүүлж, доторх маанийг тоолох.",
+      "en": "Turn a prayer wheel with your finger and count the mantras inside."
+    }
   }
 ]

@@ -1,0 +1,327 @@
+/* SPDX-FileCopyrightText: 2026 Tsogtgerel Gantumur
+ * SPDX-License-Identifier: MIT */
+
+@font-face {
+  font-family: "Khurd Tibetan";
+  src: url("fonts/tibetan-khurd.woff") format("woff");
+  font-weight: 700;
+  font-display: block;
+  unicode-range: U+0F00-0FFF;
+}
+
+:root {
+  color-scheme: light dark;
+  --wall: #e9e9e4;        /* lime-washed wall */
+  --ink: #2a1c1d;
+  --muted: #6c5f5c;
+  --rule: #cfcac2;
+  --maroon: #6d1f27;      /* penbe frieze */
+  --maroon-deep: #4f141b;
+  --gilt: #d6a23e;
+  --gilt-soft: #e9c983;
+  --accent: #8c2a33;
+  --panel: #f4f3ef;
+  --tibetan: "Khurd Tibetan", "Noto Serif Tibetan", "Jomolhari", Kailasa, "Microsoft Himalaya", serif;
+  --ui: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --wall: #1c1415;
+    --ink: #f1e9e3;
+    --muted: #b9a9a3;
+    --rule: #3c2b2c;
+    --maroon: #5a171e;
+    --maroon-deep: #3e0f14;
+    --accent: #e3b45a;
+    --panel: #251a1b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--wall);
+  color: var(--ink);
+  font: 16px/1.5 var(--ui);
+}
+
+/* The frieze: the band below a Tibetan temple roof. The mantra scroll runs here. */
+.frieze {
+  position: relative;
+  height: 64px;
+  background:
+    repeating-linear-gradient(90deg, rgb(0 0 0 / 0.07) 0 1px, transparent 1px 4px),
+    linear-gradient(var(--maroon), var(--maroon-deep));
+  border-top: 3px solid var(--gilt);
+  border-bottom: 3px solid var(--gilt);
+  box-shadow: inset 0 6px 10px -6px rgb(0 0 0 / 0.5);
+  overflow: hidden;
+}
+
+.frieze canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Reading mark: each mantra that passes it is counted. */
+.mark {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: linear-gradient(var(--gilt) 0 22%, transparent 22% 78%, var(--gilt) 78%);
+  pointer-events: none;
+}
+
+.mark::before,
+.mark::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  border: 6px solid transparent;
+  margin-left: -6px;
+}
+
+.mark::before { top: 0; border-top-color: var(--gilt); }
+.mark::after { bottom: 0; border-bottom-color: var(--gilt); }
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(960px, 100% - 32px);
+  margin: 0 auto;
+  padding: 12px 0 0;
+}
+
+.back {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.back:hover { text-decoration: underline; }
+
+.topbar h1 {
+  flex: 1;
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.lang { display: flex; gap: 2px; }
+
+.lang button {
+  min-height: 36px;
+  padding: 4px 10px;
+  border: 1px solid var(--rule);
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.lang button:first-child { border-radius: 6px 0 0 6px; }
+.lang button:last-child { border-radius: 0 6px 6px 0; }
+
+.lang button[aria-pressed="true"] {
+  background: var(--maroon);
+  border-color: var(--maroon);
+  color: #fff;
+}
+
+main {
+  width: min(960px, 100% - 32px);
+  margin: 0 auto;
+  padding-bottom: 40px;
+  text-align: center;
+}
+
+.stage {
+  position: relative;
+  height: clamp(280px, 58svh, 640px);
+  margin: 8px 0 0;
+}
+
+.stage[data-view="top"] {
+  height: clamp(260px, min(58svh, 100vw - 24px), 640px);
+}
+
+#wheels {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#wheels:active { cursor: grabbing; }
+
+#wheels:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+.count { margin-top: 6px; }
+
+.count p { margin: 0; }
+
+.mani {
+  font-size: clamp(1.9rem, 7vw, 2.8rem);
+  font-weight: 650;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.mani span {
+  font-size: 0.5em;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.sub {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px 22px;
+  margin-top: 6px !important;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.sub output { color: var(--ink); font-weight: 600; }
+
+.hint {
+  min-height: 1.5em;
+  margin: 14px 0 22px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.panel {
+  max-width: 560px;
+  margin: 10px auto 0;
+  text-align: left;
+  border-top: 1px solid var(--rule);
+}
+
+.panel summary {
+  padding: 12px 2px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.panel summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.field { margin: 0 0 18px; }
+
+.label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.seg label { position: relative; }
+
+.seg input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.seg span {
+  display: inline-block;
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid var(--rule);
+  border-radius: 20px;
+  background: var(--panel);
+}
+
+.seg input:checked + span {
+  background: var(--maroon);
+  border-color: var(--maroon);
+  color: #fff;
+}
+
+.seg input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+select {
+  min-height: 40px;
+  min-width: 12em;
+  padding: 6px 10px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--ink);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+.note {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  cursor: pointer;
+}
+
+.check input { width: 20px; height: 20px; accent-color: var(--maroon); }
+
+.reset {
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+.reset:focus-visible,
+.lang button:focus-visible,
+select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.prose { padding-bottom: 12px; color: var(--ink); }
+.prose p { margin: 0 0 0.8em; }
+.prose .tib { font-family: var(--tibetan); font-size: 1.25em; }
+
+@media (max-width: 420px) {
+  .topbar h1 { font-size: 1.02rem; }
+  .lang button { padding: 4px 8px; }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .frieze { height: 48px; }
+  .topbar { padding-top: 6px; }
+  .stage,
+  .stage[data-view="top"] { height: clamp(200px, 56svh, 420px); margin-top: 2px; }
+  .count { margin-top: 0; }
+}

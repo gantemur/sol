@@ -1,0 +1,993 @@
+/* SPDX-FileCopyrightText: 2026 Tsogtgerel Gantumur
+ * SPDX-License-Identifier: MIT
+ *
+ * Prayer wheel interface: views, drawing, input, mantra band, counters.
+ * The rotation and counting rules live in engine.js. */
+(function () {
+  "use strict";
+
+  const E = window.KhurdEngine;
+  const TAU = E.TAU;
+
+  /* ---------- Text ---------- */
+
+  const STRINGS = {
+    mn: {
+      title: "Маанийн хүрд",
+      langLabel: "Хэл",
+      bandLabel: "Хүрдний доторх маань уншигдаж буй тууз",
+      wheelLabel: "Маанийн хүрд. Эргүүлэхийн тулд чирэх, эсвэл зай товч дарна.",
+      mani: "маань",
+      turns: "Эргэлт",
+      session: "Энэ удаа",
+      hintSide: "Хүрдийг хуруугаараа баруунаас зүүн тийш илж эргүүлнэ.",
+      hintTop: "Хүрдийг цагийн зүүний дагуу тойруулан чирж эргүүлнэ.",
+      hintDesk: "Хулганы дугуй, сум болон зай товч бас болно.",
+      settings: "Тохиргоо",
+      view: "Харагдац",
+      viewAuto: "Автомат",
+      viewSide: "Хажуугаас",
+      viewTop: "Дээрээс",
+      backward: "Буцааж эргүүлэхэд",
+      modeRatchet: "Эргэхгүй",
+      modeSubtract: "Хасагдана",
+      scroll: "Доторх маань",
+      scrollNote: "Хүрдийг нэг эргүүлэхэд дотор нь бичсэн бүх маань дээд туузаар нэг удаа гүйнэ.",
+      million: "сая",
+      bell: "Эргэлт бүрд хонх",
+      reset: "Тоолуурыг тэглэх",
+      resetConfirm: "Тоолуурыг тэглэх үү?",
+      aboutTitle: "Тухай",
+      about:
+        "<p>Хүрдний гадаргуу дээр <span class=\"tib\" lang=\"bo\">ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ</span> буюу «Ом мани бадмэ хум» гэсэн зургаан үсэгт тарни бичигдсэн. " +
+        "Жинхэнэ хүрдний дотор маань олон мянгаар бичсэн цаасыг ороож хийдэг бөгөөд хүрдийг цагийн зүүний дагуу нэг эргүүлэхэд дотор нь буй бүх маань нэг уншигдсантай адил гэж үздэг.</p>" +
+        "<p>«Доторх маань» тохиргоо нь ороосон цаасан дээрх маанийн тоо. Дээд талын тууз тэр цаас уншигдаж буйг харуулна: хүрд нэг эргэхэд тууз яг тэр тоогоор маань гүйлгэнэ. Алтан тэмдгийг өнгөрсөн маань бүр тоологдоно.</p>" +
+        "<p>Тоолуур зөвхөн энэ төхөөрөмж дээр хадгалагдана.</p>"
+    },
+    en: {
+      title: "Prayer wheel",
+      langLabel: "Language",
+      bandLabel: "Band showing the mantras inside the wheel being read",
+      wheelLabel: "Prayer wheel. Drag to turn it, or press Space.",
+      mani: "mani",
+      turns: "Turns",
+      session: "This visit",
+      hintSide: "Brush the drums from right to left to turn them.",
+      hintTop: "Drag around the wheel clockwise to turn it.",
+      hintDesk: "The scroll wheel, arrow keys and Space also work.",
+      settings: "Settings",
+      view: "View",
+      viewAuto: "Automatic",
+      viewSide: "From the side",
+      viewTop: "From above",
+      backward: "Turning backwards",
+      modeRatchet: "Does not turn",
+      modeSubtract: "Subtracts",
+      scroll: "Mantras inside",
+      scrollNote: "One turn of the wheel runs every mantra written inside once through the band at the top.",
+      million: "million",
+      bell: "Bell on every turn",
+      reset: "Reset counter",
+      resetConfirm: "Reset the counter to zero?",
+      aboutTitle: "About",
+      about:
+        "<p>The drum carries the six-syllable mantra <span class=\"tib\" lang=\"bo\">ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ</span>, Om mani padme hum. " +
+        "A real wheel holds a long paper scroll with the mantra written many thousands of times, and by tradition one clockwise turn counts as reciting everything inside.</p>" +
+        "<p>The Mantras inside setting is the number of mantras on that scroll. The band at the top shows the scroll being read: each turn of the wheel runs exactly that many mantras through it, and every mantra that passes the gold mark is counted.</p>" +
+        "<p>The count is kept only on this device.</p>"
+    }
+  };
+
+  /* The six syllables in reading order, with their traditional colours. */
+  const SYLLABLES = [
+    { text: "ཨོཾ", color: "#f6f1e7" },
+    { text: "མ", color: "#2e8b57" },
+    { text: "ཎི", color: "#e9c234" },
+    { text: "པ", color: "#2b62b8" },
+    { text: "དྨེ", color: "#c9302c" },
+    { text: "ཧཱུྃ", color: "#1b1416" }
+  ];
+  const MANTRA = "ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ་";
+  const TIB_FONT = "\"Khurd Tibetan\", \"Noto Serif Tibetan\", Jomolhari, Kailasa, \"Microsoft Himalaya\", serif";
+
+  /* ---------- Settings and storage ---------- */
+
+  const store = {
+    get(key) {
+      try { return localStorage.getItem("khurd-" + key); } catch (e) { return null; }
+    },
+    set(key, value) {
+      try { localStorage.setItem("khurd-" + key, String(value)); } catch (e) { /* storage unavailable */ }
+    }
+  };
+
+  function pick(value, allowed, fallback) {
+    return allowed.includes(value) ? value : fallback;
+  }
+
+  function readBig(key) {
+    const raw = store.get(key);
+    return raw && /^-?\d{1,40}$/.test(raw) ? BigInt(raw) : 0n;
+  }
+
+  function initialLang() {
+    let requested = null;
+    try { requested = new URLSearchParams(location.search).get("lang"); } catch (e) { /* ignore */ }
+    if (STRINGS[requested]) return requested;
+    const saved = store.get("lang");
+    return STRINGS[saved] ? saved : "mn";
+  }
+
+  const settings = {
+    lang: initialLang(),
+    view: pick(store.get("view"), ["auto", "side", "top"], "auto"),
+    mode: pick(store.get("mode"), ["ratchet", "subtract"], "ratchet"),
+    scroll: (() => {
+      const n = Number(store.get("scroll"));
+      return E.SCROLL_SIZES.includes(n) ? n : 1000;
+    })(),
+    bell: store.get("bell") === "1"
+  };
+
+  let banked = { turns: readBig("turns"), mani: readBig("mani") };
+  let sessionStart = banked.mani;
+
+  /* ---------- Elements ---------- */
+
+  const $ = (sel) => document.querySelector(sel);
+  const canvas = $("#wheels");
+  const ctx = canvas.getContext("2d");
+  const band = $("#band");
+  const bctx = band.getContext("2d");
+  const stage = $("#stage");
+  const out = {
+    mani: $("#mani-total"),
+    turns: $("#turns-total"),
+    session: $("#mani-session"),
+    hint: $("#hint")
+  };
+  const coarse = window.matchMedia ? matchMedia("(pointer: coarse)") : { matches: false };
+  const reduceMotion = window.matchMedia ? matchMedia("(prefers-reduced-motion: reduce)") : { matches: false };
+
+  const t = (key) => (STRINGS[settings.lang] && STRINGS[settings.lang][key]) || STRINGS.mn[key] || key;
+
+  /* ---------- Layout ---------- */
+
+  let wheels = [];
+  let geom = [];          // per wheel: {cx, cy, R, ...}
+  let view = "top";
+  let cssW = 0, cssH = 0, dpr = 1;
+  let sprites = null;     // pre-rendered syllables
+  let spriteSize = 0;
+
+  function effectiveView() {
+    if (settings.view !== "auto") return settings.view;
+    return window.innerWidth > window.innerHeight && window.innerWidth >= 560 ? "side" : "top";
+  }
+
+  function layout() {
+    const rect = stage.getBoundingClientRect();
+    cssW = Math.max(200, rect.width);
+    cssH = Math.max(200, rect.height);
+    dpr = Math.min(2, window.devicePixelRatio || 1);
+    canvas.width = Math.round(cssW * dpr);
+    canvas.height = Math.round(cssH * dpr);
+
+    view = effectiveView();
+    if (stage.dataset.view !== view) {
+      stage.dataset.view = view;
+      const r2 = stage.getBoundingClientRect();
+      cssW = Math.max(200, r2.width);
+      cssH = Math.max(200, r2.height);
+      canvas.width = Math.round(cssW * dpr);
+      canvas.height = Math.round(cssH * dpr);
+    }
+    const n = view === "side" ? Math.max(1, Math.min(6, Math.floor(cssW / 250))) : 1;
+    resizeWheels(n);
+
+    geom = [];
+    let letterPx;
+    if (view === "side") {
+      const slot = cssW / n;
+      const R = Math.min(slot * 0.36, (cssH * 0.72) / 2.7);
+      const height = R * 2.7;
+      const top = (cssH - height) / 2 + R * 0.08;
+      for (let i = 0; i < n; i += 1) {
+        geom.push({ cx: slot * (i + 0.5), top, bottom: top + height, R, ry: R * 0.16 });
+      }
+      letterPx = height * 0.29;
+    } else {
+      const R = Math.min(cssW, cssH) * 0.44;
+      geom.push({ cx: cssW / 2, cy: cssH / 2, R });
+      letterPx = R * 0.27;
+    }
+
+    const bandRect = band.getBoundingClientRect();
+    band.width = Math.round(bandRect.width * dpr);
+    band.height = Math.round(bandRect.height * dpr);
+    bandMetrics = null;
+
+    const wanted = Math.round(letterPx * dpr);
+    if (!sprites || Math.abs(wanted - spriteSize) > 2) buildSprites(wanted);
+    updateHint();
+    requestDraw();
+  }
+
+  function resizeWheels(n) {
+    if (wheels.length === n) return;
+    banked = E.bankWholeTurns(banked, wheels, settings.scroll);
+    if (wheels.length > n) {
+      const removed = wheels.slice(n);
+      banked = E.bank(banked, removed, settings.scroll);
+      wheels = wheels.slice(0, n);
+    }
+    while (wheels.length < n) {
+      const w = E.createWheel(settings.mode);
+      w.angle = wheels.length ? E.wrap(wheels.length * 0.7) : 0;
+      w.ring = 0;
+      wheels.push(w);
+    }
+    contacts.clear();
+  }
+
+  /* ---------- Syllable sprites ---------- */
+
+  function buildSprites(px) {
+    spriteSize = Math.max(12, px);
+    const font = "700 " + spriteSize + "px " + TIB_FONT;
+    const probe = document.createElement("canvas").getContext("2d");
+    probe.font = font;
+    sprites = SYLLABLES.map((s) => {
+      const m = probe.measureText(s.text);
+      const pad = Math.ceil(spriteSize * 0.12);
+      const asc = Math.ceil(m.actualBoundingBoxAscent || spriteSize * 0.9);
+      const desc = Math.ceil(m.actualBoundingBoxDescent || spriteSize * 0.5);
+      const left = Math.ceil(m.actualBoundingBoxLeft || 0);
+      const w = Math.ceil((m.actualBoundingBoxRight || m.width) + left) + pad * 2;
+      const h = asc + desc + pad * 2;
+      const c = document.createElement("canvas");
+      c.width = w;
+      c.height = h;
+      const g = c.getContext("2d");
+      g.font = font;
+      g.lineJoin = "round";
+      g.lineWidth = Math.max(1.5, spriteSize * 0.07);
+      g.strokeStyle = "#d6a23e";
+      g.strokeText(s.text, pad + left, pad + asc);
+      g.fillStyle = s.color;
+      g.fillText(s.text, pad + left, pad + asc);
+      return { canvas: c, w, h, baseline: pad + asc };
+    });
+  }
+
+  /* ---------- Drawing: wheels ---------- */
+
+  const COPPER = ["#4a2510", "#8f5022", "#d39a5c", "#f1c58b", "#b9773a", "#7b431b", "#3d1e0b"];
+
+  function copperGradient(g, x0, x1) {
+    const gr = g.createLinearGradient(x0, 0, x1, 0);
+    const stops = [0, 0.14, 0.3, 0.37, 0.5, 0.8, 1];
+    stops.forEach((s, i) => gr.addColorStop(s, COPPER[i]));
+    return gr;
+  }
+
+  /* Number of samples for motion blur when a wheel turns fast. */
+  function blurSamples(dAngle, spacing) {
+    if (reduceMotion.matches) return 1;
+    const a = Math.abs(dAngle);
+    if (a < spacing * 0.08) return 1;
+    return Math.min(10, Math.ceil(a / (spacing * 0.06)));
+  }
+
+  function drawSide(i) {
+    const w = wheels[i];
+    const gm = geom[i];
+    const { cx, top, bottom, R, ry } = gm;
+    const g = ctx;
+    const height = bottom - top;
+    const angle = w.angle + w.recoil;
+
+    // Axle rods above and below, like a temple row.
+    g.strokeStyle = "#3a2a24";
+    g.lineWidth = Math.max(3, R * 0.06);
+    g.beginPath();
+    g.moveTo(cx, 0);
+    g.lineTo(cx, top - ry * 0.4);
+    g.moveTo(cx, bottom + ry);
+    g.lineTo(cx, cssH);
+    g.stroke();
+
+    // Body.
+    g.save();
+    g.beginPath();
+    g.moveTo(cx - R, top);
+    g.lineTo(cx - R, bottom);
+    g.ellipse(cx, bottom, R, ry, 0, Math.PI, 0, true);
+    g.lineTo(cx + R, top);
+    g.ellipse(cx, top, R, ry, 0, 0, Math.PI, false);
+    g.closePath();
+    g.fillStyle = copperGradient(g, cx - R, cx + R);
+    g.fill();
+    g.clip();
+
+    // Lacquered band holding the syllables.
+    const bandTop = top + height * 0.22;
+    const bandBot = top + height * 0.78;
+    g.beginPath();
+    g.ellipse(cx, bandTop, R + 1, ry, 0, 0, Math.PI, false);
+    g.lineTo(cx - R - 1, bandBot);
+    g.ellipse(cx, bandBot, R + 1, ry, 0, Math.PI, 0, true);
+    g.closePath();
+    g.fillStyle = "#5b1820";
+    g.fill();
+
+    // Gilt rim lines.
+    g.strokeStyle = "#e3b65a";
+    g.lineWidth = Math.max(1.5, R * 0.025);
+    for (const y of [top + height * 0.08, bandTop, bandBot, top + height * 0.92]) {
+      g.beginPath();
+      g.ellipse(cx, y, R, ry, 0, 0, Math.PI, false);
+      g.stroke();
+    }
+
+    // Studs on the rims: they move with the drum, so the eye sees it turn.
+    const dA = w.lastDraw === undefined ? 0 : angleDelta(w.lastDraw, angle);
+    const studs = 20;
+    for (let k = 0; k < studs; k += 1) {
+      const a = (k / studs) * TAU - angle;
+      const c = Math.cos(a);
+      if (c <= 0.05) continue;
+      const x = cx + R * Math.sin(a);
+      g.fillStyle = "rgba(240, 200, 120, " + (0.35 + 0.6 * c).toFixed(3) + ")";
+      for (const yy of [top + height * 0.15, top + height * 0.85]) {
+        g.beginPath();
+        g.ellipse(x, yy + ry * c, R * 0.035 * c + 0.6, R * 0.035, 0, 0, TAU);
+        g.fill();
+      }
+    }
+
+    // Syllables: angle phi increases to the right, so they read left to right
+    // and pass the viewer from right to left when the wheel turns clockwise.
+    const samples = blurSamples(dA, TAU / 6);
+    const yMid = (bandTop + bandBot) / 2;
+    const scale = 1 / dpr;
+    for (let s = 0; s < samples; s += 1) {
+      const aBase = angle - (samples > 1 ? dA * (s / samples) : 0);
+      g.globalAlpha = samples > 1 ? Math.min(1, 1.6 / samples) : 1;
+      for (let j = 0; j < SYLLABLES.length; j += 1) {
+        const a = (j / 6) * TAU - aBase;  // Om faces the viewer at rest
+        const c = Math.cos(a);
+        if (c <= 0.04) continue;
+        const sp = sprites[j];
+        const x = cx + R * Math.sin(a);
+        const y = yMid + ry * c * 0.6;
+        const sw = sp.w * scale;
+        const sh = sp.h * scale;
+        g.save();
+        g.translate(x, y);
+        g.scale(c, 1);
+        g.drawImage(sp.canvas, -sw / 2, -sh / 2 - sh * 0.04, sw, sh);
+        g.restore();
+      }
+    }
+    g.globalAlpha = 1;
+
+    // Fixed lighting over the turning surface.
+    const shade = g.createLinearGradient(cx - R, 0, cx + R, 0);
+    shade.addColorStop(0, "rgba(0,0,0,0.55)");
+    shade.addColorStop(0.22, "rgba(0,0,0,0.05)");
+    shade.addColorStop(0.36, "rgba(255,240,210,0.18)");
+    shade.addColorStop(0.5, "rgba(0,0,0,0)");
+    shade.addColorStop(0.85, "rgba(0,0,0,0.3)");
+    shade.addColorStop(1, "rgba(0,0,0,0.6)");
+    g.fillStyle = shade;
+    g.fillRect(cx - R - 2, top - ry - 2, 2 * R + 4, height + 2 * ry + 4);
+    g.restore();
+
+    // Lid and finial.
+    g.beginPath();
+    g.ellipse(cx, top, R, ry, 0, 0, TAU);
+    const lid = g.createLinearGradient(cx - R, top - ry, cx + R, top + ry);
+    lid.addColorStop(0, "#c48a4c");
+    lid.addColorStop(0.5, "#8a4c1f");
+    lid.addColorStop(1, "#5a2d10");
+    g.fillStyle = lid;
+    g.fill();
+    g.strokeStyle = "#e3b65a";
+    g.lineWidth = Math.max(1.5, R * 0.025);
+    g.stroke();
+    g.beginPath();
+    g.ellipse(cx, top - ry * 0.15, R * 0.22, ry * 0.5, 0, Math.PI, 0, false);
+    g.fillStyle = "#e0b05a";
+    g.fill();
+    g.beginPath();
+    g.ellipse(cx, top - ry * 0.3, R * 0.08, R * 0.08, 0, 0, TAU);
+    g.fill();
+
+    w.lastDraw = angle;
+  }
+
+  function drawTop(i) {
+    const w = wheels[i];
+    const { cx, cy, R } = geom[i];
+    const g = ctx;
+    const angle = w.angle + w.recoil;
+    const dA = w.lastDraw === undefined ? 0 : angleDelta(w.lastDraw, angle);
+
+    // Shadow.
+    g.beginPath();
+    g.arc(cx + R * 0.04, cy + R * 0.06, R * 1.02, 0, TAU);
+    g.fillStyle = "rgba(40, 20, 15, 0.22)";
+    g.fill();
+
+    // Copper rim.
+    const rim = g.createRadialGradient(cx - R * 0.3, cy - R * 0.35, R * 0.1, cx, cy, R);
+    rim.addColorStop(0, "#f2c88f");
+    rim.addColorStop(0.55, "#b8743a");
+    rim.addColorStop(1, "#5b2d10");
+    g.beginPath();
+    g.arc(cx, cy, R, 0, TAU);
+    g.fillStyle = rim;
+    g.fill();
+
+    // Lacquered ring for the syllables.
+    g.beginPath();
+    g.arc(cx, cy, R * 0.93, 0, TAU);
+    g.arc(cx, cy, R * 0.56, 0, TAU, true);
+    g.fillStyle = "#5b1820";
+    g.fill("evenodd");
+
+    g.strokeStyle = "#e3b65a";
+    g.lineWidth = Math.max(1.5, R * 0.018);
+    for (const r of [0.93, 0.56, 0.98]) {
+      g.beginPath();
+      g.arc(cx, cy, R * r, 0, TAU);
+      g.stroke();
+    }
+
+    // Rim studs and inner petals turn with the wheel.
+    g.save();
+    g.translate(cx, cy);
+    g.rotate(angle);
+    g.fillStyle = "#f0c878";
+    for (let k = 0; k < 24; k += 1) {
+      const a = (k / 24) * TAU;
+      g.beginPath();
+      g.arc(Math.cos(a) * R * 0.955, Math.sin(a) * R * 0.955, R * 0.014, 0, TAU);
+      g.fill();
+    }
+    for (let k = 0; k < 8; k += 1) {
+      g.save();
+      g.rotate((k / 8) * TAU);
+      g.beginPath();
+      g.moveTo(0, -R * 0.2);
+      g.quadraticCurveTo(R * 0.12, -R * 0.36, 0, -R * 0.5);
+      g.quadraticCurveTo(-R * 0.12, -R * 0.36, 0, -R * 0.2);
+      g.fillStyle = k % 2 ? "#a65f2a" : "#c98545";
+      g.fill();
+      g.restore();
+    }
+    g.restore();
+
+    // Syllables around the ring, upright toward the rim, read clockwise.
+    const samples = blurSamples(dA, TAU / 6);
+    const scale = 1 / dpr;
+    const rText = R * 0.745;
+    for (let s = 0; s < samples; s += 1) {
+      const aBase = angle - (samples > 1 ? dA * (s / samples) : 0);
+      g.globalAlpha = samples > 1 ? Math.min(1, 1.6 / samples) : 1;
+      for (let j = 0; j < SYLLABLES.length; j += 1) {
+        const b = aBase + (j / 6) * TAU - Math.PI / 2;
+        const sp = sprites[j];
+        const sw = sp.w * scale;
+        const sh = sp.h * scale;
+        g.save();
+        g.translate(cx + Math.cos(b) * rText, cy + Math.sin(b) * rText);
+        g.rotate(b + Math.PI / 2);
+        g.drawImage(sp.canvas, -sw / 2, -sh / 2, sw, sh);
+        g.restore();
+      }
+    }
+    g.globalAlpha = 1;
+
+    // Hub.
+    const hub = g.createRadialGradient(cx - R * 0.05, cy - R * 0.06, R * 0.01, cx, cy, R * 0.17);
+    hub.addColorStop(0, "#fff1c7");
+    hub.addColorStop(0.5, "#e0b05a");
+    hub.addColorStop(1, "#8a5a1e");
+    g.beginPath();
+    g.arc(cx, cy, R * 0.17, 0, TAU);
+    g.fillStyle = hub;
+    g.fill();
+
+    // Fixed highlight.
+    const gloss = g.createRadialGradient(cx - R * 0.4, cy - R * 0.45, 0, cx - R * 0.4, cy - R * 0.45, R * 0.9);
+    gloss.addColorStop(0, "rgba(255,245,220,0.22)");
+    gloss.addColorStop(1, "rgba(255,245,220,0)");
+    g.beginPath();
+    g.arc(cx, cy, R, 0, TAU);
+    g.fillStyle = gloss;
+    g.fill();
+
+    w.lastDraw = angle;
+  }
+
+  function angleDelta(from, to) {
+    let d = (to - from) % TAU;
+    if (d > Math.PI) d -= TAU;
+    if (d < -Math.PI) d += TAU;
+    return d;
+  }
+
+  function drawWheels() {
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, cssW, cssH);
+    if (!sprites) return;
+    for (let i = 0; i < wheels.length; i += 1) {
+      if (view === "side") drawSide(i);
+      else drawTop(i);
+    }
+  }
+
+  /* ---------- Drawing: mantra band ---------- */
+
+  let bandPos = 0;        // fractional position, in mantras
+  let bandFrame = 0;      // band shift during the last frame, in mantras
+  let bandMetrics = null;
+
+  function bandStrip(H) {
+    const px = Math.round(H * 0.46);
+    if (bandMetrics && bandMetrics.px === px) return bandMetrics;
+    const probe = bctx;
+    probe.font = "700 " + px + "px " + TIB_FONT;
+    const unit = Math.ceil(probe.measureText(MANTRA + " ").width);
+    const c = document.createElement("canvas");
+    c.width = unit;
+    c.height = H;
+    const g = c.getContext("2d");
+    g.font = probe.font;
+    g.fillStyle = "#e9c983";
+    g.fillText(MANTRA, 0, H * 0.66);
+    bandMetrics = { px, unit, strip: c };
+    return bandMetrics;
+  }
+
+  function drawBand() {
+    const W = band.width;
+    const H = band.height;
+    if (!W || !H) return;
+    const g = bctx;
+    g.setTransform(1, 0, 0, 1, 0, 0);
+    g.clearRect(0, 0, W, H);
+    const { unit, strip } = bandStrip(H);
+    const center = W / 2;
+    const frac = bandPos - Math.floor(bandPos);
+    const shift = Math.abs(bandFrame);
+
+    let offsets;
+    if (reduceMotion.matches || shift * unit < 2) {
+      offsets = [frac];
+    } else if (shift >= 1) {
+      // A whole mantra or more per frame: show an even smear, never a
+      // stroboscopic still image that would misrepresent the speed.
+      const S = 48;
+      offsets = Array.from({ length: S }, (_, s) => (frac + s / S) % 1);
+    } else {
+      const S = Math.min(48, Math.ceil((shift * unit) / 2));
+      offsets = Array.from({ length: S }, (_, s) => frac - bandFrame * (s / S));
+    }
+
+    g.globalAlpha = offsets.length > 1 ? Math.min(1, 2.4 / offsets.length) : 1;
+    const half = Math.ceil(W / unit / 2) + 2;
+    for (const off of offsets) {
+      // Mantra k starts at center + (k - pos) * unit; it is counted as it passes the mark.
+      for (let k = -half; k <= half; k += 1) {
+        const x = center + (k - off) * unit;
+        if (x > W || x + unit < 0) continue;
+        g.drawImage(strip, x, 0);
+      }
+    }
+    g.globalAlpha = 1;
+  }
+
+  /* ---------- Counters ---------- */
+
+  let shown = { mani: null, turns: null, session: null, lang: null };
+
+  function format(big) {
+    const locale = settings.lang === "mn" ? "mn-MN" : "en-US";
+    try { return big.toLocaleString(locale); } catch (e) { return big.toString(); }
+  }
+
+  function updateCounts() {
+    const tot = E.totals(banked, wheels, settings.scroll);
+    const session = tot.mani - sessionStart;
+    if (tot.mani !== shown.mani || shown.lang !== settings.lang) out.mani.textContent = format(tot.mani);
+    if (tot.turns !== shown.turns || shown.lang !== settings.lang) out.turns.textContent = format(tot.turns);
+    if (session !== shown.session || shown.lang !== settings.lang) out.session.textContent = format(session);
+    shown = { mani: tot.mani, turns: tot.turns, session, lang: settings.lang };
+    return tot;
+  }
+
+  let saveTimer = 0;
+  function save() {
+    const tot = E.totals(banked, wheels, settings.scroll);
+    store.set("mani", tot.mani.toString());
+    store.set("turns", tot.turns.toString());
+  }
+
+  function scheduleSave() {
+    if (saveTimer) return;
+    saveTimer = setTimeout(() => { saveTimer = 0; save(); }, 1500);
+  }
+
+  /* ---------- Bell ---------- */
+
+  let audio = null;
+  let lastBell = 0;
+
+  function ensureAudio() {
+    if (!settings.bell) return;
+    try {
+      if (!audio) audio = new (window.AudioContext || window.webkitAudioContext)();
+      if (audio.state === "suspended") audio.resume();
+    } catch (e) { audio = null; }
+  }
+
+  function ring() {
+    if (!settings.bell || !audio) return;
+    const now = audio.currentTime;
+    if (now - lastBell < 0.15) return;
+    lastBell = now;
+    const master = audio.createGain();
+    master.gain.value = 0.12;
+    master.connect(audio.destination);
+    // A small hand bell: inharmonic partials with different decay times.
+    [[1, 1, 1.6], [2.76, 0.5, 0.9], [5.4, 0.25, 0.5], [8.9, 0.12, 0.3]].forEach(([ratio, amp, decay]) => {
+      const o = audio.createOscillator();
+      const gn = audio.createGain();
+      o.frequency.value = 880 * ratio;
+      gn.gain.setValueAtTime(amp, now);
+      gn.gain.exponentialRampToValueAtTime(0.0001, now + decay);
+      o.connect(gn);
+      gn.connect(master);
+      o.start(now);
+      o.stop(now + decay + 0.05);
+    });
+  }
+
+  /* Every applied rotation passes through here. */
+  function account(w, applied) {
+    if (!applied) return;
+    bandPos += E.bandShift(applied, settings.scroll);
+    bandStep += E.bandShift(applied, settings.scroll);
+    w.ring = (w.ring || 0) + applied;
+    while (Math.abs(w.ring) >= TAU) {
+      w.ring -= Math.sign(w.ring) * TAU;
+      ring();
+    }
+    if (Math.abs(bandPos) > 1e6) bandPos -= Math.trunc(bandPos);
+  }
+
+  /* ---------- Animation loop ---------- */
+
+  let running = false;
+  let lastT = 0;
+  let bandStep = 0;
+  let needsDraw = false;
+
+  function requestDraw() {
+    needsDraw = true;
+    if (!running) {
+      running = true;
+      lastT = performance.now();
+      requestAnimationFrame(frame);
+    }
+  }
+
+  function frame(now) {
+    const dt = Math.min(0.05, Math.max(0, (now - lastT) / 1000));
+    lastT = now;
+
+    for (const c of contacts.values()) {
+      if (c.wheel >= 0 && now - c.lastMove > 60) E.hold(wheels[c.wheel], dt);
+    }
+    for (const w of wheels) account(w, E.step(w, dt));
+    if (E.needsBank(wheels)) banked = E.bankWholeTurns(banked, wheels, settings.scroll);
+
+    bandFrame = bandStep;
+    bandStep = 0;
+
+    drawWheels();
+    drawBand();
+    const before = shown.mani;
+    updateCounts();
+    if (shown.mani !== before) scheduleSave();
+
+    const active = contacts.size > 0 || wheelScroll.size > 0 || wheels.some(E.isMoving) || bandFrame !== 0;
+    needsDraw = false;
+    if (active) requestAnimationFrame(frame);
+    else running = false;
+  }
+
+  /* ---------- Input: pointer ---------- */
+
+  const contacts = new Map();  // pointerId -> {wheel, x, y, t, lastMove}
+
+  function local(ev) {
+    const r = canvas.getBoundingClientRect();
+    return { x: ev.clientX - r.left, y: ev.clientY - r.top };
+  }
+
+  function hitWheel(p) {
+    for (let i = 0; i < geom.length; i += 1) {
+      const gm = geom[i];
+      if (view === "side") {
+        if (Math.abs(p.x - gm.cx) <= gm.R * 1.05 && p.y >= gm.top - gm.ry * 2 && p.y <= gm.bottom + gm.ry * 2) return i;
+      } else {
+        const d = Math.hypot(p.x - gm.cx, p.y - gm.cy);
+        if (d <= gm.R * 1.12) return i;
+      }
+    }
+    return -1;
+  }
+
+  /* Rotation produced by moving the pointer from a to b over wheel i. */
+  function rotationBetween(i, a, b) {
+    const gm = geom[i];
+    if (view === "side") {
+      // The finger moves the front surface; near the edge the surface turns
+      // away from the viewer, so a sideways move turns the drum more.
+      const s = Math.max(-1, Math.min(1, ((a.x + b.x) / 2 - gm.cx) / gm.R));
+      const c = Math.max(0.5, Math.sqrt(1 - s * s));
+      return -(b.x - a.x) / (gm.R * c);
+    }
+    const ra = Math.hypot(a.x - gm.cx, a.y - gm.cy);
+    const rb = Math.hypot(b.x - gm.cx, b.y - gm.cy);
+    if (Math.min(ra, rb) < gm.R * 0.12) return 0;   // too close to the hub to tell
+    const a0 = Math.atan2(a.y - gm.cy, a.x - gm.cx);
+    const a1 = Math.atan2(b.y - gm.cy, b.x - gm.cx);
+    return angleDelta(a0, a1);  // screen y points down, so this is clockwise-positive
+  }
+
+  function releaseContact(c) {
+    if (c.wheel >= 0) {
+      const stillHeld = [...contacts.values()].some((o) => o !== c && o.wheel === c.wheel);
+      if (!stillHeld) E.release(wheels[c.wheel]);
+    }
+  }
+
+  canvas.addEventListener("pointerdown", (ev) => {
+    if (ev.button !== undefined && ev.button > 0) return;
+    ensureAudio();
+    const p = local(ev);
+    const i = hitWheel(p);
+    contacts.set(ev.pointerId, { wheel: i, x: p.x, y: p.y, t: ev.timeStamp, lastMove: performance.now(), fresh: true });
+    if (i >= 0) wheels[i].held = true;
+    try { canvas.setPointerCapture(ev.pointerId); } catch (e) { /* ignore */ }
+    ev.preventDefault();
+    requestDraw();
+  });
+
+  canvas.addEventListener("pointermove", (ev) => {
+    const c = contacts.get(ev.pointerId);
+    if (!c) return;
+    const events = ev.getCoalescedEvents ? ev.getCoalescedEvents() : [ev];
+    for (const e of events.length ? events : [ev]) {
+      const p = local(e);
+      const dt = Math.max(0.001, (e.timeStamp - c.t) / 1000);
+      const i = hitWheel(p);
+      if (i !== c.wheel) {
+        // Brushing from one drum onto the next.
+        releaseContact(c);
+        c.wheel = i;
+        c.fresh = true;
+        if (i >= 0) wheels[i].held = true;
+      } else if (i >= 0) {
+        const d = rotationBetween(i, c, p);
+        if (d !== 0) {
+          account(wheels[i], E.drag(wheels[i], d, dt, c.fresh));
+          c.fresh = false;
+          c.lastMove = performance.now();
+        }
+      }
+      c.x = p.x;
+      c.y = p.y;
+      c.t = e.timeStamp;
+    }
+    requestDraw();
+  });
+
+  function endPointer(ev) {
+    const c = contacts.get(ev.pointerId);
+    if (!c) return;
+    contacts.delete(ev.pointerId);
+    // A finger resting before lifting has stopped the wheel; a flick keeps it going.
+    if (c.wheel >= 0 && performance.now() - c.lastMove > 80) wheels[c.wheel].omega = 0;
+    releaseContact(c);
+    requestDraw();
+  }
+
+  canvas.addEventListener("pointerup", endPointer);
+  canvas.addEventListener("pointercancel", endPointer);
+  canvas.addEventListener("lostpointercapture", endPointer);
+
+  /* ---------- Input: mouse wheel and trackpad ---------- */
+
+  const wheelScroll = new Map();  // wheel index -> {t, timer}
+
+  canvas.addEventListener("wheel", (ev) => {
+    const p = local(ev);
+    const i = view === "top" ? 0 : hitWheel(p);
+    if (i < 0) return;
+    ev.preventDefault();
+    const unit = ev.deltaMode === 1 ? 16 : ev.deltaMode === 2 ? cssH : 1;
+    const dx = ev.deltaX * unit;
+    const dy = ev.deltaY * unit;
+    // Fingers moving left on a trackpad, or scrolling down, turn clockwise.
+    const d = (dx + dy) / (geom[i].R * (view === "side" ? 1 : 1.2));
+    const prev = wheelScroll.get(i);
+    const dt = prev ? Math.max(0.008, (ev.timeStamp - prev.t) / 1000) : 1 / 60;
+    if (prev) clearTimeout(prev.timer);
+    account(wheels[i], E.drag(wheels[i], d, dt, !prev));
+    const timer = setTimeout(() => {
+      wheelScroll.delete(i);
+      E.release(wheels[i]);
+      requestDraw();
+    }, 120);
+    wheelScroll.set(i, { t: ev.timeStamp, timer });
+    requestDraw();
+  }, { passive: false });
+
+  /* ---------- Input: keyboard ---------- */
+
+  canvas.addEventListener("keydown", (ev) => {
+    let dir = 0;
+    if (ev.key === " " || ev.key === "Enter") dir = 1;
+    else if (view === "side" && ev.key === "ArrowLeft") dir = 1;
+    else if (view === "side" && ev.key === "ArrowRight") dir = -1;
+    else if (view === "top" && (ev.key === "ArrowRight" || ev.key === "ArrowDown")) dir = 1;
+    else if (view === "top" && (ev.key === "ArrowLeft" || ev.key === "ArrowUp")) dir = -1;
+    if (!dir) return;
+    ev.preventDefault();
+    ensureAudio();
+    for (const w of wheels) E.push(w, dir * 4);
+    requestDraw();
+  });
+
+  /* ---------- Settings UI ---------- */
+
+  function fillScrollOptions() {
+    const sel = $("#scroll");
+    const locale = settings.lang === "mn" ? "mn-MN" : "en-US";
+    sel.innerHTML = "";
+    for (const n of E.SCROLL_SIZES) {
+      const o = document.createElement("option");
+      o.value = String(n);
+      let label;
+      if (n >= 1e6) label = (n / 1e6).toLocaleString(locale) + " " + t("million");
+      else {
+        try { label = n.toLocaleString(locale); } catch (e) { label = String(n); }
+      }
+      o.textContent = label;
+      if (n === settings.scroll) o.selected = true;
+      sel.appendChild(o);
+    }
+  }
+
+  function updateHint() {
+    let text = view === "side" ? t("hintSide") : t("hintTop");
+    if (!coarse.matches) text += " " + t("hintDesk");
+    out.hint.textContent = text;
+  }
+
+  function applyLanguage() {
+    const lang = settings.lang;
+    document.documentElement.lang = lang;
+    document.title = t("title");
+    document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = t(el.dataset.i18n); });
+    document.querySelectorAll("[data-i18n-label]").forEach((el) => { el.setAttribute("aria-label", t(el.dataset.i18nLabel)); });
+    document.querySelectorAll("[data-i18n-html]").forEach((el) => { el.innerHTML = t(el.dataset.i18nHtml); });
+    document.querySelectorAll(".lang button").forEach((b) => {
+      b.setAttribute("aria-pressed", b.dataset.lang === lang ? "true" : "false");
+    });
+    fillScrollOptions();
+    updateHint();
+    updateCounts();
+  }
+
+  function setLanguage(lang) {
+    if (!STRINGS[lang]) return;
+    settings.lang = lang;
+    store.set("lang", lang);
+    try {
+      const url = new URL(location.href);
+      url.searchParams.set("lang", lang);
+      history.replaceState(null, "", url);
+    } catch (e) { /* ignore */ }
+    applyLanguage();
+  }
+
+  document.querySelectorAll(".lang button").forEach((b) => {
+    b.addEventListener("click", () => setLanguage(b.dataset.lang));
+  });
+
+  function bindRadios(name, key, onChange) {
+    document.querySelectorAll("input[name=\"" + name + "\"]").forEach((input) => {
+      input.checked = input.value === settings[key];
+      input.addEventListener("change", () => {
+        if (!input.checked) return;
+        settings[key] = input.value;
+        store.set(key, input.value);
+        onChange();
+      });
+    });
+  }
+
+  bindRadios("view", "view", () => {
+    for (const w of wheels) w.lastDraw = undefined;
+    layout();
+  });
+
+  bindRadios("mode", "mode", () => {
+    for (const w of wheels) {
+      w.mode = settings.mode;
+      if (w.mode === "ratchet" && w.omega < 0) w.omega = 0;
+    }
+    requestDraw();
+  });
+
+  $("#scroll").addEventListener("change", (ev) => {
+    const n = Number(ev.target.value);
+    if (!E.SCROLL_SIZES.includes(n)) return;
+    banked = E.bank(banked, wheels, settings.scroll);
+    settings.scroll = n;
+    store.set("scroll", n);
+    save();
+    requestDraw();
+  });
+
+  const bell = $("#bell");
+  bell.checked = settings.bell;
+  bell.addEventListener("change", () => {
+    settings.bell = bell.checked;
+    store.set("bell", bell.checked ? "1" : "0");
+    if (settings.bell) { ensureAudio(); ring(); }
+  });
+
+  $("#reset").addEventListener("click", () => {
+    if (!window.confirm(t("resetConfirm"))) return;
+    banked = { turns: 0n, mani: 0n };
+    sessionStart = 0n;
+    for (const w of wheels) { w.acc = 0; w.omega = 0; w.ring = 0; }
+    save();
+    updateCounts();
+    requestDraw();
+  });
+
+  /* ---------- Start ---------- */
+
+  window.addEventListener("pagehide", save);
+  document.addEventListener("visibilitychange", () => { if (document.hidden) save(); });
+
+  let resizeQueued = false;
+  function queueLayout() {
+    if (resizeQueued) return;
+    resizeQueued = true;
+    requestAnimationFrame(() => { resizeQueued = false; layout(); });
+  }
+  if (window.ResizeObserver) new ResizeObserver(queueLayout).observe(stage);
+  window.addEventListener("resize", queueLayout);
+
+  applyLanguage();
+  layout();
+
+  // Re-render the syllables once the Tibetan font has loaded.
+  if (document.fonts && document.fonts.load) {
+    document.fonts.load("700 40px \"Khurd Tibetan\"", "ཨོཾ").then(() => {
+      sprites = null;
+      bandMetrics = null;
+      layout();
+    }).catch(() => {});
+  }
+})();
