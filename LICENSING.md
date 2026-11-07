@@ -33,6 +33,7 @@ they must not be described or redistributed as wholly MIT-cleared packages.
 | [Rainbow angles](tools/rainbow-angle/) | [MIT](tools/rainbow-angle/LICENSE), under the author's explicit grant for the current tool and his notebook-derived contributions. |
 | [Stellar warmth](tools/warm/) | [MIT](tools/warm/LICENSE), under the author's explicit grant for the current tool and his notebook-derived contributions. |
 | [Sundial](tools/sundial/) | [MIT](tools/sundial/LICENSE). |
+| [Prayer wheel](tools/khurd/) | [MIT](tools/khurd/LICENSE) for the code and documentation. The bundled Tibetan font subset is third-party: Noto Serif Tibetan, [SIL Open Font License 1.1](tools/khurd/fonts/OFL.txt). |
 | [Planetary models — English](tools/planets-en/) | MIT for Gantumur's own contributions only; [upstream legacy scope and unresolved permissions](tools/planets-en/LICENSING.md). |
 | [Planetary models — Mongolian](tools/planets-mn/) | MIT for Gantumur's own contributions only; [upstream legacy scope and unresolved permissions](tools/planets-mn/LICENSING.md). |
 

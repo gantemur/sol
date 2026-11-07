@@ -1,0 +1,85 @@
+# Prayer wheel · Маанийн хүрд
+
+Status: alpha, published for live testing.
+
+A Tibetan prayer wheel you turn with a finger or a mouse. The drum carries the
+six syllables ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ (Om mani padme hum). A band at the top of the page
+shows the scroll inside the wheel being read, and the counter adds up the mantras
+that pass its gold reading mark.
+
+Entry point: `index.html`. Plain HTML, CSS and JavaScript with no build step, no
+network requests and no external libraries. The folder works when copied on its own.
+
+## Use
+
+- **Side view** shows a row of drums, the way wheels stand along a temple wall.
+  Brush them from right to left; one swipe turns every drum it crosses.
+- **Top view** shows one wheel from above. Drag around it clockwise.
+- **Automatic** picks the side view on wide screens held in landscape, such as a
+  desktop monitor or a turned phone, and the top view on portrait screens, like a
+  hand wheel seen from above. Rotating a phone switches the view. A chosen view is
+  remembered.
+- A quick flick lets the wheel coast; a finger held still on it stops it.
+- Desktop: drag, use the scroll wheel or a two-finger trackpad swipe, or focus the
+  wheel and press Space, Enter or the arrow keys.
+- **Turning backwards** either does nothing (the default, with a small recoil) or
+  subtracts from the count.
+- **Mantras inside** sets how many mantras the inner scroll holds:
+  1, 108, 1 000, 10 000, 100 000, 1 million or 100 million. Default 1 000.
+- An optional bell rings on each full turn. Sound starts only after a user action.
+- **Reset counter** returns the count to zero after a confirmation.
+
+Languages: Mongolian (default) and English, through `?lang=mn` or `?lang=en`, then
+the saved choice, then Mongolian. Switching keeps the count and settings.
+
+## Model
+
+`engine.js` holds the rules as pure functions, separate from drawing.
+
+- Positive rotation means clockwise seen from above, the traditional direction.
+  Seen from the side, the front of the drum then moves right to left, so the
+  syllables pass the viewer in reading order.
+- Coasting uses constant bearing friction plus speed-proportional drag, with a
+  speed limit of 8 turns per second.
+- With N mantras on the scroll, one turn moves the band exactly N mantra widths,
+  so its speed is N times the drum circumference per turn divided by the mantra
+  width. The count is `trunc(θ·N / 2π)` for the angle θ turned, which is the
+  number of mantras that have crossed the mark. Counts truncate toward zero, so a
+  small backward nudge in subtract mode is not counted as −1.
+- Totals are BigInt. Whole turns are banked every 1 000 turns, and when N changes,
+  so double-precision angles stay small. A count can differ by one only if a wheel
+  stops within about 10⁻⁵ of a mantra boundary.
+- At high speed the band and the drum letters are drawn with motion blur. When the
+  band moves a whole mantra or more per frame it is drawn as an even smear, so the
+  display never shows the stroboscopic "frozen" or backward-running text that
+  sampling at the frame rate would otherwise produce.
+
+Counts and settings are kept in this browser's local storage only.
+
+## Verification
+
+```sh
+node tools/khurd/test-khurd.cjs
+node scripts/check-static.js
+node scripts/test-static-check.js
+node scripts/test-homepage.cjs
+```
+
+The engine tests cover the ratchet, subtract mode, truncation, exact counts per
+turn for every scroll size, coasting to rest, the speed limit, holding, and that
+banking preserves totals.
+
+## Known limitations
+
+- Speech or chanting audio is not included; the bell is synthesized.
+- Vibration feedback is not used.
+- Large counts use the browser's number grouping for the chosen language.
+
+## License and provenance
+
+Copyright (c) 2026 Tsogtgerel Gantumur. Code and documentation: [MIT](LICENSE).
+
+`fonts/tibetan-khurd.woff` is a subset of Noto Serif Tibetan Bold 2.103,
+Copyright 2022 The Noto Project Authors, reduced to the mantra's glyphs with
+fontTools. It remains under the SIL Open Font License 1.1; see
+[fonts/OFL.txt](fonts/OFL.txt). Keep that file with the font.
