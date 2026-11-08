@@ -15,7 +15,17 @@ network requests and no external libraries. The folder works when copied on its 
 
 - **Side view** shows a row of drums, the way wheels stand along a temple wall.
   Brush them from right to left; one swipe turns every drum it crosses.
-- **Top view** shows one wheel from above. Drag around it clockwise.
+- **Top view** shows wheels from above: one, or a row when the stage is wide
+  (each slot at least 0.9 × the stage height, never more than the side view
+  shows), so a phone in landscape shows 2 or 3. Drag around a wheel clockwise.
+- **Drums keep their identities.** Drums are numbered from the left and a view
+  shows the first ones that fit. Hidden drums keep their angle and speed: a
+  drum still coasting when it is hidden keeps turning and counting, and comes
+  back where it is.
+- **The view does not change under a finger.** While a finger is on the drums,
+  the view and the number of drums stay as they are (the browser may still
+  rotate the page; the drums are redrawn at the new size); the change follows
+  when the finger lifts.
 - **Automatic** picks the side view on wide screens held in landscape, such as a
   desktop monitor or a turned phone, and the top view on portrait screens, like a
   hand wheel seen from above. Rotating a phone switches the view. A chosen view is
@@ -25,11 +35,17 @@ network requests and no external libraries. The folder works when copied on its 
   wheel and press Space, Enter or the arrow keys.
 - **Turning backwards** either does nothing (the default, with a small recoil) or
   subtracts from the count.
-- **Mantras inside** sets how many mantras the inner scroll holds: 1, 108, then
-  10³ to 10⁸, shown in Mongolian with the traditional names мянга, түм, бум, сая,
+- **Mantras inside** sets how many mantras the inner scroll holds: 1, 10, 108,
+  then 10³ to 10⁸, shown in Mongolian with the traditional names мянга, түм, бум, сая,
   живаа and дүнчүүр. Default 1.
 - An optional bell rings on each full turn. Sound starts only after a user action.
-- **Reset counter** returns the count to zero after a confirmation.
+- **Counters**, as in the khurd app: the total, which is never reset (only
+  backward turning in subtract mode lowers it), and one line below it. Tapping
+  the count shows the next line: **Today** (since local midnight), **Since
+  *date*** (a trip counter, written "11/8-с хойш" in Mongolian), and **Turns**.
+  The trip counter starts again from zero with ↺ beside it, or by pressing and
+  holding the count, after a confirmation; Settings can switch it off.
+- **Tips** at the bottom of Settings explain the gestures.
 - **Full screen**: a button in the title row where the browser allows it
   (desktop, Android, iPad). iPhone Safari offers no full-screen mode for pages;
   there, "Add to Home Screen" opens the wheel full screen through
@@ -59,7 +75,7 @@ the saved choice, then Mongolian. Switching keeps the count and settings.
   draws the letters as the side wall would project seen from above with the front
   at the bottom: upright and read left to right at the front, so counter-clockwise
   around the wheel, and turning clockwise brings them to the front in order. Changing N or
-  resetting turns the drums back to Om, so faces, bands and count stay in step.
+  changing N turns the drums back to Om, so faces, bands and count stay in step.
 - Syllable sprites are cropped to their rendered ink rather than to font
   metrics, which differ between browsers for Tibetan, so every letter is centred
   by what is actually drawn.

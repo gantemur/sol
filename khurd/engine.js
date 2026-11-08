@@ -33,7 +33,7 @@
     velocityBlend: 0.35     // smoothing for the drag-velocity estimate
   };
 
-  const SCROLL_SIZES = [1, 108, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8];
+  const SCROLL_SIZES = [1, 10, 108, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8];
 
   function createWheel(mode) {
     return {
@@ -173,12 +173,49 @@
     return { turns, mani };
   }
 
+  /* Where the drums sit on a stage of w × h CSS pixels (docs/model.md in the
+   * khurd app, Interface). The side view fits drums of about 250 px each, up
+   * to six; the top view fits as many wheels as have a slot at least 0.9 × the
+   * stage height, and no more than the side view would show. */
+  function sideCount(w) {
+    return Math.max(1, Math.min(6, Math.floor(w / 250)));
+  }
+
+  function topCount(w, h) {
+    return Math.max(1, Math.min(sideCount(w), Math.floor(w / (h * 0.9))));
+  }
+
+  function stageLayout(view, width, height, count) {
+    const w = Math.max(200, width);
+    const h = Math.max(200, height);
+    const drums = [];
+    if (view === "side") {
+      const n = count || sideCount(w);
+      const slot = w / n;
+      const R = Math.min(slot * 0.36, (h * 0.72) / 2.7);
+      const drumHeight = R * 2.7;
+      const top = (h - drumHeight) / 2 + R * 0.08;
+      for (let i = 0; i < n; i += 1) {
+        drums.push({ cx: slot * (i + 0.5), cy: top + drumHeight / 2, R, top, bottom: top + drumHeight, ry: R * 0.16 });
+      }
+      return { view, w, h, drums, letterPx: drumHeight * 0.29 };
+    }
+    const n = count || topCount(w, h);
+    const slot = w / n;
+    // 0.44 keeps neighbouring wheels' generous hit areas apart.
+    const R = Math.min(slot, h) * 0.44;
+    for (let i = 0; i < n; i += 1) {
+      drums.push({ cx: slot * (i + 0.5), cy: h / 2, R, top: h / 2 - R, bottom: h / 2 + R, ry: 0 });
+    }
+    return { view: "top", w, h, drums, letterPx: R * 0.27 };
+  }
+
   function needsBank(wheels) {
     return wheels.some((w) => Math.abs(w.acc) > 1000 * TAU);
   }
 
   return {
-    TAU, PHYSICS, SCROLL_SIZES,
+    TAU, PHYSICS, SCROLL_SIZES, sideCount, topCount, stageLayout,
     createWheel, wrap, rotate, drag, hold, release, push, step, isMoving,
     truncTurns, maniFor, bandShift, totals, bank, bankWholeTurns, needsBank
   };

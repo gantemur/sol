@@ -43,12 +43,15 @@
         aria-describedby="hint"></canvas>
     </div>
 
-    <section class="count" aria-live="polite" aria-atomic="true">
-      <p class="mani"><output id="mani-total">0</output> <span data-i18n="mani">маань</span></p>
-      <p class="sub">
-        <span><span data-i18n="turns">Эргэлт</span> <output id="turns-total">0</output></span>
-        <span><span data-i18n="session">Энэ удаа</span> <output id="mani-session">0</output></span>
-      </p>
+    <section class="count" id="count">
+      <button type="button" class="counter" id="counter" aria-describedby="counter-hint">
+        <span class="mani"><output id="mani-total">0</output> <span data-i18n="mani">маань</span></span>
+        <span class="line"><span id="line-label">Өнөөдөр</span> <output id="line-value">0</output></span>
+        <span class="dots" id="line-dots" aria-hidden="true"></span>
+      </button>
+      <span class="visually-hidden" id="counter-hint" data-i18n="counterHint">Дараагийн тоог харахын тулд товшино.</span>
+      <button type="button" class="restart" id="trip-restart" hidden
+        data-i18n-label="tripRestart" aria-label="Энэ тоог дахин эхлүүлэх">↺</button>
     </section>
 
     <p class="hint" id="hint"></p>
@@ -79,7 +82,12 @@
         <label class="check"><input type="checkbox" id="bell"><span data-i18n="bell">Эргэлт бүрд хонх</span></label>
       </div>
       <div class="field">
-        <button type="button" class="reset" id="reset" data-i18n="reset">Тоолуурыг тэглэх</button>
+        <label class="check"><input type="checkbox" id="trip-on"><span data-i18n="tripOn">Огнооноос хойш тоолох</span></label>
+        <p class="note" data-i18n="tripNote">Нийт тоо хэзээ ч тэглэгдэхгүй. Дахин асаахад огнооноос хойших тоо тэгээс эхэлнэ.</p>
+      </div>
+      <div class="field tips">
+        <span class="label" data-i18n="tipsTitle">Зөвлөмж</span>
+        <ul data-i18n-html="tips"></ul>
       </div>
     </details>
 

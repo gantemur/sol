@@ -19,7 +19,11 @@
       wheelLabel: "Маанийн хүрд. Эргүүлэхийн тулд чирэх, эсвэл зай товч дарна.",
       mani: "маань",
       turns: "Эргэлт",
-      session: "Энэ удаа",
+      today: "Өнөөдөр",
+      since: "%s-с хойш",
+      counterHint: "Дараагийн тоог харахын тулд товшино.",
+      tripRestart: "Энэ тоог дахин эхлүүлэх",
+      tripConfirm: "Энэ тоог тэгээс дахин эхлүүлэх үү? Нийт тоо хэзээ ч тэглэгдэхгүй.",
       hintSide: "Хүрдийг хуруугаараа баруунаас зүүн тийш илж эргүүлнэ.",
       hintTop: "Хүрдийг цагийн зүүний дагуу тойруулан чирж эргүүлнэ.",
       hintDesk: "Хулганы дугуй, сум болон зай товч бас болно.",
@@ -36,11 +40,17 @@
       bell: "Эргэлт бүрд хонх",
       fullscreen: "Бүтэн дэлгэц",
       exitFullscreen: "Бүтэн дэлгэцээс гарах",
-      reset: "Тоолуурыг тэглэх",
-      resetConfirm: "Тоолуурыг тэглэх үү?",
+      tripOn: "Огнооноос хойш тоолох",
+      tripNote: "Нийт тоо хэзээ ч тэглэгдэхгүй. Дахин асаахад огнооноос хойших тоо тэгээс эхэлнэ.",
+      tipsTitle: "Зөвлөмж",
+      tips:
+        "<li>Нийт тооны доорх тоог товшиж Өнөөдөр, огнооноос хойших тоо, Эргэлт хооронд сэлгэнэ.</li>" +
+        "<li>Огнооноос хойших тоог дахин эхлүүлэхийн тулд хажуугийн ↺ тэмдгийг товшино, эсвэл тоог удаан дарна.</li>" +
+        "<li>Хүрдийг шудрахад эргэлдэнэ; хуруугаа хөдөлгөлгүй тавибал зогсоно.</li>" +
+        "<li>Хуруу тань хүрдэн дээр байхад харагдац солигдохгүй; эргэсээр буй хүрд шинэ харагдацад, бүр харагдахгүй болсон ч эргэсээр, тоологдсоор байна.</li>",
       aboutTitle: "Тухай",
       about:
-        "<p>Хүрдний гадаргуу дээр <span class=\"tib\" lang=\"bo\">ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ</span> буюу «Ом мани бадмэ хум» гэсэн зургаан үсэгт тарни бичигдсэн. " +
+        "<p>Хүрдний гадаргуу дээр <span class=\"tib\" lang=\"bo\">ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ</span> буюу «Ум мани бадми хум» гэсэн зургаан үсэгт тарни бичигдсэн. " +
         "Жинхэнэ хүрдний дотор маань олон мянгаар бичсэн цаасыг ороож хийдэг бөгөөд хүрдийг цагийн зүүний дагуу нэг эргүүлэхэд дотор нь буй бүх маань нэг уншигдсантай адил гэж үздэг.</p>" +
         "<p>«Доторх маань» тохиргоо нь ороосон цаасан дээрх маанийн тоо. Хүрд бүрийн дээрх тууз тухайн хүрдний цаас уншигдаж буйг харуулна: хүрд нэг эргэхэд түүний тууз яг тэр тоогоор маань гүйлгэнэ. Алтан тэмдгийг бүтэн өнгөрсөн маань бүр тоологдоно. Тиймээс гурван хүрдийг тус бүр гуравны нэгээр эргүүлбэл нэг ч маань бүтэн уншигдахгүй.</p>" +
         "<p>Тоолуур зөвхөн энэ төхөөрөмж дээр хадгалагдана.</p>"
@@ -52,7 +62,11 @@
       wheelLabel: "Prayer wheel. Drag to turn it, or press Space.",
       mani: "mani",
       turns: "Turns",
-      session: "This visit",
+      today: "Today",
+      since: "Since %s",
+      counterHint: "Tap to show the next count.",
+      tripRestart: "Start this count again",
+      tripConfirm: "Start this count again from zero? The total is never zeroed.",
       hintSide: "Brush the drums from right to left to turn them.",
       hintTop: "Drag around the wheel clockwise to turn it.",
       hintDesk: "The scroll wheel, arrow keys and Space also work.",
@@ -69,8 +83,14 @@
       bell: "Bell on every turn",
       fullscreen: "Full screen",
       exitFullscreen: "Exit full screen",
-      reset: "Reset counter",
-      resetConfirm: "Reset the counter to zero?",
+      tripOn: "Count since a date",
+      tripNote: "The total is never zeroed. Switched on again, the count since a date starts from zero.",
+      tipsTitle: "Tips",
+      tips:
+        "<li>Tap the count under the total to switch between Today, the count since a date, and Turns.</li>" +
+        "<li>To start the count since a date again, tap ↺ beside it, or press and hold it.</li>" +
+        "<li>Flick the wheel to let it spin; hold a finger still on it to stop it.</li>" +
+        "<li>The view does not change while your finger is on the drums; drums still turning carry on in the new view, even when they are hidden.</li>",
       aboutTitle: "About",
       about:
         "<p>The drum carries the six-syllable mantra <span class=\"tib\" lang=\"bo\">ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ</span>, Om mani padme hum. " +
@@ -107,9 +127,9 @@
     return allowed.includes(value) ? value : fallback;
   }
 
-  function readBig(key) {
+  function readBig(key, fallback) {
     const raw = store.get(key);
-    return raw && /^-?\d{1,40}$/.test(raw) ? BigInt(raw) : 0n;
+    return raw && /^-?\d{1,40}$/.test(raw) ? BigInt(raw) : (fallback === undefined ? 0n : fallback);
   }
 
   function initialLang() {
@@ -132,7 +152,28 @@
   };
 
   let banked = { turns: readBig("turns"), mani: readBig("mani") };
-  let sessionStart = banked.mani;
+
+  /* Counters, like a car's (khurd app, docs/model.md, Counters): the total is
+   * the odometer and never resets; Today and the count since a date are
+   * differences from it, so backward turning in subtract mode lowers them too. */
+  function dayKey(date) {
+    const d = date || new Date();
+    return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+  }
+
+  const counter = {
+    line: pick(store.get("line"), ["today", "trip", "turns"], "today"),
+    tripOn: store.get("trip-on") !== "0",
+    todayDay: store.get("today-day"),
+    todayBase: readBig("today-base", banked.mani),
+    tripBase: readBig("trip-base", banked.mani),
+    tripSince: Number(store.get("trip-since")) || Date.now()
+  };
+  if (counter.todayDay !== dayKey()) {
+    counter.todayDay = dayKey();
+    counter.todayBase = banked.mani;
+  }
+  if (!counter.tripOn && counter.line === "trip") counter.line = "today";
 
   /* ---------- Elements ---------- */
 
@@ -144,8 +185,11 @@
   const stage = $("#stage");
   const out = {
     mani: $("#mani-total"),
-    turns: $("#turns-total"),
-    session: $("#mani-session"),
+    lineLabel: $("#line-label"),
+    lineValue: $("#line-value"),
+    dots: $("#line-dots"),
+    restart: $("#trip-restart"),
+    count: $("#count"),
     hint: $("#hint")
   };
   const coarse = window.matchMedia ? matchMedia("(pointer: coarse)") : { matches: false };
@@ -155,54 +199,52 @@
 
   /* ---------- Layout ---------- */
 
+  /* Drums keep their identities (khurd app, docs/model.md, Interface): they
+   * are numbered from the left and a view shows the first `shownCount`. The
+   * others stay, hidden, with their angle, speed and partial turn: a hidden
+   * drum keeps coasting and counting until it stops, and is shown again where
+   * it is. Drums are never removed while the page is open. */
   let wheels = [];
-  let geom = [];          // per wheel: {cx, cy, R, ...}
+  let shownCount = 0;
+  let geom = [];          // shown drums: {cx, cy, R, top, bottom, ry}
   let view = "top";
   let cssW = 0, cssH = 0, dpr = 1;
   let sprites = null;     // pre-rendered syllables
   let spriteSize = 0;
+  let pendingLayout = false;
 
   function effectiveView() {
     if (settings.view !== "auto") return settings.view;
     return window.innerWidth > window.innerHeight && window.innerWidth >= 560 ? "side" : "top";
   }
 
-  function layout() {
+  function measureStage() {
     const rect = stage.getBoundingClientRect();
     cssW = Math.max(200, rect.width);
     cssH = Math.max(200, rect.height);
-    dpr = Math.min(2, window.devicePixelRatio || 1);
     canvas.width = Math.round(cssW * dpr);
     canvas.height = Math.round(cssH * dpr);
+  }
 
-    view = effectiveView();
-    if (stage.dataset.view !== view) {
-      stage.dataset.view = view;
-      const r2 = stage.getBoundingClientRect();
-      cssW = Math.max(200, r2.width);
-      cssH = Math.max(200, r2.height);
-      canvas.width = Math.round(cssW * dpr);
-      canvas.height = Math.round(cssH * dpr);
-    }
-    const n = view === "side" ? Math.max(1, Math.min(6, Math.floor(cssW / 250))) : 1;
-    resizeWheels(n);
+  /* The view and the number of drums do not change under a finger: while one
+   * is down, the stage keeps its view and drums at the new size, and the rest
+   * waits until the finger lifts. */
+  function layout() {
+    const touching = contacts.size > 0;
+    dpr = Math.min(2, window.devicePixelRatio || 1);
+    const wanted = effectiveView();
+    const nextView = touching ? view : wanted;
+    if (nextView !== view) for (const w of wheels) w.lastDraw = undefined;
+    view = nextView;
+    stage.dataset.view = view;
+    measureStage();
+    const fit = view === "side" ? E.sideCount(cssW) : E.topCount(cssW, cssH);
+    const n = touching && shownCount ? shownCount : fit;
+    pendingLayout = touching && (wanted !== view || fit !== n);
+    showDrums(n);
 
-    geom = [];
-    let letterPx;
-    if (view === "side") {
-      const slot = cssW / n;
-      const R = Math.min(slot * 0.36, (cssH * 0.72) / 2.7);
-      const height = R * 2.7;
-      const top = (cssH - height) / 2 + R * 0.08;
-      for (let i = 0; i < n; i += 1) {
-        geom.push({ cx: slot * (i + 0.5), top, bottom: top + height, R, ry: R * 0.16 });
-      }
-      letterPx = height * 0.29;
-    } else {
-      const R = Math.min(cssW, cssH) * 0.44;
-      geom.push({ cx: cssW / 2, cy: cssH / 2, R });
-      letterPx = R * 0.27;
-    }
+    const L = E.stageLayout(view, cssW, cssH, n);
+    geom = L.drums;
 
     const bandRect = band.getBoundingClientRect();
     band.width = Math.round(bandRect.width * dpr);
@@ -210,26 +252,24 @@
     bandMetrics = null;
     measureBandCenters();
 
-    const wanted = Math.round(letterPx * dpr);
-    if (!sprites || Math.abs(wanted - spriteSize) > 2) buildSprites(wanted);
+    const px = Math.round(L.letterPx * dpr);
+    if (!sprites || Math.abs(px - spriteSize) > 2) buildSprites(px);
     updateHint();
     requestDraw();
   }
 
-  function resizeWheels(n) {
-    if (wheels.length === n) return;
-    banked = E.bankWholeTurns(banked, wheels, settings.scroll);
-    if (wheels.length > n) {
-      const removed = wheels.slice(n);
-      banked = E.bank(banked, removed, settings.scroll);
-      wheels = wheels.slice(0, n);
-    }
+  function showDrums(n) {
+    if (n === shownCount) return;
+    // A change of the drums shown ends any touch (it never happens under one).
+    for (const c of contacts.values()) releaseContact(c);
+    contacts.clear();
     while (wheels.length < n) {
       const w = E.createWheel(settings.mode);
       w.ring = 0;
       wheels.push(w);
     }
-    contacts.clear();
+    for (let i = shownCount; i < n; i += 1) wheels[i].lastDraw = undefined;
+    shownCount = n;
   }
 
   /* ---------- Syllable sprites ---------- */
@@ -585,7 +625,7 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, cssW, cssH);
     if (!sprites) return;
-    for (let i = 0; i < wheels.length; i += 1) {
+    for (let i = 0; i < shownCount; i += 1) {
       if (view === "side") drawSide(i);
       else drawTop(i);
     }
@@ -644,7 +684,7 @@
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.clearRect(0, 0, W, H);
     const { unit, strip } = bandStrip(H);
-    const n = Math.min(wheels.length, bandCenters.length);
+    const n = Math.min(shownCount, bandCenters.length);
 
     for (let i = 0; i < n; i += 1) {
       const w = wheels[i];
@@ -714,21 +754,94 @@
 
   /* ---------- Counters ---------- */
 
-  let shown = { mani: null, turns: null, session: null, lang: null };
+  let shown = { mani: null, turns: null, line: null, lineValue: null, lang: null };
 
   function format(big) {
     const locale = settings.lang === "mn" ? "mn-MN" : "en-US";
     try { return big.toLocaleString(locale); } catch (e) { return big.toString(); }
   }
 
+  /* A short date. Mongolian writes month/day ("11/7"), with the year first in
+   * another year ("2025/11/7"). */
+  function shortDate(ms) {
+    const d = new Date(ms);
+    const sameYear = d.getFullYear() === new Date().getFullYear();
+    if (settings.lang === "mn") {
+      const md = (d.getMonth() + 1) + "/" + d.getDate();
+      return sameYear ? md : d.getFullYear() + "/" + md;
+    }
+    const opts = sameYear ? { month: "short", day: "numeric" } : { month: "short", day: "numeric", year: "numeric" };
+    try { return d.toLocaleDateString("en-US", opts); } catch (e) { return d.toDateString(); }
+  }
+
+  function counterLines() {
+    return counter.tripOn ? ["today", "trip", "turns"] : ["today", "turns"];
+  }
+
+  /* After midnight, Today starts from the total as it was before. */
+  function checkDay(previousMani) {
+    const key = dayKey();
+    if (key === counter.todayDay) return;
+    counter.todayDay = key;
+    counter.todayBase = previousMani;
+    scheduleSave();
+  }
+
+  function lineParts(tot) {
+    if (counter.line === "trip") return [t("since").replace("%s", shortDate(counter.tripSince)), tot.mani - counter.tripBase];
+    if (counter.line === "turns") return [t("turns"), tot.turns];
+    return [t("today"), tot.mani - counter.todayBase];
+  }
+
+  /* ↺ sits just past the trip count, over the layout, so switching lines
+   * never moves anything. */
+  function placeRestart() {
+    const show = counter.line === "trip";
+    out.restart.hidden = !show;
+    if (!show) return;
+    const v = out.lineValue.getBoundingClientRect();
+    const c = out.count.getBoundingClientRect();
+    out.restart.style.left = (v.right - c.left + 4) + "px";
+    out.restart.style.top = (v.top - c.top + v.height / 2) + "px";
+  }
+
   function updateCounts() {
     const tot = E.totals(banked, wheels, settings.scroll);
-    const session = tot.mani - sessionStart;
-    if (tot.mani !== shown.mani || shown.lang !== settings.lang) out.mani.textContent = format(tot.mani);
-    if (tot.turns !== shown.turns || shown.lang !== settings.lang) out.turns.textContent = format(tot.turns);
-    if (session !== shown.session || shown.lang !== settings.lang) out.session.textContent = format(session);
-    shown = { mani: tot.mani, turns: tot.turns, session, lang: settings.lang };
+    if (shown.mani !== null && tot.mani !== shown.mani) checkDay(shown.mani);
+    const langChanged = shown.lang !== settings.lang;
+    if (tot.mani !== shown.mani || langChanged) out.mani.textContent = format(tot.mani);
+    const [label, value] = lineParts(tot);
+    const lineKey = counter.line + "|" + label;
+    if (lineKey !== shown.line || langChanged) {
+      out.lineLabel.textContent = label;
+      const lines = counterLines();
+      out.dots.innerHTML = lines.map((l) => (l === counter.line ? "<i class=\"on\"></i>" : "<i></i>")).join("");
+    }
+    if (value !== shown.lineValue || lineKey !== shown.line || langChanged) {
+      out.lineValue.textContent = format(value);
+      placeRestart();
+    }
+    shown = { mani: tot.mani, turns: tot.turns, line: lineKey, lineValue: value, lang: settings.lang };
     return tot;
+  }
+
+  function showNextLine() {
+    const lines = counterLines();
+    const i = lines.indexOf(counter.line);
+    counter.line = lines[(i + 1) % lines.length];
+    store.set("line", counter.line);
+    shown.line = null;
+    updateCounts();
+  }
+
+  function restartTrip() {
+    if (!window.confirm(t("tripConfirm"))) return;
+    const tot = E.totals(banked, wheels, settings.scroll);
+    counter.tripBase = tot.mani;
+    counter.tripSince = Date.now();
+    save();
+    shown.line = null;
+    updateCounts();
   }
 
   let saveTimer = 0;
@@ -736,6 +849,11 @@
     const tot = E.totals(banked, wheels, settings.scroll);
     store.set("mani", tot.mani.toString());
     store.set("turns", tot.turns.toString());
+    store.set("today-day", counter.todayDay);
+    store.set("today-base", counter.todayBase.toString());
+    store.set("trip-base", counter.tripBase.toString());
+    store.set("trip-since", counter.tripSince);
+    store.set("trip-on", counter.tripOn ? "1" : "0");
   }
 
   function scheduleSave() {
@@ -923,6 +1041,7 @@
     // A finger resting before lifting has stopped the wheel; a flick keeps it going.
     if (c.wheel >= 0 && performance.now() - c.lastMove > 80) wheels[c.wheel].omega = 0;
     releaseContact(c);
+    if (contacts.size === 0 && pendingLayout) queueLayout();
     requestDraw();
   }
 
@@ -936,7 +1055,8 @@
 
   canvas.addEventListener("wheel", (ev) => {
     const p = local(ev);
-    const i = view === "top" ? 0 : hitWheel(p);
+    let i = hitWheel(p);
+    if (i < 0 && view === "top" && shownCount === 1) i = 0;
     if (i < 0) return;
     ev.preventDefault();
     const unit = ev.deltaMode === 1 ? 16 : ev.deltaMode === 2 ? cssH : 1;
@@ -969,7 +1089,7 @@
     if (!dir) return;
     ev.preventDefault();
     ensureAudio();
-    for (const w of wheels) E.push(w, dir * 4);
+    for (let i = 0; i < shownCount; i += 1) E.push(wheels[i], dir * 4);
     requestDraw();
   });
 
@@ -1046,10 +1166,7 @@
     });
   }
 
-  bindRadios("view", "view", () => {
-    for (const w of wheels) w.lastDraw = undefined;
-    layout();
-  });
+  bindRadios("view", "view", () => layout());
 
   bindRadios("mode", "mode", () => {
     for (const w of wheels) {
@@ -1078,14 +1195,41 @@
     if (settings.bell) { ensureAudio(); ring(); }
   });
 
-  $("#reset").addEventListener("click", () => {
-    if (!window.confirm(t("resetConfirm"))) return;
-    banked = { turns: 0n, mani: 0n };
-    sessionStart = 0n;
-    restartWheels();
+  /* The counter: a tap shows the next line; ↺, or pressing and holding the
+   * count since a date, starts that count again. */
+  let holdTimer = 0;
+  let held = false;
+  const counterButton = $("#counter");
+  counterButton.addEventListener("pointerdown", () => {
+    held = false;
+    clearTimeout(holdTimer);
+    if (counter.line !== "trip") return;
+    holdTimer = setTimeout(() => { held = true; restartTrip(); }, 650);
+  });
+  ["pointerup", "pointerleave", "pointercancel"].forEach((type) => {
+    counterButton.addEventListener(type, () => clearTimeout(holdTimer));
+  });
+  counterButton.addEventListener("click", (ev) => {
+    if (held) { held = false; ev.preventDefault(); return; }
+    showNextLine();
+  });
+  counterButton.addEventListener("contextmenu", (ev) => { if (counter.line === "trip") ev.preventDefault(); });
+  out.restart.addEventListener("click", restartTrip);
+
+  const tripToggle = $("#trip-on");
+  tripToggle.checked = counter.tripOn;
+  tripToggle.addEventListener("change", () => {
+    counter.tripOn = tripToggle.checked;
+    if (counter.tripOn) {
+      counter.tripBase = E.totals(banked, wheels, settings.scroll).mani;
+      counter.tripSince = Date.now();
+    } else if (counter.line === "trip") {
+      counter.line = "today";
+      store.set("line", counter.line);
+    }
     save();
+    shown.line = null;
     updateCounts();
-    requestDraw();
   });
 
   /* Turn every drum back to its starting position (Om in front). The count
@@ -1133,7 +1277,12 @@
   /* ---------- Start ---------- */
 
   window.addEventListener("pagehide", save);
-  document.addEventListener("visibilitychange", () => { if (document.hidden) save(); });
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) { save(); return; }
+    checkDay(E.totals(banked, wheels, settings.scroll).mani);
+    shown.line = null;
+    updateCounts();
+  });
 
   let resizeQueued = false;
   function queueLayout() {
@@ -1146,6 +1295,7 @@
 
   applyLanguage();
   layout();
+  save();
 
   // Re-render the syllables once the Tibetan font has loaded.
   if (document.fonts && document.fonts.load) {

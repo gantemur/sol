@@ -117,4 +117,28 @@ for (const n of E.SCROLL_SIZES) {
   eq(E.step(w, -1), 0, "negative time step does nothing");
 }
 
+// Stage layout: the side view fits about 250 px per drum, up to six; the top
+// view a row of wheels with slots at least 0.9 × the height, never more than
+// the side view would show.
+{
+  eq(E.sideCount(390), 1, "phone portrait: one drum from the side");
+  eq(E.sideCount(844), 3, "phone landscape: three drums from the side");
+  eq(E.sideCount(3000), 6, "at most six drums");
+  eq(E.topCount(390, 390), 1, "phone portrait: one wheel from above");
+  eq(E.topCount(844, 250), 3, "short landscape stage: three wheels from above");
+  eq(E.topCount(844, 330), 2, "taller landscape stage: two wheels from above");
+  eq(E.topCount(960, 640), 1, "desktop stage: one wheel from above");
+  eq(E.topCount(500, 100), 2, "never more than the side view would show");
+  for (const [v, w, h] of [["side", 844, 300], ["top", 844, 250], ["top", 390, 390]]) {
+    const L = E.stageLayout(v, w, h);
+    const d = L.drums;
+    ok(d.length >= 1, "layout has drums: " + v);
+    for (let i = 0; i < d.length; i += 1) {
+      ok(d[i].cx - d[i].R >= 0 && d[i].cx + d[i].R <= L.w + 1e-9, "drum inside the stage: " + v);
+      if (i > 0) ok(d[i].cx - d[i - 1].cx >= 2 * d[i].R, "drums do not overlap: " + v);
+    }
+  }
+  eq(E.stageLayout("top", 844, 250, 1).drums.length, 1, "a held count is kept");
+}
+
 console.log("khurd engine: " + checks + " checks passed.");
