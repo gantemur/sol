@@ -178,8 +178,43 @@ main {
   position: relative;
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 4px;
   margin-top: 6px;
 }
+
+/* The milestone badge, left of the total; tapping it opens the ladder. */
+.badge {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.badge svg { display: block; width: 100%; height: 100%; }
+.badge:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* A new bead pulses the badge; a new symbol makes it grow. With reduced
+ * motion it brightens instead. */
+.badge.pulse-bead { animation: bead-pulse 0.36s ease-in-out; }
+.badge.pulse-symbol { animation: symbol-pulse 1.4s cubic-bezier(0.3, 1.6, 0.5, 1); }
+
+@keyframes bead-pulse { 50% { transform: scale(1.15); } }
+@keyframes symbol-pulse { 30% { transform: scale(1.5); } 100% { transform: scale(1); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .badge.pulse-bead { animation: bead-glow 0.36s ease-in-out; }
+  .badge.pulse-symbol { animation: bead-glow 1.4s ease-in-out; }
+  @keyframes bead-glow { 50% { filter: brightness(1.3); } }
+}
+
+.line.reached { color: var(--accent); font-weight: 600; }
 
 /* The whole count is one button: a tap shows the next line. */
 .counter {
@@ -222,6 +257,7 @@ main {
   font-variant-numeric: tabular-nums;
 }
 
+.line { display: inline-block; white-space: nowrap; }
 .line output { color: var(--ink); font-weight: 600; }
 
 .dots { display: flex; gap: 5px; }
@@ -392,6 +428,7 @@ select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   }
   .count { margin-top: 0; }
   .counter { flex-direction: row; align-items: center; gap: 14px; padding: 0 12px; }
+  .badge { width: 40px; height: 40px; }
   .mani { font-size: 1.6rem; }
 }
 
@@ -408,3 +445,81 @@ select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     height: calc(100dvh - 124px);
   }
 }
+
+/* The ladder: the milestones sheet. */
+.ladder {
+  width: min(460px, 100% - 32px);
+  max-height: min(86vh, 760px);
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  background: var(--wall);
+  color: var(--ink);
+  box-shadow: 0 20px 60px rgb(0 0 0 / 0.35);
+}
+
+.ladder::backdrop { background: rgb(20 10 10 / 0.45); }
+
+.ladder-head {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--wall);
+}
+
+.ladder-head h2 { margin: 0; font-size: 1.05rem; }
+
+.done {
+  min-height: 36px;
+  padding: 4px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--maroon);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.done:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.ladder-body { padding: 8px 16px 16px; }
+.ladder-top { text-align: center; }
+.ladder-badge { width: 132px; height: 132px; margin: 4px auto 0; }
+.ladder-badge svg { width: 100%; height: 100%; }
+.ladder-title { margin: 4px 0 0; font-size: 1.3rem; font-weight: 650; }
+.ladder-symbol { margin: 2px 0 10px; color: var(--muted); }
+
+.ladder-facts { margin: 0 0 14px; }
+.ladder-facts div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--rule);
+}
+.ladder-facts dt { margin: 0; }
+.ladder-facts dd { margin: 0; color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
+
+.ladder-body h3 { margin: 6px 0; font-size: 0.9rem; color: var(--muted); font-weight: 600; }
+
+.ladder-list { margin: 0; padding: 0; list-style: none; }
+.ladder-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  border-top: 1px solid var(--rule);
+}
+.rung-badge { flex: none; width: 44px; height: 44px; }
+.rung-badge svg { width: 100%; height: 100%; }
+.rung-text { flex: 1; display: flex; flex-direction: column; }
+.rung-at { color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+.ladder-list li.here .rung-name { font-weight: 650; }
+.ladder-list li.faded .rung-badge { filter: grayscale(1); opacity: 0.4; }
+.rung-here { color: var(--accent); font-size: 0.85rem; font-weight: 650; }
+.ladder .note a { color: var(--accent); }

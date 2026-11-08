@@ -36,8 +36,20 @@ network requests and no external libraries. The folder works when copied on its 
 - **Turning backwards** either does nothing (the default, with a small recoil) or
   subtracts from the count.
 - **Mantras inside** sets how many mantras the inner scroll holds: 1, 10, 108,
-  then 10³ to 10⁸, shown in Mongolian with the traditional names мянга, түм, бум, сая,
-  живаа and дүнчүүр. Default 1.
+  мянга, түм and бум (10⁵), the largest, because every counted mantra is really
+  written (below). Default 1. A size above бум saved by an earlier version opens
+  as бум.
+- **Milestones**, as in the khurd app: a badge left of the total shows a symbol
+  for the total's power of ten and as many lit beads as its leading digit
+  (347,210 is the treasure vase with 3 beads). Ranks are by mani: below 1,000 the
+  Three Jewels, then the eight auspicious signs from мянга (parasol) to их тэрбум
+  (the wheel), which gains a gold ring per further power of ten from 10¹¹.
+  Tapping the badge opens the ladder: the milestone in words ("3 буман маань",
+  "300,000 mani"), the next two milestones and the distance to each, and every
+  rung. Crossing into a new symbol makes the badge grow briefly, names the
+  milestone under the total for about 4 seconds, gives a short vibration where
+  the device has one and is announced to screen readers; a new bead only pulses
+  the badge. Each milestone is celebrated once and nothing at load.
 - An optional bell rings on each full turn. Sound starts only after a user action.
 - **Counters**, as in the khurd app: the total, which is never reset (only
   backward turning in subtract mode lowers it), and one line below it. Tapping
@@ -76,6 +88,15 @@ the saved choice, then Mongolian. Switching keeps the count and settings.
   at the bottom: upright and read left to right at the front, so counter-clockwise
   around the wheel, and turning clockwise brings them to the front in order. Changing N or
   changing N turns the drums back to Om, so faces, bands and count stay in step.
+- **The hidden scroll.** Each drum has its own 16-byte buffer that is given the
+  UTF-8 text of each syllable in turn (ཨོཾ, མ, ཎི, པ, དྨེ, ཧཱུྃ, again) as the drum
+  passes 1/(6N) of a turn: every syllable, in order, however fast it turns, and
+  in reverse order when turning back in subtract mode. The count shown is what
+  the scrolls have written (`writtenTotals`), equal by construction and by test
+  to trunc(acc·N/2π). At the speed limit a бум drum writes 4.8 million syllables
+  a second; the scroll code writes about 300 million a second on one core of a
+  2.1 GHz Xeon (measured 2026-11-08), so this costs about 1.6 % of a core per
+  drum. Larger sizes would not be affordable, hence the limit.
 - Syllable sprites are cropped to their rendered ink rather than to font
   metrics, which differ between browsers for Tibetan, so every letter is centred
   by what is actually drawn.
@@ -121,6 +142,30 @@ banking preserves totals.
 Copyright (c) 2026 Tsogtgerel Gantumur. Code and documentation: [MIT](LICENSE).
 
 `icon-*.png` are rendered from this tool's own top view.
+
+The milestone symbols in `ranks/` are **not** under the MIT licence. They are
+drawings from Wikimedia Commons under Creative Commons Attribution-ShareAlike,
+the same files the khurd app uses: anyone may reuse them, changed or not,
+under the same terms, with credit. The only change from the Commons files:
+rules in each file's `<style>` block were copied onto the elements that use
+them and the block removed, so renderers without CSS draw the same picture.
+The tool draws them on a light disc with beads and rings; the files are not
+recoloured. Downloaded 2026-11-08; authors and licences as given on each
+file's Commons page that day.
+
+| File | Symbol | Commons file | Author | Licence |
+| --- | --- | --- | --- | --- |
+| `rank-jewels.svg` | Three Jewels | [Three Jewels symbol colour.svg](https://commons.wikimedia.org/wiki/File:Three_Jewels_symbol_colour.svg) | Christopher J. Fynn | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
+| `rank-parasol.svg` | Parasol | [8signs-DUK.svg](https://commons.wikimedia.org/wiki/File:8signs-DUK.svg) | Christopher J. Fynn | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
+| `rank-fish.svg` | Golden fish | [8signs-SERNYA.svg](https://commons.wikimedia.org/wiki/File:8signs-SERNYA.svg) | Nick Terazzi | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) |
+| `rank-vase.svg` | Treasure vase | [8-Signs BUMPA.svg](https://commons.wikimedia.org/wiki/File:8-Signs_BUMPA.svg) | Christopher J. Fynn | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
+| `rank-lotus.svg` | Lotus | [8-Signs PADMA.svg](https://commons.wikimedia.org/wiki/File:8-Signs_PADMA.svg) | Christopher J. Fynn | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
+| `rank-conch.svg` | Conch | [Ashtamangala right whorl conch.svg](https://commons.wikimedia.org/wiki/File:Ashtamangala_right_whorl_conch.svg) | Christopher J. Fynn | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) |
+| `rank-knot.svg` | Endless knot | [8signs-PELBEU.svg](https://commons.wikimedia.org/wiki/File:8signs-PELBEU.svg) | Christopher J. Fynn | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
+| `rank-banner.svg` | Victory banner | [8signs-GYALTSEN.svg](https://commons.wikimedia.org/wiki/File:8signs-GYALTSEN.svg) | Christopher J. Fynn | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
+| `rank-wheel.svg` | Wheel | [8-Signs KHORLO.svg](https://commons.wikimedia.org/wiki/File:8-Signs_KHORLO.svg) | Christopher J. Fynn | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
+
+The ladder sheet names the artists and the licence and links here.
 
 `fonts/tibetan-khurd.woff` is a subset of Noto Serif Tibetan Bold 2.103,
 Copyright 2022 The Noto Project Authors, reduced to the mantra's glyphs with

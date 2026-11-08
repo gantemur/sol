@@ -44,15 +44,18 @@
     </div>
 
     <section class="count" id="count">
+      <button type="button" class="badge" id="badge" aria-describedby="badge-hint"></button>
+      <span class="visually-hidden" id="badge-hint" data-i18n="badgeHint">Маанийн шатыг харахын тулд товшино.</span>
       <button type="button" class="counter" id="counter" aria-describedby="counter-hint">
         <span class="mani"><output id="mani-total">0</output> <span data-i18n="mani">маань</span></span>
-        <span class="line"><span id="line-label">Өнөөдөр</span> <output id="line-value">0</output></span>
+        <span class="line" id="line"><span id="line-label">Өнөөдөр</span> <output id="line-value">0</output></span>
         <span class="dots" id="line-dots" aria-hidden="true"></span>
       </button>
       <span class="visually-hidden" id="counter-hint" data-i18n="counterHint">Дараагийн тоог харахын тулд товшино.</span>
       <button type="button" class="restart" id="trip-restart" hidden
         data-i18n-label="tripRestart" aria-label="Энэ тоог дахин эхлүүлэх">↺</button>
     </section>
+    <p class="visually-hidden" id="announce" aria-live="polite"></p>
 
     <p class="hint" id="hint"></p>
 
@@ -96,5 +99,13 @@
       <div class="prose" data-i18n-html="about"></div>
     </details>
   </main>
+
+  <dialog class="ladder" id="ladder" aria-labelledby="ladder-title">
+    <div class="ladder-head">
+      <h2 id="ladder-title" data-i18n="milestones">Маанийн шат</h2>
+      <button type="button" class="done" id="ladder-done" data-i18n="done">Болсон</button>
+    </div>
+    <div class="ladder-body" id="ladder-body"></div>
+  </dialog>
 </body>
 </html>
