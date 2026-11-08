@@ -1,0 +1,26 @@
+<svg width="716" height="564" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<title>Endless Knot</title>
+<linearGradient id="lg1" x1="-2.295" y1="1.425" x2="-.575" y2="-.295" gradientUnits="userSpaceOnUse">
+<stop offset="0" stop-color="#FFCC28"/>
+<stop offset="1" stop-color="#F58634"/>
+</linearGradient>
+<linearGradient id="lg2" x1="1.7050" y1="1.425" x2="3.425" y2="-.295" gradientUnits="userSpaceOnUse" xlink:href="#lg1"/>
+<linearGradient id="lg3" x1="-1.425" y1=".295" x2=".295" y2="-1.425" gradientUnits="userSpaceOnUse" xlink:href="#lg1"/>
+<linearGradient id="lg4" x1="-4.295" y1="4.295" x2="-1.14" y2="1.14" gradientUnits="userSpaceOnUse" xlink:href="#lg1"/>
+<linearGradient id="lg5" x1="-4.295" y1=".295" x2="-1.14" y2="-2.86" gradientUnits="userSpaceOnUse" xlink:href="#lg1"/>
+<linearGradient id="lg6" x1="-2.295" y1="-2.575" x2="-.14" y2="-4.73" gradientUnits="userSpaceOnUse" xlink:href="#lg1"/>
+<linearGradient id="lg7" x1=".575" y1="-1.7050" x2="3.73" y2="-4.86" gradientUnits="userSpaceOnUse" xlink:href="#lg1"/>
+<linearGradient id="lg8" x1=".575" y1="2.295" x2="3.73" y2="-.86" gradientUnits="userSpaceOnUse" xlink:href="#lg1"/>
+<linearGradient id="lg9" x1="-.295" y1="4.295" x2="1.86" y2="2.14" gradientUnits="userSpaceOnUse" xlink:href="#lg1"/>
+<g stroke="#000" stroke-width=".28" transform="translate(358,282) rotate(45) scale(53)">
+	<path d="M-2.435 1.565v-3.13h.87v3.13z" fill="url(#lg1)"/>
+	<path d="M1.565 1.565v-3.13h.87v3.13z" fill="url(#lg2)"/>
+	<path d="M-1.565.435v-.87h3.13v.87z" fill="url(#lg3)"/>
+	<path d="M-4.435 4.435v-2.87h4v.87h-3.13v1.13h1.13v-1.13h.87v2z" fill="url(#lg4)"/>
+	<path d="M-4.435.435v-2.87h4v.87h-3.13v1.13h1.13v.87z" fill="url(#lg5)"/>
+	<path d="M-2.435-2.435v-2h2.87v4h-.87v-3.13h-1.13v1.13z" fill="url(#lg6)"/>
+	<path d="M.435-1.565v-.87h3.13v-1.13h-1.13v1.13h-.87v-2h2.87v2.87z" fill="url(#lg7)"/>
+	<path d="M.435 2.435v-.87h3.13v-1.13h-1.13v-.87h2v2.87z" fill="url(#lg8)"/>
+	<path d="M-.435 4.435v-4h.87v3.13h1.13v-1.13h.87v2z" fill="url(#lg9)"/>
+</g>
+</svg>

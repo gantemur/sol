@@ -23,6 +23,19 @@
       since: "%s-с хойш",
       counterHint: "Дараагийн тоог харахын тулд товшино.",
       tripRestart: "Энэ тоог дахин эхлүүлэх",
+      milestones: "Маанийн шат",
+      ladder: "Бүх шат",
+      youAreHere: "Та энд",
+      total: "Нийт",
+      toGo: "дахиад %s",
+      nextRing: "Дараагийн алтан цагираг",
+      reached: "%s хүрлээ",
+      badgeHint: "Маанийн шатыг харахын тулд товшино.",
+      done: "Болсон",
+      ladderNote: "100,000,000,000-аас хойш нийт тоо 10 дахин өсөх бүрд хүрдэнд нэг алтан цагираг нэмэгдэнэ. Тэмдгийг тойрсон есөн цэгээс гэрэлтсэн нь нийт тооны эхний цифрийг заана.",
+      credits: "Зургуудыг Christopher J. Fynn, Nick Terazzi нар зурсан бөгөөд Wikimedia Commons-оос CC BY-SA лицензээр авав.",
+      creditsLink: "Эх сурвалж, лиценз",
+      symbols: ["Гурван эрдэнэ", "Шүхэр", "Алтан загас", "Бумба", "Бадам цэцэг", "Цагаан лавай", "Өлзий", "Ялалтын туг", "Номын хүрд"],
       tripConfirm: "Энэ тоог тэгээс дахин эхлүүлэх үү? Нийт тоо хэзээ ч тэглэгдэхгүй.",
       hintSide: "Хүрдийг хуруугаараа баруунаас зүүн тийш илж эргүүлнэ.",
       hintTop: "Хүрдийг цагийн зүүний дагуу тойруулан чирж эргүүлнэ.",
@@ -47,12 +60,14 @@
         "<li>Нийт тооны доорх тоог товшиж Өнөөдөр, огнооноос хойших тоо, Эргэлт хооронд сэлгэнэ.</li>" +
         "<li>Огнооноос хойших тоог дахин эхлүүлэхийн тулд хажуугийн ↺ тэмдгийг товшино, эсвэл тоог удаан дарна.</li>" +
         "<li>Хүрдийг шудрахад эргэлдэнэ; хуруугаа хөдөлгөлгүй тавибал зогсоно.</li>" +
+        "<li>Нийт тооны хажууд буй тэмдэг таны маанийн шатыг заана: тоо 10 дахин өсөх бүрд өөр тэмдэг гарч, нийт тооны эхний цифрийн хэрээр тойрсон цэгүүд гэрэлтэнэ. Бүх шатыг харах бол тэмдэг дээр товшино уу.</li>" +
         "<li>Хуруу тань хүрдэн дээр байхад харагдац солигдохгүй; эргэсээр буй хүрд шинэ харагдацад, бүр харагдахгүй болсон ч эргэсээр, тоологдсоор байна.</li>",
       aboutTitle: "Тухай",
       about:
         "<p>Хүрдний гадаргуу дээр <span class=\"tib\" lang=\"bo\">ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ</span> буюу «Ум мани бадми хум» гэсэн зургаан үсэгт тарни бичигдсэн. " +
         "Жинхэнэ хүрдний дотор маань олон мянгаар бичсэн цаасыг ороож хийдэг бөгөөд хүрдийг цагийн зүүний дагуу нэг эргүүлэхэд дотор нь буй бүх маань нэг уншигдсантай адил гэж үздэг.</p>" +
         "<p>«Доторх маань» тохиргоо нь ороосон цаасан дээрх маанийн тоо. Хүрд бүрийн дээрх тууз тухайн хүрдний цаас уншигдаж буйг харуулна: хүрд нэг эргэхэд түүний тууз яг тэр тоогоор маань гүйлгэнэ. Алтан тэмдгийг бүтэн өнгөрсөн маань бүр тоологдоно. Тиймээс гурван хүрдийг тус бүр гуравны нэгээр эргүүлбэл нэг ч маань бүтэн уншигдахгүй.</p>" +
+        "<p>Хүрд бүрийн дотор цаас ч бас үнэхээр эргэдэг: төхөөрөмжийн санах ойд нуугдмал хувьсагчид үе бүрийг дарааллаар нь бичиж, бүтэн бичигдсэн маанийг л тоолно. Жинхэнэ хүрдний доторх цаасыг хэн ч хардаггүйн адил үүнийг ч хэн ч харахгүй. Иймээс доторх маань бум хүртэл байна.</p>" +
         "<p>Тоолуур зөвхөн энэ төхөөрөмж дээр хадгалагдана.</p>"
     },
     en: {
@@ -66,6 +81,19 @@
       since: "Since %s",
       counterHint: "Tap to show the next count.",
       tripRestart: "Start this count again",
+      milestones: "Milestones",
+      ladder: "The ladder",
+      youAreHere: "You are here",
+      total: "Total",
+      toGo: "%s to go",
+      nextRing: "Next gold ring",
+      reached: "Reached %s",
+      badgeHint: "Tap to show the milestones.",
+      done: "Done",
+      ladderNote: "From 100,000,000,000 the wheel gains a gold ring for each further power of ten. Nine beads count the first digit of the total.",
+      credits: "Drawings by Christopher J. Fynn and Nick Terazzi, from Wikimedia Commons, under CC BY-SA.",
+      creditsLink: "Sources and licences",
+      symbols: ["The Three Jewels", "Parasol", "Golden fish", "Treasure vase", "Lotus", "Conch", "Endless knot", "Victory banner", "Dharma wheel"],
       tripConfirm: "Start this count again from zero? The total is never zeroed.",
       hintSide: "Brush the drums from right to left to turn them.",
       hintTop: "Drag around the wheel clockwise to turn it.",
@@ -90,12 +118,14 @@
         "<li>Tap the count under the total to switch between Today, the count since a date, and Turns.</li>" +
         "<li>To start the count since a date again, tap ↺ beside it, or press and hold it.</li>" +
         "<li>Flick the wheel to let it spin; hold a finger still on it to stop it.</li>" +
+        "<li>The badge beside the total marks your milestones: a symbol for each power of ten, and as many lit beads as the first digit of the total. Tap it to see the whole ladder.</li>" +
         "<li>The view does not change while your finger is on the drums; drums still turning carry on in the new view, even when they are hidden.</li>",
       aboutTitle: "About",
       about:
         "<p>The drum carries the six-syllable mantra <span class=\"tib\" lang=\"bo\">ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ</span>, Om mani padme hum. " +
         "A real wheel holds a long paper scroll with the mantra written many thousands of times, and by tradition one clockwise turn counts as reciting everything inside.</p>" +
         "<p>The Mantras inside setting is the number of mantras on that scroll. The band above each drum shows that drum's scroll being read: each turn runs exactly that many mantras through it, and every mantra that has fully passed the gold mark is counted. Turning three drums a third of a turn each therefore completes no mantra.</p>" +
+        "<p>Inside each drum a scroll also really turns: a hidden variable in this device's memory is given each syllable in order, and only mantras written there in full are counted. Nobody sees it, just as nobody sees the paper inside a real wheel. That is why the scroll holds at most 100,000 mantras.</p>" +
         "<p>The count is kept only on this device.</p>"
     }
   };
@@ -146,6 +176,8 @@
     mode: pick(store.get("mode"), ["ratchet", "subtract"], "ratchet"),
     scroll: (() => {
       const n = Number(store.get("scroll"));
+      // Sizes above бум were offered before the hidden scroll; keep the largest.
+      if (n > 1e5) return 1e5;
       return E.SCROLL_SIZES.includes(n) ? n : 1;
     })(),
     bell: store.get("bell") === "1"
@@ -175,6 +207,16 @@
   }
   if (!counter.tripOn && counter.line === "trip") counter.line = "today";
 
+  /* Milestones: nothing is celebrated at load; what the total already shows
+   * counts as reached, and the highest milestone reached is remembered so
+   * that turning back and forward again does not repeat it. */
+  const RANK_FILES = ["jewels", "parasol", "fish", "vase", "lotus", "conch", "knot", "banner", "wheel"];
+  const ms = (() => {
+    const now = E.milestone(banked.mani);
+    const saved = E.milestone(readBig("milestone", 0n));
+    return { now, best: E.compareMilestones(saved, now) > 0 ? saved : now, celebrating: null, timer: 0 };
+  })();
+
   /* ---------- Elements ---------- */
 
   const $ = (sel) => document.querySelector(sel);
@@ -190,6 +232,10 @@
     dots: $("#line-dots"),
     restart: $("#trip-restart"),
     count: $("#count"),
+    line: $("#line"),
+    counter: $("#counter"),
+    badge: $("#badge"),
+    announce: $("#announce"),
     hint: $("#hint")
   };
   const coarse = window.matchMedia ? matchMedia("(pointer: coarse)") : { matches: false };
@@ -793,10 +839,20 @@
     return [t("today"), tot.mani - counter.todayBase];
   }
 
-  /* ↺ sits just past the trip count, over the layout, so switching lines
-   * never moves anything. */
-  function placeRestart() {
-    const show = counter.line === "trip";
+  /* Under the drums the line under the total moves towards the centre of badge
+   * and total together, but not past the total's left edge (khurd app: else
+   * the whole "feels tilted to the right"). ↺ sits just past the trip count,
+   * over the layout, so switching lines never moves anything. */
+  function placeLine() {
+    out.line.style.transform = "";
+    if (getComputedStyle(out.counter).flexDirection === "column") {
+      const b = out.badge.getBoundingClientRect();
+      const totalW = out.mani.parentElement.getBoundingClientRect().width;
+      const lineW = out.line.getBoundingClientRect().width;
+      const shift = Math.min((b.width + 12) / 2, Math.max(0, (totalW - lineW) / 2));
+      if (shift > 0) out.line.style.transform = "translateX(" + (-shift) + "px)";
+    }
+    const show = counter.line === "trip" && !ms.celebrating;
     out.restart.hidden = !show;
     if (!show) return;
     const v = out.lineValue.getBoundingClientRect();
@@ -806,11 +862,21 @@
   }
 
   function updateCounts() {
-    const tot = E.totals(banked, wheels, settings.scroll);
-    if (shown.mani !== null && tot.mani !== shown.mani) checkDay(shown.mani);
+    const tot = E.writtenTotals(banked, wheels);
+    if (shown.mani !== null && tot.mani !== shown.mani) {
+      checkDay(shown.mani);
+      checkMilestone(tot.mani);
+    }
     const langChanged = shown.lang !== settings.lang;
-    if (tot.mani !== shown.mani || langChanged) out.mani.textContent = format(tot.mani);
-    const [label, value] = lineParts(tot);
+    if (tot.mani !== shown.mani || langChanged) {
+      out.mani.textContent = format(tot.mani);
+      renderBadge(langChanged);
+    }
+    let [label, value] = lineParts(tot);
+    if (ms.celebrating) {
+      label = t("reached").replace("%s", milestoneTitle(ms.celebrating));
+      value = "";
+    }
     const lineKey = counter.line + "|" + label;
     if (lineKey !== shown.line || langChanged) {
       out.lineLabel.textContent = label;
@@ -818,11 +884,137 @@
       out.dots.innerHTML = lines.map((l) => (l === counter.line ? "<i class=\"on\"></i>" : "<i></i>")).join("");
     }
     if (value !== shown.lineValue || lineKey !== shown.line || langChanged) {
-      out.lineValue.textContent = format(value);
-      placeRestart();
+      out.lineValue.textContent = value === "" ? "" : format(value);
+      out.line.classList.toggle("reached", !!ms.celebrating);
+      placeLine();
     }
     shown = { mani: tot.mani, turns: tot.turns, line: lineKey, lineValue: value, lang: settings.lang };
     return tot;
+  }
+
+  /* ---------- Milestones ---------- */
+
+  function symbolName(i) {
+    return t("symbols")[i];
+  }
+
+  /* "3 буман маань"; "300,000 mani" in English. */
+  function milestoneTitle(m) {
+    const words = E.milestoneWords(m);
+    if (!words) return format(E.writtenTotals(banked, wheels).mani) + " " + t("mani");
+    if (settings.lang === "mn") return format(words.count) + " " + words.attributive + " " + t("mani");
+    return format(E.milestoneValue(m)) + " " + t("mani");
+  }
+
+  /* "бум · 100,000" in Mongolian; the number in English. */
+  function rankThreshold(symbol) {
+    if (symbol === 0) return format(0n) + "–" + format(999n);
+    const value = E.symbolThreshold(symbol);
+    const words = settings.lang === "mn" ? E.milestoneWords(E.milestone(value)) : null;
+    if (!words) return format(value);
+    const name = words.count === 1n ? words.name : format(words.count) + " " + words.name;
+    return name + " · " + format(value);
+  }
+
+  /* A symbol on a light disc, nine beads around it, as many lit as the
+   * total's leading digit, and from 10¹¹ gold rings inside the disc. */
+  function badgeSVG(m, opts) {
+    const o = opts || {};
+    const symbol = E.milestoneSymbol(m);
+    let svg = "<svg viewBox=\"0 0 100 100\" aria-hidden=\"true\" focusable=\"false\">" +
+      "<circle cx=\"50\" cy=\"50\" r=\"35\" fill=\"#fbf6ec\" stroke=\"#d6a23e\" stroke-width=\"2.5\"/>";
+    for (let i = 0; i < Math.min(E.milestoneRings(m), 3); i += 1) {
+      svg += "<circle cx=\"50\" cy=\"50\" r=\"" + (32.25 - 2.5 * i) + "\" fill=\"none\" stroke=\"#d6a23e\" stroke-width=\"1.5\"/>";
+    }
+    svg += "<image href=\"ranks/rank-" + RANK_FILES[symbol] + ".svg\" x=\"23\" y=\"23\" width=\"54\" height=\"54\" preserveAspectRatio=\"xMidYMid meet\"/>";
+    if (o.beads !== false) {
+      for (let i = 0; i < 9; i += 1) {
+        const a = (-90 + i * 40) * Math.PI / 180;
+        const lit = i < m.digit;
+        svg += "<circle cx=\"" + (50 + 45 * Math.cos(a)).toFixed(2) + "\" cy=\"" + (50 + 45 * Math.sin(a)).toFixed(2) +
+          "\" r=\"4.1\" fill=\"" + (lit ? "#d6a23e" : "none") + "\" stroke=\"#d6a23e\" stroke-opacity=\"" + (lit ? 1 : 0.5) +
+          "\" stroke-width=\"1.2\"/>";
+      }
+    }
+    return svg + "</svg>";
+  }
+
+  let badgeKey = "";
+  function renderBadge(force) {
+    const m = ms.now;
+    const key = m.power + ":" + m.digit + ":" + settings.lang;
+    if (key === badgeKey && !force) return;
+    badgeKey = key;
+    out.badge.innerHTML = badgeSVG(m);
+    out.badge.setAttribute("aria-label", milestoneTitle(m) + ", " + symbolName(E.milestoneSymbol(m)));
+  }
+
+  function pulseBadge(kind) {
+    out.badge.classList.remove("pulse-bead", "pulse-symbol");
+    void out.badge.offsetWidth;  // restart the animation
+    out.badge.classList.add(kind === "symbol" ? "pulse-symbol" : "pulse-bead");
+  }
+
+  function checkMilestone(total) {
+    const now = E.milestone(total);
+    ms.now = now;
+    const crossing = E.milestoneCrossing(ms.best, now);
+    if (!crossing) return;
+    ms.best = now;
+    scheduleSave();
+    if (crossing === "bead") { pulseBadge("bead"); return; }
+    // A new symbol: the badge grows, the line names it for about 4 seconds,
+    // a short vibration where the device has one, and screen readers hear it.
+    // Nothing interrupts turning.
+    pulseBadge("symbol");
+    ms.celebrating = now;
+    out.announce.textContent = t("reached").replace("%s", milestoneTitle(now));
+    try { if (navigator.vibrate) navigator.vibrate([25, 40, 25]); } catch (e) { /* not available */ }
+    clearTimeout(ms.timer);
+    ms.timer = setTimeout(() => {
+      ms.celebrating = null;
+      shown.line = null;
+      updateCounts();
+    }, 4000);
+  }
+
+  const ladder = $("#ladder");
+  const ladderBody = $("#ladder-body");
+
+  function openLadder() {
+    const total = E.writtenTotals(banked, wheels).mani;
+    const m = E.milestone(total);
+    const symbol = E.milestoneSymbol(m);
+    const toGo = (n) => t("toGo").replace("%s", format(n));
+    let html = "<div class=\"ladder-top\"><div class=\"ladder-badge\">" + badgeSVG(m) + "</div>" +
+      "<p class=\"ladder-title\">" + milestoneTitle(m) + "</p><p class=\"ladder-symbol\">" + symbolName(symbol) + "</p></div>" +
+      "<dl class=\"ladder-facts\"><div><dt>" + t("total") + "</dt><dd>" + format(total) + "</dd></div>";
+    if (m.digit < 9) {
+      const nb = E.nextBead(m);
+      html += "<div><dt>" + milestoneTitle(E.milestone(nb)) + "</dt><dd>" + toGo(nb - total) + "</dd></div>";
+    }
+    const ns = E.nextSymbol(m);
+    const what = symbol < E.SYMBOL_COUNT - 1 ? symbolName(symbol + 1) : t("nextRing");
+    html += "<div><dt>" + milestoneTitle(E.milestone(ns)) + " · " + what + "</dt><dd>" + toGo(ns - total) + "</dd></div></dl>" +
+      "<h3>" + t("ladder") + "</h3><ol class=\"ladder-list\">";
+    for (let i = 0; i < E.SYMBOL_COUNT; i += 1) {
+      const rung = E.milestone(E.symbolThreshold(i));
+      html += "<li class=\"" + (i > symbol ? "faded" : "") + (i === symbol ? " here" : "") + "\">" +
+        "<span class=\"rung-badge\">" + badgeSVG(rung, { beads: false }) + "</span>" +
+        "<span class=\"rung-text\"><span class=\"rung-name\">" + symbolName(i) + "</span><span class=\"rung-at\">" + rankThreshold(i) + "</span></span>" +
+        (i === symbol ? "<span class=\"rung-here\">" + t("youAreHere") + "</span>" : "") + "</li>";
+    }
+    html += "</ol><p class=\"note\">" + t("ladderNote") + "</p>" +
+      "<p class=\"note\">" + t("credits") + " <a href=\"https://github.com/gantemur/sol/blob/main/khurd/README.md#license-and-provenance\">" + t("creditsLink") + "</a></p>";
+    ladderBody.innerHTML = html;
+    if (typeof ladder.showModal === "function") ladder.showModal();
+    else ladder.setAttribute("open", "");
+  }
+
+  function closeLadder() {
+    if (typeof ladder.close === "function") ladder.close();
+    else ladder.removeAttribute("open");
+    out.badge.focus();
   }
 
   function showNextLine() {
@@ -836,7 +1028,7 @@
 
   function restartTrip() {
     if (!window.confirm(t("tripConfirm"))) return;
-    const tot = E.totals(banked, wheels, settings.scroll);
+    const tot = E.writtenTotals(banked, wheels);
     counter.tripBase = tot.mani;
     counter.tripSince = Date.now();
     save();
@@ -846,7 +1038,7 @@
 
   let saveTimer = 0;
   function save() {
-    const tot = E.totals(banked, wheels, settings.scroll);
+    const tot = E.writtenTotals(banked, wheels);
     store.set("mani", tot.mani.toString());
     store.set("turns", tot.turns.toString());
     store.set("today-day", counter.todayDay);
@@ -854,6 +1046,7 @@
     store.set("trip-base", counter.tripBase.toString());
     store.set("trip-since", counter.tripSince);
     store.set("trip-on", counter.tripOn ? "1" : "0");
+    store.set("milestone", E.milestoneValue(ms.best).toString());
   }
 
   function scheduleSave() {
@@ -899,6 +1092,8 @@
   /* Every applied rotation passes through here. */
   function account(w, applied) {
     if (!applied) return;
+    // The drum's hidden scroll turns with it, writing every syllable.
+    E.syncScroll(w, settings.scroll);
     w.bandStep = (w.bandStep || 0) + E.bandShift(applied, settings.scroll);
     w.ring = (w.ring || 0) + applied;
     while (Math.abs(w.ring) >= TAU) {
@@ -1134,6 +1329,7 @@
     });
     fillScrollOptions();
     updateHint();
+    badgeKey = "";
     updateCounts();
     if (fsEnabled) updateFullscreenButton();
   }
@@ -1215,13 +1411,16 @@
   });
   counterButton.addEventListener("contextmenu", (ev) => { if (counter.line === "trip") ev.preventDefault(); });
   out.restart.addEventListener("click", restartTrip);
+  out.badge.addEventListener("click", openLadder);
+  $("#ladder-done").addEventListener("click", closeLadder);
+  ladder.addEventListener("click", (ev) => { if (ev.target === ladder) closeLadder(); });
 
   const tripToggle = $("#trip-on");
   tripToggle.checked = counter.tripOn;
   tripToggle.addEventListener("change", () => {
     counter.tripOn = tripToggle.checked;
     if (counter.tripOn) {
-      counter.tripBase = E.totals(banked, wheels, settings.scroll).mani;
+      counter.tripBase = E.writtenTotals(banked, wheels).mani;
       counter.tripSince = Date.now();
     } else if (counter.line === "trip") {
       counter.line = "today";
@@ -1237,6 +1436,7 @@
   function restartWheels() {
     for (const w of wheels) {
       w.acc = 0;
+      w.scroll = E.createScroll();
       w.angle = 0;
       w.omega = 0;
       w.ring = 0;
@@ -1279,7 +1479,7 @@
   window.addEventListener("pagehide", save);
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) { save(); return; }
-    checkDay(E.totals(banked, wheels, settings.scroll).mani);
+    checkDay(E.writtenTotals(banked, wheels).mani);
     shown.line = null;
     updateCounts();
   });
