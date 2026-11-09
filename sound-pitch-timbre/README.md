@@ -41,12 +41,20 @@ For headphone safety, start at a low volume. Stopping, hiding the page or
 leaving it ends playback. There is no recording, WAV export, note snapping,
 custom harmonic editor or background microphone capture in this tool.
 
+The oscillator is connected, started, and its audio context resumed synchronously
+within the Play-button gesture for Safari compatibility (with no await between
+the gesture and source start). If context startup is blocked or suspended for
+more than two seconds, the tool displays a diagnostic and closes that context
+so the next Play attempts a fresh one. Browser sound permissions, output devices,
+silent-mode settings and Safari behavior can still affect actual audibility.
+
 ## Verification
 
 From this folder:
 
 ```sh
 node --test model.test.cjs
+node audio.test.cjs
 node --check model.js
 node --check app.js
 ```

@@ -6,8 +6,8 @@
   <title>Дуу · Долгион ба спектр</title>
   <meta name="description" content="Жишээ авиа болон богино микрофоны бичлэгийн долгион, спектрийг харьцуулан ажиглах.">
   <link rel="stylesheet" href="style.css">
-  <script src="model.js" defer></script>
-  <script src="app.js?v=20261109b" defer></script>
+  <script src="model.js?v=20261109c" defer></script>
+  <script src="app.js?v=20261109c" defer></script>
   <!-- Aggregate page visits only; no microphone audio or interactions are tracked. -->
   <script>
     if (location.hostname === "gantemur.github.io") {
@@ -57,6 +57,18 @@
             <option value="4">4 сек</option>
           </select>
         </div>
+        <div class="setting-content">
+          <label for="verticalScaleSelect" data-i18n="amplitude">Босоо масштаб</label>
+          <select id="verticalScaleSelect">
+            <option value="auto" data-i18n="auto" selected>Автомат</option>
+            <option value="1">×1</option>
+            <option value="2">×2</option>
+            <option value="5">×5</option>
+            <option value="10">×10</option>
+            <option value="20">×20</option>
+            <option value="50">×50</option>
+          </select>
+        </div>
       </details>
       <div id="status" class="status" role="status" aria-live="polite"></div>
     </section>
@@ -73,7 +85,7 @@
       <section class="chart" aria-labelledby="spectrumTitle">
         <div class="chart-heading">
           <h2 id="spectrumTitle" data-i18n="spectrumTitle">Спектр</h2>
-          <button type="button" class="mode-button" id="modeButton" aria-pressed="false">Дундаж</button>
+          <button type="button" class="mode-button" id="modeButton">Агшин руу</button>
         </div>
         <canvas id="spectrumCanvas" width="720" height="230" role="img" aria-label="Давтамжийн спектр" data-i18n-aria="spectrumAria"></canvas>
         <div class="chart-foot"><span id="spectrumCaption">80–8000 Гц · дБFS</span><span id="spectrumHint" data-i18n="spectrumHint">Товшиж горим солино</span></div>

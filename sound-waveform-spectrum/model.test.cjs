@@ -49,6 +49,23 @@ assert.equal(endRange.end, 3, "window clamps at the end");
 const envelope = model.waveformEnvelope(sine.samples, sine.sampleRate, 0.5, 1, 320);
 assert.ok(Math.max(...envelope.maxima) > 0.35, "waveform preserves positive peaks");
 assert.ok(Math.min(...envelope.minima) < -0.35, "waveform preserves negative peaks");
+assert.equal(model.waveformScale(0.3, "1"), 1, "manual unit scale remains physical amplitude");
+assert.equal(model.waveformScale(0.02, "auto"), 45, "auto scales a small amplitude with headroom");
+assert.equal(model.waveformScale(0, "auto"), 50, "auto is capped for near-silence");
+assert.equal(model.waveformScale(1, "auto"), 1, "auto never shrinks a full-amplitude signal");
+assert.equal(model.waveformScale(0.8, "20"), 20, "manual magnification is independent of amplitude");
+assert.throws(() => model.waveformScale(0.2, "100"), RangeError, "unsupported scale is rejected");
+const wav = model.encodeWav16(new Float32Array([-1, -0.5, 0, 0.5, 1]), 44100);
+const wavView = new DataView(wav);
+assert.equal(wav.byteLength, 54, "mono 16-bit WAV has a 44-byte header");
+assert.equal(String.fromCharCode(...new Uint8Array(wav, 0, 4)), "RIFF", "RIFF marker");
+assert.equal(String.fromCharCode(...new Uint8Array(wav, 8, 4)), "WAVE", "WAVE marker");
+assert.equal(wavView.getUint32(24, true), 44100, "WAV sample rate");
+assert.equal(wavView.getUint16(22, true), 1, "WAV channel count");
+assert.equal(wavView.getUint16(34, true), 16, "WAV bit depth");
+assert.equal(wavView.getUint32(40, true), 10, "WAV data length");
+assert.deepEqual(Array.from({ length: 5 }, (_, i) => wavView.getInt16(44 + 2 * i, true)),
+  [-32768, -16384, 0, 16384, 32767], "signed PCM values are encoded correctly");
 assert.throws(() => model.synthesize("unknown"), RangeError, "unknown preset rejected");
 
 // Worklet integration in an isolated audio-worklet-like environment.
@@ -82,4 +99,4 @@ shortRecorder.port.onmessage({ data: { type: "stop" } });
 assert.equal(portMessages.at(-1).reason, "manual", "manual stop handled");
 assert.equal(portMessages.filter(m => m.type === "chunk").reduce((n, m) => n + m.samples.length, 0), 128);
 
-console.log("Sound waveform/spectrum: presets, spectral references, envelope, and 1–4 s PCM capture passed.");
+console.log("Sound waveform/spectrum: presets, spectra, scaling, WAV playback, and 1–4 s PCM capture passed.");

@@ -15,8 +15,9 @@
       recordedOption: "Миний бичлэг", play: "▶ Сонсох", stop: "■ Зогсоох",
       record: "● Бичих", recordStop: "■ Зогсоох", settings: "Тохиргоо",
       duration: "Бичлэгийн хугацаа", sec: "сек", ms: "мсек", hz: "Гц",
-      waveTitle: "Долгион", spectrumTitle: "Спектр", zoom: "Томруулах", full: "Бүтнээр",
-      average: "Дундаж", local: "Тухайн хэсэг", live: "Шууд",
+      waveTitle: "Долгион", spectrumTitle: "Спектр", zoom: "Томруулах", zoomOut: "Жижигрүүлэх",
+      toAverage: "Дундаж руу", toLocal: "Агшин руу", local: "Агшин", live: "Шууд",
+      amplitude: "Босоо масштаб", auto: "Автомат", scale: "Масштаб",
       waveHint: "Товшиж томруулна", zoomHint: "Чирж шилжүүлнэ", cursorHint: "Шугамыг чирнэ",
       recordingHint: "Бичиж байна", spectrumHint: "Товшиж горим солино", localHint: "Хэсгийн спектр",
       lockedHint: "Томруулсан хэсгийн спектр", liveHint: "Одоогийн хэсгийн спектр",
@@ -28,6 +29,7 @@
       micUnavailable: "Энэ хөтөч микрофоны бичлэгийг дэмжихгүй эсвэл HTTPS шаардлагатай.",
       micFailed: "Бичлэг эхэлсэнгүй. Микрофоноо шалгаад дахин оролдоно уу.",
       playFailed: "Авиа тоглуулах боломжгүй. Дахин оролдоно уу.",
+      cancelled: "Бичлэг эхлэхээс өмнө цуцаллаа.",
       recordingSelection: "Бичиж байх үед эх сурвалжийг өөрчлөх боломжгүй."
     },
     en: {
@@ -37,8 +39,9 @@
       recordedOption: "My recording", play: "▶ Listen", stop: "■ Stop",
       record: "● Record", recordStop: "■ Stop", settings: "Settings",
       duration: "Recording duration", sec: "s", ms: "ms", hz: "Hz",
-      waveTitle: "Waveform", spectrumTitle: "Spectrum", zoom: "Zoom in", full: "Full view",
-      average: "Average", local: "Local", live: "Live",
+      waveTitle: "Waveform", spectrumTitle: "Spectrum", zoom: "Zoom in", zoomOut: "Zoom out",
+      toAverage: "To average", toLocal: "Localize", local: "Local", live: "Live",
+      amplitude: "Vertical scale", auto: "Auto", scale: "Scale",
       waveHint: "Tap to zoom in", zoomHint: "Drag to move the window", cursorHint: "Drag the cursor",
       recordingHint: "Recording", spectrumHint: "Tap to switch mode", localHint: "Spectrum at cursor",
       lockedHint: "Spectrum of zoomed window", liveHint: "Spectrum of latest samples",
@@ -50,17 +53,19 @@
       micUnavailable: "Microphone capture is unavailable in this browser or requires HTTPS.",
       micFailed: "Could not start recording. Check your microphone and try again.",
       playFailed: "Could not play the sound. Please try again.",
+      cancelled: "Recording cancelled before starting.",
       recordingSelection: "Cannot switch sources during recording."
     }
   });
   const STORAGE_KEY = "sol-sound-waveform-spectrum-language";
   const state = {
     language: "mn", selected: "sine", duration: 3, spectrumMode: "average",
-    zoom: false, cursor: 1.5, statusKey: "", micPending: false, recording: null
+    verticalScale: "auto", zoom: false, cursor: 1.5, statusKey: "", statusDetail: "",
+    micPending: false, recording: null
   };
   const presetCache = new Map();
-  let recorded = null, pendingMicTicket = 0, drawRequested = false;
-  const playback = { context: null, source: null, gain: null, pending: false, ticket: 0 };
+  let recorded = null, pendingMicTicket = 0, pendingMicSession = null, drawRequested = false;
+  const playback = { audio: null, url: null, pending: false, ticket: 0 };
   const pointer = { active: false, moved: false, startX: 0, cursor: 0, id: null };
 
   function t(key) { return strings[state.language][key]; }
@@ -117,23 +122,23 @@
     $("sourceSelect").value = state.selected;
     $("durationSelect").disabled = busy;
     $("playButton").disabled = busy;
-    $("playButton").textContent = t(playback.source || playback.pending ? "stop" : "play");
-    $("recordButton").disabled = state.micPending;
-    $("recordButton").textContent = state.recording ? t("recordStop") :
+    $("playButton").textContent = t(playback.audio || playback.pending ? "stop" : "play");
+    $("recordButton").disabled = false;
+    $("recordButton").textContent = state.recording || state.micPending ? t("recordStop") :
       t("record") + " (" + state.duration + " " + t("sec") + ")";
-    $("recordButton").setAttribute("aria-pressed", String(Boolean(state.recording)));
-    $("zoomButton").textContent = t(state.zoom ? "full" : "zoom");
+    $("recordButton").setAttribute("aria-pressed", String(busy));
+    $("zoomButton").textContent = t(state.zoom ? "zoomOut" : "zoom");
     $("zoomButton").disabled = busy;
-    $("zoomButton").setAttribute("aria-pressed", String(state.zoom));
-    $("modeButton").textContent = t(state.recording ? "live" : effectiveMode());
+    $("modeButton").textContent = t(state.recording ? "live" : state.zoom ? "local" :
+      state.spectrumMode === "average" ? "toLocal" : "toAverage");
     $("modeButton").disabled = busy || state.zoom;
-    $("modeButton").setAttribute("aria-pressed", String(effectiveMode() === "local"));
     if (state.recording) {
       const mic = state.recording;
       $("status").textContent = t("recording") + " · " +
         seconds(Math.min(mic.seconds, mic.written / mic.sampleRate)) + " / " + seconds(mic.seconds);
     } else if (state.micPending) $("status").textContent = t("requesting");
-    else $("status").textContent = state.statusKey ? t(state.statusKey) : "";
+    else $("status").textContent = state.statusKey ? t(state.statusKey) +
+      (state.statusDetail ? " [" + state.statusDetail + "]" : "") : "";
   }
 
   function prepare(canvas) {
@@ -161,9 +166,6 @@
     const p = prepare($("waveCanvas")), ctx = p.ctx, source = getSource();
     frame(ctx, p, 4);
     const span = p.right - p.left, mid = (p.top + p.bottom) / 2;
-    axisText(ctx, "+1", p.left - 5, p.top + 4, "right");
-    axisText(ctx, "0", p.left - 5, mid + 4, "right");
-    axisText(ctx, "−1", p.left - 5, p.bottom + 4, "right");
     let start = 0, end = source.duration;
     if (state.zoom && source.samples.length) {
       const view = model.localRange(source.samples, source.sampleRate, state.cursor);
@@ -171,18 +173,32 @@
     }
     const duration = end - start;
     const availableEnd = state.recording ? Math.min(end, source.available) : end;
+    let envelope = null, filledWidth = 0, peak = 0;
     if (source.samples.length > 1 && availableEnd > start) {
-      const filledWidth = Math.max(1, Math.floor(span * (availableEnd - start) / duration));
-      const envelope = model.waveformEnvelope(source.samples, source.sampleRate, start, availableEnd, filledWidth);
+      filledWidth = Math.max(1, Math.floor(span * (availableEnd - start) / duration));
+      envelope = model.waveformEnvelope(source.samples, source.sampleRate, start, availableEnd, filledWidth);
+      for (let x = 0; x < filledWidth; x++) {
+        peak = Math.max(peak, Math.abs(envelope.minima[x]), Math.abs(envelope.maxima[x]));
+      }
+    }
+    const scale = model.waveformScale(peak, state.verticalScale);
+    const axisLimit = fixed(1 / scale, 3);
+    axisText(ctx, "+" + axisLimit, p.left - 5, p.top + 4, "right");
+    axisText(ctx, "0", p.left - 5, mid + 4, "right");
+    axisText(ctx, "−" + axisLimit, p.left - 5, p.bottom + 4, "right");
+    if (envelope) {
+      ctx.save();
+      ctx.beginPath(); ctx.rect(p.left, p.top, span, p.bottom - p.top); ctx.clip();
       ctx.strokeStyle = "#f1ce70"; ctx.lineWidth = 1;
       ctx.beginPath();
       for (let x = 0; x < filledWidth; x++) {
-        const top = mid - envelope.maxima[x] * (p.bottom - p.top) * 0.48;
-        const bottom = mid - envelope.minima[x] * (p.bottom - p.top) * 0.48;
+        const top = mid - scale * envelope.maxima[x] * (p.bottom - p.top) * 0.48;
+        const bottom = mid - scale * envelope.minima[x] * (p.bottom - p.top) * 0.48;
         const at = p.left + x + 0.5;
         ctx.moveTo(at, top); ctx.lineTo(at, bottom === top ? bottom + 0.5 : bottom);
       }
       ctx.stroke();
+      ctx.restore();
     }
     if (state.recording) {
       const at = p.left + span * Math.min(1, source.available / source.duration);
@@ -201,9 +217,11 @@
       axisText(ctx, fixed((start + duration * i / 4) * 1000, state.zoom ? 0 : 0) + " " + t("ms"),
         x, p.height - 8, i === 0 ? "left" : i === 4 ? "right" : "center");
     }
-    $("waveCaption").textContent = state.zoom ? seconds(start) + "–" + seconds(end) :
+    $("waveCaption").textContent = (state.zoom ? seconds(start) + "–" + seconds(end) :
       "0–" + seconds(source.duration) +
-        (effectiveMode() === "local" && !state.recording ? " · t = " + seconds(state.cursor) : "");
+        (effectiveMode() === "local" && !state.recording ? " · t = " + seconds(state.cursor) : "")) +
+      " · " + t("scale") + " ×" + fixed(scale, 1) +
+      (state.verticalScale === "auto" ? " (" + t("auto") + ")" : "");
     $("waveHint").textContent = t(state.recording ? "recordingHint" : state.zoom ? "zoomHint" :
       effectiveMode() === "local" ? "cursorHint" : "waveHint");
   }
@@ -273,51 +291,72 @@
 
   function stopPlayback() {
     playback.ticket++;
-    const source = playback.source, gain = playback.gain;
-    playback.source = null; playback.gain = null; playback.pending = false;
-    if (source) { source.onended = null; try { source.stop(); } catch (_) { /* already stopped */ } source.disconnect(); }
-    if (gain) gain.disconnect();
+    const audio = playback.audio, url = playback.url;
+    playback.audio = null; playback.url = null; playback.pending = false;
+    if (audio) {
+      audio.onended = null; audio.onerror = null;
+      audio.pause();
+      audio.removeAttribute("src");
+      audio.load();
+    }
+    if (url) URL.revokeObjectURL(url);
     renderControls();
   }
-  async function playSelected() {
-    if (playback.source || playback.pending) { stopPlayback(); return; }
+  function playbackFailed(ticket, error) {
+    if (ticket !== playback.ticket) return; // Stopped/replaced while play() was pending.
+    stopPlayback();
+    state.statusKey = "playFailed";
+    state.statusDetail = error?.name || (error?.code ? "MediaError " + error.code : "unknown");
+    renderControls();
+  }
+  function playSelected() {
+    if (playback.audio || playback.pending) { stopPlayback(); return; }
     if (state.recording || state.micPending) return;
     const ticket = ++playback.ticket;
-    playback.pending = true; state.statusKey = ""; renderControls();
+    playback.pending = true; state.statusKey = ""; state.statusDetail = ""; renderControls();
     try {
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContextClass) throw new Error("no audio");
-      if (!playback.context) playback.context = new AudioContextClass();
-      await playback.context.resume();
-      if (ticket !== playback.ticket) return;
-      const source = getSource(), context = playback.context;
-      const buffer = context.createBuffer(1, source.samples.length, source.sampleRate);
-      buffer.copyToChannel(source.samples);
-      const node = context.createBufferSource(), gain = context.createGain();
-      node.buffer = buffer;
-      gain.gain.value = 0.65; // Safe headroom; recorded PCM is not normalized.
-      node.connect(gain); gain.connect(context.destination);
-      node.onended = () => {
-        node.disconnect(); gain.disconnect();
-        if (playback.source === node) { playback.source = null; playback.gain = null; renderControls(); }
-      };
-      playback.source = node; playback.gain = gain;
-      node.start();
-    } catch (_) {
-      if (ticket === playback.ticket) state.statusKey = "playFailed";
-    } finally {
-      if (ticket === playback.ticket) { playback.pending = false; renderControls(); }
+      const source = getSource();
+      const wav = model.encodeWav16(source.samples, source.sampleRate);
+      const url = URL.createObjectURL(new Blob([wav], { type: "audio/wav" }));
+      playback.url = url;
+      const audio = document.createElement("audio");
+      audio.preload = "auto";
+      audio.src = url;
+      audio.volume = 0.65;
+      audio.onended = () => { if (playback.audio === audio) stopPlayback(); };
+      audio.onerror = () => playbackFailed(ticket, audio.error);
+      playback.audio = audio;
+      // Call play() directly inside the click gesture (before any await):
+      // Safari is stricter about activation after an asynchronous resume().
+      const started = audio.play();
+      if (started && typeof started.then === "function") {
+        started.then(() => {
+          if (ticket === playback.ticket) { playback.pending = false; renderControls(); }
+        }).catch(error => playbackFailed(ticket, error));
+      } else playback.pending = false;
+      renderControls();
+    } catch (error) {
+      playbackFailed(ticket, error);
     }
   }
 
+  function releaseMedia(owner) {
+    const stream = owner.stream, context = owner.context;
+    owner.stream = null; owner.context = null;
+    if (stream) for (const track of stream.getTracks()) track.stop();
+    if (context) context.close().catch(() => {});
+  }
+  function releasePendingMic() {
+    const attempt = pendingMicSession;
+    pendingMicSession = null;
+    if (attempt) releaseMedia(attempt);
+  }
   function disposeMic(mic) {
     clearInterval(mic.timer);
-    clearTimeout(mic.stopTimeout);
     if (mic.worklet) { mic.worklet.port.onmessage = null; try { mic.worklet.disconnect(); } catch (_) {} }
     if (mic.source) try { mic.source.disconnect(); } catch (_) {}
     if (mic.sink) try { mic.sink.disconnect(); } catch (_) {}
-    if (mic.stream) for (const track of mic.stream.getTracks()) track.stop();
-    if (mic.context) mic.context.close().catch(() => {});
+    releaseMedia(mic);
   }
 
   function finishMic(mic, reason = "manual") {
@@ -341,18 +380,25 @@
 
   function stopRecording() {
     const mic = state.recording;
-    if (!mic || mic.stopping) return;
-    mic.stopping = true;
-    mic.worklet.port.postMessage({ type: "stop" });
-    // End the permission/session even if an OS suspends the worklet mid-stop.
-    mic.stopTimeout = setTimeout(() => finishMic(mic), 350);
+    if (!mic) return;
+    // Keep the PCM already delivered (at most one worklet chunk is in flight),
+    // and release the device immediately rather than waiting for a port reply.
+    finishMic(mic, "manual");
   }
 
   async function recordMic() {
     if (state.recording) { stopRecording(); return; }
-    if (state.micPending) return;
+    if (state.micPending) {
+      pendingMicTicket++; // Any subsequently granted stream is stopped in finally.
+      state.micPending = false;
+      releasePendingMic(); // Also release a granted stream if worklet setup is still pending.
+      state.statusKey = "cancelled";
+      state.statusDetail = "";
+      renderControls();
+      return;
+    }
     stopPlayback();
-    state.statusKey = "";
+    state.statusKey = ""; state.statusDetail = "";
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if (!navigator.mediaDevices?.getUserMedia || !AudioContextClass || !window.AudioWorkletNode) {
       state.statusKey = "micUnavailable"; renderControls(); return;
@@ -360,33 +406,37 @@
     state.micPending = true;
     const ticket = ++pendingMicTicket;
     renderControls();
-    let context = null, stream = null;
+    const attempt = { context: null, stream: null };
+    pendingMicSession = attempt;
     try {
       // Both calls originate in the user gesture (important on mobile browsers).
-      context = new AudioContextClass();
-      const resume = context.resume();
+      attempt.context = new AudioContextClass();
+      const resume = Promise.resolve(attempt.context.resume()).then(() => null, error => error);
       const permission = navigator.mediaDevices.getUserMedia({
         audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false }, video: false
       });
-      stream = await permission;
-      await resume;
+      attempt.stream = await permission;
       if (ticket !== pendingMicTicket) return;
-      if (!context.audioWorklet) throw new Error("unsupported");
-      await context.audioWorklet.addModule("microphone-worklet.js");
+      const resumeError = await resume;
+      if (resumeError) throw resumeError;
+      if (ticket !== pendingMicTicket) return;
+      if (!attempt.context.audioWorklet) throw new Error("unsupported");
+      await attempt.context.audioWorklet.addModule("microphone-worklet.js");
       if (ticket !== pendingMicTicket) return;
       const mic = {
-        context, stream, seconds: state.duration, sampleRate: context.sampleRate,
-        buffer: new Float32Array(Math.round(context.sampleRate * state.duration)),
+        context: attempt.context, stream: attempt.stream, seconds: state.duration,
+        sampleRate: attempt.context.sampleRate,
+        buffer: new Float32Array(Math.round(attempt.context.sampleRate * state.duration)),
         written: 0, source: null, worklet: null, sink: null, timer: null,
-        stopTimeout: null, stopping: false
       };
-      mic.worklet = new AudioWorkletNode(context, "sol-short-mic", {
+      mic.worklet = new AudioWorkletNode(mic.context, "sol-short-mic", {
         numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [1],
         processorOptions: { seconds: state.duration }
       });
-      mic.source = context.createMediaStreamSource(stream);
-      mic.sink = context.createGain(); mic.sink.gain.value = 0;
-      mic.source.connect(mic.worklet); mic.worklet.connect(mic.sink); mic.sink.connect(context.destination);
+      mic.source = mic.context.createMediaStreamSource(mic.stream);
+      mic.sink = mic.context.createGain(); mic.sink.gain.value = 0;
+      mic.source.connect(mic.worklet); mic.worklet.connect(mic.sink);
+      mic.sink.connect(mic.context.destination);
       mic.worklet.port.onmessage = event => {
         if (state.recording !== mic) return;
         const data = event.data;
@@ -397,15 +447,16 @@
           mic.written += length;
         } else if (data?.type === "ended") finishMic(mic, data.reason);
       };
-      stream.getAudioTracks().forEach(track => track.addEventListener("ended", () => {
+      mic.stream.getAudioTracks().forEach(track => track.addEventListener("ended", () => {
         if (state.recording === mic) finishMic(mic);
       }));
       state.recording = mic;
       state.micPending = false;
+      pendingMicSession = null;
+      attempt.context = null; attempt.stream = null; // Ownership transferred to active mic.
       state.zoom = false;
       mic.timer = setInterval(() => { renderControls(); requestDraw(); }, 100);
       renderControls(); requestDraw();
-      context = null; stream = null; // ownership is now held by `mic`
     } catch (error) {
       if (ticket === pendingMicTicket) {
         state.micPending = false;
@@ -414,8 +465,8 @@
         renderControls();
       }
     } finally {
-      if (stream) for (const track of stream.getTracks()) track.stop();
-      if (context) context.close().catch(() => {});
+      if (pendingMicSession === attempt) pendingMicSession = null;
+      releaseMedia(attempt);
     }
   }
 
@@ -496,12 +547,18 @@
     state.selected = chosen;
     state.zoom = false;
     state.cursor = getSource().duration / 2;
-    state.statusKey = ""; renderControls(); requestDraw();
+    state.statusKey = ""; state.statusDetail = ""; renderControls(); requestDraw();
   });
   $("durationSelect").addEventListener("change", event => {
     const value = Number(event.target.value);
     if (Number.isInteger(value) && value >= 1 && value <= 4) state.duration = value;
     renderControls();
+  });
+  $("verticalScaleSelect").addEventListener("change", event => {
+    const value = event.target.value;
+    if (["auto", "1", "2", "5", "10", "20", "50"].includes(value)) state.verticalScale = value;
+    $("verticalScaleSelect").value = state.verticalScale;
+    requestDraw();
   });
   document.querySelectorAll("[data-lang]").forEach(button => {
     button.addEventListener("click", () => setLanguage(button.dataset.lang));
@@ -511,6 +568,7 @@
     if (state.micPending) {
       pendingMicTicket++;
       state.micPending = false;
+      releasePendingMic();
       state.statusKey = "hidden";
       renderControls();
     }
@@ -518,9 +576,9 @@
   });
   window.addEventListener("pagehide", () => {
     pendingMicTicket++;
+    releasePendingMic();
     if (state.recording) { const mic = state.recording; state.recording = null; disposeMic(mic); }
     stopPlayback();
-    if (playback.context) playback.context.close().catch(() => {});
   });
   window.addEventListener("resize", requestDraw);
 
