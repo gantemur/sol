@@ -144,6 +144,29 @@
     }
   },
   {
+    "id": "sound-pitch-timbre",
+    "title": "Дуу · Өндөр ба өнгө · Sound · Pitch and timbre",
+    "language": [
+      "mn",
+      "en"
+    ],
+    "category": "physics",
+    "entry": "sound-pitch-timbre/",
+    "description": "Авиа сонсож, давтамж ба долгионы хэлбэрийг өөрчлөн, гармоникуудыг харьцуулах.",
+    "migrationStatus": "native minimal Sound Lab adaptation, live-first alpha",
+    "copyrightHolder": "Tsogtgerel Gantumur",
+    "license": "MIT",
+    "licenseFile": "sound-pitch-timbre/LICENSE",
+    "titles": {
+      "mn": "Дуу · Өндөр ба өнгө",
+      "en": "Sound · Pitch and timbre"
+    },
+    "descriptions": {
+      "mn": "Авиа сонсож, давтамж ба долгионы хэлбэрийг өөрчлөн, гармоникуудыг харьцуулах.",
+      "en": "Hear and explore pitch, waveform shape and harmonics."
+    }
+  },
+  {
     "id": "khurd",
     "title": "Маанийн хүрд · Prayer wheel",
     "language": [

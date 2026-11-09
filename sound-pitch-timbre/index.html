@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="mn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Дуу · Өндөр ба өнгө</title>
+  <meta name="description" content="Давтамж, долгионы хэлбэр болон гармоникийг сонсож, харьцуулж үзэх хялбар хэрэгсэл.">
+  <link rel="stylesheet" href="style.css">
+  <script src="model.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main class="page">
+    <header class="topline">
+      <h1 data-i18n="title">Дуу · Өндөр ба өнгө</h1>
+      <div class="languages" role="group" aria-label="Хэл сонгох" data-i18n-aria="language">
+        <button type="button" data-lang="mn" aria-pressed="true">MN</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </header>
+
+    <section class="controls" aria-label="Авиа үүсгэх" data-i18n-aria="controls">
+      <fieldset class="shape-picker">
+        <legend data-i18n="shape">Долгионы хэлбэр (дууны өнгө)</legend>
+        <div class="shape-options">
+          <button type="button" data-shape="sine" aria-pressed="true" data-i18n="sine">Синус</button>
+          <button type="button" data-shape="triangle" aria-pressed="false" data-i18n="triangle">Гурвалжин</button>
+          <button type="button" data-shape="square" aria-pressed="false" data-i18n="square">Дөрвөлжин</button>
+          <button type="button" data-shape="sawtooth" aria-pressed="false" data-i18n="sawtooth">Хөрөө</button>
+        </div>
+      </fieldset>
+
+      <div class="sound-row">
+        <button type="button" id="playButton" class="play-button" aria-pressed="false">▶ Тоглуулах</button>
+        <span id="audioStatus" role="status" aria-live="polite"></span>
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-heading">
+          <label for="frequencySlider" data-i18n="frequency">Давтамж (дууны өндөр)</label>
+          <output id="frequencyReadout" for="frequencySlider">440 Гц</output>
+        </div>
+        <input type="range" id="frequencySlider" min="0" max="1000" step="1" value="530">
+        <div class="slider-ends"><span>80 <span data-i18n="hz">Гц</span></span><span>2000 <span data-i18n="hz">Гц</span></span></div>
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-heading">
+          <label for="volumeSlider" data-i18n="volume">Чанга–сул</label>
+          <output id="volumeReadout" for="volumeSlider">40%</output>
+        </div>
+        <input type="range" id="volumeSlider" min="0" max="100" step="1" value="40">
+        <div class="slider-ends"><span data-i18n="quiet">Сул</span><span data-i18n="loud">Чанга</span></div>
+      </div>
+    </section>
+
+    <div class="charts">
+      <section class="chart" aria-labelledby="waveTitle">
+        <div class="chart-heading">
+          <h2 id="waveTitle" data-i18n="waveTitle">Долгионы хэлбэр</h2>
+          <span id="periodReadout">T = 2.27 мсек</span>
+        </div>
+        <canvas id="waveCanvas" width="720" height="250" role="img" aria-label="20 миллисекунд доторх загвар долгион" data-i18n-aria="waveAria"></canvas>
+        <div class="chart-foot"><span data-i18n="waveWindow">0–20 мсек</span><span data-i18n="timeAxis">хугацаа →</span></div>
+      </section>
+
+      <section class="chart" aria-labelledby="harmonicsTitle">
+        <div class="chart-heading">
+          <h2 id="harmonicsTitle" data-i18n="harmonicsTitle">Гармоникууд (өнгөний найрлага)</h2>
+          <span id="baseReadout">f₀ = 440 Гц</span>
+        </div>
+        <canvas id="harmonicsCanvas" width="720" height="250" role="img" aria-label="Эхний 12 идеал гармоникийн харьцангуй хэмжээ" data-i18n-aria="harmonicsAria"></canvas>
+        <div class="chart-foot"><span data-i18n="spectrumNote">Үндсэн гармониктай харьцуулсан хэмжээ</span><span data-i18n="frequencyAxis">давтамж →</span></div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
