@@ -2,7 +2,18 @@
 <!-- SPDX-FileCopyrightText: 2026 Tsogtgerel Gantumur; SPDX-License-Identifier: MIT -->
 <html lang="mn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light">
 <title>Нарны цаг · Sol</title><link rel="stylesheet" href="style.css?v=P1.1">
-<script defer src="planar3d.js?v=P1.1"></script><script defer src="sundial.js?v=P1.1"></script><script defer src="diagram3d.js?v=P1.1"></script><script defer src="ui.js?v=P1.1"></script></head>
+<script defer src="planar3d.js?v=P1.1"></script><script defer src="sundial.js?v=P1.1"></script><script defer src="diagram3d.js?v=P1.1"></script><script defer src="ui.js?v=P1.1"></script>  <!-- Aggregate, cookie-free visits; see /sol/docs/ANALYTICS.md. -->
+  <script>
+    if (location.hostname === "gantemur.github.io") {
+      const tracker = document.createElement("script");
+      tracker.async = true;
+      tracker.src = "https://gc.zgo.at/count.js";
+      tracker.setAttribute("data-goatcounter", "https://gantemur-sol.goatcounter.com/count");
+      tracker.setAttribute("data-goatcounter-settings", JSON.stringify({"path":"/sol/sundial/","title":"Нарны цаг","no_events":true}));
+      document.head.appendChild(tracker);
+    }
+  </script>
+</head>
 <body><main><header><a href="../">← Sol</a><div><span id="version" class="badge">…</span> <select id="lang" aria-label="Language / Хэл"><option value="mn">Монгол</option><option value="en">English</option></select></div></header>
 <h1 data-i="title">Нарны цаг</h1><p class="intro" data-i="intro">Хэвтээ, босоо хана болон налуу хавтгайн нарны цагийг загварчилж, хэвлэн сийлэх хээ гаргана.</p>
 <section class="controls" aria-label="Design">

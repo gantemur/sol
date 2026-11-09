@@ -40,7 +40,18 @@
 /*        border: 3px solid green; */
       }
       </style>
-    </head>
+      <!-- Aggregate, cookie-free visits; see /sol/docs/ANALYTICS.md. -->
+  <script>
+    if (location.hostname === "gantemur.github.io") {
+      const tracker = document.createElement("script");
+      tracker.async = true;
+      tracker.src = "https://gc.zgo.at/count.js";
+      tracker.setAttribute("data-goatcounter", "https://gantemur-sol.goatcounter.com/count");
+      tracker.setAttribute("data-goatcounter-settings", JSON.stringify({"path":"/sol/planets-mn/","title":"Гаригуудын загвар","no_events":true}));
+      document.head.appendChild(tracker);
+    }
+  </script>
+</head>
   <body>
     
     <h1 style="padding:0px 20px">Sun - Earth - Moon</h1>

@@ -9,6 +9,17 @@
   <script type="text/javascript" src="planets.js"></script>
   <script type="text/javascript" src="moon.js"></script>
   <link rel="stylesheet" href="planets.css">
+  <!-- Aggregate, cookie-free visits; see /sol/docs/ANALYTICS.md. -->
+  <script>
+    if (location.hostname === "gantemur.github.io") {
+      const tracker = document.createElement("script");
+      tracker.async = true;
+      tracker.src = "https://gc.zgo.at/count.js";
+      tracker.setAttribute("data-goatcounter", "https://gantemur-sol.goatcounter.com/count");
+      tracker.setAttribute("data-goatcounter-settings", JSON.stringify({"path":"/sol/planets-en/","title":"Planetary models","no_events":true}));
+      document.head.appendChild(tracker);
+    }
+  </script>
 </head>
 
 <body>

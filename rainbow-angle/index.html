@@ -6,6 +6,17 @@
   <title>Солонгын өнцөг</title>
   <link rel="stylesheet" href="style.css">
   <script src="rainbow-angle.js" defer></script>
+  <!-- Aggregate, cookie-free visits; see /sol/docs/ANALYTICS.md. -->
+  <script>
+    if (location.hostname === "gantemur.github.io") {
+      const tracker = document.createElement("script");
+      tracker.async = true;
+      tracker.src = "https://gc.zgo.at/count.js";
+      tracker.setAttribute("data-goatcounter", "https://gantemur-sol.goatcounter.com/count");
+      tracker.setAttribute("data-goatcounter-settings", JSON.stringify({"path":"/sol/rainbow-angle/","title":"Солонгын өнцөг","no_events":true}));
+      document.head.appendChild(tracker);
+    }
+  </script>
 </head>
 <body>
   <main>

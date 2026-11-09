@@ -53,6 +53,7 @@ Run from the repository root with Node.js; no packages need to be installed:
 ```sh
 node scripts/check-static.js
 node scripts/test-static-check.js
+node scripts/test-analytics.cjs
 ```
 
 The checker validates the tool registry (`entry` must be `<tool-id>/`), entry pages, local HTML links, and that every page left in `tools/` is a forwarder to an existing page.
@@ -64,9 +65,14 @@ These checks do not validate scientific models or browser behavior.
 Copyright (c) 2026 Tsogtgerel Gantumur. Author-owned Sol code and ordinary
 accompanying documentation are available under the [MIT License](LICENSE), subject
 to the explicit [per-tool scope and exceptions](LICENSING.md). Each tool includes
-a local license and visible author/source/licensing notice.
+a local license; the visible legal statement is centralized on the Sol homepage.
 
 The planetary tools retain upstream legacy code with unresolved permissions; do not
 treat their complete packages as MIT-cleared. See their local licensing notices.
 Older copyright years and source credits are preserved. Compact interface credits use
 Ts. Gantumur or Gantumur.
+
+## Visitor statistics
+
+Pages and tools use [GoatCounter](docs/ANALYTICS.md) for aggregate, cookie-free visit statistics. Queries such as `?lang=mn` do not split counts, and multi-page tools are grouped under their canonical path. Tracking runs only on the published `gantemur.github.io` host and is optional for using any tool.
+

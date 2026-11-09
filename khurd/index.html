@@ -18,6 +18,17 @@
   <link rel="stylesheet" href="style.css">
   <script src="engine.js" defer></script>
   <script src="app.js" defer></script>
+  <!-- Aggregate, cookie-free visits; see /sol/docs/ANALYTICS.md. -->
+  <script>
+    if (location.hostname === "gantemur.github.io") {
+      const tracker = document.createElement("script");
+      tracker.async = true;
+      tracker.src = "https://gc.zgo.at/count.js";
+      tracker.setAttribute("data-goatcounter", "https://gantemur-sol.goatcounter.com/count");
+      tracker.setAttribute("data-goatcounter-settings", JSON.stringify({"path":"/sol/khurd/","title":"Маанийн хүрд","no_events":true}));
+      document.head.appendChild(tracker);
+    }
+  </script>
 </head>
 <body>
   <div class="frieze" role="img" data-i18n-label="bandLabel" aria-label="Маань уншигдаж буй тууз">

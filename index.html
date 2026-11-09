@@ -84,6 +84,17 @@
     .notes { margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--line); font-size: 0.9rem; }
     .notes h2 { margin: 0 0 8px; font-size: 1.1rem; }
   </style>
+  <!-- Aggregate, cookie-free visits; see /sol/docs/ANALYTICS.md. -->
+  <script>
+    if (location.hostname === "gantemur.github.io") {
+      const tracker = document.createElement("script");
+      tracker.async = true;
+      tracker.src = "https://gc.zgo.at/count.js";
+      tracker.setAttribute("data-goatcounter", "https://gantemur-sol.goatcounter.com/count");
+      tracker.setAttribute("data-goatcounter-settings", JSON.stringify({"path":"/sol/","title":"Sol","no_events":true}));
+      document.head.appendChild(tracker);
+    }
+  </script>
 </head>
 <body>
   <main>
@@ -156,7 +167,7 @@
 
     <footer class="notes" aria-labelledby="credits-title">
       <h2 id="credits-title">Лиценз · <span lang="en">License</span></h2>
-      <p>© 2026 Ts. Gantumur · <a href="https://github.com/gantemur/sol">Эх код / <span lang="en">Source</span></a> · <a href="LICENSE">MIT</a> · <a href="LICENSING.md">Нөхцөл / <span lang="en">Scope and exceptions</span></a> · <a href="docs/CREDITS.md">Талархал / <span lang="en">Credits</span></a></p>
+      <p>© 2026 Ts. Gantumur · <a href="https://github.com/gantemur/sol">Эх код / <span lang="en">Source</span></a> · <a href="LICENSE">MIT</a> · <a href="LICENSING.md">Нөхцөл / <span lang="en">Scope and exceptions</span></a> · <a href="docs/CREDITS.md">Талархал / <span lang="en">Credits</span></a> · <a href="docs/ANALYTICS.md">Зочлолт / <span lang="en">Visits</span></a></p>
       <p>Харагдацыг цэгцтэй байлгахын тулд хэрэгсэл бүрд лицензийн мэдэгдлийг давтахгүй. Дагалдах файлд өөрөөр заагаагүй бол Sol-ийн зохиогчийн код, баримт бичиг MIT лицензтэй. Бусдын код болон гаригуудын загварын онцгой нөхцөлийг лицензийн тайлбараас үзнэ үү.</p>
       <p lang="en">To keep interfaces uncluttered, individual tools omit repeated license notices. Unless otherwise stated in the accompanying files, Sol's author-owned code and documentation use the MIT license. See scope and exceptions for third-party material, including the planetary models.</p>
     </footer>
