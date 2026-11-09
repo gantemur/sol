@@ -202,7 +202,8 @@
         x, p.height - 8, i === 0 ? "left" : i === 4 ? "right" : "center");
     }
     $("waveCaption").textContent = state.zoom ? seconds(start) + "–" + seconds(end) :
-      "0–" + seconds(source.duration);
+      "0–" + seconds(source.duration) +
+        (effectiveMode() === "local" && !state.recording ? " · t = " + seconds(state.cursor) : "");
     $("waveHint").textContent = t(state.recording ? "recordingHint" : state.zoom ? "zoomHint" :
       effectiveMode() === "local" ? "cursorHint" : "waveHint");
   }
@@ -488,8 +489,11 @@
   $("recordButton").addEventListener("click", recordMic);
   $("sourceSelect").addEventListener("change", event => {
     if (state.recording || state.micPending) return;
+    // Save the new value before stopping playback: stopPlayback renders controls,
+    // which otherwise restores the previous select value mid-change event.
+    const chosen = event.target.value;
     stopPlayback();
-    state.selected = event.target.value;
+    state.selected = chosen;
     state.zoom = false;
     state.cursor = getSource().duration / 2;
     state.statusKey = ""; renderControls(); requestDraw();
