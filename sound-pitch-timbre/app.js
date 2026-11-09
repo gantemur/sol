@@ -34,8 +34,11 @@
       unsupported: "This browser cannot play synthesized sound.", blocked: "Sound could not start. Try again."
     }
   });
-  const state = { language: "mn", shape: "sine", frequency: 440, volume: 40, error: "" };
-  const engine = { context: null, oscillator: null, gain: null, playing: false, starting: false, generation: 0 };
+  const state = { language: "mn", shape: "sine", frequency: 440, volume: 40, error: "", errorDetail: "" };
+  const engine = {
+    context: null, oscillator: null, gain: null, playing: false, starting: false,
+    generation: 0, resumeTimeout: null
+  };
   const STORAGE_KEY = "sol-sound-pitch-timbre-language";
   const AUDIO_GAIN = 0.24; // Safe headroom for one continuous voice.
 
@@ -84,24 +87,34 @@
     $("volumeReadout").textContent = state.volume + "%";
     $("periodReadout").textContent = "T = " + msLabel(1000 / state.frequency);
     $("baseReadout").textContent = "f₀ = " + hzLabel(state.frequency);
-    $("audioStatus").textContent = state.error ? translation(state.error) : "";
+    $("audioStatus").textContent = state.error ? translation(state.error) +
+      (state.errorDetail ? " [" + state.errorDetail + "]" : "") : "";
     document.querySelectorAll("[data-shape]").forEach(button => {
       button.setAttribute("aria-pressed", String(button.dataset.shape === state.shape));
     });
   }
 
-  async function startSound() {
+  function failSound(ticket, error) {
+    if (ticket !== engine.generation) return;
+    const context = engine.context;
+    stopSound(true);
+    engine.context = null; // Retry on a fresh context after a failed or interrupted start.
+    if (context && context.state !== "closed") context.close().catch(() => {});
+    state.error = error?.message === "unsupported" ? "unsupported" : "blocked";
+    state.errorDetail = state.error === "unsupported" ? "" :
+      (error?.name && error.name !== "Error" ? error.name : error?.message || "unknown");
+    renderControls();
+  }
+
+  function startSound() {
     const ticket = ++engine.generation;
     engine.starting = true;
-    state.error = "";
+    state.error = ""; state.errorDetail = "";
     renderControls();
     try {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
       if (!AudioContextClass) throw new Error("unsupported");
-      if (!engine.context) engine.context = new AudioContextClass();
-      await engine.context.resume();
-      if (ticket !== engine.generation) return;
-      if (engine.context.state !== "running") throw new Error("blocked");
+      if (!engine.context || engine.context.state === "closed") engine.context = new AudioContextClass();
       const context = engine.context, now = context.currentTime;
       const oscillator = context.createOscillator(), gain = context.createGain();
       oscillator.type = state.shape;
@@ -120,22 +133,44 @@
           renderControls();
         }
       };
-      oscillator.start(now);
       engine.oscillator = oscillator;
       engine.gain = gain;
-      engine.playing = true;
-    } catch (error) {
-      if (ticket === engine.generation) state.error = error.message === "unsupported" ? "unsupported" : "blocked";
-    } finally {
-      if (ticket === engine.generation) {
+      // Connect, start and request resume synchronously in the button's click
+      // event. Safari may lose transient user activation across an await.
+      oscillator.start(now);
+      const resuming = context.state === "running" ? Promise.resolve() : context.resume();
+      engine.resumeTimeout = setTimeout(() => {
+        if (ticket !== engine.generation) return;
+        if (context.state !== "running") failSound(ticket, new Error("audio context " + context.state));
+        else {
+          // A browser may have made audio active without settling resume().
+          engine.resumeTimeout = null;
+          engine.starting = false;
+          engine.playing = true;
+          renderControls();
+        }
+      }, 2000);
+      Promise.resolve(resuming).then(() => {
+        if (ticket !== engine.generation) return;
+        if (context.state !== "running") {
+          failSound(ticket, new Error("audio context " + context.state));
+          return;
+        }
+        clearTimeout(engine.resumeTimeout);
+        engine.resumeTimeout = null;
         engine.starting = false;
+        engine.playing = true;
         renderControls();
-      }
+      }).catch(error => failSound(ticket, error));
+    } catch (error) {
+      failSound(ticket, error);
     }
   }
 
   function stopSound(immediate = false) {
     engine.generation++;
+    clearTimeout(engine.resumeTimeout);
+    engine.resumeTimeout = null;
     engine.starting = false;
     engine.playing = false;
     const oscillator = engine.oscillator, gain = engine.gain;
@@ -143,9 +178,11 @@
     engine.gain = null;
     if (oscillator && gain && engine.context) {
       const now = engine.context.currentTime;
-      gain.gain.cancelScheduledValues(now);
-      if (immediate) gain.gain.setValueAtTime(0, now);
-      else gain.gain.setTargetAtTime(0, now, 0.012);
+      try {
+        gain.gain.cancelScheduledValues(now);
+        if (immediate) gain.gain.setValueAtTime(0, now);
+        else gain.gain.setTargetAtTime(0, now, 0.012);
+      } catch (_) { /* Context may already have been interrupted or closed. */ }
       try { oscillator.stop(now + (immediate ? 0.001 : 0.09)); } catch (_) { /* already stopped */ }
     }
     renderControls();
@@ -240,8 +277,15 @@
   }
 
   $("playButton").addEventListener("click", () => {
-    if (engine.playing || engine.starting) stopSound();
-    else startSound();
+    if (engine.playing || engine.starting) {
+      const wasStarting = engine.starting;
+      stopSound(wasStarting);
+      if (wasStarting && engine.context) {
+        const context = engine.context;
+        engine.context = null;
+        context.close().catch(() => {}); // Do not retain a suspended context after cancellation.
+      }
+    } else startSound();
   });
   document.querySelectorAll("[data-shape]").forEach(button => {
     button.addEventListener("click", () => {

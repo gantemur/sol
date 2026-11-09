@@ -17,23 +17,29 @@ of **Sound Lab**'s microphone/analysis ideas, not a general audio editor.
   sound. The selected microphone take appears as **My recording / Миний бичлэг**;
   it is replaced if a new take is made.
 - **Settings / Тохиргоо** expands to set microphone duration (1, 2, 3 or 4 s;
-  default 3). Recording starts only after an explicit button press and a browser
-  permission request. Capture stops automatically at the selected duration;
-  pressing Stop ends it early. Both graphs update during capture (~10 Hz).
+  default 3) and waveform vertical scale (Auto, ×1, ×2, ×5, ×10, ×20, ×50).
+  Recording starts only after an explicit button press and a browser permission
+  request. Capture stops automatically at the selected duration; pressing Stop
+  releases the microphone immediately, retaining samples received so far. Stop
+  also cancels a pending permission request; a late-granted stream is released.
+  Both graphs update during capture (~10 Hz).
 - The waveform initially displays the full sound as per-pixel minimum/maximum
   amplitude (rather than visually aliasing thousands of oscillations). Tap the
   waveform or use **Zoom in / Томруулах** to see a fixed ~50 ms detail window.
   Drag the zoomed waveform to move that window in time; tap again to return.
-- The spectrum card or its mode button switches between **Average / Дундаж**
-  (power-averaged across the whole recording) and **Local / Тухайн хэсэг**
+- The spectrum card or its action button switches between **Average / Дундаж**
+  (power-averaged across the whole recording) and **Local / Агшин**
   (Hann-window spectrum around the draggable waveform cursor). Zoomed waveform
   always forces local spectrum from that exact ~50 ms window. Returning to the
   full view restores the previously selected average/local mode. During recording
   the spectrum is live and local to the latest samples; after recording the same
   two cards analyze the completed take.
-- Graph axes: waveform time in milliseconds and digital sample amplitude on
-  [-1,1]; logarithmic frequency in hertz and magnitude in dBFS (decibels relative
-  to full-scale digital amplitude). **dBFS is not a calibrated sound-level meter**.
+- Graph axes: waveform time in milliseconds and *actual* digital sample amplitude
+  (normally in [-1,1]), with vertical display magnification shown in the caption;
+  logarithmic frequency in hertz and magnitude in dBFS (decibels relative to
+  full-scale digital amplitude). **dBFS is not a calibrated sound-level meter**.
+  Auto vertical scale brings a small signal into view up to ×50; the axis labels
+  remain in original PCM amplitude units. Manual zoom may clip tall samples.
 
 ## Computation and limitations
 
@@ -57,6 +63,9 @@ The microphone is disconnected, audio tracks stopped and its capture context
 closed on completion, early stop, or a hidden page. Sound is never monitored
 to speakers. All samples remain in **page memory only**: the tool does not
 upload, save, or automatically export audio. Reloading discards the take.
+For playback, the selected PCM is converted in memory to a temporary 16-bit
+mono WAV and played with a native browser audio element on the button gesture.
+The temporary object URL is revoked on Stop, completion, or source change.
 Microphone permission requires a secure context (HTTPS or an accepted local
 origin) and a browser supporting AudioWorklet. The page may use the Sol-wide,
 privacy-limited *page-visit* counter when hosted on `gantemur.github.io`; it
@@ -83,6 +92,7 @@ Run from the Sol repository root:
 
 ```sh
 node sound-waveform-spectrum/model.test.cjs
+node sound-waveform-spectrum/ui.test.cjs
 node scripts/check-static.js
 node scripts/test-static-check.js
 node scripts/test-homepage.cjs
