@@ -22,6 +22,7 @@ The tools are intended to be:
 - `armatur`: Simple reinforcing-bar cutting calculator using the imported greedy algorithm.
 - `sundial`: Printable sundial designs for horizontal, vertical and inclined surfaces.
 - `khurd`: A prayer wheel turned with a finger, counting the mantras inside.
+- `sound-pitch-timbre`: A minimal bilingual experiment with pitch, timbre, waveforms, harmonics and generated sound.
 
 Each tool is served at `https://gantemur.github.io/sol/<tool-id>/`, for example
 `https://gantemur.github.io/sol/khurd/`.
