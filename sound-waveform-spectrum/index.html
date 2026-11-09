@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="mn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Дуу · Долгион ба спектр</title>
+  <meta name="description" content="Жишээ авиа болон богино микрофоны бичлэгийн долгион, спектрийг харьцуулан ажиглах.">
+  <link rel="stylesheet" href="style.css">
+  <script src="model.js" defer></script>
+  <script src="app.js" defer></script>
+  <!-- Aggregate page visits only; no microphone audio or interactions are tracked. -->
+  <script>
+    if (location.hostname === "gantemur.github.io") {
+      const tracker = document.createElement("script");
+      tracker.async = true;
+      tracker.src = "https://gc.zgo.at/count.js";
+      tracker.setAttribute("data-goatcounter", "https://gantemur-sol.goatcounter.com/count");
+      tracker.setAttribute("data-goatcounter-settings", JSON.stringify({"path":"/sol/sound-waveform-spectrum/","title":"Дуу · Долгион ба спектр","no_events":true}));
+      document.head.appendChild(tracker);
+    }
+  </script>
+</head>
+<body>
+  <main class="page">
+    <header class="topline">
+      <h1 data-i18n="title">Дуу · Долгион ба спектр</h1>
+      <div class="languages" role="group" aria-label="Хэл сонгох" data-i18n-aria="language">
+        <button type="button" data-lang="mn" aria-pressed="true">MN</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </header>
+
+    <section class="controls" aria-label="Дууны эх сурвалж" data-i18n-aria="controls">
+      <div class="source-picker">
+        <label for="sourceSelect" data-i18n="source">Жишээ дуу</label>
+        <select id="sourceSelect">
+          <option value="sine" data-i18n="sine">Синус долгион · 440 Гц</option>
+          <option value="two" data-i18n="two">Хоёр давтамж · 440 + 660 Гц</option>
+          <option value="sweep" data-i18n="sweep">Өөрчлөгдөх давтамж</option>
+          <option value="noise" data-i18n="noise">Цагаан шуугиан</option>
+          <option value="guitar" data-i18n="guitar">Гитар</option>
+          <option value="bell" data-i18n="bell">Хонх</option>
+        </select>
+      </div>
+      <div class="action-row">
+        <button type="button" id="playButton" class="primary-button">▶ Сонсох</button>
+        <button type="button" id="recordButton">● Бичих (3 сек)</button>
+      </div>
+      <details id="settings">
+        <summary data-i18n="settings">Тохиргоо</summary>
+        <div class="setting-content">
+          <label for="durationSelect" data-i18n="duration">Бичлэгийн хугацаа</label>
+          <select id="durationSelect">
+            <option value="1">1 сек</option>
+            <option value="2">2 сек</option>
+            <option value="3" selected>3 сек</option>
+            <option value="4">4 сек</option>
+          </select>
+        </div>
+      </details>
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+    </section>
+
+    <div class="charts">
+      <section class="chart" aria-labelledby="waveTitle">
+        <div class="chart-heading">
+          <h2 id="waveTitle" data-i18n="waveTitle">Долгион</h2>
+          <button type="button" class="mode-button" id="zoomButton">Томруулах</button>
+        </div>
+        <canvas id="waveCanvas" width="720" height="230" role="img" tabindex="0" aria-label="Дууны долгионы хэлбэр" data-i18n-aria="waveAria"></canvas>
+        <div class="chart-foot"><span id="waveCaption">0–3 сек</span><span id="waveHint" data-i18n="waveHint">Товшиж томруулна</span></div>
+      </section>
+      <section class="chart" aria-labelledby="spectrumTitle">
+        <div class="chart-heading">
+          <h2 id="spectrumTitle" data-i18n="spectrumTitle">Спектр</h2>
+          <button type="button" class="mode-button" id="modeButton" aria-pressed="false">Дундаж</button>
+        </div>
+        <canvas id="spectrumCanvas" width="720" height="230" role="img" aria-label="Давтамжийн спектр" data-i18n-aria="spectrumAria"></canvas>
+        <div class="chart-foot"><span id="spectrumCaption">80–8000 Гц · дБFS</span><span id="spectrumHint" data-i18n="spectrumHint">Товшиж горим солино</span></div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

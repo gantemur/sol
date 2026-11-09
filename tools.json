@@ -167,6 +167,29 @@
     }
   },
   {
+    "id": "sound-waveform-spectrum",
+    "title": "Дуу · Долгион ба спектр · Sound · Waveform and spectrum",
+    "language": [
+      "mn",
+      "en"
+    ],
+    "category": "physics",
+    "entry": "sound-waveform-spectrum/",
+    "description": "Жишээ авиа болон микрофоны богино бичлэгийн долгион, спектрийг шинжлэх.",
+    "migrationStatus": "native lightweight Sound Lab analysis adaptation, live-first alpha",
+    "copyrightHolder": "Tsogtgerel Gantumur",
+    "license": "MIT",
+    "licenseFile": "sound-waveform-spectrum/LICENSE",
+    "titles": {
+      "mn": "Дуу · Долгион ба спектр",
+      "en": "Sound · Waveform and spectrum"
+    },
+    "descriptions": {
+      "mn": "Жишээ авиа болон микрофоны богино бичлэгийн долгион, спектрийг шинжлэх.",
+      "en": "Explore waveforms and spectra of example sounds and short microphone recordings."
+    }
+  },
+  {
     "id": "khurd",
     "title": "Маанийн хүрд · Prayer wheel",
     "language": [
