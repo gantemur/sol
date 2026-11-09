@@ -54,6 +54,10 @@ assert.equal(model.waveformScale(0.02, "auto"), 45, "auto scales a small amplitu
 assert.equal(model.waveformScale(0, "auto"), 50, "auto is capped for near-silence");
 assert.equal(model.waveformScale(1, "auto"), 1, "auto never shrinks a full-amplitude signal");
 assert.equal(model.waveformScale(0.8, "20"), 20, "manual magnification is independent of amplitude");
+assert.equal(model.waveformScale(0.8, "13"), 13, "slider supports intermediate magnification");
+assert.equal(model.waveformScale(0.8, "50"), 50, "manual magnification reaches the cap");
+assert.throws(() => model.waveformScale(0.2, "0"), RangeError, "zero is reserved for auto");
+assert.throws(() => model.waveformScale(0.2, "2.5"), RangeError, "manual magnification uses slider steps");
 assert.throws(() => model.waveformScale(0.2, "100"), RangeError, "unsupported scale is rejected");
 const wav = model.encodeWav16(new Float32Array([-1, -0.5, 0, 0.5, 1]), 44100);
 const wavView = new DataView(wav);

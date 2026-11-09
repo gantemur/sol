@@ -16,13 +16,23 @@ of **Sound Lab**'s microphone/analysis ideas, not a general audio editor.
   microphone button to record. **Listen / Сонсох** plays the selected complete
   sound. The selected microphone take appears as **My recording / Миний бичлэг**;
   it is replaced if a new take is made.
-- **Settings / Тохиргоо** expands to set microphone duration (1, 2, 3 or 4 s;
-  default 3) and waveform vertical scale (Auto, ×1, ×2, ×5, ×10, ×20, ×50).
+- Two compact sliders control playback volume (0–100%, initially 65%) and
+  **vertical waveform magnification**. The magnification slider has **Auto**
+  at its left end and manual ×1 through ×50 steps; Auto is the initial setting.
+  These are independent: magnification never boosts the actual recording or sound.
+- **Settings / Тохиргоо**, below the two cards, expands to set microphone
+  duration (1, 2, 3 or 4 s; default 3).
   Recording starts only after an explicit button press and a browser permission
   request. Capture stops automatically at the selected duration; pressing Stop
+  (including touch/pointer-down without waiting for a synthesized click)
   releases the microphone immediately, retaining samples received so far. Stop
   also cancels a pending permission request; a late-granted stream is released.
-  Both graphs update during capture (~10 Hz).
+  The status shows the actual retained duration, which may be shorter than the
+  selected limit. Both graphs update during capture (~10 Hz).
+- During Listen playback, a **moving cyan playhead** follows the media element's
+  actual current time (not an independent wall clock). In local-spectrum mode
+  the local position and spectrum follow playback; average spectrum remains
+  averaged. Playback time is shown in the waveform caption.
 - The waveform initially displays the full sound as per-pixel minimum/maximum
   amplitude (rather than visually aliasing thousands of oscillations). Tap the
   waveform or use **Zoom in / Томруулах** to see a fixed ~50 ms detail window.
@@ -38,8 +48,9 @@ of **Sound Lab**'s microphone/analysis ideas, not a general audio editor.
   (normally in [-1,1]), with vertical display magnification shown in the caption;
   logarithmic frequency in hertz and magnitude in dBFS (decibels relative to
   full-scale digital amplitude). **dBFS is not a calibrated sound-level meter**.
-  Auto vertical scale brings a small signal into view up to ×50; the axis labels
-  remain in original PCM amplitude units. Manual zoom may clip tall samples.
+  Auto vertical magnification brings a small signal into view up to ×50; the axis
+  labels remain in original PCM amplitude units. Manual magnification may clip
+  tall samples; it does not change the audio volume.
 
 ## Computation and limitations
 
@@ -100,6 +111,8 @@ node scripts/test-analytics.cjs
 ```
 
 Browser checks should include microphone permission denial, repeated 1/2/3/4 s
-recordings, early stop, live charts, local cursor drag, zoom + local-spectrum
-coupling, page visibility cleanup, MN/EN, and mobile layouts. Automated sample
-tests cannot establish that a particular phone's microphone permission UX works.
+recordings, pointer-down early stop (shorter retained duration), live charts,
+volume adjustment during playback, playhead movement, magnification from Auto
+through ×50, local cursor drag, zoom + local-spectrum coupling, page visibility
+cleanup, MN/EN, and mobile layouts. Automated sample tests cannot establish that
+a particular phone's microphone permission UX works.

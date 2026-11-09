@@ -17,7 +17,7 @@
       duration: "Бичлэгийн хугацаа", sec: "сек", ms: "мсек", hz: "Гц",
       waveTitle: "Долгион", spectrumTitle: "Спектр", zoom: "Томруулах", zoomOut: "Жижигрүүлэх",
       toAverage: "Дундаж руу", toLocal: "Агшин руу", local: "Агшин", live: "Шууд",
-      amplitude: "Босоо масштаб", auto: "Автомат", scale: "Масштаб",
+      amplitude: "Босоо томруулалт", volume: "Чанга–сул", auto: "Автомат", scale: "Масштаб",
       waveHint: "Товшиж томруулна", zoomHint: "Чирж шилжүүлнэ", cursorHint: "Шугамыг чирнэ",
       recordingHint: "Бичиж байна", spectrumHint: "Товшиж горим солино", localHint: "Хэсгийн спектр",
       lockedHint: "Томруулсан хэсгийн спектр", liveHint: "Одоогийн хэсгийн спектр",
@@ -41,7 +41,7 @@
       duration: "Recording duration", sec: "s", ms: "ms", hz: "Hz",
       waveTitle: "Waveform", spectrumTitle: "Spectrum", zoom: "Zoom in", zoomOut: "Zoom out",
       toAverage: "To average", toLocal: "Localize", local: "Local", live: "Live",
-      amplitude: "Vertical scale", auto: "Auto", scale: "Scale",
+      amplitude: "Vertical magnification", volume: "Volume", auto: "Auto", scale: "Scale",
       waveHint: "Tap to zoom in", zoomHint: "Drag to move the window", cursorHint: "Drag the cursor",
       recordingHint: "Recording", spectrumHint: "Tap to switch mode", localHint: "Spectrum at cursor",
       lockedHint: "Spectrum of zoomed window", liveHint: "Spectrum of latest samples",
@@ -60,12 +60,12 @@
   const STORAGE_KEY = "sol-sound-waveform-spectrum-language";
   const state = {
     language: "mn", selected: "sine", duration: 3, spectrumMode: "average",
-    verticalScale: "auto", zoom: false, cursor: 1.5, statusKey: "", statusDetail: "",
+    verticalScale: "auto", volume: 65, zoom: false, cursor: 1.5, statusKey: "", statusDetail: "",
     micPending: false, recording: null
   };
   const presetCache = new Map();
   let recorded = null, pendingMicTicket = 0, pendingMicSession = null, drawRequested = false;
-  const playback = { audio: null, url: null, pending: false, ticket: 0 };
+  const playback = { audio: null, url: null, pending: false, ticket: 0, timer: null };
   const pointer = { active: false, moved: false, startX: 0, cursor: 0, id: null };
 
   function t(key) { return strings[state.language][key]; }
@@ -127,6 +127,9 @@
     $("recordButton").textContent = state.recording || state.micPending ? t("recordStop") :
       t("record") + " (" + state.duration + " " + t("sec") + ")";
     $("recordButton").setAttribute("aria-pressed", String(busy));
+    $("volumeSlider").value = String(state.volume);
+    $("volumeReadout").textContent = state.volume + "%";
+    $("verticalScaleSlider").value = state.verticalScale === "auto" ? "0" : state.verticalScale;
     $("zoomButton").textContent = t(state.zoom ? "zoomOut" : "zoom");
     $("zoomButton").disabled = busy;
     $("modeButton").textContent = t(state.recording ? "live" : state.zoom ? "local" :
@@ -138,6 +141,7 @@
         seconds(Math.min(mic.seconds, mic.written / mic.sampleRate)) + " / " + seconds(mic.seconds);
     } else if (state.micPending) $("status").textContent = t("requesting");
     else $("status").textContent = state.statusKey ? t(state.statusKey) +
+      (state.statusKey === "recorded" && recorded ? " (" + seconds(recorded.duration) + ")" : "") +
       (state.statusDetail ? " [" + state.statusDetail + "]" : "") : "";
   }
 
@@ -182,6 +186,8 @@
       }
     }
     const scale = model.waveformScale(peak, state.verticalScale);
+    $("verticalScaleReadout").textContent = state.verticalScale === "auto" ?
+      t("auto") + " (×" + fixed(scale, 1) + ")" : "×" + fixed(scale, 1);
     const axisLimit = fixed(1 / scale, 3);
     axisText(ctx, "+" + axisLimit, p.left - 5, p.top + 4, "right");
     axisText(ctx, "0", p.left - 5, mid + 4, "right");
@@ -203,14 +209,24 @@
     if (state.recording) {
       const at = p.left + span * Math.min(1, source.available / source.duration);
       ctx.strokeStyle = "#d3a34f"; ctx.beginPath(); ctx.moveTo(at, p.top); ctx.lineTo(at, p.bottom); ctx.stroke();
-    } else if (!state.zoom && effectiveMode() === "local" && source.samples.length > 1) {
-      const view = model.localRange(source.samples, source.sampleRate, state.cursor);
-      const x0 = p.left + span * view.start / source.duration;
-      const x1 = p.left + span * view.end / source.duration;
-      const center = p.left + span * view.center / source.duration;
-      ctx.fillStyle = "#e6bd6250"; ctx.fillRect(x0, p.top, Math.max(2, x1 - x0), p.bottom - p.top);
-      ctx.strokeStyle = "#f2d18a"; ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.moveTo(center, p.top); ctx.lineTo(center, p.bottom); ctx.stroke();
+    } else {
+      if (!state.zoom && effectiveMode() === "local" && source.samples.length > 1) {
+        const view = model.localRange(source.samples, source.sampleRate, state.cursor);
+        const x0 = p.left + span * view.start / source.duration;
+        const x1 = p.left + span * view.end / source.duration;
+        const center = p.left + span * view.center / source.duration;
+        ctx.fillStyle = "#e6bd6250"; ctx.fillRect(x0, p.top, Math.max(2, x1 - x0), p.bottom - p.top);
+        ctx.strokeStyle = "#f2d18a"; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(center, p.top); ctx.lineTo(center, p.bottom); ctx.stroke();
+      }
+      if (playback.audio && state.cursor >= start && state.cursor <= end) {
+        // Cyan playhead follows audio.currentTime; it is independent of average/local mode.
+        const at = p.left + span * (state.cursor - start) / duration;
+        ctx.strokeStyle = "#8fd9e8"; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(at, p.top); ctx.lineTo(at, p.bottom); ctx.stroke();
+        ctx.fillStyle = "#8fd9e8";
+        ctx.beginPath(); ctx.moveTo(at - 5, p.top); ctx.lineTo(at + 5, p.top); ctx.lineTo(at, p.top + 7); ctx.fill();
+      }
     }
     for (let i = 0; i <= 4; i++) {
       const x = p.left + span * i / 4;
@@ -218,8 +234,9 @@
         x, p.height - 8, i === 0 ? "left" : i === 4 ? "right" : "center");
     }
     $("waveCaption").textContent = (state.zoom ? seconds(start) + "–" + seconds(end) :
-      "0–" + seconds(source.duration) +
-        (effectiveMode() === "local" && !state.recording ? " · t = " + seconds(state.cursor) : "")) +
+      "0–" + seconds(source.duration)) +
+      (!state.recording && (effectiveMode() === "local" || playback.audio) ?
+        " · t = " + seconds(state.cursor) : "") +
       " · " + t("scale") + " ×" + fixed(scale, 1) +
       (state.verticalScale === "auto" ? " (" + t("auto") + ")" : "");
     $("waveHint").textContent = t(state.recording ? "recordingHint" : state.zoom ? "zoomHint" :
@@ -289,9 +306,18 @@
     requestAnimationFrame(draw);
   }
 
+  function followPlayback(audio) {
+    if (playback.audio !== audio) return;
+    if (Number.isFinite(audio.currentTime)) {
+      state.cursor = model.clamp(audio.currentTime, 0, getSource().duration);
+      requestDraw();
+    }
+  }
   function stopPlayback() {
     playback.ticket++;
     const audio = playback.audio, url = playback.url;
+    if (audio) followPlayback(audio);
+    clearInterval(playback.timer); playback.timer = null;
     playback.audio = null; playback.url = null; playback.pending = false;
     if (audio) {
       audio.onended = null; audio.onerror = null;
@@ -301,6 +327,7 @@
     }
     if (url) URL.revokeObjectURL(url);
     renderControls();
+    requestDraw();
   }
   function playbackFailed(ticket, error) {
     if (ticket !== playback.ticket) return; // Stopped/replaced while play() was pending.
@@ -322,13 +349,16 @@
       const audio = document.createElement("audio");
       audio.preload = "auto";
       audio.src = url;
-      audio.volume = 0.65;
+      audio.volume = state.volume / 100;
       audio.onended = () => { if (playback.audio === audio) stopPlayback(); };
       audio.onerror = () => playbackFailed(ticket, audio.error);
       playback.audio = audio;
+      state.cursor = 0;
       // Call play() directly inside the click gesture (before any await):
       // Safari is stricter about activation after an asynchronous resume().
       const started = audio.play();
+      playback.timer = setInterval(() => followPlayback(audio), 50);
+      requestDraw();
       if (started && typeof started.then === "function") {
         started.then(() => {
           if (ticket === playback.ticket) { playback.pending = false; renderControls(); }
@@ -381,6 +411,9 @@
   function stopRecording() {
     const mic = state.recording;
     if (!mic) return;
+    // Tell the worklet to finish too, even though the UI and media tracks do
+    // not wait for its reply. This is useful on browsers with delayed graph teardown.
+    try { mic.worklet?.port.postMessage({ type: "stop" }); } catch (_) {}
     // Keep the PCM already delivered (at most one worklet chunk is in flight),
     // and release the device immediately rather than waiting for a port reply.
     finishMic(mic, "manual");
@@ -537,7 +570,20 @@
   $("zoomButton").addEventListener("click", toggleZoom);
   $("modeButton").addEventListener("click", toggleSpectrum);
   $("playButton").addEventListener("click", playSelected);
-  $("recordButton").addEventListener("click", recordMic);
+  let recordPointerStopped = false;
+  // Touch browsers can delay a synthesized click during microphone capture.
+  // Handle Stop at pointer-down, then consume the matching click so that it
+  // cannot accidentally begin another take. Keyboard-triggered clicks still work.
+  $("recordButton").addEventListener("pointerdown", () => {
+    if (!state.recording && !state.micPending) return;
+    recordPointerStopped = true;
+    recordMic();
+    setTimeout(() => { recordPointerStopped = false; }, 1000);
+  });
+  $("recordButton").addEventListener("click", () => {
+    if (recordPointerStopped) { recordPointerStopped = false; return; }
+    recordMic();
+  });
   $("sourceSelect").addEventListener("change", event => {
     if (state.recording || state.micPending) return;
     // Save the new value before stopping playback: stopPlayback renders controls,
@@ -554,10 +600,18 @@
     if (Number.isInteger(value) && value >= 1 && value <= 4) state.duration = value;
     renderControls();
   });
-  $("verticalScaleSelect").addEventListener("change", event => {
-    const value = event.target.value;
-    if (["auto", "1", "2", "5", "10", "20", "50"].includes(value)) state.verticalScale = value;
-    $("verticalScaleSelect").value = state.verticalScale;
+  $("volumeSlider").addEventListener("input", event => {
+    const value = Number(event.target.value);
+    if (Number.isInteger(value) && value >= 0 && value <= 100) state.volume = value;
+    if (playback.audio) playback.audio.volume = state.volume / 100;
+    $("volumeReadout").textContent = state.volume + "%";
+  });
+  $("verticalScaleSlider").addEventListener("input", event => {
+    const value = Number(event.target.value);
+    if (Number.isInteger(value) && value >= 0 && value <= 50) {
+      state.verticalScale = value === 0 ? "auto" : String(value);
+    }
+    $("verticalScaleSlider").value = state.verticalScale === "auto" ? "0" : state.verticalScale;
     requestDraw();
   });
   document.querySelectorAll("[data-lang]").forEach(button => {

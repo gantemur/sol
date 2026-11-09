@@ -151,10 +151,11 @@
   function waveformScale(peak, choice = "auto") {
     if (!Number.isFinite(peak) || peak < 0 || peak > 1.001) throw new RangeError("Invalid PCM peak");
     if (choice === "auto") return clamp(0.9 / Math.max(peak, 1e-6), 1, 50);
-    if (!["1", "2", "5", "10", "20", "50"].includes(String(choice))) {
+    const manual = Number(choice);
+    if (!Number.isInteger(manual) || manual < 1 || manual > 50) {
       throw new RangeError("Invalid vertical waveform scale");
     }
-    return Number(choice);
+    return manual;
   }
 
   // A small mono PCM WAV works through the native media element, avoiding a
