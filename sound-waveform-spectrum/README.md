@@ -16,12 +16,15 @@ of **Sound Lab**'s microphone/analysis ideas, not a general audio editor.
   microphone button to record. **Listen / Сонсох** plays the selected complete
   sound. The selected microphone take appears as **My recording / Миний бичлэг**;
   it is replaced if a new take is made.
-- Two compact sliders control playback volume (0–100%, initially 65%) and
-  **vertical waveform magnification**. The magnification slider has **Auto**
+- Two sliders span the widths of the waveform and spectrum columns on wider
+  screens, controlling playback volume (0–100%, initially 65%) and
+  **vertical waveform scale / Босоо масштаб**. The scale slider has **Auto**
   at its left end and manual ×1 through ×50 steps; Auto is the initial setting.
   These are independent: magnification never boosts the actual recording or sound.
-- **Settings / Тохиргоо**, below the two cards, expands to set microphone
-  duration (1, 2, 3 or 4 s; default 3).
+- The example picker and the combined two-button action row have matching,
+  compact widths, including on phones. **Settings / Тохиргоо**, below the
+  two cards, expands to a four-position microphone-duration slider
+  (1, 2, 3 or 4 s; default 3).
   Recording starts only after an explicit button press and a browser permission
   request. Capture stops automatically at the selected duration; pressing Stop
   (including touch/pointer-down without waiting for a synthesized click)

@@ -7,7 +7,7 @@
   <meta name="description" content="Жишээ авиа болон богино микрофоны бичлэгийн долгион, спектрийг харьцуулан ажиглах.">
   <link rel="stylesheet" href="style.css">
   <script src="model.js?v=20261109d" defer></script>
-  <script src="app.js?v=20261109d" defer></script>
+  <script src="app.js?v=20261110a" defer></script>
   <!-- Aggregate page visits only; no microphone audio or interactions are tracked. -->
   <script>
     if (location.hostname === "gantemur.github.io") {
@@ -56,7 +56,7 @@
         </div>
         <div class="slider-control">
           <div class="slider-heading">
-            <label for="verticalScaleSlider" data-i18n="amplitude">Босоо томруулалт</label>
+            <label for="verticalScaleSlider" data-i18n="amplitude">Босоо масштаб</label>
             <output id="verticalScaleReadout" for="verticalScaleSlider">Автомат</output>
           </div>
           <input type="range" id="verticalScaleSlider" min="0" max="50" step="1" value="0">
@@ -86,13 +86,9 @@
     <details id="settings">
       <summary data-i18n="settings">Тохиргоо</summary>
       <div class="setting-content">
-        <label for="durationSelect" data-i18n="duration">Бичлэгийн хугацаа</label>
-        <select id="durationSelect">
-          <option value="1">1 сек</option>
-          <option value="2">2 сек</option>
-          <option value="3" selected>3 сек</option>
-          <option value="4">4 сек</option>
-        </select>
+        <label for="durationSlider" data-i18n="duration">Бичлэгийн хугацаа</label>
+        <input type="range" id="durationSlider" min="1" max="4" step="1" value="3">
+        <output id="durationReadout" for="durationSlider">3 сек</output>
       </div>
     </details>
   </main>

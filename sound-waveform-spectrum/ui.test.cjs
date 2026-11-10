@@ -36,7 +36,6 @@ function harness({ permissionPending = false, workletPending = false } = {}) {
     }
     return elements.get(id);
   }
-  element("durationSelect").options = [1, 2, 3, 4].map(n => ({ value: String(n), textContent: "" }));
   const document = {
     getElementById: element, documentElement: { lang: "mn" },
     querySelectorAll() { return []; }, addEventListener() {},
@@ -116,9 +115,14 @@ async function flush() { for (let i = 0; i < 8; i++) await Promise.resolve(); }
 
 (async () => {
   const active = harness();
+  assert.equal(active.element("durationReadout").textContent, "3 сек", "default duration appears next to slider");
+  active.element("durationSlider").fire("input", "4");
+  assert.equal(active.element("durationReadout").textContent, "4 сек", "duration slider updates its readout");
+  assert.match(active.element("recordButton").textContent, /4 сек/, "record button shows selected duration");
   active.element("recordButton").fire("click");
   await flush();
   assert.equal(active.captures.length, 1, "microphone capture starts");
+  assert.equal(active.element("durationSlider").disabled, true, "duration is locked during capture");
   assert.match(active.element("recordButton").textContent, /Зогсоох/, "Stop is available during capture");
   active.captures[0].port.onmessage({ data: { type: "chunk", samples: new Float32Array(4800).fill(0.1) } });
   active.element("recordButton").fire("click");
@@ -183,5 +187,6 @@ async function flush() { for (let i = 0; i < 8; i++) await Promise.resolve(); }
   assert.equal(installing.captures.length, 0, "late worklet setup must not restart capture");
   const html = fs.readFileSync(path.join(__dirname, "index.html"), "utf8");
   assert.ok(html.indexOf('class="charts"') < html.indexOf('id="settings"'), "Settings is below both cards");
+  assert.match(html, /id="durationSlider" min="1" max="4" step="1"/, "duration uses a four-position slider");
   console.log("Sound waveform/spectrum UI: pointer Stop, short takes, playback playhead, both sliders, and pending cancellation passed.");
 })().catch(error => { console.error(error); process.exitCode = 1; });
