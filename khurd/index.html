@@ -38,12 +38,15 @@
   <header class="topbar">
     <a class="back" href="../">sol</a>
     <h1 data-i18n="title">Маанийн хүрд</h1>
+    <button type="button" class="fs" id="dedicate-open" data-i18n-label="dedicate" aria-label="Зориулах" aria-haspopup="dialog">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11.2 20.5V10c0-1.7-.6-3.3-1.7-4.6L8.2 3.8 6.6 10.3c-.3 1.3-.2 2.7.4 3.9l1.6 3.4-1.4 2.9h4zM12.8 20.5V10c0-1.7.6-3.3 1.7-4.6l1.3-1.6 1.6 6.5c.3 1.3.2 2.7-.4 3.9l-1.6 3.4 1.4 2.9h-4z"/><path class="spark" d="M3.5 3v3M2 4.5h3M20.5 3v3M19 4.5h3"/></svg>
+    </button>
     <button type="button" class="fs" id="fullscreen" hidden aria-pressed="false" data-i18n-label="fullscreen" aria-label="Бүтэн дэлгэц">
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="enter" d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/><path class="exit" d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg>
     </button>
     <div class="lang" role="group" data-i18n-label="langLabel" aria-label="Хэл">
-      <button type="button" data-lang="mn" lang="mn">Монгол</button>
-      <button type="button" data-lang="en" lang="en">English</button>
+      <button type="button" data-lang="mn" lang="mn" aria-label="Монгол"><span class="long">Монгол</span><span class="short" aria-hidden="true">МН</span></button>
+      <button type="button" data-lang="en" lang="en" aria-label="English"><span class="long">English</span><span class="short" aria-hidden="true">EN</span></button>
     </div>
   </header>
 
@@ -88,7 +91,7 @@
         </div>
       </div>
       <div class="field">
-        <label class="label" for="scroll" data-i18n="scroll">Доторх маань</label>
+        <label class="label" for="scroll" data-i18n="scroll">Ороолттой маань</label>
         <select id="scroll"></select>
         <p class="note" data-i18n="scrollNote">Хүрдийг нэг эргүүлэхэд дотор нь бичсэн бүх маань дээрх туузаар нэг удаа гүйнэ.</p>
       </div>
@@ -110,6 +113,45 @@
       <div class="prose" data-i18n-html="about"></div>
     </details>
   </main>
+
+  <dialog class="ladder dedicate" id="dedicate" aria-labelledby="dedicate-title">
+    <div class="ladder-head">
+      <h2 id="dedicate-title" data-i18n="dedicate">Зориулах</h2>
+      <button type="button" class="done" id="dedicate-done" data-i18n="done">Болсон</button>
+    </div>
+    <div class="ladder-body">
+      <form id="dedicate-form" novalidate>
+        <fieldset class="field">
+          <legend class="label" data-i18n="amount">Тоо</legend>
+          <div class="choices" id="amount-choices">
+            <label class="check"><input type="radio" name="amount" value="today"><span id="amount-today"></span></label>
+            <label class="check" id="amount-trip-row"><input type="radio" name="amount" value="trip"><span id="amount-trip"></span></label>
+            <label class="check"><input type="radio" name="amount" value="other"><span data-i18n="amountOther">Өөр тоо</span></label>
+          </div>
+          <input type="text" inputmode="numeric" autocomplete="off" id="amount-other" class="text"
+            data-i18n-label="numberOfMani" aria-label="Мааний тоо" hidden>
+        </fieldset>
+        <fieldset class="field">
+          <legend class="label" data-i18n="toWhom">Хэнд</legend>
+          <input type="text" id="recipient" class="text" maxlength="40" autocomplete="off"
+            data-i18n-label="toWhom" aria-label="Хэнд">
+          <label class="label small" for="wish" data-i18n="wish">Ерөөл (заавал биш)</label>
+          <input type="text" id="wish" class="text" maxlength="80" autocomplete="off">
+          <p class="note" data-i18n="dedicateNote">Зориулснаар тоо буурахгүй. Картыг илгээхгүй бол нэрс зөвхөн энэ төхөөрөмж дээр үлдэнэ.</p>
+        </fieldset>
+        <button type="submit" class="done wide" id="dedicate-submit"></button>
+      </form>
+      <div class="dedicated" id="dedicated" hidden>
+        <p class="dedicated-head" data-i18n="dedicated">Зориулав. Одоо картаа илгээж болно.</p>
+        <button type="button" class="done wide" id="share-card"></button>
+      </div>
+      <div class="card-wrap"><canvas id="card" width="560" height="700" role="img"></canvas></div>
+      <div class="history">
+        <div class="history-sum"><span data-i18n="dedicatedSoFar">Нийт зориулсан</span> <output id="dedicated-total">0</output></div>
+        <ul id="history"></ul>
+      </div>
+    </div>
+  </dialog>
 
   <dialog class="ladder" id="ladder" aria-labelledby="ladder-title">
     <div class="ladder-head">

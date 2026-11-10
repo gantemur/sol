@@ -251,4 +251,28 @@ for (const n of E.SCROLL_SIZES) {
   eq(E.milestoneCrossing(E.milestone(200000n), E.milestone(250000n)), null, "same bead: nothing");
 }
 
+// Dedications (khurd app, docs/model.md): one-line names and wishes within
+// their limits, amounts from 1 to the total, records summed, safe storage.
+{
+  eq(E.cleanText("  Дорж\n  ах  ", 40), "Дорж   ах", "one line, trimmed");
+  eq(Array.from(E.cleanText("я".repeat(60), E.RECIPIENT_LIMIT)).length, 40, "names up to 40 characters");
+  eq(Array.from(E.cleanText("ж".repeat(100), E.WISH_LIMIT)).length, 80, "wishes up to 80 characters");
+  eq(E.cleanText("ཨོཾ་མ་ཎི", 3), "ཨོཾ", "counted by code points, never split mid-character");
+  eq(E.parseAmount("1,234 маань"), 1234n, "digits only");
+  eq(E.parseAmount(""), 0n, "empty is zero");
+  eq(E.parseAmount("9".repeat(30)), BigInt("9".repeat(18)), "at most 18 digits");
+  ok(!E.dedicationAllowed(0n, 100n), "zero not allowed");
+  ok(E.dedicationAllowed(1n, 100n) && E.dedicationAllowed(100n, 100n), "1 to the total allowed");
+  ok(!E.dedicationAllowed(101n, 100n), "more than the total not allowed");
+  eq(E.makeDedication(0n, "x", ""), null, "no record without a positive amount");
+  const a = E.makeDedication(500n, "  ", "", 1000, "a");
+  eq(a.recipient, "", "an empty name means all beings");
+  const b = E.makeDedication(108n, "Ээж", "эдгэрэхийн төлөө", 2000, "b");
+  eq(E.dedicationSum([a, b]), 608n, "dedicated so far is the sum");
+  const back = E.decodeDedications(E.encodeDedications([a, b]));
+  ok(back.length === 2 && back[0].id === "b" && back[1].amount === 500n, "storage round trip, newest first");
+  eq(E.decodeDedications("not json").length, 0, "unreadable data: empty log");
+  eq(E.decodeDedications('[{"amount":"-5"},{"amount":"0"},{"amount":"7","recipient":"x"}]').length, 1, "bad records dropped");
+}
+
 console.log("khurd engine: " + checks + " checks passed.");

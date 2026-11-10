@@ -23,6 +23,26 @@
       since: "%s-с хойш",
       counterHint: "Дараагийн тоог харахын тулд товшино.",
       tripRestart: "Энэ тоог дахин эхлүүлэх",
+      dedicate: "Зориулах",
+      amount: "Тоо",
+      amountToday: "Өнөөдөр (%s)",
+      amountSince: "%1-с хойш (%2)",
+      amountOther: "Өөр тоо",
+      numberOfMani: "Мааний тоо",
+      toWhom: "Хэнд",
+      allBeings: "Хамаг амьтан",
+      wish: "Ерөөл (заавал биш)",
+      wishExample: "жишээ нь, эдгэрэхийн төлөө",
+      dedicateNote: "Зориулснаар тоо буурахгүй. Картыг илгээхгүй бол нэрс зөвхөн энэ төхөөрөмж дээр үлдэнэ.",
+      dedicateButton: "%s маань зориулах",
+      dedicated: "Зориулав. Одоо картаа илгээж болно.",
+      shareCard: "Картыг илгээх",
+      saveCard: "Картыг хадгалах",
+      dedicatedSoFar: "Нийт зориулсан",
+      dedicatedTo: "Буяныг зориулав",
+      cardMantra: "Ум мани бадми хум",
+      deleteDedication: "Устгах",
+      deleteConfirm: "Энэ зориулгыг устгах уу?",
       milestones: "Маанийн шат",
       ladder: "Бүх шат",
       youAreHere: "Та энд",
@@ -48,7 +68,7 @@
       backward: "Буцааж эргүүлэхэд",
       modeRatchet: "Эргэхгүй",
       modeSubtract: "Хасагдана",
-      scroll: "Доторх маань",
+      scroll: "Ороолттой маань",
       scrollNote: "Хүрдийг нэг эргүүлэхэд дотор нь бичсэн бүх маань дээрх туузаар нэг удаа гүйнэ.",
       bell: "Эргэлт бүрд хонх",
       fullscreen: "Бүтэн дэлгэц",
@@ -59,15 +79,16 @@
       tips:
         "<li>Нийт тооны доорх тоог товшиж Өнөөдөр, огнооноос хойших тоо, Эргэлт хооронд сэлгэнэ.</li>" +
         "<li>Огнооноос хойших тоог дахин эхлүүлэхийн тулд хажуугийн ↺ тэмдгийг товшино, эсвэл тоог удаан дарна.</li>" +
-        "<li>Хүрдийг шудрахад эргэлдэнэ; хуруугаа хөдөлгөлгүй тавибал зогсоно.</li>" +
-        "<li>Нийт тооны хажууд буй тэмдэг таны маанийн шатыг заана: тоо 10 дахин өсөх бүрд өөр тэмдэг гарч, нийт тооны эхний цифрийн хэрээр тойрсон цэгүүд гэрэлтэнэ. Бүх шатыг харах бол тэмдэг дээр товшино уу.</li>" +
-        "<li>Хуруу тань хүрдэн дээр байхад харагдац солигдохгүй; эргэсээр буй хүрд шинэ харагдацад, бүр харагдахгүй болсон ч эргэсээр, тоологдсоор байна.</li>",
+        "<li>Хүрдийг шудрахад эргэлдэнэ. Хуруугаа хөдөлгөлгүй тавибал зогсоно.</li>" +
+        "<li>Хуруу тань хүрдэн дээр байхад харагдац солигдохгүй. Эргэж буй хүрд дэлгэцийн байрлал солигдсоноор харагдахгүй болсон ч зогстлоо тоологдсоор байна.</li>" +
+        "<li>Дээд талын гарын тэмдэгтэй товчоор маанийгаа хэн нэгэнд зориулж, илгээх карт үүсгэнэ.</li>" +
+        "<li>Нийт тооны хажууд буй тэмдэг таны маанийн шатыг заана. Тоо 10 дахин өсөх бүрд өөр тэмдэг гарч, нийт тооны эхний цифрийн хэрээр тойрсон цэгүүд гэрэлтэнэ. Бүх шатыг харах бол тэмдэг дээр товшино уу.</li>",
       aboutTitle: "Тухай",
       about:
-        "<p>Хүрдний гадаргуу дээр <span class=\"tib\" lang=\"bo\">ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ</span> буюу «Ум мани бадми хум» гэсэн зургаан үсэгт тарни бичигдсэн. " +
-        "Жинхэнэ хүрдний дотор маань олон мянгаар бичсэн цаасыг ороож хийдэг бөгөөд хүрдийг цагийн зүүний дагуу нэг эргүүлэхэд дотор нь буй бүх маань нэг уншигдсантай адил гэж үздэг.</p>" +
-        "<p>«Доторх маань» тохиргоо нь ороосон цаасан дээрх маанийн тоо. Хүрд бүрийн дээрх тууз тухайн хүрдний цаас уншигдаж буйг харуулна: хүрд нэг эргэхэд түүний тууз яг тэр тоогоор маань гүйлгэнэ. Алтан тэмдгийг бүтэн өнгөрсөн маань бүр тоологдоно. Тиймээс гурван хүрдийг тус бүр гуравны нэгээр эргүүлбэл нэг ч маань бүтэн уншигдахгүй.</p>" +
-        "<p>Хүрд бүрийн дотор цаас ч бас үнэхээр эргэдэг: төхөөрөмжийн санах ойд нуугдмал хувьсагчид үе бүрийг дарааллаар нь бичиж, бүтэн бичигдсэн маанийг л тоолно. Жинхэнэ хүрдний доторх цаасыг хэн ч хардаггүйн адил үүнийг ч хэн ч харахгүй. Иймээс доторх маань бум хүртэл байна.</p>" +
+        "<p>Хүрдний гадаргуу дээр <span class=\"tib\" lang=\"bo\">ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ</span> буюу «Ум ма ни бад ми хум» гэсэн зургаан үсэг байдаг. " +
+        "Жинхэнэ хүрдний дотор олон мянган маань бичсэн цаасыг ороож хийдэг бөгөөд хүрдийг нар зөв нэг эргүүлэхэд дотор нь буй бүх маань нэг уншигдсантай адил гэдэг.</p>" +
+        "<p>«Ороолттой маань» тохиргоо нь ороосон цаасан дээрх маанийн тоо. Хүрд бүрийн дээрх тууз тухайн хүрдний цаас уншигдаж буйг харуулна. Хүрд нэг эргэхэд түүний тууз яг тэр тоогоор маань гүйлгэнэ. Алтан тэмдгийг бүтэн өнгөрсөн маань бүр тоологдоно.</p>" +
+        "<p>Жинхэнэ хүрдний дотор эргэж буй цаасыг төхөөрөмжийн санах ойд нуугдмал хувьсагчаар төлөөлүүлэн үе бүрийг уг хувьсагчид дарааллаар нь бичиж, бүтэн бичигдэж өнгөрсөн маанийг л тоолж байгаа. Жинхэнэ хүрдний доторх цаас далд байдгийн адил маанийг «уншиж» буй хувьсагчид мөн далд буй. Иймээс ороолттой маань бум хүртэл байна.</p>" +
         "<p>Тоолуур зөвхөн энэ төхөөрөмж дээр хадгалагдана.</p>"
     },
     en: {
@@ -81,6 +102,26 @@
       since: "Since %s",
       counterHint: "Tap to show the next count.",
       tripRestart: "Start this count again",
+      dedicate: "Dedicate",
+      amount: "Amount",
+      amountToday: "Today (%s)",
+      amountSince: "Since %1 (%2)",
+      amountOther: "Another amount",
+      numberOfMani: "Number of mani",
+      toWhom: "To whom",
+      allBeings: "All beings",
+      wish: "Wish (optional)",
+      wishExample: "for example, for her recovery",
+      dedicateNote: "Dedicating does not lower the count. Names stay on this device unless you share the card.",
+      dedicateButton: "Dedicate %s mani",
+      dedicated: "Dedicated. You can share the card now.",
+      shareCard: "Share the card",
+      saveCard: "Save the card",
+      dedicatedSoFar: "Dedicated so far",
+      dedicatedTo: "Dedicated to",
+      cardMantra: "Om mani padme hum",
+      deleteDedication: "Delete",
+      deleteConfirm: "Delete this dedication?",
       milestones: "Milestones",
       ladder: "The ladder",
       youAreHere: "You are here",
@@ -117,15 +158,16 @@
       tips:
         "<li>Tap the count under the total to switch between Today, the count since a date, and Turns.</li>" +
         "<li>To start the count since a date again, tap ↺ beside it, or press and hold it.</li>" +
-        "<li>Flick the wheel to let it spin; hold a finger still on it to stop it.</li>" +
-        "<li>The badge beside the total marks your milestones: a symbol for each power of ten, and as many lit beads as the first digit of the total. Tap it to see the whole ladder.</li>" +
-        "<li>The view does not change while your finger is on the drums; drums still turning carry on in the new view, even when they are hidden.</li>",
+        "<li>Flick the wheel to let it spin. Hold a finger still on it to stop it.</li>" +
+        "<li>The view does not change while your finger is on the drums. A drum still turning keeps being counted until it stops, even when the change of view hides it.</li>" +
+        "<li>The hands button at the top dedicates your mani to someone and makes a card to send.</li>" +
+        "<li>The badge beside the total marks your milestones. Each time the total grows tenfold a new symbol appears, and as many beads around it light up as the first digit of the total. Tap it to see the whole ladder.</li>",
       aboutTitle: "About",
       about:
-        "<p>The drum carries the six-syllable mantra <span class=\"tib\" lang=\"bo\">ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ</span>, Om mani padme hum. " +
-        "A real wheel holds a long paper scroll with the mantra written many thousands of times, and by tradition one clockwise turn counts as reciting everything inside.</p>" +
-        "<p>The Mantras inside setting is the number of mantras on that scroll. The band above each drum shows that drum's scroll being read: each turn runs exactly that many mantras through it, and every mantra that has fully passed the gold mark is counted. Turning three drums a third of a turn each therefore completes no mantra.</p>" +
-        "<p>Inside each drum a scroll also really turns: a hidden variable in this device's memory is given each syllable in order, and only mantras written there in full are counted. Nobody sees it, just as nobody sees the paper inside a real wheel. That is why the scroll holds at most 100,000 mantras.</p>" +
+        "<p>The drum carries the six syllables <span class=\"tib\" lang=\"bo\">ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ</span>, Om mani padme hum. " +
+        "A real wheel holds a paper scroll with many thousands of mantras written on it, and by tradition one clockwise turn counts as reciting every mantra inside once.</p>" +
+        "<p>The “Mantras inside” setting is the number of mantras on the scroll. The band above each drum shows that drum's scroll being read. One turn of a drum runs exactly that many mantras through its band. Every mantra that has fully passed the gold mark is counted.</p>" +
+        "<p>The paper turning inside a real wheel is stood in for by a hidden variable in the device's memory: each syllable is written to it in order, and only mantras written there in full are counted. Just as the paper inside a real wheel is out of sight, the variables “reading” the mantras are hidden too. That is why the scroll holds at most 100,000 mantras.</p>" +
         "<p>The count is kept only on this device.</p>"
     }
   };
@@ -1017,6 +1059,276 @@
     out.badge.focus();
   }
 
+  /* ---------- Dedications ----------
+   * Dedicate mani to someone (khurd app, docs/model.md, Dedications): today's
+   * count, the count since a date, or another amount from 1 to the total; a
+   * name (empty: all beings) and an optional wish. The total is not lowered.
+   * Records stay in this browser; the card can be shared as an image with all
+   * its text inside, since some services drop pre-written text. */
+  let dedications = E.decodeDedications(store.get("dedications"));
+  const ded = { done: null, file: null };
+  const dedDialog = $("#dedicate");
+  const dedForm = $("#dedicate-form");
+  const cardCanvas = $("#card");
+  const otherInput = $("#amount-other");
+  const recipientInput = $("#recipient");
+  const wishInput = $("#wish");
+
+  function saveDedications() {
+    store.set("dedications", E.encodeDedications(dedications));
+  }
+
+  function amountSource() {
+    const checked = dedForm.querySelector("input[name=amount]:checked");
+    return checked ? checked.value : "today";
+  }
+
+  function dedicationAmount() {
+    const tot = E.writtenTotals(banked, wheels);
+    const src = amountSource();
+    if (src === "today") return tot.mani - counter.todayBase;
+    if (src === "trip") return tot.mani - counter.tripBase;
+    return E.parseAmount(otherInput.value);
+  }
+
+  /* The date on a card, short enough for the card in both languages. */
+  function cardDate(ms) {
+    const d = new Date(ms);
+    if (settings.lang === "mn") return d.getFullYear() + "." + String(d.getMonth() + 1).padStart(2, "0") + "." + String(d.getDate()).padStart(2, "0");
+    try { return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }); } catch (e) { return d.toDateString(); }
+  }
+
+  function cardTexts(d) {
+    return {
+      amount: format(d.amount),
+      mantra: t("cardMantra"),
+      to: t("dedicatedTo"),
+      recipient: d.recipient || t("allBeings"),
+      wish: d.wish,
+      footer: t("title") + " · " + cardDate(d.date)
+    };
+  }
+
+  /* Wrap `text` to at most `maxLines` lines of `width`, shrinking the font
+   * down to `minScale` of `size` before cutting the last line short. */
+  function fitText(g, text, width, size, minScale, maxLines, font) {
+    const words = text.split(/\s+/).filter(Boolean);
+    const lay = (px) => {
+      g.font = font(px);
+      const lines = [];
+      let line = "";
+      for (const w of words) {
+        const tryLine = line ? line + " " + w : w;
+        if (g.measureText(tryLine).width <= width || !line) line = tryLine;
+        else { lines.push(line); line = w; }
+      }
+      if (line) lines.push(line);
+      return lines;
+    };
+    for (let px = size; px >= size * minScale - 0.01; px -= size * 0.05) {
+      const lines = lay(px);
+      if (lines.length <= maxLines && lines.every((l) => g.measureText(l).width <= width)) return { px, lines };
+    }
+    const px = size * minScale;
+    let lines = lay(px).slice(0, maxLines);
+    lines = lines.map((l) => {
+      let cut = l;
+      while (cut.length > 1 && g.measureText(cut + "…").width > width) cut = cut.slice(0, -1);
+      return cut === l && g.measureText(l).width <= width ? l : cut + "…";
+    });
+    return { px, lines };
+  }
+
+  /* The card, 280 × 350 units in the colours of the band, as in the app; the
+   * shared image is 1080 × 1350 pixels. */
+  function drawCard(canvasEl, d, scale) {
+    const W = 280, H = 350;
+    canvasEl.width = Math.round(W * scale);
+    canvasEl.height = Math.round(H * scale);
+    const g = canvasEl.getContext("2d");
+    g.setTransform(scale, 0, 0, scale, 0, 0);
+    const cream = "#f6eee4", gilt = "#d6a23e";
+    const ui = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Noto Sans\", sans-serif";
+    const round = (x, y, w, h, r) => {
+      g.beginPath();
+      g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r);
+      g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
+    };
+    g.clearRect(0, 0, W, H);
+    round(0, 0, W, H, 14);
+    g.fillStyle = "#6d1f27";
+    g.fill();
+    round(6.75, 6.75, W - 13.5, H - 13.5, 8);
+    g.strokeStyle = gilt;
+    g.lineWidth = 1.5;
+    g.stroke();
+
+    const tx = cardTexts(d);
+    const cx = W / 2, inner = W - 36;
+    g.textAlign = "center";
+    g.textBaseline = "middle";
+    let y = 18 + 6;
+    const put = (text, px, lineH, color, font) => {
+      g.font = font(px);
+      g.fillStyle = color;
+      g.fillText(text, cx, y + lineH / 2);
+      y += lineH + 7;
+    };
+    put(MANTRA.replace(/་$/, ""), 28, 46, gilt, (px) => "700 " + px + "px " + TIB_FONT);
+    const amt = fitText(g, tx.amount, inner, 36, 0.4, 1, (px) => "600 " + px + "px " + ui);
+    put(amt.lines[0], amt.px, 42, cream, (px) => "600 " + px + "px " + ui);
+    put(tx.mantra, 17, 21, cream, (px) => "500 " + px + "px " + ui);
+    g.fillStyle = gilt;
+    g.fillRect(cx - 30, y, 60, 1);
+    y += 1 + 7;
+    put(tx.to, 14, 18, "rgba(246, 238, 228, 0.8)", (px) => px + "px " + ui);
+    const rec = fitText(g, tx.recipient, inner, 21, 0.7, 2, (px) => "600 " + px + "px " + ui);
+    rec.lines.forEach((l, i) => {
+      g.font = "600 " + rec.px + "px " + ui;
+      g.fillStyle = cream;
+      g.fillText(l, cx, y + rec.px * 1.25 * (i + 0.5));
+    });
+    y += rec.px * 1.25 * rec.lines.length + 7;
+    if (tx.wish) {
+      const wsh = fitText(g, tx.wish, inner, 15, 0.8, 3, (px) => "italic " + px + "px " + ui);
+      wsh.lines.forEach((l, i) => {
+        g.font = "italic " + wsh.px + "px " + ui;
+        g.fillStyle = cream;
+        g.fillText(l, cx, y + wsh.px * 1.3 * (i + 0.5));
+      });
+    }
+    const foot = fitText(g, tx.footer, inner, 11, 0.7, 1, (px) => px + "px " + ui);
+    g.font = foot.px + "px " + ui;
+    g.fillStyle = "rgba(246, 238, 228, 0.7)";
+    g.fillText(foot.lines[0], cx, H - 18 - 7);
+    canvasEl.setAttribute("aria-label", [tx.amount, tx.mantra, tx.to, tx.recipient, tx.wish, tx.footer].filter(Boolean).join(", "));
+  }
+
+  function renderDedicate() {
+    const tot = E.writtenTotals(banked, wheels);
+    $("#amount-today").textContent = t("amountToday").replace("%s", format(tot.mani - counter.todayBase));
+    $("#amount-trip").textContent = t("amountSince").replace("%1", shortDate(counter.tripSince))
+      .replace("%2", format(tot.mani - counter.tripBase));
+    $("#amount-trip-row").hidden = !counter.tripOn;
+    if (!counter.tripOn && amountSource() === "trip") dedForm.querySelector("input[value=today]").checked = true;
+    otherInput.hidden = amountSource() !== "other";
+    recipientInput.placeholder = t("allBeings");
+    wishInput.placeholder = t("wishExample");
+    const amount = dedicationAmount();
+    const allowed = E.dedicationAllowed(amount, tot.mani);
+    const submit = $("#dedicate-submit");
+    submit.textContent = t("dedicateButton").replace("%s", format(amount > 0n ? amount : 0n));
+    submit.disabled = !allowed;
+    dedForm.hidden = !!ded.done;
+    $("#dedicated").hidden = !ded.done;
+    const preview = ded.done || (allowed ? E.makeDedication(amount, recipientInput.value, wishInput.value) : null);
+    cardCanvas.parentElement.hidden = !preview;
+    if (preview) drawCard(cardCanvas, preview, 2);
+    $("#dedicated-total").textContent = format(E.dedicationSum(dedications));
+    $("#history").innerHTML = "";
+    for (const d of dedications) {
+      const li = document.createElement("li");
+      const top = document.createElement("span");
+      top.className = "h-top";
+      const who = document.createElement("span");
+      who.textContent = d.recipient || t("allBeings");
+      const amt = document.createElement("span");
+      amt.className = "h-amount";
+      amt.textContent = format(d.amount);
+      top.append(who, amt);
+      const sub = document.createElement("span");
+      sub.className = "h-sub";
+      sub.textContent = [shortDate(d.date), d.wish].filter(Boolean).join(" · ");
+      const del = document.createElement("button");
+      del.type = "button";
+      del.className = "h-delete";
+      del.textContent = "×";
+      del.setAttribute("aria-label", t("deleteDedication") + ": " + who.textContent + ", " + amt.textContent);
+      del.addEventListener("click", () => {
+        if (!window.confirm(t("deleteConfirm"))) return;
+        dedications = dedications.filter((x) => x.id !== d.id);
+        saveDedications();
+        renderDedicate();
+      });
+      const text = document.createElement("span");
+      text.className = "h-text";
+      text.append(top, sub);
+      li.append(text, del);
+      $("#history").appendChild(li);
+    }
+  }
+
+  function canShareFiles(file) {
+    try { return !!(navigator.canShare && navigator.share && navigator.canShare({ files: [file] })); } catch (e) { return false; }
+  }
+
+  function openDedicate() {
+    ded.done = null;
+    ded.file = null;
+    otherInput.value = "";
+    recipientInput.value = "";
+    wishInput.value = "";
+    dedForm.querySelector("input[value=today]").checked = true;
+    renderDedicate();
+    if (typeof dedDialog.showModal === "function") dedDialog.showModal();
+    else dedDialog.setAttribute("open", "");
+  }
+
+  function closeDedicate() {
+    if (typeof dedDialog.close === "function") dedDialog.close();
+    else dedDialog.removeAttribute("open");
+    $("#dedicate-open").focus();
+  }
+
+  dedForm.addEventListener("input", renderDedicate);
+  dedForm.addEventListener("change", () => {
+    renderDedicate();
+    if (amountSource() === "other" && document.activeElement && document.activeElement.name === "amount") otherInput.focus();
+  });
+  dedForm.addEventListener("submit", (ev) => {
+    ev.preventDefault();
+    const amount = dedicationAmount();
+    if (!E.dedicationAllowed(amount, E.writtenTotals(banked, wheels).mani)) return;
+    const d = E.makeDedication(amount, recipientInput.value, wishInput.value);
+    if (!d) return;
+    dedications.unshift(d);
+    saveDedications();
+    ded.done = d;
+    renderDedicate();
+    // Prepare the image now: sharing must start inside the tap that asks for it.
+    const big = document.createElement("canvas");
+    drawCard(big, d, 1080 / 280);
+    const share = $("#share-card");
+    share.disabled = true;
+    share.textContent = t("shareCard");
+    big.toBlob((blob) => {
+      if (!blob) return;
+      ded.file = new File([blob], "mani-dedication.png", { type: "image/png" });
+      share.textContent = canShareFiles(ded.file) ? t("shareCard") : t("saveCard");
+      share.disabled = false;
+      share.focus();
+    }, "image/png");
+  });
+  $("#share-card").addEventListener("click", () => {
+    const file = ded.file;
+    if (!file) return;
+    if (canShareFiles(file)) {
+      navigator.share({ files: [file] }).catch(() => { /* cancelled */ });
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = file.name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  });
+  $("#dedicate-open").addEventListener("click", openDedicate);
+  $("#dedicate-done").addEventListener("click", closeDedicate);
+  dedDialog.addEventListener("click", (ev) => { if (ev.target === dedDialog) closeDedicate(); });
+
   function showNextLine() {
     const lines = counterLines();
     const i = lines.indexOf(counter.line);
@@ -1331,6 +1643,7 @@
     updateHint();
     badgeKey = "";
     updateCounts();
+    if (dedDialog.open) renderDedicate();
     if (fsEnabled) updateFullscreenButton();
   }
 

@@ -35,7 +35,7 @@ network requests and no external libraries. The folder works when copied on its 
   wheel and press Space, Enter or the arrow keys.
 - **Turning backwards** either does nothing (the default, with a small recoil) or
   subtracts from the count.
-- **Mantras inside** sets how many mantras the inner scroll holds: 1, 10, 108,
+- **Mantras inside** (Mongolian «Ороолттой маань») sets how many mantras the inner scroll holds: 1, 10, 108,
   мянга, түм and бум (10⁵), the largest, because every counted mantra is really
   written (below). Default 1. A size above бум saved by an earlier version opens
   as бум.
@@ -57,6 +57,18 @@ network requests and no external libraries. The folder works when copied on its 
   *date*** (a trip counter, written "11/8-с хойш" in Mongolian), and **Turns**.
   The trip counter starts again from zero with ↺ beside it, or by pressing and
   holding the count, after a confirmation; Settings can switch it off.
+- **Dedications**, as in the khurd app: the hands button in the title row
+  opens a sheet to dedicate today's count, the count since a date, or another
+  amount from 1 to the total, to someone by name (empty means all beings,
+  «Хамаг амьтан»), with an optional wish. Names up to 40 characters, wishes up
+  to 80, one line each. Dedicating does not lower the total. Records stay in
+  this browser, newest first, with "Dedicated so far" as their sum; each can be
+  deleted after a confirmation. After dedicating, the card (the Tibetan mantra,
+  the amount, the mantra's name, "Dedicated to", the name or "All beings", the
+  wish and the date, in the colours of the band) can be shared as a
+  1080 × 1350 image through the system's share sheet where the browser can
+  share files (phones), or saved as a PNG elsewhere. The text is in the image,
+  since some services drop pre-written text.
 - **Tips** at the bottom of Settings explain the gestures.
 - **Full screen**: a button in the title row where the browser allows it
   (desktop, Android, iPad). iPhone Safari offers no full-screen mode for pages;

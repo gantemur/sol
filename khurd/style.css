@@ -90,6 +90,10 @@ body {
 
 .topbar h1 {
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   margin: 0;
   font-size: 1.15rem;
   font-weight: 600;
@@ -406,7 +410,16 @@ select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .prose p { margin: 0 0 0.8em; }
 .prose .tib { font-family: var(--tibetan); font-size: 1.25em; }
 
+.lang .short { display: none; }
+
+/* Narrow phones: short language names leave room for the title. */
+@media (max-width: 480px) {
+  .lang .long { display: none; }
+  .lang .short { display: inline; }
+}
+
 @media (max-width: 420px) {
+  .topbar { gap: 8px; }
   .topbar h1 { font-size: 1.02rem; }
   .lang button { padding: 4px 8px; }
 }
@@ -523,3 +536,80 @@ select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .ladder-list li.faded .rung-badge { filter: grayscale(1); opacity: 0.4; }
 .rung-here { color: var(--accent); font-size: 0.85rem; font-weight: 650; }
 .ladder .note a { color: var(--accent); }
+
+/* Dedications: the sheet shares the ladder's frame. */
+.dedicate fieldset {
+  min-width: 0;
+  margin: 0 0 16px;
+  padding: 0;
+  border: 0;
+}
+
+.dedicate legend { padding: 0; }
+
+.choices { display: flex; flex-direction: column; gap: 2px; }
+.choices .check { min-height: 36px; }
+.choices .check[hidden] { display: none; }
+.choices input { width: 18px; height: 18px; accent-color: var(--maroon); }
+
+.text {
+  display: block;
+  width: 100%;
+  min-height: 42px;
+  margin: 6px 0 0;
+  padding: 8px 10px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  font: inherit;
+}
+
+.text[hidden] { display: none; }
+.text:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.label.small { margin: 12px 0 0; }
+
+.done.wide { display: block; width: 100%; min-height: 44px; margin: 4px 0 14px; }
+.done:disabled { opacity: 0.45; cursor: default; }
+
+.dedicated-head { margin: 4px 0 10px; font-weight: 600; }
+
+.card-wrap { display: flex; justify-content: center; margin: 4px 0 16px; }
+.card-wrap[hidden] { display: none; }
+.card-wrap canvas { width: 280px; height: 350px; max-width: 100%; height: auto; aspect-ratio: 4 / 5; }
+
+.history-sum {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-top: 1px solid var(--rule);
+  font-weight: 600;
+}
+
+.history-sum output { font-variant-numeric: tabular-nums; }
+
+#history { margin: 0; padding: 0; list-style: none; }
+#history li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-top: 1px solid var(--rule);
+}
+.h-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.h-top { display: flex; justify-content: space-between; gap: 10px; }
+.h-top span:first-child { overflow-wrap: anywhere; }
+.h-amount { font-variant-numeric: tabular-nums; }
+.h-sub { color: var(--muted); font-size: 0.85rem; overflow-wrap: anywhere; }
+.h-delete {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  font: 600 1rem/1 var(--ui);
+  cursor: pointer;
+}
+.h-delete:focus-visible { outline: 2px solid var(--accent); }

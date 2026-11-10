@@ -353,6 +353,66 @@
     return now.power > best.power ? "symbol" : "bead";
   }
 
+  /* ---------- Dedications ----------
+   * Mani dedicated to someone, kept on the device (khurd app, docs/model.md,
+   * Dedications). Dedicating never lowers the total. */
+  const RECIPIENT_LIMIT = 40;
+  const WISH_LIMIT = 80;
+
+  /* One line, trimmed, at most `limit` characters. */
+  function cleanText(text, limit) {
+    const oneLine = String(text || "").split(/\r\n|\r|\n/).join(" ").trim();
+    return Array.from(oneLine).slice(0, limit).join("").trim();
+  }
+
+  /* An amount typed by the user: digits only, at most 18 of them. */
+  function parseAmount(text) {
+    const digits = String(text || "").replace(/\D/g, "").slice(0, 18);
+    return digits ? BigInt(digits) : 0n;
+  }
+
+  /* At least 1 and at most the total. */
+  function dedicationAllowed(amount, total) {
+    return amount > 0n && amount <= total;
+  }
+
+  /* A dedication with checked values, or null if the amount is not positive. */
+  function makeDedication(amount, recipient, wish, date, id) {
+    const a = BigInt(amount);
+    if (a <= 0n) return null;
+    return {
+      id: id || (Date.now().toString(36) + Math.random().toString(36).slice(2, 8)),
+      date: date || Date.now(),
+      amount: a,
+      recipient: cleanText(recipient, RECIPIENT_LIMIT),
+      wish: cleanText(wish, WISH_LIMIT)
+    };
+  }
+
+  /* Dedicated so far: the sum of the records. */
+  function dedicationSum(entries) {
+    return entries.reduce((sum, d) => sum + d.amount, 0n);
+  }
+
+  /* Storage as JSON, amounts as strings; unreadable data gives an empty log,
+   * newest first, records without a positive amount dropped. */
+  function encodeDedications(entries) {
+    return JSON.stringify(entries.map((d) => ({ id: d.id, date: d.date, amount: d.amount.toString(), recipient: d.recipient, wish: d.wish })));
+  }
+
+  function decodeDedications(text) {
+    let raw;
+    try { raw = JSON.parse(text || "[]"); } catch (e) { return []; }
+    if (!Array.isArray(raw)) return [];
+    const out = [];
+    for (const r of raw) {
+      if (!r || !/^\d{1,19}$/.test(String(r.amount))) continue;
+      const d = makeDedication(BigInt(r.amount), r.recipient, r.wish, Number(r.date) || 0, String(r.id || ""));
+      if (d) out.push(d);
+    }
+    return out.sort((a, b) => b.date - a.date);
+  }
+
   /* Where the drums sit on a stage of w × h CSS pixels (docs/model.md in the
    * khurd app, Interface). The side view fits drums of about 250 px each, up
    * to six; the top view fits as many wheels as have a slot at least 0.9 × the
@@ -398,6 +458,8 @@
     TAU, PHYSICS, SCROLL_SIZES, sideCount, topCount, stageLayout,
     SYMBOL_COUNT, milestone, milestoneSymbol, milestoneRings, milestoneValue, nextBead, nextSymbol,
     milestoneWords, symbolThreshold, compareMilestones, milestoneCrossing,
+    RECIPIENT_LIMIT, WISH_LIMIT, cleanText, parseAmount, dedicationAllowed, makeDedication, dedicationSum,
+    encodeDedications, decodeDedications,
     SYLLABLE_TEXT, createScroll, scrollMove, scrollTarget, scrollMantras, scrollLastWritten, syncScroll, writtenTotals,
     createWheel, wrap, rotate, drag, hold, release, push, step, isMoving,
     truncTurns, maniFor, bandShift, totals, bank, bankWholeTurns, needsBank
