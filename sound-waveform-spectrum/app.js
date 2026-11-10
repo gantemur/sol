@@ -17,7 +17,7 @@
       duration: "Бичлэгийн хугацаа", sec: "сек", ms: "мсек", hz: "Гц",
       waveTitle: "Долгион", spectrumTitle: "Спектр", zoom: "Томруулах", zoomOut: "Жижигрүүлэх",
       toAverage: "Дундаж руу", toLocal: "Агшин руу", local: "Агшин", live: "Шууд",
-      amplitude: "Босоо томруулалт", volume: "Чанга–сул", auto: "Автомат", scale: "Масштаб",
+      amplitude: "Босоо масштаб", volume: "Чанга–сул", auto: "Автомат", scale: "Масштаб",
       waveHint: "Товшиж томруулна", zoomHint: "Чирж шилжүүлнэ", cursorHint: "Шугамыг чирнэ",
       recordingHint: "Бичиж байна", spectrumHint: "Товшиж горим солино", localHint: "Хэсгийн спектр",
       lockedHint: "Томруулсан хэсгийн спектр", liveHint: "Одоогийн хэсгийн спектр",
@@ -41,7 +41,7 @@
       duration: "Recording duration", sec: "s", ms: "ms", hz: "Hz",
       waveTitle: "Waveform", spectrumTitle: "Spectrum", zoom: "Zoom in", zoomOut: "Zoom out",
       toAverage: "To average", toLocal: "Localize", local: "Local", live: "Live",
-      amplitude: "Vertical magnification", volume: "Volume", auto: "Auto", scale: "Scale",
+      amplitude: "Vertical scale", volume: "Volume", auto: "Auto", scale: "Scale",
       waveHint: "Tap to zoom in", zoomHint: "Drag to move the window", cursorHint: "Drag the cursor",
       recordingHint: "Recording", spectrumHint: "Tap to switch mode", localHint: "Spectrum at cursor",
       lockedHint: "Spectrum of zoomed window", liveHint: "Spectrum of latest samples",
@@ -104,7 +104,6 @@
     document.querySelectorAll("[data-lang]").forEach(node => {
       node.setAttribute("aria-pressed", String(node.dataset.lang === language));
     });
-    for (const option of $("durationSelect").options) option.textContent = option.value + " " + t("sec");
     const recordOption = $("sourceSelect").querySelector('[value="recorded"]');
     if (recordOption) recordOption.textContent = t("recordedOption");
     try { localStorage.setItem(STORAGE_KEY, language); } catch (_) { /* optional */ }
@@ -120,7 +119,9 @@
     const busy = state.micPending || Boolean(state.recording);
     $("sourceSelect").disabled = busy;
     $("sourceSelect").value = state.selected;
-    $("durationSelect").disabled = busy;
+    $("durationSlider").disabled = busy;
+    $("durationSlider").value = String(state.duration);
+    $("durationReadout").textContent = state.duration + " " + t("sec");
     $("playButton").disabled = busy;
     $("playButton").textContent = t(playback.audio || playback.pending ? "stop" : "play");
     $("recordButton").disabled = false;
@@ -595,7 +596,7 @@
     state.cursor = getSource().duration / 2;
     state.statusKey = ""; state.statusDetail = ""; renderControls(); requestDraw();
   });
-  $("durationSelect").addEventListener("change", event => {
+  $("durationSlider").addEventListener("input", event => {
     const value = Number(event.target.value);
     if (Number.isInteger(value) && value >= 1 && value <= 4) state.duration = value;
     renderControls();
