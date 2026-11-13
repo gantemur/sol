@@ -211,5 +211,28 @@
       "mn": "Маанийн хүрдийг хуруугаараа эргүүлж, доторх маанийг тоолох.",
       "en": "Turn a prayer wheel with your finger and count the mantras inside."
     }
+  },
+  {
+    "id": "toono",
+    "title": "Гэрийн наран цаг · Ger sun clock",
+    "language": [
+      "mn",
+      "en"
+    ],
+    "category": "astronomy",
+    "entry": "toono/",
+    "description": "Тооноор тусах нарны гэрэл гэрийн дотор хаана буухыг харуулж, арван хоёр цагийн хуваариудыг харьцуулах.",
+    "migrationStatus": "native new tool, live-first alpha",
+    "copyrightHolder": "Tsogtgerel Gantumur",
+    "license": "MIT",
+    "licenseFile": "toono/LICENSE",
+    "titles": {
+      "mn": "Гэрийн наран цаг",
+      "en": "Ger sun clock"
+    },
+    "descriptions": {
+      "mn": "Тооноор тусах нарны гэрэл гэрийн дотор хаана буухыг харуулж, арван хоёр цагийн хуваариудыг харьцуулах.",
+      "en": "See where sunlight through the toono lands inside a ger, and compare ways of reckoning the twelve hours."
+    }
   }
 ]

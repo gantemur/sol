@@ -1,0 +1,151 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: 2026 Tsogtgerel Gantumur
+     SPDX-License-Identifier: MIT -->
+<html lang="mn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Гэрийн наран цаг · Sol</title>
+  <link rel="stylesheet" href="style.css?v=0.1">
+  <script defer src="engine.js?v=0.1"></script>
+  <script defer src="app.js?v=0.1"></script>
+  <!-- Aggregate, cookie-free visits; see /sol/docs/ANALYTICS.md. -->
+  <script>
+    if (location.hostname === "gantemur.github.io") {
+      const tracker = document.createElement("script");
+      tracker.async = true;
+      tracker.src = "https://gc.zgo.at/count.js";
+      tracker.setAttribute("data-goatcounter", "https://gantemur-sol.goatcounter.com/count");
+      tracker.setAttribute("data-goatcounter-settings", JSON.stringify({"path":"/sol/toono/","title":"Гэрийн наран цаг","no_events":true}));
+      document.head.appendChild(tracker);
+    }
+  </script>
+</head>
+<body>
+<main>
+  <header>
+    <a href="../">← Sol</a>
+    <div>
+      <span id="version" class="badge">alpha</span>
+      <select id="lang" aria-label="Хэл / Language">
+        <option value="mn">Монгол</option>
+        <option value="en">English</option>
+      </select>
+    </div>
+  </header>
+
+  <h1 data-i="title">Гэрийн наран цаг</h1>
+  <p class="intro" data-i="intro">Тооноор тусах нарны гэрэл гэрийн дотор хаана буухыг таны байршил, цаг хугацаанд тохируулан харуулна.</p>
+
+  <div class="layout">
+    <section class="view" aria-labelledby="view-title">
+      <h2 id="view-title" class="sr" data-i="viewTitle">Гэрийн дотоод задалсан зураг</h2>
+      <div class="canvas-wrap">
+        <canvas id="ger" role="img" data-i-label="canvasLabel" aria-label="Гэрийн дотоод задалсан зураг ба гэрлийн толбо"></canvas>
+      </div>
+      <p id="netNote" class="note" data-i="netNote">Голд нь шал, түүнийг тойрон хана (доороос дээш), хамгийн гадна унь (ханын толгойноос тооно хүртэл) дэлгэгдсэн. Зүг чиг бүх хэсэгт хадгалагдана.</p>
+      <div id="legend" class="legend" aria-live="off"></div>
+
+      <div class="playbar" role="group" data-i-label="timeControls" aria-label="Цаг удирдах">
+        <button type="button" id="now" class="quiet" data-i="now">Одоо</button>
+        <button type="button" id="dayBack" class="quiet" data-i-label="dayBack" aria-label="Нэг өдөр ухраах">−1 <span data-i="dayShort">өдөр</span></button>
+        <button type="button" id="hourBack" class="quiet" data-i-label="hourBack" aria-label="Нэг цаг ухраах">−1 <span data-i="hourShort">цаг</span></button>
+        <button type="button" id="play" aria-pressed="true" data-i="pause">Зогсоох</button>
+        <button type="button" id="hourFwd" class="quiet" data-i-label="hourFwd" aria-label="Нэг цаг урагшлуулах">+1 <span data-i="hourShort">цаг</span></button>
+        <button type="button" id="dayFwd" class="quiet" data-i-label="dayFwd" aria-label="Нэг өдөр урагшлуулах">+1 <span data-i="dayShort">өдөр</span></button>
+      </div>
+      <div class="timerow">
+        <label><span data-i="speed">Хурд</span>
+          <select id="speed">
+            <option value="-3600" data-i="spdM3600">−1 цаг/сек</option>
+            <option value="-600" data-i="spdM600">−10 мин/сек</option>
+            <option value="-60" data-i="spdM60">−1 мин/сек</option>
+            <option value="1" data-i="spd1" selected>Бодит хурд</option>
+            <option value="60" data-i="spd60">1 мин/сек</option>
+            <option value="600" data-i="spd600">10 мин/сек</option>
+            <option value="3600" data-i="spd3600">1 цаг/сек</option>
+            <option value="21600" data-i="spd21600">6 цаг/сек</option>
+          </select>
+        </label>
+        <label><span data-i="datetime">Огноо, цаг</span><input id="datetime" type="datetime-local" step="60"></label>
+      </div>
+      <div class="jumps" role="group" data-i-label="jumpLabel" aria-label="Онцлох өдөр">
+        <button type="button" class="quiet" data-jump="3-20" data-i="springEq">Хаврын тэгшитгэл</button>
+        <button type="button" class="quiet" data-jump="6-21" data-i="summerSol">Зуны туйл</button>
+        <button type="button" class="quiet" data-jump="9-23" data-i="autumnEq">Намрын тэгшитгэл</button>
+        <button type="button" class="quiet" data-jump="12-21" data-i="winterSol">Өвлийн туйл</button>
+      </div>
+    </section>
+
+    <section class="side">
+      <div class="readout" id="readout" aria-live="polite"></div>
+
+      <fieldset class="overlays">
+        <legend data-i="overlays">Давхаргууд</legend>
+        <label class="check"><input type="checkbox" id="ovWedges" checked><span data-i="ovWedges">Гэрийн 12 тогтмол зүг</span></label>
+        <label class="check"><input type="checkbox" id="ovUni" checked><span data-i="ovUni">Унь</span></label>
+        <label class="check"><input type="checkbox" id="ovClock" checked><span data-i="ovClock">:40 хуваарийн хил (энэ өдөр)</span></label>
+        <label class="check"><input type="checkbox" id="ovTemporal"><span data-i="ovTemporal">Нар мандахаас эхэлсэн тэгш бус цаг</span></label>
+        <label class="check"><input type="checkbox" id="ovSeasons"><span data-i="ovSeasons">Туйл, тэгшитгэлийн өдрийн зам</span></label>
+        <label class="check"><input type="checkbox" id="ovLabels" checked><span data-i="ovLabels">Гэрийн хэсгийн нэр</span></label>
+        <label><span data-i="ovSundial">Нарны цагийн тогтмол шугам</span>
+          <select id="ovSundial">
+            <option value="off" data-i="sdOff">Харуулахгүй</option>
+            <option value="solar" data-i="sdSolar">Жинхэнэ нарны цаг (Морь үдэд төвлөрнө)</option>
+            <option value="clock40" data-i="sdClock">:40 хуваарь (дундаж нарны цаг)</option>
+          </select>
+        </label>
+      </fieldset>
+    </section>
+  </div>
+
+  <details open>
+    <summary data-i="placeTitle">Байршил ба цагийн бүс</summary>
+    <div class="grid">
+      <label><span data-i="preset">Газар</span>
+        <select id="preset"></select>
+      </label>
+      <label><span data-i="lat">Өргөрөг (°, хойд +)</span><input id="lat" type="number" min="-89" max="89" step="0.01"></label>
+      <label><span data-i="lon">Уртраг (°, зүүн +)</span><input id="lon" type="number" min="-180" max="180" step="0.01"></label>
+      <label><span data-i="zone">Цагийн бүс</span><select id="zone"></select></label>
+    </div>
+    <p><button type="button" id="geo" class="quiet" data-i="useLocation">Миний байршлыг ашиглах</button> <span id="geoStatus" class="note"></span></p>
+  </details>
+
+  <details>
+    <summary data-i="gerTitle">Гэр</summary>
+    <div class="grid">
+      <label><span data-i="size">Хэмжээ</span>
+        <select id="size">
+          <option value="4" data-i="size4">4 ханатай</option>
+          <option value="5" data-i="size5" selected>5 ханатай</option>
+          <option value="6" data-i="size6">6 ханатай</option>
+        </select>
+      </label>
+      <label><span data-i="door">Хаалганы чиг (азимут °)</span><input id="door" type="number" min="0" max="359" step="1" value="180"></label>
+      <label><span data-i="urkh">Өрх</span>
+        <select id="urkh">
+          <option value="full" data-i="urkhOpen">Бүрэн нээлттэй</option>
+          <option value="half" data-i="urkhHalf">Хаалганы талын хагас нээлттэй</option>
+        </select>
+      </label>
+    </div>
+    <div class="grid">
+      <label><span data-i="diam">Шалны диаметр (м)</span><input id="diam" type="number" min="1.5" max="20" step="0.05"></label>
+      <label><span data-i="wallH">Ханын өндөр (м)</span><input id="wallH" type="number" min="0.4" max="4" step="0.05"></label>
+      <label><span data-i="toonoH">Тооны өндөр (м)</span><input id="toonoH" type="number" min="0.6" max="8" step="0.05"></label>
+      <label><span data-i="toonoD">Тооны диаметр (м)</span><input id="toonoD" type="number" min="0.2" max="4" step="0.05"></label>
+      <label><span data-i="uniCount">Униын тоо</span><input id="uniCount" type="number" min="12" max="200" step="1"></label>
+    </div>
+    <p class="note" data-i="gerNote">Хэмжээнүүд ойролцоо; өөрийн гэрийнхээр засаж болно.</p>
+  </details>
+  <p id="error" role="alert"></p>
+
+  <details class="help">
+    <summary data-i="helpTitle">Тайлбар ба загвар</summary>
+    <div id="helpBody"></div>
+  </details>
+</main>
+</body>
+</html>
