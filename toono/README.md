@@ -1,6 +1,6 @@
 # Ger sun clock · Гэрийн наран цаг
 
-Status: alpha (v0.4), published for live testing.
+Status: alpha (v0.5), published for live testing.
 
 Sunlight entering a Mongolian ger through the toono (the open crown ring of the
 roof) makes a bright patch that travels across the roof poles, wall and floor
@@ -20,8 +20,9 @@ English with the selector or `?lang=en`.
   solstices); ▶ plays at the chosen speed (also backwards) and "Now" returns to
   the live clock. The page follows the real time until it is moved by hand.
 - The table beside or below the drawing compares four readings of the twelve
-  hours. Place, extra lines, ger dimensions and the explanation are folded
-  sections.
+  hours. Location (Ulaanbaatar, the 21 aimag centres, a few places abroad,
+  or any latitude and longitude), extra lines, ger dimensions and the
+  explanation are folded sections.
 - Language: MN | EN toggle (also `?lang=en`), remembered as in other Sol tools.
 
 ## Drawing
@@ -54,9 +55,11 @@ default, can be hidden), the 12 fixed 30° sectors (on), and, off by default:
   horizon; in the plan view, where the light passes from the uni to the wall the
   same position is drawn twice, and a dotted line joins the two.
 - **Sundial lines** (true solar double-hour boundaries, Horse centred on noon):
-  on the floor, straight lines from the polar-axis foot near the door (dot), bold
-  where the light reaches during the year; in the toono view they also continue
-  on the wall and uni.
+  where each hour plane through the toono meets the ger. On the floor they are
+  straight lines from the polar-axis foot near the door (dot); they continue up
+  the wall to the wall head in the plan view, and over the wall and uni to the
+  toono in the toono view. Hours the Sun never reaches at that latitude are
+  left out.
 
 ## The four hour readouts
 

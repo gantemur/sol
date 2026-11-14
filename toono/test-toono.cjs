@@ -124,6 +124,18 @@ const UB = { lat: 47.92, lon: 106.92, tz: 'Asia/Ulaanbaatar' };
   check('floor hour line ends on floor edge', fl && near(Math.hypot(...fl.full[1]), g.R, 1e-9));
   const noon = E.floorHourLine(UB.lat, 0, g);
   check('noon floor line runs north along the meridian', noon && near(noon.full[1][0], 0, 1e-9) && noon.full[1][1] > 0);
+  // Whole sundial lines: from the foot over the floor, up the wall to the
+  // wall head in the plan view, and on over the uni to the toono rim in the
+  // toono view.
+  for (const H of [-30, 0, 45]) {
+    const pl = E.sundialLine(UB.lat, H, g, 'plan', true), pts = pl.flat();
+    const far = Math.max(...pts.map(p => p.rho)), near0 = pts[0].rho;
+    check(`plan sundial line ${H}° runs from the foot to the wall head`, pts.length && pts.every(p => p.surf !== 'roof') &&
+      near(far, g.R + g.wallH, 1e-3) && near(near0, Math.abs(Fy), 2e-2) && near(Math.abs(pts[0].az), Math.PI, 2e-2), [near0, far]);
+    const tv = E.sundialLine(UB.lat, H, g, 'toono').flat(), surfs = new Set(tv.map(p => p.surf));
+    const rim = Math.max(...tv.map(p => p.rho)) * E.R2D;
+    check(`toono-view sundial line ${H}° covers floor, wall and uni up to the rim`, surfs.has('floor') && surfs.has('wall') && surfs.has('roof') && rim > 88, rim);
+  }
   // Today's path in plan view reaches the eave (rho = R) before jumping to the wall.
   const start = E.zonedToUtc(UB.tz, 2026, 7, 6, 0, 0), mins = []; for (let m = 0; m <= 1440; m += 3) mins.push(m);
   const path = E.sweep(mins, m => { const st = E.sunState(start + m * 60000, UB.lat, UB.lon); return st.alt > 0 ? E.traceCentre(st.s, g, 'plan') : null; });
