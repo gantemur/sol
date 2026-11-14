@@ -1,6 +1,6 @@
 # Ger sun clock · Гэрийн наран цаг
 
-Status: alpha (v0.1), published for live testing.
+Status: alpha (v0.2), published for live testing.
 
 Sunlight entering a Mongolian ger through the toono (the open crown ring of the
 roof) makes a bright patch that travels across the roof poles, wall and floor
@@ -14,27 +14,35 @@ English with the selector or `?lang=en`.
 
 ## Use
 
-- **Time:** starts at the current time and runs in real time. Pause, step by an
-  hour or a day, choose a speed (also backwards), enter a date and time, or jump
-  to the equinoxes and solstices.
-- **Location:** presets (Ulaanbaatar, Khovd, Choibalsan, Hohhot, Ulan-Ude, Lhasa,
-  Montreal), manual latitude/longitude, a time zone, or the device location
-  (requested only when the button is pressed).
-- **Ger:** 4-, 5- or 6-wall presets, door direction, roof flap (urkh) fully open
-  or only the door-side half open, and editable dimensions.
-- **Overlays:** the 12 fixed 30° sectors of the ger; the uni; the path of the patch
-  centre on the current day with its positions at the :40 boundaries; fixed
-  sundial lines (true solar double hours, or the :40 convention in mean time);
-  unequal hours counted from sunrise; solstice and equinox day paths.
+- The large readout shows the current animal hour in the :40 convention, with
+  clock time, date and place. Below the drawing, the time slider moves through
+  the day and the day slider through the year (marks at the equinoxes and
+  solstices); ▶ plays at the chosen speed (also backwards) and "Now" returns to
+  the live clock. The page follows the real time until it is moved by hand.
+- The table beside or below the drawing compares four readings of the twelve
+  hours. Place, extra lines, ger dimensions and the explanation are folded
+  sections.
+- Language: MN | EN toggle (also `?lang=en`), remembered as in other Sol tools.
 
 ## Drawing
 
-Plan view from above. The floor and the roof (treated as transparent) are drawn in
-plan, with the toono as the small central circle and the uni as spokes; the wall
-is folded outward around the floor (foot inside, head outside). Light on the
-roof poles is hatched, light on the floor or wall is solid. Compass direction
-is preserved everywhere; the map is continuous across the wall foot but not
-across the eave.
+Two views, switched under the drawing:
+
+- **From above** (default, `?view=plan`): the floor and the roof (treated as
+  transparent) in plan, the toono as the small central circle and the uni as
+  spokes; the wall is unfolded around the floor (foot inside, head outside).
+  Shapes and sizes are true; light on the uni is hatched. The light breaks
+  between the uni and the wall, because the eave is drawn twice.
+- **From the toono** (`?view=toono`): the interior as seen from the centre of
+  the toono looking down (azimuthal equidistant about the nadir). Floor in the
+  middle, then wall, uni, and the toono rim as the outer circle. The light moves
+  without breaks (rim, uni, wall head, wall, floor: the folk sequence) and its
+  centre sits at 90° minus the solar altitude; the area near the rim is
+  enlarged, so early light looks like a wide crescent.
+
+Extra lines (off by default except the 12 sectors): today's path of the light
+centre with its positions at the :40 times; solstice and equinox paths; unequal
+hours from sunrise; fixed sundial lines (true solar or :40 mean time).
 
 ## The four hour readouts
 
