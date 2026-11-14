@@ -328,6 +328,22 @@
     });
   }
 
+  // Whole sundial line for hour angle H (deg): where the half-plane of that
+  // hour through the toono centre (bounded by the polar axis) meets the
+  // floor, wall and uni, whether or not the light ever reaches it. Swept
+  // over every declination, from the polar-axis foot outwards. With
+  // noRoof the line stops at the wall head (used in the plan view, where
+  // the uni lies over the floor).
+  function sundialLine(lat, Hdeg, g, view = 'plan', noRoof = false) {
+    const phi = lat * D2R;
+    return sweep(range(-89.75, 89.75, 0.25).reverse(), dd => {
+      const s = sunVector(phi, Hdeg * D2R, dd * D2R);
+      if (s[2] <= 1e-6) return null;
+      const p = traceCentre(s, g, view);
+      return p && noRoof && p.surf === 'roof' ? null : p;
+    });
+  }
+
   // Temporal (unequal) hour line: boundary j (1..5) of the six daylight
   // double hours that start at sunrise (geometric horizon).
   function temporalLine(lat, j, g, view = 'plan') {
@@ -438,10 +454,10 @@
   function validZone(tz) { try { zoneParts(tz, 0); return true; } catch (e) { return false; } }
 
   return {
-    VERSION: '0.4', D2R, R2D, OBLIQUITY, MOUSE, TIGER, RABBIT, HORSE, ROOSTER, mod,
+    VERSION: '0.5', D2R, R2D, OBLIQUITY, MOUSE, TIGER, RABBIT, HORSE, ROOSTER, mod,
     solar, sunVector, sunState, halfDayArc,
     PRESETS, validateGer, roofSlant, netMax, layout, trace, toNet, traceCentre, apertureBoundary, patch, sweep,
-    declinationPath, hourLine, temporalLine, floorHourLine, sunEvents,
+    declinationPath, hourLine, sundialLine, temporalLine, floorHourLine, sunEvents,
     clockHour, solarHour, directionHour, temporalHour,
     zoneParts, tzOffsetMin, zonedToUtc, validZone
   };

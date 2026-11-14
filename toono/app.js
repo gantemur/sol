@@ -18,15 +18,37 @@
     en: ['Mouse', 'Ox', 'Tiger', 'Rabbit', 'Dragon', 'Snake', 'Horse', 'Sheep', 'Monkey', 'Rooster', 'Dog', 'Pig']
   };
 
+  // Ulaanbaatar, the 21 aimag centres (sorted by name when listed), then
+  // places outside Mongolia. 'short' is the name used in the heading.
   const PLACES = [
     { id: 'ub', lat: 47.92, lon: 106.92, tz: 'Asia/Ulaanbaatar', mn: 'Улаанбаатар', en: 'Ulaanbaatar' },
-    { id: 'khovd', lat: 48.01, lon: 91.64, tz: 'Asia/Hovd', mn: 'Ховд', en: 'Khovd' },
-    { id: 'choibalsan', lat: 48.07, lon: 114.53, tz: 'Asia/Ulaanbaatar', mn: 'Чойбалсан', en: 'Choibalsan' },
+    { id: 'tsetserleg', lat: 47.47, lon: 101.45, tz: 'Asia/Ulaanbaatar', aimag: true, mn: 'Цэцэрлэг (Архангай)', en: 'Tsetserleg (Arkhangai)', short: { mn: 'Цэцэрлэг', en: 'Tsetserleg' } },
+    { id: 'ulgii', lat: 48.97, lon: 89.96, tz: 'Asia/Hovd', aimag: true, mn: 'Өлгий (Баян-Өлгий)', en: 'Ölgii (Bayan-Ölgii)', short: { mn: 'Өлгий', en: 'Ölgii' } },
+    { id: 'bayankhongor', lat: 46.19, lon: 100.72, tz: 'Asia/Ulaanbaatar', aimag: true, mn: 'Баянхонгор', en: 'Bayankhongor', short: { mn: 'Баянхонгор', en: 'Bayankhongor' } },
+    { id: 'bulgan', lat: 48.81, lon: 103.53, tz: 'Asia/Ulaanbaatar', aimag: true, mn: 'Булган', en: 'Bulgan', short: { mn: 'Булган', en: 'Bulgan' } },
+    { id: 'altai', lat: 46.37, lon: 96.26, tz: 'Asia/Ulaanbaatar', aimag: true, mn: 'Алтай (Говь-Алтай)', en: 'Altai (Govi-Altai)', short: { mn: 'Алтай', en: 'Altai' } },
+    { id: 'choir', lat: 46.36, lon: 108.36, tz: 'Asia/Ulaanbaatar', aimag: true, mn: 'Чойр (Говьсүмбэр)', en: 'Choir (Govisümber)', short: { mn: 'Чойр', en: 'Choir' } },
+    { id: 'darkhan', lat: 49.48, lon: 105.92, tz: 'Asia/Ulaanbaatar', aimag: true, mn: 'Дархан (Дархан-Уул)', en: 'Darkhan (Darkhan-Uul)', short: { mn: 'Дархан', en: 'Darkhan' } },
+    { id: 'sainshand', lat: 44.89, lon: 110.14, tz: 'Asia/Ulaanbaatar', aimag: true, mn: 'Сайншанд (Дорноговь)', en: 'Sainshand (Dornogovi)', short: { mn: 'Сайншанд', en: 'Sainshand' } },
+    { id: 'choibalsan', lat: 48.07, lon: 114.53, tz: 'Asia/Ulaanbaatar', aimag: true, mn: 'Чойбалсан (Дорнод)', en: 'Choibalsan (Dornod)', short: { mn: 'Чойбалсан', en: 'Choibalsan' } },
+    { id: 'mandalgovi', lat: 45.76, lon: 106.27, tz: 'Asia/Ulaanbaatar', aimag: true, mn: 'Мандалговь (Дундговь)', en: 'Mandalgovi (Dundgovi)', short: { mn: 'Мандалговь', en: 'Mandalgovi' } },
+    { id: 'uliastai', lat: 47.74, lon: 96.84, tz: 'Asia/Ulaanbaatar', aimag: true, mn: 'Улиастай (Завхан)', en: 'Uliastai (Zavkhan)', short: { mn: 'Улиастай', en: 'Uliastai' } },
+    { id: 'erdenet', lat: 49.03, lon: 104.05, tz: 'Asia/Ulaanbaatar', aimag: true, mn: 'Эрдэнэт (Орхон)', en: 'Erdenet (Orkhon)', short: { mn: 'Эрдэнэт', en: 'Erdenet' } },
+    { id: 'arvaikheer', lat: 46.26, lon: 102.78, tz: 'Asia/Ulaanbaatar', aimag: true, mn: 'Арвайхээр (Өвөрхангай)', en: 'Arvaikheer (Övörkhangai)', short: { mn: 'Арвайхээр', en: 'Arvaikheer' } },
+    { id: 'dalanzadgad', lat: 43.57, lon: 104.43, tz: 'Asia/Ulaanbaatar', aimag: true, mn: 'Даланзадгад (Өмнөговь)', en: 'Dalanzadgad (Ömnögovi)', short: { mn: 'Даланзадгад', en: 'Dalanzadgad' } },
+    { id: 'baruunurt', lat: 46.68, lon: 113.28, tz: 'Asia/Ulaanbaatar', aimag: true, mn: 'Баруун-Урт (Сүхбаатар)', en: 'Baruun-Urt (Sükhbaatar)', short: { mn: 'Баруун-Урт', en: 'Baruun-Urt' } },
+    { id: 'sukhbaatar', lat: 50.23, lon: 106.21, tz: 'Asia/Ulaanbaatar', aimag: true, mn: 'Сүхбаатар (Сэлэнгэ)', en: 'Sükhbaatar (Selenge)', short: { mn: 'Сүхбаатар', en: 'Sükhbaatar' } },
+    { id: 'zuunmod', lat: 47.71, lon: 106.95, tz: 'Asia/Ulaanbaatar', aimag: true, mn: 'Зуунмод (Төв)', en: 'Zuunmod (Töv)', short: { mn: 'Зуунмод', en: 'Zuunmod' } },
+    { id: 'ulaangom', lat: 49.98, lon: 92.07, tz: 'Asia/Hovd', aimag: true, mn: 'Улаангом (Увс)', en: 'Ulaangom (Uvs)', short: { mn: 'Улаангом', en: 'Ulaangom' } },
+    { id: 'khovd', lat: 48.01, lon: 91.64, tz: 'Asia/Hovd', aimag: true, mn: 'Ховд', en: 'Khovd', short: { mn: 'Ховд', en: 'Khovd' } },
+    { id: 'murun', lat: 49.64, lon: 100.16, tz: 'Asia/Ulaanbaatar', aimag: true, mn: 'Мөрөн (Хөвсгөл)', en: 'Mörön (Khövsgöl)', short: { mn: 'Мөрөн', en: 'Mörön' } },
+    { id: 'chinggis', lat: 47.32, lon: 110.66, tz: 'Asia/Ulaanbaatar', aimag: true, mn: 'Чингис хот (Хэнтий)', en: 'Chinggis (Khentii)', short: { mn: 'Чингис хот', en: 'Chinggis' } },
     { id: 'hohhot', lat: 40.84, lon: 111.75, tz: 'Asia/Shanghai', mn: 'Хөх хот', en: 'Hohhot' },
     { id: 'ulanude', lat: 51.83, lon: 107.61, tz: 'Asia/Irkutsk', mn: 'Улаан-Үд', en: 'Ulan-Ude' },
     { id: 'lhasa', lat: 29.65, lon: 91.13, tz: 'Asia/Shanghai', mn: 'Лхас', en: 'Lhasa' },
     { id: 'montreal', lat: 45.50, lon: -73.57, tz: 'America/Toronto', mn: 'Монреал', en: 'Montreal' }
   ];
+
 
   const T = {
     mn: {
@@ -34,7 +56,7 @@
       play: 'Явуулах', pause: 'Зогсоох', time: 'Цаг', date: 'Өдөр', now: 'Одоо',
       viewLabel: 'Харах', viewToono: 'Тоононоос', viewPlan: 'Дээрээс', speed: 'Хурд',
       spdM3600: '−1 цаг/сек', spd1: 'Бодит', spd60: '1 мин/сек', spd600: '10 мин/сек', spd3600: '1 цаг/сек',
-      viewNoteToono: 'Тооны голоос доош харсан мэт: голд шал, дараа нь хана, унь, гадна хүрээ нь тооно. Гэрэл тасралтгүй шилжинэ; тооны ойролцоо хэсэг томорч харагдана.',
+      viewNoteToono: 'Тоононы голоос доош харсан мэт: голд шал, дараа нь хана, унь, гадна хүрээ нь тооно. Гэрэл тасралтгүй шилжинэ; тоононы ойролцоо хэсэг томорч харагдана.',
       viewNotePlan: 'Дээрээс харсан зураг: шал, унийг (дээврийг тунгалаг гэж) дээрээс, ханыг шалны эргэн тойронд дэлгэсэн. Унин дээрх гэрлийг зураасаар тэмдэглэв.',
       readings: 'Арван хоёр цаг — дөрвөн уншлага',
       h40: ':40 хуваарь', h40s: 'тогтсон цагаар (23:40, 01:40, …)',
@@ -45,15 +67,15 @@
       sunUp: (alt, surf) => `Нар ${alt}° өндөрт · гэрэл ${surf} дээр`, sunDown: 'Нар жаргасан — гэрэл тусахгүй',
       floor: 'шал', wall: 'хана', roof: 'унь', mixed: 'унь, хана',
       monthDay: (mo, d) => `${mo}-р сарын ${d}`,
-      placeTitle: 'Газар', preset: 'Газар', custom: 'Бусад', zone: 'Цагийн бүс', deviceZone: 'төхөөрөмж',
+      placeTitle: 'Байршил', grpAimag: 'Аймгийн төв', grpAbroad: 'Гадаад', preset: 'Газар', custom: 'Бусад', zone: 'Цагийн бүс', deviceZone: 'төхөөрөмж',
       lat: 'Өргөрөг (°, хойд +)', lon: 'Уртраг (°, зүүн +)',
       useLocation: 'Миний байршил', geoBusy: 'Хайж байна…', geoFail: 'Байршил авч чадсангүй.', geoOk: 'Төхөөрөмжийн байршлыг ашиглав.',
       overlays: 'Нэмэлт шугам', ovUni: 'Унь', ovLabels: 'Гэрийн хэсгийн нэр', ovWedges: 'Гэрийн 12 тогтмол зүг', ovSectors: 'Энэ өдрийн :40 хуваарь (гэрт)', ovPath: 'Энэ өдрийн гэрлийн зам',
       ovTemporal: 'Энэ өдрийн нар мандахаас эхэлсэн хуваарь (гэрт)',
       ovSundial: 'Нарны цагийн шугам (жинхэнэ нарны цаг)',
       gerTitle: 'Гэр', size: 'Хэмжээ', size4: '4 ханатай', size5: '5 ханатай', size6: '6 ханатай',
-      urkh: 'Өрх', urkhOpen: 'Нээлттэй', urkhHalf: 'Хагас нээлттэй', door: 'Хаалганы чиг (°)', uniCount: 'Униын тоо',
-      diam: 'Шалны диаметр (м)', wallH: 'Ханын өндөр (м)', toonoH: 'Тооны өндөр (м)', toonoD: 'Тооны диаметр (м)',
+      urkh: 'Өрх', urkhOpen: 'Нээлттэй', urkhHalf: 'Хагас нээлттэй', door: 'Хаалганы чиг (°)', uniCount: 'Унины тоо',
+      diam: 'Шалны диаметр (м)', wallH: 'Ханын өндөр (м)', toonoH: 'Тоононы өндөр (м)', toonoD: 'Тоононы диаметр (м)',
       gerNote: 'Хэмжээнүүд ойролцоо; өөрийн гэрийнхээр засаж болно.',
       badPlace: 'Өргөрөг −89…89°, уртраг −180…180° байх ёстой.', badGer: 'Гэрийн хэмжээ буруу.',
       lgPatch: 'Нарны гэрэл', lgPatchPlan: 'Шал, хана дээрх гэрэл', lgRoofPatch: 'Унин дээрх гэрэл',
@@ -63,10 +85,10 @@
       compass: ['Х', 'З', 'У', 'Б'],
       helpTitle: 'Тайлбар',
       help: [
-        '<p><b>Юуг харуулдаг вэ?</b> Тооно бол гэрийн оройн хэвтээ дугуй нүх. Нарны гэрэл түүгээр орж унь, хана, шалан дээр толбо болж, нар хөдлөхөд гэрийн дотор тойрон гүйнэ. Тооно цэг биш, өргөн дугуй тул нар намхан үед (өглөө эрт, орой) гэрэл униан дээр, тооны эсрэг талд буудаг.</p>',
-        '<p><b>Хоёр зураг.</b> <i>Тоононоос</i>: тооны голоос доош харсан мэт — голд шал, түүнийг тойрон хана, унь, хамгийн гадна хүрээ нь тооно. Гэрэл үүрээр тооны хүрээнд гарч, униар ханын толгой руу, ханаар доош, үд дунд хойморт хүрнэ — ардын «тоононд туссан гэрэл — Бар–Туулай, униын толгойноос ханын толгой — Луу–Могой, хойморт — Морь» гэсэнтэй ижил дараалал. Голоос зай нь нарны өндрийг заана (гадна хүрээ 0°, төв 90°). <i>Дээрээс</i>: хэлбэр, хэмжээ үнэн боловч унь ба ханан дээрх гэрэл тасарч харагдана.</p>',
+        '<p><b>Юуг харуулдаг вэ?</b> Тооно бол гэрийн оройн хэвтээ дугуй нүх. Нарны гэрэл түүгээр орж унь, хана, шалан дээр толбо болж, нар хөдлөхөд гэрийн дотор тойрон гүйнэ. Тооно цэг биш, өргөн дугуй тул нар намхан үед (өглөө эрт, орой) гэрэл унин дээр, тоононы эсрэг талд буудаг.</p>',
+        '<p><b>Хоёр зураг.</b> <i>Тоононоос</i>: тоононы голоос доош харсан мэт — голд шал, түүнийг тойрон хана, унь, хамгийн гадна хүрээ нь тооно. Гэрэл үүрээр тоононы хүрээнд гарч, униар ханын толгой руу, ханаар доош, үд дунд хойморт хүрнэ — ардын «тоононд туссан гэрэл — Бар–Туулай, унины толгойноос ханын толгой — Луу–Могой, хойморт — Морь» гэсэнтэй ижил дараалал. Голоос зай нь нарны өндрийг заана (гадна хүрээ 0°, төв 90°). <i>Дээрээс</i>: хэлбэр, хэмжээ үнэн боловч унь ба ханан дээрх гэрэл тасарч харагдана.</p>',
         '<p><b>Дөрвөн уншлага.</b> (1) <i>:40 хуваарь</i> — толь бичгийн Хулгана 23:40–01:40, Морь 11:40–13:40 гэх мэт, сонгосон бүсийн цагаар. (2) <i>Жинхэнэ нарны</i> — Морин цагийн дунд нь жинхэнэ үд. (3) <i>Гэрийн зүг</i> — гэрийг 30°-ын 12 тогтмол хэсэгт хувааж, гэрэл аль хэсэгт буусныг (нар зүүн тийш байхад гэрэл баруун талд — Туулай); улирлаар урт нь өөрчлөгддөг тэгш бус цаг. (4) <i>Нар мандахаас</i> — өдөр, шөнийг тус бүр 6 хувааж, Туулай нар мандахад эхэлнэ гэсэн таамаглал.</p>',
-        '<p><b>Нэмэлт шугам.</b> «Энэ өдрийн :40 хуваарь» нь нар мандахаас жаргах хүртэл :40 цаг бүрд гэрэл аль чигт байгааг гэрийн голоос татсан шугамаар харуулж, гэрийг тухайн өдрийн хэсгүүдэд хуваана (нар мандах, жаргах нь улбар шар). «Нар мандахаас эхэлсэн хуваарь» нь өдрийн гэгээтэй хугацааг 6 тэнцүү хувааж, Туулайг нар мандахад эхлүүлсэн хэсгүүд (ногоон). Өдрийн гулсуурыг хөдөлгөхөд хэсгүүд улирлаар хэрхэн нээгдэж, хумигдахыг (нарны хурд) харж, тогтмол 12 зүгтэй харьцуулж болно. «Энэ өдрийн гэрлийн зам» дээр унь ба ханын толгой нэг цэг байх үед цэгэн шугамаар холбосон. «Нарны цагийн шугам» жинхэнэ нарны хоёр цагийн хилийг жилийн турш харуулна: шалан дээр тэд гэрийн голоос биш, тоононоос дэлхийн тэнхлэгтэй параллель татсан шугам шалтай огтлолцох цэгээс (хаалганы ойролцоо, ягаан цэг) шулуунаар салаална; тод хэсэг нь гэрэл жилийн турш хүрдэг хэсэг. «Тоононоос» зураг дээр эдгээр шугам хана, униар үргэлжилнэ.</p>',
+        '<p><b>Нэмэлт шугам.</b> «Энэ өдрийн :40 хуваарь» нь нар мандахаас жаргах хүртэл :40 цаг бүрд гэрэл аль чигт байгааг гэрийн голоос татсан шугамаар харуулж, гэрийг тухайн өдрийн хэсгүүдэд хуваана (нар мандах, жаргах нь улбар шар). «Нар мандахаас эхэлсэн хуваарь» нь өдрийн гэгээтэй хугацааг 6 тэнцүү хувааж, Туулайг нар мандахад эхлүүлсэн хэсгүүд (ногоон). Өдрийн гулсуурыг хөдөлгөхөд хэсгүүд улирлаар хэрхэн нээгдэж, хумигдахыг (нарны хурд) харж, тогтмол 12 зүгтэй харьцуулж болно. «Энэ өдрийн гэрлийн зам» дээр унь ба ханын толгой нэг цэг байх үед цэгэн шугамаар холбосон. «Нарны цагийн шугам» жинхэнэ нарны хоёр цагийн хилийг жилийн турш харуулна: шалан дээр тэд гэрийн голоос биш, тоононоос дэлхийн тэнхлэгтэй параллель татсан шугам шалтай огтлолцох цэгээс (хаалганы ойролцоо, ягаан цэг) шулуунаар салаална. «Дээрээс» зураг дээр шугамууд ханаар ханын толгой хүртэл, «Тоононоос» зураг дээр хана, униар тооно хүртэл үргэлжилнэ.</p>',
         '<p><b>Загварын хязгаар.</b> Тэгш шал, босоо цилиндр хана, шулуун конус дээвэр; тооно нь зузаангүй нээлттэй дугуй (хөндлөвч, багана, яндангийн сүүдэр тооцоогүй). Нарны байрлал NOAA/Meeus аргаар (~1 минут), агаар мандлын хугарлыг тооцоогүй. Хаалгаар орох гэрэл харуулаагүй. Хэмжээнүүд ойролцоо.</p>'
       ]
     },
@@ -86,7 +108,7 @@
       sunUp: (alt, surf) => `Sun ${alt}° high · light on the ${surf}`, sunDown: 'Sun is down — no light',
       floor: 'floor', wall: 'wall', roof: 'roof poles', mixed: 'roof poles and wall',
       monthDay: (mo, d) => `${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][mo - 1]} ${d}`,
-      placeTitle: 'Place', preset: 'Place', custom: 'Other', zone: 'Time zone', deviceZone: 'device',
+      placeTitle: 'Location', grpAimag: 'Aimag centres', grpAbroad: 'Abroad', preset: 'Place', custom: 'Other', zone: 'Time zone', deviceZone: 'device',
       lat: 'Latitude (°, north +)', lon: 'Longitude (°, east +)',
       useLocation: 'My location', geoBusy: 'Locating…', geoFail: 'Could not get location.', geoOk: 'Using the device location.',
       overlays: 'Extra lines', ovUni: 'Roof poles (uni)', ovLabels: 'Names of ger parts', ovWedges: '12 fixed ger sectors', ovSectors: "Today's :40 sectors in the ger", ovPath: "Today's path of the light",
@@ -107,7 +129,7 @@
         '<p><b>What it shows.</b> The toono is the round opening at the top of a ger. Sunlight passes through it and makes a bright patch on the roof poles (uni), wall and floor, which travels around the inside as the Sun moves. Because the toono is a wide disk, not a point, a low Sun (early morning, evening) puts the light on the uni opposite the Sun.</p>',
         '<p><b>Two pictures.</b> <i>From the toono</i>: as if looking down from the centre of the toono: floor in the middle, then the wall, the uni, and the toono rim as the outer circle. At sunrise the light appears at the rim, slides down the uni to the wall head, down the wall, and reaches the khoimor at noon, the same sequence as the folk description (light on the toono for Tiger–Rabbit, uni heads to wall head for Dragon–Snake, khoimor for Horse). Distance from the centre shows the Sun\'s altitude (outer circle 0°, centre 90°). <i>From above</i>: true shapes and sizes, but the light breaks between the uni and the wall.</p>',
         '<p><b>Four readings.</b> (1) <i>:40 convention</i>: Mouse 23:40–01:40, Horse 11:40–13:40 and so on, as in Mongolian dictionaries, on the chosen zone\'s clock. (2) <i>True solar</i>: Horse centred on true noon. (3) <i>Ger direction</i>: twelve fixed 30° sectors of the ger, read by where the light falls (Sun in the east puts the light in the west: Rabbit); unequal, seasonal hours. (4) <i>From sunrise</i>: daylight and night each split into six, with Rabbit beginning at sunrise (a hypothesis).</p>',
-        '<p><b>Extra lines.</b> "Today\'s :40 sectors" draws, from sunrise to sunset, a line from the centre in the direction of the light at each :40 time, dividing the ger into this day\'s sectors (sunrise and sunset in orange). "Sunrise-based sectors" split the daylight into six equal parts with Rabbit beginning at sunrise (green). Moving the day slider shows how the sectors open and close with the seasons (the Sun\'s speed across the ger), for comparison with the twelve fixed sectors. On "Today\'s path of the light", where the light passes from the uni to the wall the same position appears twice in the plan view; a dotted line joins the two. "Sundial lines" show the true solar double-hour boundaries for the whole year: on the floor they are straight lines fanning out not from the centre but from where the line through the toono parallel to the Earth\'s axis meets the floor (near the door, magenta dot); the bold part is where the light reaches during the year. In the "From the toono" view they continue on the wall and uni.</p>',
+        '<p><b>Extra lines.</b> "Today\'s :40 sectors" draws, from sunrise to sunset, a line from the centre in the direction of the light at each :40 time, dividing the ger into this day\'s sectors (sunrise and sunset in orange). "Sunrise-based sectors" split the daylight into six equal parts with Rabbit beginning at sunrise (green). Moving the day slider shows how the sectors open and close with the seasons (the Sun\'s speed across the ger), for comparison with the twelve fixed sectors. On "Today\'s path of the light", where the light passes from the uni to the wall the same position appears twice in the plan view; a dotted line joins the two. "Sundial lines" show the true solar double-hour boundaries for the whole year: on the floor they are straight lines fanning out not from the centre but from where the line through the toono parallel to the Earth\'s axis meets the floor (near the door, magenta dot). In the plan view they continue up the wall to the wall head; in the "From the toono" view, over the wall and uni to the toono.</p>',
         '<p><b>Model limits.</b> Flat floor, vertical cylindrical wall, straight conical roof; the toono is a thin open disk (crossbars, columns and stovepipe shadows ignored). Solar position from the NOAA/Meeus formulae (about a minute), no refraction. Light through the door is not shown. Dimensions are approximate.</p>'
       ]
     }
@@ -124,7 +146,7 @@
   const tr = k => (T[state.lang][k] !== undefined ? T[state.lang][k] : (T.en[k] !== undefined ? T.en[k] : k));
   const pad = n => String(n).padStart(2, '0');
   const animal = i => (i === null || i === undefined ? '—' : ANIMALS[state.lang][E.mod(i, 12)]);
-  const placeName = () => { const p = PLACES.find(x => x.id === state.place); return p ? p[state.lang] : `${state.lat.toFixed(2)}°, ${state.lon.toFixed(2)}°`; };
+  const placeName = () => { const p = PLACES.find(x => x.id === state.place); return p ? (p.short ? p.short[state.lang] : p[state.lang]) : `${state.lat.toFixed(2)}°, ${state.lon.toFixed(2)}°`; };
 
   // --------------------------------------------------------- Language ---
   function setLanguage(next) {
@@ -147,7 +169,12 @@
 
   function fillPlaces() {
     const sel = $('preset'); sel.innerHTML = '';
-    for (const p of PLACES) sel.add(new Option(p[state.lang], p.id));
+    const group = label => { const g = document.createElement('optgroup'); g.label = label; sel.appendChild(g); return g; };
+    const opt = (parent, p) => parent.appendChild(new Option(p[state.lang], p.id));
+    opt(sel, PLACES[0]);
+    const aim = group(tr('grpAimag')), abroad = group(tr('grpAbroad'));
+    PLACES.filter(p => p.aimag).sort((x, y) => x[state.lang].localeCompare(y[state.lang], state.lang)).forEach(p => opt(aim, p));
+    PLACES.slice(1).filter(p => !p.aimag).forEach(p => opt(abroad, p));
     sel.add(new Option(tr('custom'), 'custom'));
     sel.value = state.place;
   }
@@ -217,24 +244,27 @@
       }
     }
     if (state.ov.sundial) {
-      // True solar double-hour boundaries (Horse centred on noon). On the
-      // floor: straight lines from the polar-axis foot near the door. In the
-      // toono view the lines continue on the wall and uni.
+      // True solar double-hour boundaries (Horse centred on noon): the hour
+      // planes through the toono. On the floor they are straight lines from
+      // the polar-axis foot near the door; they continue up the wall to the
+      // wall head (plan view) or over the uni to the toono (toono view).
       out.sundial = [];
-      const L = E.layout(g, v);
-      const toNetFloor = ([x, y]) => ({ rho: L.rho('floor', x, y, 0), az: Math.atan2(x, y), surf: 'floor' });
-      const seg = (a, b) => { const pts = []; for (let i = 0; i <= 24; i++) { const f = i / 24; pts.push(toNetFloor([a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f])); } return pts; };
       for (let k = 0; k < 12; k++) {
         const H = -165 + 30 * k, label = `${1 + 2 * k}:00`;
-        const fl = E.floorHourLine(state.lat, H, g);
-        const item = { label, full: fl ? seg(...fl.full) : null, reach: [] };
-        if (v === 'toono') item.reach = E.hourLine(state.lat, H, g, v);
-        else if (fl && fl.reach) item.reach = [seg(...fl.reach)];
-        const pts = item.reach.flat().concat(item.full || []);
+        // Only hours the Sun can be up at in some season (no night hours).
+        let up = false;
+        for (let dd = -E.OBLIQUITY; dd <= E.OBLIQUITY && !up; dd += 0.5) up = E.sunVector(state.lat * E.D2R, H * E.D2R, dd * E.D2R)[2] > 0;
+        if (!up) continue;
+        const lines = E.sundialLine(state.lat, H, g, v, v === 'plan');
+        const pts = lines.flat();
         if (!pts.length) continue;
-        item.end = pts.reduce((a, b) => (b.rho > a.rho ? b : a));
-        out.sundial.push(item);
-        if (fl && fl.footOnFloor) out.foot = toNetFloor(fl.F);
+        const end = pts.reduce((a, b) => (b.rho > a.rho ? b : a));
+        out.sundial.push({ label, lines, end });
+      }
+      const fl = E.floorHourLine(state.lat, 0, g);
+      if (fl && fl.footOnFloor) {
+        const L = E.layout(g, v), [x, y] = fl.F;
+        out.foot = { rho: L.rho('floor', x, y, 0), az: Math.atan2(x, y), surf: 'floor' };
       }
     }
     cache = out;
@@ -332,10 +362,8 @@
       ctx.restore();
     };
     if (ov.sundial) {
-      ctx.strokeStyle = 'rgba(176,42,107,0.5)'; ctx.lineWidth = 1.1;
-      for (const l of ov.sundial) if (l.full) { poly(l.full); ctx.stroke(); }
-      ctx.strokeStyle = '#b02a6b'; ctx.lineWidth = 1.8;
-      for (const l of ov.sundial) for (const r of l.reach) { poly(r); ctx.stroke(); }
+      ctx.strokeStyle = 'rgba(176,42,107,0.8)'; ctx.lineWidth = 1.3;
+      for (const l of ov.sundial) for (const r of l.lines) { poly(r); ctx.stroke(); }
       ctx.fillStyle = '#8a1f52';
       for (const l of ov.sundial) { const [x, y] = P(l.end.rho * 0.93, l.end.az); ctx.fillText(l.label, x, y); }
       if (ov.foot) { const [x, y] = PN(ov.foot); ctx.beginPath(); ctx.arc(x, y, 4, 0, 2 * Math.PI); ctx.fill(); }
