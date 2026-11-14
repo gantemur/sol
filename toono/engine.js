@@ -289,11 +289,12 @@
       }
       return [plo, phi];
     };
-    const lines = []; let cur = [], prevV = null, prevP = null;
+    const lines = [], links = []; let cur = [], prevV = null, prevP = null;
     for (const v of samples) {
       const p = fn(v);
       if (prevV !== null && ((!prevP) !== (!p) || (p && prevP && jump(prevP, p)))) {
         const [a, b] = edge(prevV, prevP, v, p);
+        if (a && b) links.push([a, b]);       // same light position drawn twice
         if (a) cur.push(a);
         if (cur.length) lines.push(cur);
         cur = b ? [b] : [];
@@ -302,7 +303,9 @@
       prevV = v; prevP = p;
     }
     if (cur.length) lines.push(cur);
-    return lines.filter(l => l.length > 1);
+    const out = lines.filter(l => l.length > 1);
+    out.links = links;
+    return out;
   }
   const range = (a, b, step) => { const out = []; for (let v = a; v <= b + 1e-9; v += step) out.push(v); return out; };
 
@@ -435,7 +438,7 @@
   function validZone(tz) { try { zoneParts(tz, 0); return true; } catch (e) { return false; } }
 
   return {
-    VERSION: '0.3', D2R, R2D, OBLIQUITY, MOUSE, TIGER, RABBIT, HORSE, ROOSTER, mod,
+    VERSION: '0.4', D2R, R2D, OBLIQUITY, MOUSE, TIGER, RABBIT, HORSE, ROOSTER, mod,
     solar, sunVector, sunState, halfDayArc,
     PRESETS, validateGer, roofSlant, netMax, layout, trace, toNet, traceCentre, apertureBoundary, patch, sweep,
     declinationPath, hourLine, temporalLine, floorHourLine, sunEvents,
