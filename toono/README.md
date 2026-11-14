@@ -1,6 +1,6 @@
 # Ger sun clock · Гэрийн наран цаг
 
-Status: alpha (v0.2), published for live testing.
+Status: alpha (v0.3), published for live testing.
 
 Sunlight entering a Mongolian ger through the toono (the open crown ring of the
 roof) makes a bright patch that travels across the roof poles, wall and floor
@@ -40,9 +40,22 @@ Two views, switched under the drawing:
   centre sits at 90° minus the solar altitude; the area near the rim is
   enlarged, so early light looks like a wide crescent.
 
-Extra lines (off by default except the 12 sectors): today's path of the light
-centre with its positions at the :40 times; solstice and equinox paths; unequal
-hours from sunrise; fixed sundial lines (true solar or :40 mean time).
+Extra lines, under "Нэмэлт шугам": roof poles (uni) and part names (on by
+default, can be hidden), the 12 fixed 30° sectors (on), and, off by default:
+
+- **This day's :40 sectors:** from sunrise to sunset, a line from the centre in
+  the direction of the light at each :40 time (sunrise and sunset in orange),
+  dividing the ger into the day's twelve sectors, labelled in the wall ring.
+  With the time fixed and the day slider moving, the sectors open and close
+  with the seasons (the Sun's apparent speed), for comparison with the fixed
+  sectors.
+- **This day's path of the light centre**, run exactly to the eave and to the
+  horizon (edges found by bisection).
+- Solstice and equinox paths; unequal hours from sunrise.
+- **Sundial lines on the floor only:** straight equal-hour lines (true solar or
+  :40 mean time) from the polar-axis foot near the door (dot); bold where the
+  light reaches during the year, faint elsewhere. Their continuation on the wall
+  and uni is deliberately not drawn.
 
 ## The four hour readouts
 

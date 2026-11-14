@@ -116,6 +116,24 @@ const UB = { lat: 47.92, lon: 106.92, tz: 'Asia/Ulaanbaatar' };
   }
 }
 
+// --- Floor-only sundial lines and edge-exact paths ---------------------
+{
+  const phi = UB.lat * E.D2R, Fy = -g.toonoH / Math.tan(phi);
+  const fl = E.floorHourLine(UB.lat, -30, g);
+  check('floor hour line starts at polar foot (inside floor)', fl && fl.footOnFloor && near(fl.full[0][1], Fy, 1e-9) && near(fl.full[0][0], 0, 1e-9));
+  check('floor hour line ends on floor edge', fl && near(Math.hypot(...fl.full[1]), g.R, 1e-9));
+  const noon = E.floorHourLine(UB.lat, 0, g);
+  check('noon floor line runs north along the meridian', noon && near(noon.full[1][0], 0, 1e-9) && noon.full[1][1] > 0);
+  // Today's path in plan view reaches the eave (rho = R) before jumping to the wall.
+  const start = E.zonedToUtc(UB.tz, 2026, 7, 6, 0, 0), mins = []; for (let m = 0; m <= 1440; m += 3) mins.push(m);
+  const path = E.sweep(mins, m => { const st = E.sunState(start + m * 60000, UB.lat, UB.lon); return st.alt > 0 ? E.traceCentre(st.s, g, 'plan') : null; });
+  const roofEnds = path.filter(l => l[0].surf === 'roof').map(l => Math.max(l[0].rho, l[l.length - 1].rho));
+  check('plan-view path on the uni runs to the eave', roofEnds.length && roofEnds.every(r => near(r, g.R, 1e-3)), roofEnds);
+  const ev = E.sunEvents(E.zonedToUtc(UB.tz, 2026, 3, 20, 0, 0), UB.lat, UB.lon);
+  const rp = E.zoneParts(UB.tz, ev.rise), sp = E.zoneParts(UB.tz, ev.set);
+  check('UB equinox geometric sunrise ~07:02, sunset ~19:00', rp.h === 7 && rp.mi <= 6 && (sp.h === 18 && sp.mi >= 54 || sp.h === 19 && sp.mi <= 2), `${rp.h}:${rp.mi} ${sp.h}:${sp.mi}`);
+}
+
 // --- Hour systems -------------------------------------------------------
 {
   check(':40 clock 11:40 is Horse', E.clockHour(11 * 60 + 40) === E.HORSE);
