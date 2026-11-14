@@ -32,10 +32,10 @@
     mn: {
       title: TOOL.title.mn, hourWord: 'цаг', canvasLabel: 'Гэрийн дотор тусах нарны гэрэл',
       play: 'Явуулах', pause: 'Зогсоох', time: 'Цаг', date: 'Өдөр', now: 'Одоо',
-      viewLabel: 'Харах', viewToono: 'Тооноос', viewPlan: 'Дээрээс', speed: 'Хурд',
+      viewLabel: 'Харах', viewToono: 'Тоононоос', viewPlan: 'Дээрээс', speed: 'Хурд',
       spdM3600: '−1 цаг/сек', spd1: 'Бодит', spd60: '1 мин/сек', spd600: '10 мин/сек', spd3600: '1 цаг/сек',
       viewNoteToono: 'Тооны голоос доош харсан мэт: голд шал, дараа нь хана, унь, гадна хүрээ нь тооно. Гэрэл тасралтгүй шилжинэ; тооны ойролцоо хэсэг томорч харагдана.',
-      viewNotePlan: 'Дээрээс харсан зураг: шал, униыг (дээврийг тунгалаг гэж) дээрээс, ханыг шалны эргэн тойронд дэлгэсэн. Унин дээрх гэрлийг зураасаар тэмдэглэв.',
+      viewNotePlan: 'Дээрээс харсан зураг: шал, унийг (дээврийг тунгалаг гэж) дээрээс, ханыг шалны эргэн тойронд дэлгэсэн. Унин дээрх гэрлийг зураасаар тэмдэглэв.',
       readings: 'Арван хоёр цаг — дөрвөн уншлага',
       h40: ':40 хуваарь', h40s: 'тогтсон цагаар (23:40, 01:40, …)',
       hSolar: 'Жинхэнэ нарны', hSolars: 'үд нь Морин цагийн дунд',
@@ -48,25 +48,25 @@
       placeTitle: 'Газар', preset: 'Газар', custom: 'Бусад', zone: 'Цагийн бүс', deviceZone: 'төхөөрөмж',
       lat: 'Өргөрөг (°, хойд +)', lon: 'Уртраг (°, зүүн +)',
       useLocation: 'Миний байршил', geoBusy: 'Хайж байна…', geoFail: 'Байршил авч чадсангүй.', geoOk: 'Төхөөрөмжийн байршлыг ашиглав.',
-      overlays: 'Нэмэлт шугам', ovWedges: 'Гэрийн 12 зүгийн хил', ovClock: 'Энэ өдрийн замнал, :40 цагууд',
+      overlays: 'Нэмэлт шугам', ovUni: 'Унь', ovLabels: 'Гэрийн хэсгийн нэр', ovWedges: 'Гэрийн 12 тогтмол зүг', ovSectors: 'Энэ өдрийн :40 хуваарь (гэрт)', ovPath: 'Энэ өдрийн гэрлийн зам',
       ovSeasons: 'Туйл, тэгшитгэлийн өдрүүдийн замнал', ovTemporal: 'Нар мандахаас эхэлсэн тэгш бус цаг',
-      ovSundial: 'Нарны цагийн тогтмол шугам', sdOff: 'Үгүй', sdSolar: 'Жинхэнэ нарны цаг', sdClock: ':40 хуваарь (дундаж)',
+      ovSundial: 'Нарны цагийн шугам (шалан дээр)', sdOff: 'Үгүй', sdSolar: 'Жинхэнэ нарны цаг', sdClock: ':40 хуваарь (дундаж)',
       gerTitle: 'Гэр', size: 'Хэмжээ', size4: '4 ханатай', size5: '5 ханатай', size6: '6 ханатай',
       urkh: 'Өрх', urkhOpen: 'Нээлттэй', urkhHalf: 'Хагас нээлттэй', door: 'Хаалганы чиг (°)', uniCount: 'Униын тоо',
       diam: 'Шалны диаметр (м)', wallH: 'Ханын өндөр (м)', toonoH: 'Тооны өндөр (м)', toonoD: 'Тооны диаметр (м)',
       gerNote: 'Хэмжээнүүд ойролцоо; өөрийн гэрийнхээр засаж болно.',
       badPlace: 'Өргөрөг −89…89°, уртраг −180…180° байх ёстой.', badGer: 'Гэрийн хэмжээ буруу.',
       lgPatch: 'Нарны гэрэл', lgPatchPlan: 'Шал, хана дээрх гэрэл', lgRoofPatch: 'Унин дээрх гэрэл',
-      lgToday: 'Энэ өдрийн замнал', lgSundial: 'Нарны цагийн шугам',
+      lgToday: 'Гэрлийн зам', lgSectors: ':40 хил (энэ өдөр)', lgRiseSet: 'Нар мандах, жаргах', lgSundial: 'Нарны цагийн шугам',
       lgTemporal: 'Тэгш бус цаг', lgSeasons: 'Туйл/тэгшитгэл',
       lblWall: 'хана', lblRoof: 'унь', lblToono: 'тооно', lblKhoimor: 'хоймор', lblDoor: 'хаалга',
       compass: ['Х', 'З', 'У', 'Б'],
       helpTitle: 'Тайлбар',
       help: [
         '<p><b>Юуг харуулдаг вэ?</b> Тооно бол гэрийн оройн хэвтээ дугуй нүх. Нарны гэрэл түүгээр орж унь, хана, шалан дээр толбо болж, нар хөдлөхөд гэрийн дотор тойрон гүйнэ. Тооно цэг биш, өргөн дугуй тул нар намхан үед (өглөө эрт, орой) гэрэл униан дээр, тооны эсрэг талд буудаг.</p>',
-        '<p><b>Хоёр зураг.</b> <i>Тооноос</i>: тооны голоос доош харсан мэт — голд шал, түүнийг тойрон хана, унь, хамгийн гадна хүрээ нь тооно. Гэрэл үүрээр тооны хүрээнд гарч, униар ханын толгой руу, ханаар доош, үд дунд хойморт хүрнэ — ардын «тоононд туссан гэрэл — Бар–Туулай, униын толгойноос ханын толгой — Луу–Могой, хойморт — Морь» гэсэнтэй ижил дараалал. Голоос зай нь нарны өндрийг заана (гадна хүрээ 0°, төв 90°). <i>Дээрээс</i>: хэлбэр, хэмжээ үнэн боловч унь ба ханан дээрх гэрэл тасарч харагдана.</p>',
+        '<p><b>Хоёр зураг.</b> <i>Тоононоос</i>: тооны голоос доош харсан мэт — голд шал, түүнийг тойрон хана, унь, хамгийн гадна хүрээ нь тооно. Гэрэл үүрээр тооны хүрээнд гарч, униар ханын толгой руу, ханаар доош, үд дунд хойморт хүрнэ — ардын «тоононд туссан гэрэл — Бар–Туулай, униын толгойноос ханын толгой — Луу–Могой, хойморт — Морь» гэсэнтэй ижил дараалал. Голоос зай нь нарны өндрийг заана (гадна хүрээ 0°, төв 90°). <i>Дээрээс</i>: хэлбэр, хэмжээ үнэн боловч унь ба ханан дээрх гэрэл тасарч харагдана.</p>',
         '<p><b>Дөрвөн уншлага.</b> (1) <i>:40 хуваарь</i> — толь бичгийн Хулгана 23:40–01:40, Морь 11:40–13:40 гэх мэт, сонгосон бүсийн цагаар. (2) <i>Жинхэнэ нарны</i> — Морин цагийн дунд нь жинхэнэ үд. (3) <i>Гэрийн зүг</i> — гэрийг 30°-ын 12 тогтмол хэсэгт хувааж, гэрэл аль хэсэгт буусныг (нар зүүн тийш байхад гэрэл баруун талд — Туулай); улирлаар урт нь өөрчлөгддөг тэгш бус цаг. (4) <i>Нар мандахаас</i> — өдөр, шөнийг тус бүр 6 хувааж, Туулай нар мандахад эхэлнэ гэсэн таамаглал.</p>',
-        '<p><b>Нэмэлт шугам.</b> «Энэ өдрийн замнал» нь гэрлийн голын өнөөдрийн замыг :40 цагуудын байрлалтай нь харуулна; улирлаар 12 хэсэг хэрхэн нээгдэж, хумигдахыг харж болно. «Нарны цагийн тогтмол шугам» жилийн турш хүчинтэй: тэнцүү цагууд гэрийн голоос биш, тооноос дэлхийн тэнхлэгтэй параллель татсан шугам шалтай огтлолцох цэгээс (хаалганы ойролцоо) салаална.</p>',
+        '<p><b>Нэмэлт шугам.</b> «Энэ өдрийн :40 хуваарь» нь нар мандахаас жаргах хүртэл :40 цаг бүрд гэрэл аль чигт байгааг гэрийн голоос татсан шугамаар харуулж, гэрийг тухайн өдрийн 12 хэсэгт хуваана. Өдрийн гулсуурыг хөдөлгөхөд хэсгүүд улирлаар хэрхэн нээгдэж, хумигдах (нарны хурд) харагдах ба тогтмол 12 зүгтэй харьцуулж болно. «Нарны цагийн шугам (шалан дээр)» жилийн турш хүчинтэй: тэнцүү цагууд гэрийн голоос биш, тоононоос дэлхийн тэнхлэгтэй параллель татсан шугам шалтай огтлолцох цэгээс (хаалганы ойролцоо, ягаан цэг) шулуунаар салаална. Тод хэсэг нь гэрэл жилийн турш хүрдэг хэсэг; хана, унь дээрх үргэлжлэлийг зураагүй.</p>',
         '<p><b>Загварын хязгаар.</b> Тэгш шал, босоо цилиндр хана, шулуун конус дээвэр; тооно нь зузаангүй нээлттэй дугуй (хөндлөвч, багана, яндангийн сүүдэр тооцоогүй). Нарны байрлал NOAA/Meeus аргаар (~1 минут), агаар мандлын хугарлыг тооцоогүй. Хаалгаар орох гэрэл харуулаагүй. Хэмжээнүүд ойролцоо.</p>'
       ]
     },
@@ -89,16 +89,16 @@
       placeTitle: 'Place', preset: 'Place', custom: 'Other', zone: 'Time zone', deviceZone: 'device',
       lat: 'Latitude (°, north +)', lon: 'Longitude (°, east +)',
       useLocation: 'My location', geoBusy: 'Locating…', geoFail: 'Could not get location.', geoOk: 'Using the device location.',
-      overlays: 'Extra lines', ovWedges: '12 ger sectors', ovClock: "Today's path and :40 times",
+      overlays: 'Extra lines', ovUni: 'Roof poles (uni)', ovLabels: 'Names of ger parts', ovWedges: '12 fixed ger sectors', ovSectors: "Today's :40 sectors in the ger", ovPath: "Today's path of the light",
       ovSeasons: 'Solstice and equinox paths', ovTemporal: 'Unequal hours from sunrise',
-      ovSundial: 'Fixed sundial lines', sdOff: 'Off', sdSolar: 'True solar time', sdClock: ':40 convention (mean)',
+      ovSundial: 'Sundial lines (on the floor)', sdOff: 'Off', sdSolar: 'True solar time', sdClock: ':40 convention (mean)',
       gerTitle: 'Ger', size: 'Size', size4: '4 lattice walls', size5: '5 lattice walls', size6: '6 lattice walls',
       urkh: 'Roof flap (urkh)', urkhOpen: 'Open', urkhHalf: 'Half open', door: 'Door direction (°)', uniCount: 'Number of uni',
       diam: 'Floor diameter (m)', wallH: 'Wall height (m)', toonoH: 'Toono height (m)', toonoD: 'Toono diameter (m)',
       gerNote: 'Approximate dimensions; adjust to a real ger.',
       badPlace: 'Latitude must be −89…89° and longitude −180…180°.', badGer: 'Invalid ger dimensions.',
       lgPatch: 'Sunlight', lgPatchPlan: 'Light on floor or wall', lgRoofPatch: 'Light on roof poles',
-      lgToday: "Today's path", lgSundial: 'Sundial lines',
+      lgToday: 'Path of the light', lgSectors: ':40 boundaries (this day)', lgRiseSet: 'Sunrise, sunset', lgSundial: 'Sundial lines',
       lgTemporal: 'Unequal hours', lgSeasons: 'Solstices/equinox',
       lblWall: 'wall', lblRoof: 'uni', lblToono: 'toono', lblKhoimor: 'khoimor', lblDoor: 'door',
       compass: ['N', 'E', 'S', 'W'],
@@ -107,7 +107,7 @@
         '<p><b>What it shows.</b> The toono is the round opening at the top of a ger. Sunlight passes through it and makes a bright patch on the roof poles (uni), wall and floor, which travels around the inside as the Sun moves. Because the toono is a wide disk, not a point, a low Sun (early morning, evening) puts the light on the uni opposite the Sun.</p>',
         '<p><b>Two pictures.</b> <i>From the toono</i>: as if looking down from the centre of the toono: floor in the middle, then the wall, the uni, and the toono rim as the outer circle. At sunrise the light appears at the rim, slides down the uni to the wall head, down the wall, and reaches the khoimor at noon, the same sequence as the folk description (light on the toono for Tiger–Rabbit, uni heads to wall head for Dragon–Snake, khoimor for Horse). Distance from the centre shows the Sun\'s altitude (outer circle 0°, centre 90°). <i>From above</i>: true shapes and sizes, but the light breaks between the uni and the wall.</p>',
         '<p><b>Four readings.</b> (1) <i>:40 convention</i>: Mouse 23:40–01:40, Horse 11:40–13:40 and so on, as in Mongolian dictionaries, on the chosen zone\'s clock. (2) <i>True solar</i>: Horse centred on true noon. (3) <i>Ger direction</i>: twelve fixed 30° sectors of the ger, read by where the light falls (Sun in the east puts the light in the west: Rabbit); unequal, seasonal hours. (4) <i>From sunrise</i>: daylight and night each split into six, with Rabbit beginning at sunrise (a hypothesis).</p>',
-        '<p><b>Extra lines.</b> "Today\'s path" shows where the centre of the light goes today and where it is at each :40 time, so you can watch the twelve sectors open and close with the seasons. "Fixed sundial lines" are valid all year: equal hours fan out not from the centre of the ger but from where the line through the toono parallel to the Earth\'s axis meets the floor, near the door.</p>',
+        '<p><b>Extra lines.</b> "Today\'s :40 sectors" draws, from sunrise to sunset, a line from the centre in the direction of the light at each :40 time, dividing the ger into this day\'s twelve sectors. Moving the day slider shows how they open and close with the seasons (the Sun\'s speed across the ger) and lets you compare them with the twelve fixed sectors. "Sundial lines (on the floor)" are valid all year: equal hours fan out as straight lines not from the centre but from where the line through the toono parallel to the Earth\'s axis meets the floor (near the door, magenta dot). The bold part is where the light actually reaches during the year; their continuation on the wall and uni is not drawn.</p>',
         '<p><b>Model limits.</b> Flat floor, vertical cylindrical wall, straight conical roof; the toono is a thin open disk (crossbars, columns and stovepipe shadows ignored). Solar position from the NOAA/Meeus formulae (about a minute), no refraction. Light through the door is not shown. Dimensions are approximate.</p>'
       ]
     }
@@ -119,7 +119,7 @@
     lang: 'mn', view: 'plan', t: Date.now(), live: true, playing: false, speed: 600,
     lat: 47.92, lon: 106.92, tz: 'Asia/Ulaanbaatar', place: 'ub',
     ger: { ...E.PRESETS[5] }, doorAz: 180, urkh: 'full',
-    ov: { wedges: true, clock: false, temporal: false, seasons: false, sundial: 'off' }
+    ov: { uni: true, labels: true, wedges: true, sectors: false, path: false, temporal: false, seasons: false, sundial: 'off' }
   };
   const tr = k => (T[state.lang][k] !== undefined ? T[state.lang][k] : (T.en[k] !== undefined ? T.en[k] : k));
   const pad = n => String(n).padStart(2, '0');
@@ -175,31 +175,52 @@
     const key = JSON.stringify([state.lat, state.lon, state.tz, state.ger, state.view, state.ov, p.y, p.mo, p.d]);
     if (cache && cache.key === key) return cache;
     const g = state.ger, v = state.view, out = { key };
-    if (state.ov.clock) {
-      const start = E.zonedToUtc(state.tz, p.y, p.mo, p.d, 0, 0);
+    const dayStart = E.zonedToUtc(state.tz, p.y, p.mo, p.d, 0, 0);
+    if (state.ov.path) {
       const minutes = []; for (let m = 0; m <= 1440; m += 3) minutes.push(m);
       out.today = E.sweep(minutes, m => {
-        const st = E.sunState(start + m * 60000, state.lat, state.lon);
+        const st = E.sunState(dayStart + m * 60000, state.lat, state.lon);
         return st.alt > 0 ? E.traceCentre(st.s, g, v) : null;
       });
-      out.ticks = [];
+    }
+    if (state.ov.sectors) {
+      // Season-dependent :40 sectors for the daylight part of this day: the
+      // direction of the light at sunrise, at each :40 boundary and at sunset.
+      const ev = E.sunEvents(dayStart, state.lat, state.lon);
+      const marks = [];
+      if (ev.rise !== null) marks.push({ t: ev.rise, kind: 'rise' });
       for (let k = 0; k < 12; k++) {
-        const h = 1 + 2 * k, st = E.sunState(E.zonedToUtc(state.tz, p.y, p.mo, p.d, h, 40), state.lat, state.lon);
-        if (st.alt <= 0) continue;
-        const c = E.traceCentre(st.s, g, v);
-        if (c) out.ticks.push({ c, label: `${h}:40` });
+        const h = (1 + 2 * k) % 24, ms = E.zonedToUtc(state.tz, p.y, p.mo, p.d, h, 40);
+        marks.push({ t: ms, kind: 'b', label: `${h}:40` });
+      }
+      if (ev.set !== null) marks.push({ t: ev.set, kind: 'set' });
+      const lit = marks.filter(m => m.kind !== 'b' || E.sunState(m.t, state.lat, state.lon).alt > 0)
+        .sort((a, b) => a.t - b.t)
+        .map(m => ({ ...m, az: (E.sunState(m.t, state.lat, state.lon).az + 180) * D2R }));
+      out.sectors = { marks: lit, names: [] };
+      for (let i = 0; i + 1 < lit.length; i++) {
+        const a0 = lit[i].az, span = E.mod(lit[i + 1].az - a0, 2 * Math.PI);
+        const tMid = (lit[i].t + lit[i + 1].t) / 2, q = E.zoneParts(state.tz, tMid);
+        out.sectors.names.push({ az: a0 + span / 2, idx: E.clockHour(q.h * 60 + q.mi), span });
       }
     }
     if (state.ov.sundial !== 'off') {
+      // Equal-hour lines on the floor only, from the polar-axis foot near the door.
       out.sundial = [];
+      const L = E.layout(g, v);
+      const toNetFloor = ([x, y]) => ({ rho: L.rho('floor', x, y, 0), az: Math.atan2(x, y), surf: 'floor' });
+      const seg = (a, b) => { const pts = []; for (let i = 0; i <= 24; i++) { const f = i / 24; pts.push(toNetFloor([a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f])); } return pts; };
       for (let k = 0; k < 12; k++) {
         let H, label;
         if (state.ov.sundial === 'solar') { H = -165 + 30 * k; label = `${1 + 2 * k}:00`; }
         else {
           const lmt = (1 + 2 * k) + 40 / 60 + state.lon / 15 - E.tzOffsetMin(state.tz, state.t) / 60;
-          H = E.mod(15 * (lmt - 12) + 180, 360) - 180; label = `${1 + 2 * k}:40`;
+          H = E.mod(15 * (lmt - 12) + 180, 360) - 180; label = `${(1 + 2 * k) % 24}:40`;
         }
-        for (const line of E.hourLine(state.lat, H, g, v)) out.sundial.push({ line, label });
+        const fl = E.floorHourLine(state.lat, H, g);
+        if (!fl) continue;
+        out.sundial.push({ full: seg(...fl.full), reach: fl.reach ? seg(...fl.reach) : null, label, end: toNetFloor(fl.full[1]) });
+        if (fl.footOnFloor) out.foot = toNetFloor(fl.F);
       }
     }
     if (state.ov.temporal) { out.temporal = []; for (let j = 1; j <= 5; j++) out.temporal.push(...E.temporalLine(state.lat, j, g, v)); }
@@ -255,12 +276,14 @@
     const hr = L.rho('floor', 0.22, 0, 0);
     ctx.fillStyle = 'rgba(125,106,88,0.45)'; ctx.fillRect(cx - sc * hr, cy - sc * hr, 2 * sc * hr, 2 * sc * hr);
     // Uni.
-    ctx.strokeStyle = 'rgba(120,85,50,0.38)'; ctx.lineWidth = 0.7; ctx.beginPath();
-    for (let i = 0; i < g.uni; i++) {
-      const a = rot + Math.PI + (i + 0.5) * 2 * Math.PI / g.uni;
-      if (toonoView) spoke(L.wallHead, M, a); else spoke(g.toonoR, g.R, a);
+    if (state.ov.uni) {
+      ctx.strokeStyle = 'rgba(120,85,50,0.38)'; ctx.lineWidth = 0.7; ctx.beginPath();
+      for (let i = 0; i < g.uni; i++) {
+        const a = rot + Math.PI + (i + 0.5) * 2 * Math.PI / g.uni;
+        if (toonoView) spoke(L.wallHead, M, a); else spoke(g.toonoR, g.R, a);
+      }
+      ctx.stroke();
     }
-    ctx.stroke();
     circle(L.floorEdge, '#8c7050', 1.2);
     circle(L.wallHead, '#8c7050', 1.2);
     if (toonoView) circle(M, '#5b3d22', 3); else circle(g.toonoR, '#5b3d22', 2.5);
@@ -268,13 +291,15 @@
     // Labels of ger parts, quiet.
     ctx.font = `${fontPx}px system-ui, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     const lbl = (rho, key, a, color = '#7a6347') => { const [x, y] = P(rho, a); ctx.fillStyle = color; ctx.fillText(tr(key), x, y); };
-    lbl((L.floorEdge + L.wallHead) / 2, 'lblWall', rot + 207 * D2R);
-    lbl(toonoView ? (L.wallHead + M) / 2 : (g.toonoR + g.R) / 2, 'lblRoof', rot + 153 * D2R);
-    lbl(L.floorEdge * 0.68, 'lblKhoimor', rot);
-    lbl((dr0 + dr1) / 2, 'lblDoor', da, '#fff6e8');
-    lbl(toonoView ? M - 0.075 * M : g.toonoR + 0.1 * M, 'lblToono', rot + 234 * D2R, '#5b3d22');
-    ctx.fillStyle = '#a08a6c';
-    tr('compass').forEach((c, i) => { const [x, y] = P(L.floorEdge - 0.06 * M, i * Math.PI / 2 + 0.16); ctx.fillText(c, x, y); });
+    if (state.ov.labels) {
+      lbl((L.floorEdge + L.wallHead) / 2, 'lblWall', rot + 207 * D2R);
+      lbl(toonoView ? (L.wallHead + M) / 2 : (g.toonoR + g.R) / 2, 'lblRoof', rot + 153 * D2R);
+      lbl(L.floorEdge * 0.68, 'lblKhoimor', rot);
+      lbl((dr0 + dr1) / 2, 'lblDoor', da, '#fff6e8');
+      lbl(toonoView ? M - 0.075 * M : g.toonoR + 0.1 * M, 'lblToono', rot + 234 * D2R, '#5b3d22');
+      ctx.fillStyle = '#a08a6c';
+      tr('compass').forEach((c, i) => { const [x, y] = P(L.floorEdge - 0.06 * M, i * Math.PI / 2 + 0.16); ctx.fillText(c, x, y); });
+    }
 
     // Fixed 12 sectors and names.
     if (state.ov.wedges) {
@@ -294,20 +319,27 @@
     if (ov.seasons) lines(ov.seasons, 'rgba(110,110,110,0.75)', 1.2);
     if (ov.temporal) lines(ov.temporal, '#2c8a4f', 1.4);
     if (ov.sundial) {
-      lines(ov.sundial.map(x => x.line), '#b02a6b', 1.4);
+      ctx.strokeStyle = 'rgba(176,42,107,0.5)'; ctx.lineWidth = 1.1;
+      for (const l of ov.sundial) { poly(l.full); ctx.stroke(); }
+      ctx.strokeStyle = '#b02a6b'; ctx.lineWidth = 1.8;
+      for (const l of ov.sundial) if (l.reach) { poly(l.reach); ctx.stroke(); }
       ctx.fillStyle = '#8a1f52';
-      for (const { line, label } of ov.sundial) {
-        const end = line.reduce((a, b) => (b.rho > a.rho ? b : a));
-        const [x, y] = PN(end); ctx.fillText(label, x, y - fontPx * 0.8);
-      }
+      for (const l of ov.sundial) { const [x, y] = P(l.end.rho * 0.9, l.end.az); ctx.fillText(l.label, x, y); }
+      if (ov.foot) { const [x, y] = PN(ov.foot); ctx.beginPath(); ctx.arc(x, y, 4, 0, 2 * Math.PI); ctx.fill(); }
     }
-    if (ov.today) {
-      lines(ov.today, '#1f6fb2', 1.8);
-      for (const tk of ov.ticks) {
-        const [x, y] = PN(tk.c);
-        ctx.beginPath(); ctx.arc(x, y, 3.5, 0, 2 * Math.PI); ctx.fillStyle = '#1f6fb2'; ctx.fill();
-        ctx.fillStyle = '#0f3d66'; ctx.fillText(tk.label, x, y - fontPx * 0.95);
+    if (ov.today) lines(ov.today, '#1f6fb2', 1.8);
+    if (ov.sectors) {
+      const ringR = (L.floorEdge + L.wallHead) / 2;
+      for (const m of ov.sectors.marks) {
+        ctx.beginPath(); spoke(0, M, m.az);
+        ctx.strokeStyle = m.kind === 'b' ? '#1d5f9c' : '#d97a00'; ctx.lineWidth = m.kind === 'b' ? 2 : 1.6; ctx.stroke();
       }
+      ctx.font = `600 ${fontPx}px system-ui, sans-serif`; ctx.fillStyle = '#123f6b';
+      for (const n of ov.sectors.names) {
+        if (n.span * sc * ringR < fontPx * 2.2) continue;
+        const [x, y] = P(ringR, n.az); ctx.fillText(animal(n.idx), x, y);
+      }
+      ctx.font = `${fontPx}px system-ui, sans-serif`;
     }
 
     // Light patch.
@@ -362,7 +394,8 @@
 
   function renderLegend() {
     const items = state.view === 'toono' ? [['patch', '', 'lgPatch']] : [['patch', '', 'lgPatchPlan'], ['roofpatch', '', 'lgRoofPatch']];
-    if (state.ov.clock) items.push(['line', 'border-color:#1f6fb2', 'lgToday']);
+    if (state.ov.sectors) items.push(['line', 'border-color:#1d5f9c', 'lgSectors'], ['line', 'border-color:#d97a00', 'lgRiseSet']);
+    if (state.ov.path) items.push(['line', 'border-color:#1f6fb2', 'lgToday']);
     if (state.ov.sundial !== 'off') items.push(['line', 'border-color:#b02a6b', 'lgSundial']);
     if (state.ov.temporal) items.push(['line', 'border-color:#2c8a4f', 'lgTemporal']);
     if (state.ov.seasons) items.push(['line', 'border-color:#8a8a8a', 'lgSeasons']);
@@ -449,7 +482,7 @@
       state.doorAz = v; invalidate(); render();
     });
     $('urkh').addEventListener('change', e => { state.urkh = e.target.value; render(); });
-    const ovMap = { ovWedges: 'wedges', ovClock: 'clock', ovTemporal: 'temporal', ovSeasons: 'seasons' };
+    const ovMap = { ovUni: 'uni', ovLabels: 'labels', ovWedges: 'wedges', ovSectors: 'sectors', ovPath: 'path', ovTemporal: 'temporal', ovSeasons: 'seasons' };
     for (const [id, k] of Object.entries(ovMap)) $(id).addEventListener('change', e => { state.ov[k] = e.target.checked; invalidate(); render(); });
     $('ovSundial').addEventListener('change', e => { state.ov.sundial = e.target.value; invalidate(); render(); });
     let rT = null;

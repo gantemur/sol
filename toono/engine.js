@@ -274,15 +274,32 @@
 
   // ---------------------------------------------------- Overlay curves ---
   // Polylines are arrays of net points; visibility breaks start new lines.
+  // Sample fn over increasing parameter values; null means not visible.
+  // Where visibility changes, or the drawing jumps (roof and wall in the plan
+  // view), the edge is located by bisection so lines run right up to it.
   function sweep(samples, fn) {
-    const lines = []; let cur = [];
+    const jump = (q, p) => !p.cont && q.surf !== p.surf && (q.surf === 'roof' || p.surf === 'roof');
+    const edge = (v0, p0, v1, p1) => {
+      // Returns [last point on the v0 side, first point on the v1 side].
+      let lo = v0, hi = v1, plo = p0, phi = p1;
+      for (let k = 0; k < 30; k++) {
+        const m = (lo + hi) / 2, pm = fn(m);
+        const sameAsLo = plo ? (pm && !jump(plo, pm)) : !pm;
+        if (sameAsLo) { lo = m; plo = pm; } else { hi = m; phi = pm; }
+      }
+      return [plo, phi];
+    };
+    const lines = []; let cur = [], prevV = null, prevP = null;
     for (const v of samples) {
       const p = fn(v);
-      if (p && cur.length) {
-        const q = cur[cur.length - 1];
-        if (!p.cont && q.surf !== p.surf && (q.surf === 'roof' || p.surf === 'roof')) { lines.push(cur); cur = []; }
+      if (prevV !== null && ((!prevP) !== (!p) || (p && prevP && jump(prevP, p)))) {
+        const [a, b] = edge(prevV, prevP, v, p);
+        if (a) cur.push(a);
+        if (cur.length) lines.push(cur);
+        cur = b ? [b] : [];
       }
-      if (p) cur.push(p); else if (cur.length) { lines.push(cur); cur = []; }
+      if (p) cur.push(p);
+      prevV = v; prevP = p;
     }
     if (cur.length) lines.push(cur);
     return lines.filter(l => l.length > 1);
@@ -318,6 +335,56 @@
       const s = sunVector(phi, -H0 + j * H0 / 3, dd * D2R);
       return s[2] > 1e-6 ? traceCentre(s, g, view) : null;
     });
+  }
+
+  // Equal-hour line on the floor only (wall and roof ignored), for hour
+  // angle Hdeg: the straight line where the hour plane through the toono
+  // centre meets the floor. All such lines pass through the foot F of the
+  // polar axis through the toono, toonoH * cot(latitude) towards the
+  // equator from the centre. Returns floor points (x, y) for the part of the
+  // ray from F that lies on the floor ('full') and the part the light can
+  // actually reach between the solstices ('reach'), or null.
+  function floorHourLine(lat, Hdeg, g) {
+    const phi = lat * D2R, Ht = g.toonoH;
+    if (Math.abs(Math.sin(phi)) < 0.05) return null;
+    const F = [0, -Ht * Math.cos(phi) / Math.sin(phi)];
+    const hits = [];
+    for (let dd = -OBLIQUITY; dd <= OBLIQUITY + 1e-9; dd += 0.5) {
+      const s = sunVector(phi, Hdeg * D2R, dd * D2R);
+      if (s[2] > 1e-3) hits.push([-Ht * s[0] / s[2], -Ht * s[1] / s[2]]);
+    }
+    if (!hits.length) return null;
+    let far = hits[0];
+    for (const h of hits) if (Math.hypot(h[0] - F[0], h[1] - F[1]) > Math.hypot(far[0] - F[0], far[1] - F[1])) far = h;
+    const len = Math.hypot(far[0] - F[0], far[1] - F[1]);
+    if (len < 1e-9) return null;
+    const u = [(far[0] - F[0]) / len, (far[1] - F[1]) / len];
+    const at = t => [F[0] + t * u[0], F[1] + t * u[1]];
+    // Ray inside the floor circle: |F + t u|^2 <= R^2, t >= 0.
+    const b = F[0] * u[0] + F[1] * u[1], c = F[0] * F[0] + F[1] * F[1] - g.R * g.R, disc = b * b - c;
+    if (disc <= 0) return null;
+    const t0 = Math.max(0, -b - Math.sqrt(disc)), t1 = -b + Math.sqrt(disc);
+    if (t1 <= t0) return null;
+    const ts = hits.map(h => (h[0] - F[0]) * u[0] + (h[1] - F[1]) * u[1]);
+    const r0 = Math.max(t0, Math.min(...ts)), r1 = Math.min(t1, Math.max(...ts));
+    return { F, full: [at(t0), at(t1)], reach: r1 > r0 ? [at(r0), at(r1)] : null, footOnFloor: t0 === 0 };
+  }
+
+  // Sunrise and sunset (geometric horizon) within [start, start + 24 h],
+  // located by scanning and bisection; either may be null.
+  function sunEvents(start, lat, lon) {
+    const alt = ms => sunState(ms, lat, lon).alt;
+    let rise = null, set = null, prev = alt(start);
+    for (let m = 5; m <= 1440; m += 5) {
+      const ms = start + m * 60000, cur = alt(ms);
+      if ((prev <= 0) !== (cur <= 0)) {
+        let lo = ms - 300000, hi = ms;
+        for (let k = 0; k < 25; k++) { const mid = (lo + hi) / 2; if ((alt(mid) <= 0) === (prev <= 0)) lo = mid; else hi = mid; }
+        if (prev <= 0) { if (rise === null) rise = hi; } else if (set === null) set = hi;
+      }
+      prev = cur;
+    }
+    return { rise, set };
   }
 
   // -------------------------------------------------------- Hour systems ---
@@ -368,10 +435,10 @@
   function validZone(tz) { try { zoneParts(tz, 0); return true; } catch (e) { return false; } }
 
   return {
-    VERSION: '0.2', D2R, R2D, OBLIQUITY, MOUSE, TIGER, RABBIT, HORSE, ROOSTER, mod,
+    VERSION: '0.3', D2R, R2D, OBLIQUITY, MOUSE, TIGER, RABBIT, HORSE, ROOSTER, mod,
     solar, sunVector, sunState, halfDayArc,
     PRESETS, validateGer, roofSlant, netMax, layout, trace, toNet, traceCentre, apertureBoundary, patch, sweep,
-    declinationPath, hourLine, temporalLine,
+    declinationPath, hourLine, temporalLine, floorHourLine, sunEvents,
     clockHour, solarHour, directionHour, temporalHour,
     zoneParts, tzOffsetMin, zonedToUtc, validZone
   };
