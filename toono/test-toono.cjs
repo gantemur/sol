@@ -68,6 +68,21 @@ const UB = { lat: 47.92, lon: 106.92, tz: 'Asia/Ulaanbaatar' };
   check('roof shown in plan: eave at R, rim at toono radius', near(eave.rho, g.R, 1e-12) && near(rim.rho, g.toonoR, 1e-12));
 }
 
+// --- Toono-centred layout is continuous and encodes solar altitude -------
+{
+  const L = E.layout(g, 'toono');
+  const at = (surf, p) => E.toNet({ surf, p }, g, 'toono').rho;
+  check('toono view continuous at wall foot', near(at('floor', [0, g.R, 0]), at('wall', [0, g.R, 0]), 1e-12));
+  check('toono view continuous at eave', near(at('wall', [g.R, 0, g.wallH]), at('roof', [g.R, 0, g.wallH]), 1e-12));
+  check('toono rim at 90 deg', near(at('roof', [g.toonoR, 0, g.toonoH]), Math.PI / 2, 1e-9) && near(L.max, Math.PI / 2, 1e-12));
+  const alt = 35 * E.D2R, sv = [0, -Math.cos(alt), Math.sin(alt)];
+  const c = E.traceCentre(sv, g, 'toono');
+  check('toono view: patch centre at 90 deg - altitude', c && near(c.rho, Math.PI / 2 - alt, 1e-9));
+  const low = E.sunState(Date.UTC(2026, 2, 20, 1, 0), UB.lat, UB.lon);
+  const lp = E.patch(low.s, g, 'full', 180, 'toono');
+  check('toono view: split patch is one polygon', lp && lp.length === 1 && lp[0].surf === 'mixed');
+}
+
 // --- Noon patch on the north axis (khoimor) -----------------------------
 {
   for (const day of [Date.UTC(2026, 5, 21), Date.UTC(2026, 2, 20), Date.UTC(2026, 11, 21)]) {

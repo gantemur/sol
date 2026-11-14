@@ -143,26 +143,46 @@
     return { surf: best.surf, p, t: best.t };
   }
 
-  // Map an interior point to the drawing plane ("net"). Floor and roof are
-  // shown in plan (as seen from above, roof transparent), so rho is the
-  // horizontal distance from the centre; the wall is folded outward around
-  // the floor (rho = R + height). Compass direction is preserved everywhere.
-  // The map is continuous across the floor/wall edge but not across the
-  // eave (roof plan edge at R, wall head at R + wallH).
-  function toNet(hit, g) {
+  // Drawing layouts. Every layout keeps compass direction (az, clockwise
+  // from north) and maps a hit point to a radius rho.
+  //  'plan'  : floor and roof in plan as seen from above (roof transparent),
+  //            wall folded outward around the floor (foot inside, head
+  //            outside). Discontinuous at the eave.
+  //  'toono' : the interior as seen from the toono centre looking down
+  //            (azimuthal equidistant about the nadir): rho is the angle
+  //            from straight down, so floor, wall, uni and finally the
+  //            toono rim (at 90 degrees) follow outward without breaks. The
+  //            patch centre then sits at rho = 90 deg - solar altitude.
+  function layout(g, view = 'plan') {
+    if (view === 'toono') {
+      const Ht = g.toonoH, aF = Math.atan2(g.R, Ht), aW = Math.atan2(g.R, Ht - g.wallH);
+      return {
+        view, continuous: true, max: Math.PI / 2, floorEdge: aF, wallFoot: aF, wallHead: aW, roofOuter: Math.PI / 2,
+        rho: (surf, x, y, z) => Math.atan2(Math.hypot(x, y), Ht - z),
+        wallRho: z => Math.atan2(g.R, Ht - z),
+        roofRho: r => Math.atan2(r, (r - g.toonoR) * (Ht - g.wallH) / (g.R - g.toonoR)),
+        edge: (a, b) => (a === 'floor' || b === 'floor') ? aF : aW
+      };
+    }
+    return {
+      view: 'plan', continuous: false, max: g.R + g.wallH, floorEdge: g.R, wallFoot: g.R, wallHead: g.R + g.wallH,
+      rho: (surf, x, y, z) => surf === 'wall' ? g.R + Math.max(0, Math.min(g.wallH, z)) : Math.min(Math.hypot(x, y), g.R),
+      wallRho: z => g.R + z,
+      roofRho: r => r,
+      edge: (a, b) => (a === 'wall' && b === 'roof') ? g.R + g.wallH : g.R
+    };
+  }
+
+  function toNet(hit, g, view = 'plan') {
+    const L = typeof view === 'object' ? view : layout(g, view);
     const [x, y, z] = hit.p;
-    const r = Math.hypot(x, y);
-    const az = Math.atan2(x, y);               // radians, clockwise from north
-    let rho;
-    if (hit.surf === 'wall') rho = g.R + Math.max(0, Math.min(g.wallH, z));
-    else rho = Math.min(r, g.R);
-    return { rho, az, surf: hit.surf };
+    return { rho: L.rho(hit.surf, x, y, z), az: Math.atan2(x, y), surf: hit.surf, cont: L.continuous };
   }
 
   // Trace from the toono centre (the "nodus"); returns a net point or null.
-  function traceCentre(s, g) {
+  function traceCentre(s, g, view = 'plan') {
     const hit = trace([0, 0, g.toonoH], [-s[0], -s[1], -s[2]], g);
-    return hit ? toNet(hit, g) : null;
+    return hit ? toNet(hit, g, view) : null;
   }
 
   // Aperture boundary: full open toono, or only the door-side half open
@@ -189,8 +209,6 @@
     return pts;
   }
 
-  // Net radius of the edge between surface a and its neighbour b.
-  function edgeRadius(a, b, g) { return (a === 'wall' && b === 'roof') ? g.R + g.wallH : g.R; }
   // Points along an edge circle from az0 to az1 the short way round.
   function edgeArc(az0, az1, rho, surf) {
     let dz = mod(az1 - az0 + Math.PI, 2 * Math.PI) - Math.PI;
@@ -204,7 +222,8 @@
   // boundary rays land on different surfaces the transition is located by
   // bisection, and the pieces of each surface are closed along the shared
   // edge (eave or wall foot), so each polygon outlines the lit region.
-  function patch(s, g, mode = 'full', doorAz = 180) {
+  function patch(s, g, mode = 'full', doorAz = 180, view = 'plan') {
+    const L = layout(g, view);
     if (!(s[2] > 1e-6)) return null;
     const d = [-s[0], -s[1], -s[2]];
     const B = apertureBoundary(g, mode, doorAz);
@@ -214,7 +233,7 @@
     const n = B.length, seq = [];
     for (let i = 0; i < n; i++) {
       const a = hits[i], b = hits[(i + 1) % n];
-      seq.push({ surf: a.surf, net: toNet(a, g) });
+      seq.push({ surf: a.surf, net: toNet(a, g, L) });
       if (a.surf !== b.surf) {
         const [x0, y0] = B[i], [x1, y1] = B[(i + 1) % n];
         let lo = 0, hi = 1, hlo = a, hhi = b;
@@ -222,10 +241,13 @@
           const m = (lo + hi) / 2, h = at(x0 + (x1 - x0) * m, y0 + (y1 - y0) * m);
           if (h && h.surf === a.surf) { lo = m; hlo = h; } else if (h) { hi = m; hhi = h; } else break;
         }
-        seq.push({ surf: a.surf, net: toNet(hlo, g), exitTo: hhi.surf });
-        seq.push({ surf: hhi.surf, net: toNet(hhi, g), enterFrom: a.surf });
+        seq.push({ surf: a.surf, net: toNet(hlo, g, L), exitTo: hhi.surf });
+        seq.push({ surf: hhi.surf, net: toNet(hhi, g, L), enterFrom: a.surf });
       }
     }
+    // In a continuous layout the image of the aperture boundary already
+    // outlines the whole lit region, across surfaces.
+    if (L.continuous) return [{ surf: seq.every(e => e.surf === seq[0].surf) ? seq[0].surf : 'mixed', pts: seq.map(e => e.net) }];
     const start = seq.findIndex(e => e.enterFrom);
     if (start < 0) return [{ surf: seq[0].surf, pts: seq.map(e => e.net) }];
     const runs = []; let cur = null;
@@ -243,7 +265,7 @@
         pts.push(...r.pts);
         const next = rs[(i + 1) % rs.length];
         const a0 = r.pts[r.pts.length - 1], a1 = next.pts[0];
-        pts.push(...edgeArc(a0.az, a1.az, edgeRadius(surf, r.exitTo, g), surf));
+        pts.push(...edgeArc(a0.az, a1.az, L.edge(surf, r.exitTo), surf));
       });
       if (pts.length > 2) polys.push({ surf, pts });
     }
@@ -258,7 +280,7 @@
       const p = fn(v);
       if (p && cur.length) {
         const q = cur[cur.length - 1];
-        if (q.surf !== p.surf && (q.surf === 'roof' || p.surf === 'roof')) { lines.push(cur); cur = []; }
+        if (!p.cont && q.surf !== p.surf && (q.surf === 'roof' || p.surf === 'roof')) { lines.push(cur); cur = []; }
       }
       if (p) cur.push(p); else if (cur.length) { lines.push(cur); cur = []; }
     }
@@ -268,33 +290,33 @@
   const range = (a, b, step) => { const out = []; for (let v = a; v <= b + 1e-9; v += step) out.push(v); return out; };
 
   // Path of the patch centre over a day at fixed declination.
-  function declinationPath(lat, decl, g) {
+  function declinationPath(lat, decl, g, view = 'plan') {
     const phi = lat * D2R;
     return sweep(range(-180, 180, 0.5), H => {
       const s = sunVector(phi, H * D2R, decl);
-      return s[2] > 1e-6 ? traceCentre(s, g) : null;
+      return s[2] > 1e-6 ? traceCentre(s, g, view) : null;
     });
   }
 
   // Fixed hour line for hour angle H (deg) over the whole year: the
   // intersection of the hour plane through the toono with the interior.
-  function hourLine(lat, Hdeg, g) {
+  function hourLine(lat, Hdeg, g, view = 'plan') {
     const phi = lat * D2R;
     return sweep(range(-OBLIQUITY, OBLIQUITY, 0.25), dd => {
       const s = sunVector(phi, Hdeg * D2R, dd * D2R);
-      return s[2] > 1e-6 ? traceCentre(s, g) : null;
+      return s[2] > 1e-6 ? traceCentre(s, g, view) : null;
     });
   }
 
   // Temporal (unequal) hour line: boundary j (1..5) of the six daylight
   // double hours that start at sunrise (geometric horizon).
-  function temporalLine(lat, j, g) {
+  function temporalLine(lat, j, g, view = 'plan') {
     const phi = lat * D2R;
     return sweep(range(-OBLIQUITY, OBLIQUITY, 0.25), dd => {
       const H0 = halfDayArc(lat, dd * D2R, 0);
       if (H0 === null) return null;
       const s = sunVector(phi, -H0 + j * H0 / 3, dd * D2R);
-      return s[2] > 1e-6 ? traceCentre(s, g) : null;
+      return s[2] > 1e-6 ? traceCentre(s, g, view) : null;
     });
   }
 
@@ -346,9 +368,9 @@
   function validZone(tz) { try { zoneParts(tz, 0); return true; } catch (e) { return false; } }
 
   return {
-    VERSION: '0.1', D2R, R2D, OBLIQUITY, MOUSE, TIGER, RABBIT, HORSE, ROOSTER, mod,
+    VERSION: '0.2', D2R, R2D, OBLIQUITY, MOUSE, TIGER, RABBIT, HORSE, ROOSTER, mod,
     solar, sunVector, sunState, halfDayArc,
-    PRESETS, validateGer, roofSlant, netMax, trace, toNet, traceCentre, apertureBoundary, patch, sweep,
+    PRESETS, validateGer, roofSlant, netMax, layout, trace, toNet, traceCentre, apertureBoundary, patch, sweep,
     declinationPath, hourLine, temporalLine,
     clockHour, solarHour, directionHour, temporalHour,
     zoneParts, tzOffsetMin, zonedToUtc, validZone
