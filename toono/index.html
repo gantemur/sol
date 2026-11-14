@@ -7,9 +7,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <title>Гэрийн наран цаг · Sol</title>
-  <link rel="stylesheet" href="style.css?v=0.3">
-  <script defer src="engine.js?v=0.3"></script>
-  <script defer src="app.js?v=0.3"></script>
+  <link rel="stylesheet" href="style.css?v=0.4">
+  <script defer src="engine.js?v=0.4"></script>
+  <script defer src="app.js?v=0.4"></script>
   <!-- Aggregate, cookie-free visits; see /sol/docs/ANALYTICS.md. -->
   <script>
     if (location.hostname === "gantemur.github.io") {
@@ -101,16 +101,9 @@
         <label class="check"><input type="checkbox" id="ovLabels" checked><span data-i="ovLabels">Гэрийн хэсгийн нэр</span></label>
         <label class="check"><input type="checkbox" id="ovWedges" checked><span data-i="ovWedges">Гэрийн 12 тогтмол зүг</span></label>
         <label class="check"><input type="checkbox" id="ovSectors"><span data-i="ovSectors">Энэ өдрийн :40 хуваарь (гэрт)</span></label>
+        <label class="check"><input type="checkbox" id="ovTemporal"><span data-i="ovTemporal">Энэ өдрийн нар мандахаас эхэлсэн хуваарь (гэрт)</span></label>
         <label class="check"><input type="checkbox" id="ovPath"><span data-i="ovPath">Энэ өдрийн гэрлийн зам</span></label>
-        <label class="check"><input type="checkbox" id="ovSeasons"><span data-i="ovSeasons">Туйл, тэгшитгэлийн өдрүүдийн замнал</span></label>
-        <label class="check"><input type="checkbox" id="ovTemporal"><span data-i="ovTemporal">Нар мандахаас эхэлсэн тэгш бус цаг</span></label>
-        <label class="field"><span data-i="ovSundial">Нарны цагийн шугам (шалан дээр)</span>
-          <select id="ovSundial">
-            <option value="off" data-i="sdOff">Үгүй</option>
-            <option value="solar" data-i="sdSolar">Жинхэнэ нарны цаг</option>
-            <option value="clock40" data-i="sdClock">:40 хуваарь (дундаж)</option>
-          </select>
-        </label>
+        <label class="check"><input type="checkbox" id="ovSundial"><span data-i="ovSundial">Нарны цагийн шугам (жинхэнэ нарны цаг)</span></label>
       </details>
 
       <details>

@@ -128,6 +128,8 @@ const UB = { lat: 47.92, lon: 106.92, tz: 'Asia/Ulaanbaatar' };
   const start = E.zonedToUtc(UB.tz, 2026, 7, 6, 0, 0), mins = []; for (let m = 0; m <= 1440; m += 3) mins.push(m);
   const path = E.sweep(mins, m => { const st = E.sunState(start + m * 60000, UB.lat, UB.lon); return st.alt > 0 ? E.traceCentre(st.s, g, 'plan') : null; });
   const roofEnds = path.filter(l => l[0].surf === 'roof').map(l => Math.max(l[0].rho, l[l.length - 1].rho));
+  check('plan-view jumps come with eave-to-wall-head links', path.links.length >= 2 &&
+    path.links.every(([a, b]) => { const r = [a.rho, b.rho].sort((x, y) => x - y); return near(r[0], g.R, 1e-3) && near(r[1], g.R + g.wallH, 1e-3); }), path.links.map(l => l.map(x => x.rho)));
   check('plan-view path on the uni runs to the eave', roofEnds.length && roofEnds.every(r => near(r, g.R, 1e-3)), roofEnds);
   const ev = E.sunEvents(E.zonedToUtc(UB.tz, 2026, 3, 20, 0, 0), UB.lat, UB.lon);
   const rp = E.zoneParts(UB.tz, ev.rise), sp = E.zoneParts(UB.tz, ev.set);

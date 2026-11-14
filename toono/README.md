@@ -1,6 +1,6 @@
 # Ger sun clock · Гэрийн наран цаг
 
-Status: alpha (v0.3), published for live testing.
+Status: alpha (v0.4), published for live testing.
 
 Sunlight entering a Mongolian ger through the toono (the open crown ring of the
 roof) makes a bright patch that travels across the roof poles, wall and floor
@@ -45,17 +45,18 @@ default, can be hidden), the 12 fixed 30° sectors (on), and, off by default:
 
 - **This day's :40 sectors:** from sunrise to sunset, a line from the centre in
   the direction of the light at each :40 time (sunrise and sunset in orange),
-  dividing the ger into the day's twelve sectors, labelled in the wall ring.
-  With the time fixed and the day slider moving, the sectors open and close
-  with the seasons (the Sun's apparent speed), for comparison with the fixed
-  sectors.
-- **This day's path of the light centre**, run exactly to the eave and to the
-  horizon (edges found by bisection).
-- Solstice and equinox paths; unequal hours from sunrise.
-- **Sundial lines on the floor only:** straight equal-hour lines (true solar or
-  :40 mean time) from the polar-axis foot near the door (dot); bold where the
-  light reaches during the year, faint elsewhere. Their continuation on the wall
-  and uni is deliberately not drawn.
+  labelled in the wall ring.
+- **This day's sunrise-based sectors:** daylight split into six equal parts,
+  Rabbit beginning at sunrise (green, labelled on the floor). With the time
+  fixed and the day slider moving, both kinds of sectors open and close with
+  the seasons, for comparison with the fixed sectors.
+- **This day's path of the light centre**, run exactly to the eave and the
+  horizon; in the plan view, where the light passes from the uni to the wall the
+  same position is drawn twice, and a dotted line joins the two.
+- **Sundial lines** (true solar double-hour boundaries, Horse centred on noon):
+  on the floor, straight lines from the polar-axis foot near the door (dot), bold
+  where the light reaches during the year; in the toono view they also continue
+  on the wall and uni.
 
 ## The four hour readouts
 
@@ -86,7 +87,6 @@ default, can be hidden), the 12 fixed 30° sectors (on), and, off by default:
   through the toono centre that contains the Earth's axis direction, so on the
   floor the equal-hour lines are straight and pass through the point where that
   axis line meets the floor, `toonoH · cot(latitude)` south of the centre.
-  The :40 option uses mean solar time (equation of time ignored).
 
 ## References
 
