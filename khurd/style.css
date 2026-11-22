@@ -573,7 +573,11 @@ select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .done.wide { display: block; width: 100%; min-height: 44px; margin: 4px 0 14px; }
 .done:disabled { opacity: 0.45; cursor: default; }
 
-.dedicated-head { margin: 4px 0 10px; font-weight: 600; }
+.dedicated-head { margin: -6px 0 12px; font-weight: 600; text-align: center; }
+.dedicated-head[hidden] { display: none; }
+.done.share { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1.05rem; }
+.done.share svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.done.share svg[hidden] { display: none; }
 
 .card-wrap { display: flex; justify-content: center; margin: 4px 0 16px; }
 .card-wrap[hidden] { display: none; }

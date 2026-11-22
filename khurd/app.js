@@ -36,10 +36,9 @@
       secondLine: "Хоёр дахь мөр",
       sentenceDefault1: "Хамаг амьтан зовлонгоос",
       sentenceDefault2: "ангижрих болтугай хэмээн уншив.",
-      dedicateNote: "Зориулснаар тоо буурахгүй. Картыг илгээхгүй бол нэрс зөвхөн энэ төхөөрөмж дээр үлдэнэ.",
-      dedicateButton: "%s маань зориулах",
-      dedicated: "Зориулав. Одоо картаа илгээж болно.",
-      shareCard: "Картыг илгээх",
+      dedicateNote: "Зориулснаар тоо буурахгүй.",
+      dedicated: "Зориулав.",
+      shareCard: "Ерөөл илгээх",
       saveCard: "Картыг хадгалах",
       dedicatedSoFar: "Нийт зориулсан",
       dedicatedTo: "Буяныг зориулав",
@@ -116,9 +115,8 @@
       wish: "Wish (optional)",
       wishExample: "for example, for her recovery",
       secondLine: "Second line",
-      dedicateNote: "Dedicating does not lower the count. Names stay on this device unless you share the card.",
-      dedicateButton: "Dedicate %s mani",
-      dedicated: "Dedicated. You can share the card now.",
+      dedicateNote: "Dedicating does not lower the count.",
+      dedicated: "Dedicated.",
       shareCard: "Share the card",
       saveCard: "Save the card",
       dedicatedSoFar: "Dedicated so far",
@@ -1070,7 +1068,9 @@
    * Records stay in this browser; the card can be shared as an image with all
    * its text inside, since some services drop pre-written text. */
   let dedications = E.decodeDedications(store.get("dedications"));
-  const ded = { done: null, file: null };
+  /* The last dedication recorded in this opening of the sheet: sharing the
+   * same card again, unchanged, does not record it twice. */
+  const ded = { last: null };
   const dedDialog = $("#dedicate");
   const dedForm = $("#dedicate-form");
   const cardCanvas = $("#card");
@@ -1248,12 +1248,15 @@
     else wishInput.removeAttribute("aria-label");
     const amount = dedicationAmount();
     const allowed = E.dedicationAllowed(amount, tot.mani);
-    const submit = $("#dedicate-submit");
-    submit.textContent = t("dedicateButton").replace("%s", format(amount > 0n ? amount : 0n));
-    submit.disabled = !allowed;
-    dedForm.hidden = !!ded.done;
-    $("#dedicated").hidden = !ded.done;
-    const preview = ded.done || (allowed ? E.makeDedication(amount, recipientInput.value, wishInput.value) : null);
+    // One step (owner, 2026-11-22): the share button dedicates when the share
+    // completes; where files cannot be shared it saves the PNG instead.
+    const share = $("#share-card");
+    $("#share-label").textContent = FILE_SHARE ? t("shareCard") : t("saveCard");
+    $("#share-icon").hidden = !FILE_SHARE;
+    $("#save-icon").hidden = FILE_SHARE;
+    share.disabled = !allowed;
+    const preview = allowed ? E.makeDedication(amount, recipientInput.value, wishInput.value) : null;
+    $("#dedicated").hidden = !(preview && sameDedication(ded.last, preview));
     cardCanvas.parentElement.hidden = !preview;
     if (preview) drawCard(cardCanvas, preview, 2);
     $("#dedicated-total").textContent = format(E.dedicationSum(dedications));
@@ -1294,9 +1297,37 @@
     try { return !!(navigator.canShare && navigator.share && navigator.canShare({ files: [file] })); } catch (e) { return false; }
   }
 
+  /* Whether this browser can share an image file (phones, some desktops). */
+  const FILE_SHARE = canShareFiles(new File([new Uint8Array(8)], "card.png", { type: "image/png" }));
+
+  function sameDedication(a, b) {
+    return !!a && !!b && a.amount === b.amount && a.recipient === b.recipient && a.wish === b.wish;
+  }
+
+  /* The card as a PNG file, made synchronously so that sharing starts inside
+   * the tap that asks for it. */
+  function cardFile(d) {
+    const big = document.createElement("canvas");
+    drawCard(big, d, 1080 / 280);
+    const bin = atob(big.toDataURL("image/png").split(",")[1]);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i += 1) bytes[i] = bin.charCodeAt(i);
+    return new File([bytes], "mani-dedication.png", { type: "image/png" });
+  }
+
+  function saveFile(file) {
+    const url = URL.createObjectURL(file);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = file.name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  }
+
   function openDedicate() {
-    ded.done = null;
-    ded.file = null;
+    ded.last = null;
     otherInput.value = "";
     recipientInput.value = "";
     wishInput.value = "";
@@ -1323,39 +1354,25 @@
     if (!E.dedicationAllowed(amount, E.writtenTotals(banked, wheels).mani)) return;
     const d = E.makeDedication(amount, recipientInput.value, wishInput.value);
     if (!d) return;
-    dedications.unshift(d);
-    saveDedications();
-    ded.done = d;
-    renderDedicate();
-    // Prepare the image now: sharing must start inside the tap that asks for it.
-    const big = document.createElement("canvas");
-    drawCard(big, d, 1080 / 280);
-    const share = $("#share-card");
-    share.disabled = true;
-    share.textContent = t("shareCard");
-    big.toBlob((blob) => {
-      if (!blob) return;
-      ded.file = new File([blob], "mani-dedication.png", { type: "image/png" });
-      share.textContent = canShareFiles(ded.file) ? t("shareCard") : t("saveCard");
-      share.disabled = false;
-      share.focus();
-    }, "image/png");
-  });
-  $("#share-card").addEventListener("click", () => {
-    const file = ded.file;
-    if (!file) return;
-    if (canShareFiles(file)) {
-      navigator.share({ files: [file] }).catch(() => { /* cancelled */ });
+    const record = () => {
+      if (sameDedication(ded.last, d)) return;
+      dedications.unshift(d);
+      saveDedications();
+      ded.last = d;
+      renderDedicate();
+    };
+    const file = cardFile(d);
+    if (FILE_SHARE && canShareFiles(file)) {
+      // Recorded when the share completes, not when it is cancelled.
+      navigator.share({ files: [file] }).then(record).catch((e) => {
+        if (e && e.name === "AbortError") return;
+        saveFile(file);
+        record();
+      });
       return;
     }
-    const url = URL.createObjectURL(file);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = file.name;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    saveFile(file);
+    record();
   });
   $("#dedicate-open").addEventListener("click", openDedicate);
   $("#dedicate-done").addEventListener("click", closeDedicate);
