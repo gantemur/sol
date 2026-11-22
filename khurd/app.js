@@ -29,10 +29,13 @@
       amountSince: "%1-с хойш (%2)",
       amountOther: "Өөр тоо",
       numberOfMani: "Мааний тоо",
-      toWhom: "Хэнд",
+      toWhom: "Зориулах үг",
       allBeings: "Хамаг амьтан",
       wish: "Ерөөл (заавал биш)",
       wishExample: "жишээ нь, эдгэрэхийн төлөө",
+      secondLine: "Хоёр дахь мөр",
+      sentenceDefault1: "Хамаг амьтан зовлонгоос",
+      sentenceDefault2: "ангижрих болтугай хэмээн уншив.",
       dedicateNote: "Зориулснаар тоо буурахгүй. Картыг илгээхгүй бол нэрс зөвхөн энэ төхөөрөмж дээр үлдэнэ.",
       dedicateButton: "%s маань зориулах",
       dedicated: "Зориулав. Одоо картаа илгээж болно.",
@@ -112,6 +115,7 @@
       allBeings: "All beings",
       wish: "Wish (optional)",
       wishExample: "for example, for her recovery",
+      secondLine: "Second line",
       dedicateNote: "Dedicating does not lower the count. Names stay on this device unless you share the card.",
       dedicateButton: "Dedicate %s mani",
       dedicated: "Dedicated. You can share the card now.",
@@ -1073,6 +1077,7 @@
   const otherInput = $("#amount-other");
   const recipientInput = $("#recipient");
   const wishInput = $("#wish");
+  const wishLabel = document.querySelector("label[for=wish]");
 
   function saveDedications() {
     store.set("dedications", E.encodeDedications(dedications));
@@ -1098,7 +1103,23 @@
     try { return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }); } catch (e) { return d.toDateString(); }
   }
 
+  /* English reads "Dedicated to" / name / wish. Mongolian reads as one
+   * sentence: «N маань», then the two lines the person wrote, or by default
+   * «Хамаг амьтан зовлонгоос / ангижрих болтугай хэмээн уншив.» (owner,
+   * 2026-11-22). */
   function cardTexts(d) {
+    if (settings.lang === "mn") {
+      const empty = !d.recipient && !d.wish;
+      return {
+        amount: format(d.amount),
+        mantra: t("mani"),
+        to: "",
+        recipient: empty ? t("sentenceDefault1") : d.recipient,
+        wish: empty ? t("sentenceDefault2") : d.wish,
+        footer: t("title") + " · " + cardDate(d.date),
+        sentence: true
+      };
+    }
     return {
       amount: format(d.amount),
       mantra: t("cardMantra"),
@@ -1181,18 +1202,24 @@
     g.fillStyle = gilt;
     g.fillRect(cx - 30, y, 60, 1);
     y += 1 + 7;
-    put(tx.to, 14, 18, "rgba(246, 238, 228, 0.8)", (px) => px + "px " + ui);
-    const rec = fitText(g, tx.recipient, inner, 21, 0.7, 2, (px) => "600 " + px + "px " + ui);
-    rec.lines.forEach((l, i) => {
-      g.font = "600 " + rec.px + "px " + ui;
-      g.fillStyle = cream;
-      g.fillText(l, cx, y + rec.px * 1.25 * (i + 0.5));
-    });
-    y += rec.px * 1.25 * rec.lines.length + 7;
+    if (tx.to) put(tx.to, 14, 18, "rgba(246, 238, 228, 0.8)", (px) => px + "px " + ui);
+    else y += 6;
+    // A Mongolian sentence's two lines are set alike.
+    const recFont = tx.sentence ? (px) => "500 " + px + "px " + ui : (px) => "600 " + px + "px " + ui;
+    if (tx.recipient) {
+      const rec = fitText(g, tx.recipient, inner, tx.sentence ? 18 : 21, 0.7, tx.sentence ? 3 : 2, recFont);
+      rec.lines.forEach((l, i) => {
+        g.font = recFont(rec.px);
+        g.fillStyle = cream;
+        g.fillText(l, cx, y + rec.px * 1.25 * (i + 0.5));
+      });
+      y += rec.px * 1.25 * rec.lines.length + 7;
+    }
     if (tx.wish) {
-      const wsh = fitText(g, tx.wish, inner, 15, 0.8, 3, (px) => "italic " + px + "px " + ui);
+      const wishFont = tx.sentence ? recFont : (px) => "italic " + px + "px " + ui;
+      const wsh = fitText(g, tx.wish, inner, tx.sentence ? 18 : 15, 0.8, 3, wishFont);
       wsh.lines.forEach((l, i) => {
-        g.font = "italic " + wsh.px + "px " + ui;
+        g.font = wishFont(wsh.px);
         g.fillStyle = cream;
         g.fillText(l, cx, y + wsh.px * 1.3 * (i + 0.5));
       });
@@ -1212,8 +1239,13 @@
     $("#amount-trip-row").hidden = !counter.tripOn;
     if (!counter.tripOn && amountSource() === "trip") dedForm.querySelector("input[value=today]").checked = true;
     otherInput.hidden = amountSource() !== "other";
-    recipientInput.placeholder = t("allBeings");
-    wishInput.placeholder = t("wishExample");
+    // In Mongolian the two fields are one sentence's lines, after «N маань».
+    const sentence = settings.lang === "mn";
+    recipientInput.placeholder = sentence ? t("sentenceDefault1") : t("allBeings");
+    wishInput.placeholder = sentence ? t("sentenceDefault2") : t("wishExample");
+    wishLabel.hidden = sentence;
+    if (sentence) wishInput.setAttribute("aria-label", t("secondLine"));
+    else wishInput.removeAttribute("aria-label");
     const amount = dedicationAmount();
     const allowed = E.dedicationAllowed(amount, tot.mani);
     const submit = $("#dedicate-submit");

@@ -68,7 +68,10 @@ network requests and no external libraries. The folder works when copied on its 
   wish and the date, in the colours of the band) can be shared as a
   1080 × 1350 image through the system's share sheet where the browser can
   share files (phones), or saved as a PNG elsewhere. The text is in the image,
-  since some services drop pre-written text.
+  since some services drop pre-written text. In Mongolian the card is one
+  sentence (owner, 2026-11-22): «2,149 маань», then the two lines written in
+  the sheet, for example «Балданг эдгэрэх болтугай» / «хэмээн зориулав.»;
+  left empty, «Хамаг амьтан зовлонгоос» / «ангижрих болтугай хэмээн уншив.».
 - **Tips** at the bottom of Settings explain the gestures.
 - **Full screen**: a button in the title row where the browser allows it
   (desktop, Android, iPad). iPhone Safari offers no full-screen mode for pages;
