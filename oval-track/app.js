@@ -104,8 +104,6 @@
   const disks = new Map();
   let running = false;
   let cancelAnimation = null;
-  let runGeneration = 0;
-  let busyMessage = false;
   const svgNs = "http://www.w3.org/2000/svg";
   const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -304,7 +302,6 @@
     });
   }
   function enqueue(task) {
-    if (queue.length >= 60) return; // bound a burst without blocking the page
     queue.push(task);
     drain();
   }
@@ -344,7 +341,6 @@
     }
   }
   function resetBoard() {
-    runGeneration++;
     queue.length = 0;
     if (cancelAnimation) cancelAnimation();
     state.board = [...M.HOME];
@@ -368,6 +364,9 @@
     enqueue({ kind:"note", key:spec.note });
   }
   function changeChallenge(delta) {
+    // Stop any queued demonstration so its final note cannot leak into another experiment.
+    queue.length = 0;
+    if (cancelAnimation) cancelAnimation();
     state.challenge = Math.max(0, Math.min(2, state.challenge + delta));
     state.reveal = null;
     state.note = null;
