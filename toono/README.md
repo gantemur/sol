@@ -91,6 +91,12 @@ default, can be hidden), the 12 fixed 30° sectors (on), and, off by default:
   floor the equal-hour lines are straight and pass through the point where that
   axis line meets the floor, `toonoH · cot(latitude)` south of the centre.
 
+## Research notes
+
+[notes/](notes/README.md) records what was learned while building the tool: the
+:40 convention and longitude, the geometry of the light patch and the sundial
+lines, and ger proportions with a proposed "small four" preset.
+
 ## References
 
 - Traditional ger time-telling: e.g. descriptions of "гэрийн наран цаг" in Mongolian
