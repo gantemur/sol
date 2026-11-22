@@ -11,18 +11,16 @@
   const H = [...M.HOME];
   const BASE = new Set(["R","T","L"]);
   const MAX_PRIMITIVES = 160;
+  // Every construction begins at the ordered home state. A candidate for
+  // the inverse of T (respectively R) must have the same effect as T^-1
+  // (respectively R^-1) when applied to home.
   const TARGETS = [
-    H,
-    H,
+    M.move(H, "T"),
+    M.move(H, "L"),
     M.word(H, ["R","T"]),
     M.word(H, Array.from({length:5},()=>["R","T"]).flat())
   ];
-  const SEEDS = [
-    M.move(H, "T"),
-    M.move(H, "R"),
-    H,
-    H
-  ];
+  const SEEDS = [H, H, H, H];
   function equal(a,b) {
     return Array.isArray(a) && Array.isArray(b) &&
       a.length === b.length && a.every((x,i)=>x===b[i]);
@@ -49,7 +47,9 @@
   function effect(word, library) {return M.word(H, flatten(word, library));}
   function isTarget(level, word, library) {
     if (![0,1,2,3].includes(level)) throw new RangeError("Unknown lesson");
-    const from = [...SEEDS[level]], after = M.word(from,flatten(word,library));
+    // A construction needs at least one move; an empty word is not a discovery.
+    if (!Array.isArray(word) || word.length === 0) return false;
+    const after = M.word(H,flatten(word,library));
     return equal(after,TARGETS[level]);
   }
   function inversePrimitives(list) {

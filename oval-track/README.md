@@ -12,27 +12,33 @@ commercial toy; no third-party puzzle assets or code are included.
 
 ## Build operations: four challenges
 
-1. **Discover the inverse of T.** The board begins after one turntable flip.
-   Return it to home. Discover that \`T²=e\`, so \`T⁻¹=T\` and no extra button is
-   needed.
-2. **Construct the inverse of R.** The board begins after one right step.
-   With no left button available yet, find a legal word that returns it to home.
-   Since \`R⁸=e\`, \`R⁻¹=R⁷\`. Unlock the name **L**. Thereafter **one L click**
-   animates **one immediate step left**, rather than playing seven R steps.
+1. **Discover the inverse of T.** Begin at the exact home arrangement.
+   Build a candidate with the effect of T⁻¹, so T followed by the candidate
+   restores every disk. In this puzzle T²=e, hence T⁻¹=T: no new button
+   is required.
+2. **Construct the inverse of R.** Begin at home. With no left-move
+   button yet, find a word with the effect of R⁻¹ using only available tools.
+   Since R⁸=e, R⁻¹=R⁷. Once the construction is checked and confirmed,
+   unlock **L**. One L click animates a direct single step left instead of
+   seven successive R moves.
 3. **Package a composite move.** Starting at home, obtain the same result as
-   \`RT\` (press R, then T). Give the recipe a name (default **P**) and save it as
+   `RT` (press R, then T). Give the recipe a name (default **P**) and save it as
    a new operation. One P click replays the recorded underlying sequence.
 4. **Build a two-position swap.** Make only positions 1 and 3 exchange disks,
-   leaving the others exactly home. \`(RT)^5=(1 3)\`; five P presses are one
+   leaving the others exactly home. `(RT)^5=(1 3)`; five P presses are one
    solution. Name this operation (default **S**) and save its complete recipe.
    S, and all other composite operations, **play their underlying moves**, not
    an artificial instant displacement.
 
-Challenge success is checked by the actual *permutation of the eight distinct
-disks*, not by matching a text recipe. Alternative legal constructions can be
-accepted. Operations are applied to *positions*, not immutable disk labels,
+**All four lessons start at the exact ordered home arrangement.** Reaching
+the displayed target does not automatically count as solving a puzzle: the
+user explicitly presses **Check my construction** to submit a candidate. A
+correct candidate opens a separate confirmation step to unlock/name the
+operation. An incorrect submission gives feedback without destroying the
+candidate sequence. The actual permutation, not the spelling of its recipe,
+decides correctness; equivalent constructions are accepted. Operations are applied to *positions*, not immutable disk labels,
 so a two-position swap acts on whichever disks currently occupy those slots.
-Words in the UI are chronological, read from left to right: \`RT\` means R
+Words in the UI are chronological, read from left to right: `RT` means R
 first, then T. This differs from the standard right-to-left function
 composition convention.
 
@@ -78,19 +84,24 @@ but physically animates all ten moves.
 
 Fixed labelled positions 1–8 follow the track clockwise:
 positions 1–4 at the top left-to-right, 5–8 at the bottom right-to-left.
-At home the board array is \`[1,2,3,4,5,6,7,8]\`.
+At home the board array is `[1,2,3,4,5,6,7,8]`.
 
-- \`R=(1 2 3 4 5 6 7 8)\`: rotate the entire eight-slot track right.
-- \`T=(1 4)(2 3)\`: reverse the top four *positions* in a half-turn.
-- \`L=R⁻¹\`: rotate left by one slot.
+- `R=(1 2 3 4 5 6 7 8)`: rotate the entire eight-slot track right.
+- `T=(1 4)(2 3)`: reverse the top four *positions* in a half-turn.
+- `L=R⁻¹`: rotate left by one slot.
 
-The reachable group is the full \`S₈\` of \`8!=40,320\` permutations. The
+The reachable group is the full `S₈` of `8!=40,320` permutations. The
 pure mathematical model enumerates all states with generators R, R⁻¹, T;
-the largest minimal distance from home is 22 button presses. \`RT\` has cycle
-notation \`(1 3)(4 5 6 7 8)\` and order 10, explaining the construction of
+the largest minimal distance from home is 22 button presses. `RT` has cycle
+notation `(1 3)(4 5 6 7 8)` and order 10, explaining the construction of
 the special swap. The collapsible math panel shows the exact current
 arrangement, current destination permutation (disk's original position to
 current position), disjoint cycles and element order.
+
+The home display is 1 2 3 4 along the top, with 8 7 6 5 along
+the bottom left-to-right. Positions are numbered **around the oval**, not
+row by row; the lower row is read from right to left. A visible caption
+below the board now clarifies this reading order.
 
 A board in cyclic order but not aligned with the fixed home marker is
 distinguished from the *exact* solved arrangement. Glyphs are kept upright.
@@ -106,7 +117,7 @@ tween. Every move sequence is finite and cancellable by mode switches,
 resets or new scrambles.
 
 Mongolian is the default, English selectable with the visible language
-toggle or \`?lang=en\`. Language changes preserve both boards, unlocks,
+toggle or `?lang=en`. Language changes preserve both boards, unlocks,
 history and saved macros. Browser storage failures do not block play.
 No permissions, accounts, remote servers, third-party assets or package
 manager are needed. The folder works standalone with relative local paths.
@@ -115,23 +126,23 @@ aggregate visits only, and disables interaction events.
 
 ## Files and validation
 
-- \`index.html\`, \`style.css\`: semantic interface and original SVG graphics.
-- \`model.js\`: pure basic permutation engine.
-- \`workshop.js\`: pure composition/validation/lesson logic.
-- \`app.js\`: DOM behavior, animation, tool unlocking and localization.
-- \`test-engine.cjs\`, \`test-workshop.cjs\`, \`test-ui.cjs\`: regression tests.
-- \`LICENSE\`: MIT copyright (c) 2026 Tsogtgerel Gantumur.
+- `index.html`, `style.css`: semantic interface and original SVG graphics.
+- `model.js`: pure basic permutation engine.
+- `workshop.js`: pure composition/validation/lesson logic.
+- `app.js`: DOM behavior, animation, tool unlocking and localization.
+- `test-engine.cjs`, `test-workshop.cjs`, `test-ui.cjs`: regression tests.
+- `LICENSE`: MIT copyright (c) 2026 Tsogtgerel Gantumur.
 
 From the public Sol repository root:
 
-\`\`\`sh
+```sh
 node oval-track/test-engine.cjs
 node oval-track/test-workshop.cjs
 node oval-track/test-ui.cjs
 node scripts/check-static.js
 node scripts/test-static-check.js
 node scripts/test-analytics.cjs
-\`\`\`
+```
 
 The UI smoke uses a mocked DOM in reduced-motion mode; it does **not**
 verify actual browser animation, mobile layout or touch fidelity. After
