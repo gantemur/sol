@@ -137,14 +137,15 @@
             data-i18n-label="toWhom" aria-label="Хэнд">
           <label class="label small" for="wish" data-i18n="wish">Ерөөл (заавал биш)</label>
           <input type="text" id="wish" class="text" maxlength="80" autocomplete="off">
-          <p class="note" data-i18n="dedicateNote">Зориулснаар тоо буурахгүй. Картыг илгээхгүй бол нэрс зөвхөн энэ төхөөрөмж дээр үлдэнэ.</p>
+          <p class="note" data-i18n="dedicateNote">Зориулснаар тоо буурахгүй.</p>
         </fieldset>
-        <button type="submit" class="done wide" id="dedicate-submit"></button>
+        <button type="submit" class="done wide share" id="share-card">
+          <svg id="share-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M8 10H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-2"/></svg>
+          <svg id="save-icon" viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M12 3v12M7.5 10.5 12 15l4.5-4.5M5 17v3a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3"/></svg>
+          <span id="share-label">Ерөөл илгээх</span>
+        </button>
+        <p class="dedicated-head" id="dedicated" role="status" data-i18n="dedicated" hidden>Зориулав.</p>
       </form>
-      <div class="dedicated" id="dedicated" hidden>
-        <p class="dedicated-head" data-i18n="dedicated">Зориулав. Одоо картаа илгээж болно.</p>
-        <button type="button" class="done wide" id="share-card"></button>
-      </div>
       <div class="card-wrap"><canvas id="card" width="560" height="700" role="img"></canvas></div>
       <div class="history">
         <div class="history-sum"><span data-i18n="dedicatedSoFar">Нийт зориулсан</span> <output id="dedicated-total">0</output></div>

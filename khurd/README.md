@@ -63,12 +63,15 @@ network requests and no external libraries. The folder works when copied on its 
   «Хамаг амьтан»), with an optional wish. Names up to 40 characters, wishes up
   to 80, one line each. Dedicating does not lower the total. Records stay in
   this browser, newest first, with "Dedicated so far" as their sum; each can be
-  deleted after a confirmation. After dedicating, the card (the Tibetan mantra,
+  deleted after a confirmation. One button, «Ерөөл илгээх» / "Share the card"
+  with the share icon, sends the card (the Tibetan mantra,
   the amount, the mantra's name, "Dedicated to", the name or "All beings", the
-  wish and the date, in the colours of the band) can be shared as a
-  1080 × 1350 image through the system's share sheet where the browser can
-  share files (phones), or saved as a PNG elsewhere. The text is in the image,
-  since some services drop pre-written text. In Mongolian the card is one
+  wish and the date, in the colours of the band) as a 1080 × 1350 image
+  through the system's share sheet where the browser can share files
+  (phones); elsewhere it saves the PNG ("Save the card"). The dedication is
+  recorded when the share completes or the file is saved, not when the share
+  is cancelled, and the same unchanged card is not recorded twice (owner,
+  2026-11-22). The text is in the image, since some services drop pre-written text. In Mongolian the card is one
   sentence (owner, 2026-11-22): «2,149 маань», then the two lines written in
   the sheet, for example «Балданг эдгэрэх болтугай» / «хэмээн зориулав.»;
   left empty, «Хамаг амьтан зовлонгоос» / «ангижрих болтугай хэмээн уншив.».
