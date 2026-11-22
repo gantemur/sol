@@ -160,6 +160,34 @@
     groupBody:"Combine R and T, discover inverse moves, and create named operations. Your toolbox grows, but the group of possible permutations does not change: R and T already generate all 8! = 40,320 elements of S₈. A named operation is simply a convenient shorthand."
   });
 
+
+  // A construction starts at home. Only an explicit check can certify it.
+  Object.assign(I.mn, {
+    lesson0Desc:"Эх байдлаас T-ийн урвуу үйлдлийг бүтээ. T-ийн дараа олсон үйлдлээ хийвэл бүгд эхэндээ буцах ёстой. R, T-ээр дарааллаа бүтээж шалгуул.",
+    lesson0Hint:"T-г хоёр удаа дараалуулан хийвэл яах вэ? T-ийн урвуу нь ямар хөдөлгөөн байх бол?",
+    lesson1Desc:"Эх байдлаас R-ийн урвуу үйлдлийг бүтээ. Зүүн эргүүлэх L товч хараахан алга. R ба T-ээр дарааллаа бүтээж шалгуул.",
+    lesson1Hint:"Найман байрлалтай замд R-г найман удаа хийвэл эх байдалд буцна. Тэгвэл R-ийн урвуу нь?",
+    checkConstruction:"✓ Бүтээсэн үйлдлээ шалгах",
+    checkPrompt:"Үр дүндээ итгэлтэй бол шалгуул. Зорилтот байрлалд хүрэх нь дангаараа нээлт болдоггүй.",
+    boardOrderNote:"Байрлалын дугаарууд 1→2→3→4→5→6→7→8 гэж зууван замыг дагана. Доод мөрийг баруунаас зүүн тийш уншина.",
+    tryAgain:"Одоохондоо таарахгүй байна. Дарааллаа үргэлжлүүлж эсвэл дахин эхлүүлээд, дараа нь шалгаарай.",
+    emptyCandidate:"Эхлээд дор хаяж нэг хөдөлгөөнөөр үйлдэл бүтээгээрэй.",
+    checkComplete:"Шалгалт амжилттай! Одоо олсон үйлдлээ баталгаажуулж нэмээрэй.",
+    target:"Зорилтот байрлал (замын дагуу)"
+  });
+  Object.assign(I.en, {
+    lesson0Desc:"Begin at home and construct the inverse of T. Applying T and then your candidate must restore every disk. Build a sequence with R and T, then explicitly check it.",
+    lesson0Hint:"What happens when you apply T twice? Which move undoes T?",
+    lesson1Desc:"Begin at home and construct the inverse of R. The left-move button L is not available yet. Build a candidate with R and T, then check it.",
+    lesson1Hint:"Eight right rotations return you home. Which sequence undoes just one right rotation?",
+    checkConstruction:"✓ Check my construction",
+    checkPrompt:"Press Check when you believe your candidate is ready. Reaching the target alone does not unlock anything.",
+    boardOrderNote:"Positions run 1→2→3→4→5→6→7→8 around the oval. Read the lower row from right to left.",
+    tryAgain:"Not quite. Continue your sequence or restart, then check again.",
+    emptyCandidate:"Build a candidate using at least one move before checking.",
+    checkComplete:"Correct! Confirm the discovery to add it to your toolbox.",
+    target:"Target positions (around the track)"
+  });
   const STORAGE="oval-track-workshop-v2";
   const POINTS=[
     {x:91,y:103},{x:164,y:103},{x:236,y:103},{x:309,y:103},
@@ -388,6 +416,22 @@
         const initialBoard=[...s.board];
         let codes=[];
         let removed=null;
+        if(action.kind==="check"){
+          if(state.mode==="learn" && !s.won){
+            const candidate=s.history.map(item=>item.id);
+            if(!candidate.length){
+              state.feedback=t("emptyCandidate");
+            }else if(W.isTarget(state.level,candidate,definitions())){
+              s.won=true;
+              s.draft=[...candidate];
+              state.feedback=t("checkComplete");
+            }else{
+              state.feedback=t("tryAgain");
+            }
+          }
+          render();
+          continue;
+        }
         if(action.kind==="undo"){
           removed=s.history[s.history.length-1];
           if(!removed)continue;
@@ -411,14 +455,7 @@
           s.history.pop();
         }else{
           s.history.push({id:action.id,codes:[...codes]});
-          if(state.mode==="learn"&&!s.won && s.history.length &&
-              W.equal(s.board,W.TARGETS[state.level])){
-            s.won=true;
-            s.draft=s.history.map(e=>e.id);
-            state.feedback=t("lessonDone");
-            if(state.level===2)el("operationName").value="P";
-            if(state.level===3)el("operationName").value="S";
-          }
+          if(state.mode==="learn")state.feedback="";
         }
         render();
       }
@@ -495,15 +532,21 @@
       log.appendChild(chip);
     }
   }
+  function checkConstruction(){
+    if(state.mode!=="learn" || session().won)return;
+    pending.push({kind:"check",mode:state.mode,level:state.level});
+    drain();
+  }
   function renderLesson(){
     const level=state.level,s=state.sessions.learn;
     text("stepIndicator",(level+1)+" / 4");
     text("challengeTitle",t("lesson"+level+"Title"));
     text("challengeDescription",t("lesson"+level+"Desc"));
     text("targetArray",W.TARGETS[level].join(" "));
+    el("checkBtn").disabled=s.won;
     el("challengeReveal").hidden=!state.reveal;
     if(state.reveal)text("challengeReveal",t("lesson"+level+(state.reveal==="hint"?"Hint":"Explain")));
-    text("experimentResult",s.won?t("lessonDone"):state.feedback);
+    text("experimentResult",state.feedback);
     el("unlockPanel").hidden=!s.won;
     if(s.won){
       const isNew=level>=state.progress;
@@ -660,6 +703,7 @@
   el("answerBtn").addEventListener("click",()=>{
     state.reveal=state.reveal==="explain"?null:"explain";renderLesson();
   });
+  el("checkBtn").addEventListener("click",checkConstruction);
   el("forgeBtn").addEventListener("click",saveCompletion);
   el("saveCustom").addEventListener("click",saveCustom);
   el("resetProgress").addEventListener("click",resetAllProgress);

@@ -9,10 +9,16 @@ const library = {
   S:{recipe:["P","P","P","P","P"],name:"S"},
   C1:{recipe:["L","P","T"],name:"custom"}
 };
-assert.deepEqual([...W.SEEDS[0]],[4,3,2,1,5,6,7,8]);
-assert.deepEqual([...W.SEEDS[1]],[8,1,2,3,4,5,6,7]);
+assert.deepEqual([...W.SEEDS[0]],[...M.HOME]);
+assert.deepEqual([...W.SEEDS[1]],[...M.HOME]);
+assert(W.SEEDS.every(b => M.isHome(b)));
+assert.deepEqual(W.TARGETS[0],M.move([...M.HOME],"T"));
+assert.deepEqual(W.TARGETS[1],M.move([...M.HOME],"L"));
+assert(!W.isTarget(0,[],{}));
 assert(W.isTarget(0,["T"],{}));
+assert(!W.isTarget(0,["R"],{}));
 assert(W.isTarget(1,Array(7).fill("R"),{}));
+assert(!W.isTarget(1,["R"],{}));
 assert(W.isTarget(1,["L"],{}));
 assert(W.isTarget(2,["R","T"],{}));
 assert(W.isTarget(2,["P"],library));
