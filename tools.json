@@ -144,6 +144,29 @@
     }
   },
   {
+    "id": "oval-track",
+    "title": "Зууван зам · Oval track",
+    "language": [
+      "mn",
+      "en"
+    ],
+    "category": "mathematics",
+    "entry": "oval-track/",
+    "description": "Найман дугуйг эргүүлж, сэлгэлт, урвуу хөдөлгөөн, группийн тухай тоглож нээн мэдэх.",
+    "migrationStatus": "native original live-first alpha",
+    "copyrightHolder": "Tsogtgerel Gantumur",
+    "license": "MIT",
+    "licenseFile": "oval-track/LICENSE",
+    "titles": {
+      "mn": "Зууван зам",
+      "en": "Oval track"
+    },
+    "descriptions": {
+      "mn": "Найман дугуйг эргүүлж, сэлгэлт, урвуу хөдөлгөөн, группийн тухай тоглож нээн мэдэх.",
+      "en": "Rotate numbered disks and discover permutations, inverses and groups through play."
+    }
+  },
+  {
     "id": "sound-pitch-timbre",
     "title": "Дуу · Өндөр ба өнгө · Sound · Pitch and timbre",
     "language": [

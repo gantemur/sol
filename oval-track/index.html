@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="mn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f5f1">
+  <meta name="description" content="Эргүүлж, сольж, дарааллыг ажиглан сэлгэлт ба группийн тухай нээн мэдэх хөнгөн эвлүүлдэг тоглоом.">
+  <title>Зууван зам · Oval track</title>
+  <link rel="stylesheet" href="./style.css">
+  <script src="./model.js" defer></script>
+  <script src="./app.js" defer></script>
+  <!-- Aggregate visits only: no action or interaction tracking. -->
+  <script>
+    if (location.hostname === "gantemur.github.io") {
+      const s = document.createElement("script");
+      s.async = true;
+      s.src = "https://gc.zgo.at/count.js";
+      s.setAttribute("data-goatcounter", "https://gantemur-sol.goatcounter.com/count");
+      s.setAttribute("data-goatcounter-settings", JSON.stringify({
+        path: "/sol/oval-track/", title: "Зууван зам · Oval track", no_events: true
+      }));
+      document.head.appendChild(s);
+    }
+  </script>
+</head>
+<body>
+  <div class="page">
+    <header class="masthead">
+      <div class="topline">
+        <a class="back" href="../" data-i18n="back">← Sol</a>
+        <div class="lang-chooser" role="group" aria-label="Хэл сонгох" data-i18n-aria="language">
+          <button type="button" data-lang="mn" aria-pressed="true">MN</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+      <p class="eyebrow" data-i18n="eyebrow">Математикийн тоглоом</p>
+      <h1 data-i18n="title">Зууван зам</h1>
+      <p class="intro" data-i18n="intro">Найман дугуйг эргүүлж, дөрвийг нь урвуулаарай. Цөөн хөдөлгөөнөөр ямар сэлгэлт хийж болох бол?</p>
+    </header>
+
+    <main class="layout">
+      <section class="play-panel" aria-labelledby="play-title">
+        <div class="play-top">
+          <h2 class="sr-only" id="play-title" data-i18n="playTitle">Тоглох талбар</h2>
+          <span class="status" id="boardStatus" role="status" aria-live="polite">● Эх байдал</span>
+          <span class="counter" id="moveCounter">0 хөдөлгөөн</span>
+        </div>
+
+        <div class="board-surface">
+          <svg id="ovalBoard" viewBox="0 0 400 318" role="img" aria-label="Найман дугаартай дугуйны одоогийн байрлал">
+            <defs>
+              <linearGradient id="trackTint" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stop-color="#d7e2dc"/>
+                <stop offset="1" stop-color="#e6eae3"/>
+              </linearGradient>
+              <linearGradient id="turnTint" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stop-color="#e3b96f"/>
+                <stop offset="1" stop-color="#cfa56a"/>
+              </linearGradient>
+            </defs>
+            <rect class="track-outer" x="51" y="66" width="298" height="192" rx="96"/>
+            <rect class="track-inner" x="76" y="90" width="248" height="144" rx="72"/>
+            <rect class="turntable" x="60" y="55" width="280" height="94" rx="47"/>
+            <path class="turn-decor" d="M175 157 A25 25 0 0 0 225 157" fill="none"/>
+            <path class="turn-decor" d="M221 153 L225 157 L227 151" fill="none"/>
+            <text x="200" y="183" class="middle-note">T = 180°</text>
+            <g id="fixedPositions" aria-hidden="true">
+              <circle cx="91" cy="103" r="25"/>
+              <circle cx="164" cy="103" r="25"/>
+              <circle cx="236" cy="103" r="25"/>
+              <circle cx="309" cy="103" r="25"/>
+              <circle cx="309" cy="223" r="25"/>
+              <circle cx="236" cy="223" r="25"/>
+              <circle cx="164" cy="223" r="25"/>
+              <circle cx="91" cy="223" r="25"/>
+            </g>
+            <path class="home-marker" d="M91 59 L84 43 L98 43 Z"/>
+            <text x="112" y="46" class="home-label" data-i18n="home">Эхлэл</text>
+            <g id="diskLayer"></g>
+          </svg>
+        </div>
+
+        <div class="move-controls" role="group" aria-label="Хөдөлгөөнүүд" data-i18n-aria="moveControls">
+          <button type="button" class="move-button" id="moveLeft" title="R⁻¹">
+            <span class="control-symbol" aria-hidden="true">↶</span>
+            <span class="control-name" data-i18n="left">Зүүн</span>
+            <span class="control-code">R⁻¹</span>
+          </button>
+          <button type="button" class="move-button flip" id="moveFlip" title="T">
+            <span class="control-symbol" aria-hidden="true">⤾</span>
+            <span class="control-name" data-i18n="flip">Эргүүлэх</span>
+            <span class="control-code">T · 180°</span>
+          </button>
+          <button type="button" class="move-button" id="moveRight" title="R">
+            <span class="control-symbol" aria-hidden="true">↷</span>
+            <span class="control-name" data-i18n="right">Баруун</span>
+            <span class="control-code">R</span>
+          </button>
+        </div>
+        <div class="toolbar" role="group" aria-label="Тоглоомын удирдлага" data-i18n-aria="secondaryControls">
+          <button type="button" id="undoBtn" data-i18n="undo">↶ Буцаах</button>
+          <button type="button" id="scrambleBtn" data-i18n="scramble">⤨ Холих</button>
+          <button type="button" id="resetBtn" data-i18n="reset">↺ Эхлэл</button>
+        </div>
+
+        <div class="move-log">
+          <div class="log-heading">
+            <h3 data-i18n="history">Хөдөлгөөний дараалал</h3>
+            <span data-i18n="chronological">Зүүнээс баруун руу →</span>
+          </div>
+          <div class="history-items" id="moveHistory" aria-label="Хөдөлгөөний дараалал" data-i18n-aria="history"></div>
+        </div>
+        <p class="keyboard-note" data-i18n="shortcuts">Товчлуур: ← / → зам эргүүлэх, F дөрвийг урвуулах, Z буцаах.</p>
+      </section>
+
+      <div class="learning">
+        <section class="discover-panel" aria-labelledby="discover-title">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow" data-i18n="discoverEyebrow">Ажиглаж нээгээрэй</span>
+              <h2 id="discover-title" data-i18n="discoverTitle">Гурван туршилт</h2>
+            </div>
+            <span class="step-indicator" id="stepIndicator">1 / 3</span>
+          </div>
+          <h3 class="challenge-title" id="challengeTitle"></h3>
+          <p class="challenge-description" id="challengeDescription"></p>
+          <div class="experiment-actions" id="experimentActions"></div>
+          <div class="challenge-footer">
+            <button type="button" class="soft-action" id="hintBtn" data-i18n="hint">Сэжүүр</button>
+            <button type="button" class="soft-action" id="answerBtn" data-i18n="explain">Тайлбар</button>
+          </div>
+          <div class="reveal" id="challengeReveal" hidden aria-live="polite"></div>
+          <div class="experiment-result" id="experimentResult" aria-live="polite"></div>
+          <div class="pagination">
+            <button type="button" id="prevBtn" data-i18n="previous">← Өмнөх</button>
+            <div class="step-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+            <button type="button" id="nextBtn" data-i18n="next">Дараах →</button>
+          </div>
+        </section>
+
+        <details class="math-panel" id="mathPanel">
+          <summary data-i18n="mathTitle">Математикийг үзэх <span class="summary-icon" aria-hidden="true">⌄</span></summary>
+          <div class="math-content">
+            <p data-i18n="mathLead">Дугуй бүр анхныхаа байрлалаас хаашаа очсоныг сэлгэлт гэж үзье.</p>
+            <div class="math-readout">
+              <span class="math-label" data-i18n="positions">Байрлал 1–8 дээрх дугуйнууд</span>
+              <output id="boardArray" class="digit-row">1 2 3 4 5 6 7 8</output>
+            </div>
+            <div class="math-readout">
+              <span class="math-label" data-i18n="permMapping">Дугуй 1–8-ийн очсон байрлал</span>
+              <output id="permMapping" class="digit-row">1 2 3 4 5 6 7 8</output>
+            </div>
+            <div class="math-readout">
+              <span class="math-label" data-i18n="cycles">Циклээр бичвэл</span>
+              <output id="cycleOutput" class="math-cycles">e</output>
+            </div>
+            <div class="math-readout inline-readout">
+              <span class="math-label" data-i18n="order">Энэ сэлгэлтийн зэрэг</span>
+              <output id="orderOutput">1</output>
+            </div>
+            <p class="math-note" data-i18n="mathConventions">Байрлалууд тогтмол. (1 3) гэдэг нь эхлээд 1-р байранд байсан дугуй 3-р байр руу, 3-р байрны дугуй 1-р байр руу очсоныг илэрхийлнэ. RT гэвэл эхлээд R, дараа нь T хийнэ.</p>
+            <div class="group-theory">
+              <h3 data-i18n="groupTitle">Групп гэж юу вэ?</h3>
+              <p data-i18n="groupBody">Хөдөлгөөнүүдийг дараалуулан хийж болно; хөдөлгөөн бүрийг буцааж болно; юу ч өөрчлөхгүй хөдөлгөөн бий. Дараалуулах үйлдэл хаалттай, ассоциатив. Эдгээр нь группийн гол шинжүүд. Энэ тоглоомын R ба T хөдөлгөөнөөр 8! = 40 320 сэлгэлт бүгд үүснэ.</p>
+            </div>
+          </div>
+        </details>
+      </div>
+    </main>
+    <footer class="site-footer">
+      <a href="../" data-i18n="backBottom">← Sol-ийн хэрэгслүүд</a>
+    </footer>
+  </div>
+</body>
+</html>
