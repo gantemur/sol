@@ -152,8 +152,8 @@
     ],
     "category": "mathematics",
     "entry": "oval-track/",
-    "description": "Найман дугуйг эргүүлж, сэлгэлт, урвуу хөдөлгөөн, группийн тухай тоглож нээн мэдэх.",
-    "migrationStatus": "native original live-first alpha",
+    "description": "3:2-оос 8:4 хүртэлх зууван замын тоглоомоор сэлгэлт, Кэлигийн граф, олон өнцөгтийн тэгш хэмийг судлах.",
+    "migrationStatus": "native n:k family alpha, live-first",
     "copyrightHolder": "Tsogtgerel Gantumur",
     "license": "MIT",
     "licenseFile": "oval-track/LICENSE",
@@ -162,8 +162,8 @@
       "en": "Oval track"
     },
     "descriptions": {
-      "mn": "Найман дугуйг эргүүлж, сэлгэлт, урвуу хөдөлгөөн, группийн тухай тоглож нээн мэдэх.",
-      "en": "Rotate numbered disks and discover permutations, inverses and groups through play."
+      "mn": "3:2-оос 8:4 хүртэлх зууван замын тоглоомоор сэлгэлт, Кэлигийн граф, олон өнцөгтийн тэгш хэмийг судлах.",
+      "en": "Explore permutations, Cayley graphs and polygon symmetries with 3:2–8:4 oval-track puzzles."
     }
   },
   {
