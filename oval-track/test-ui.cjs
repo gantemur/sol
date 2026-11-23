@@ -3,7 +3,7 @@
 "use strict";
 const assert=require("node:assert/strict");
 const fs=require("node:fs");
-const html=fs.readFileSync(require("node:path").join(__dirname,"index.html"),"utf8");
+const html=fs.readFileSync(require("node:path").join(__dirname,"classic","index.html"),"utf8");
 class FakeNode{
   constructor(tagName="DIV"){
     this.tagName=tagName;this.children=[];this.dataset={};this.events={};this.attrs={};
